@@ -39,7 +39,9 @@ def create_keycloak_organization(name: str):
     roles_api = organization_roles_api.OrganizationRolesApi(client)
     org = OrganizationRepresentation(name=name, realm=config.APIConfig.KEYCLOAK_REALM)
     roles = [OrganizationRoleRepresentation(name="manage-agrifields"),
-                OrganizationRoleRepresentation(name="view-agrifields")]
+                OrganizationRoleRepresentation(name="view-agrifields"),
+                OrganizationRoleRepresentation(name="view-datafiles"),
+                OrganizationRoleRepresentation(name="manage-datafiles"),]
     try:
         response = orgs_api.create_organization(org, path_params={
             "realm": config.APIConfig.KEYCLOAK_REALM

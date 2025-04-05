@@ -21,3 +21,8 @@ class APIConfig(object):
     MONGO_DATABASE_HOST = config('MONGO_DATABASE_HOST', default='')
     MONGO_PASSWORD = config('MONGO_PASSWORD', default='')
     MONGO_USER = config('MONGO_USER', default='')
+
+    MINIO_HOSTNAME = config('MINIO_HOSTNAME', default='')
+    MINIO_ACCESS_KEY = config('MINIO_ACCESS_KEY', default='')
+    MINIO_SECRET_KEY = config('MINIO_SECRET_KEY', default='')
+    MINIO_SECURE = config('MINIO_SECURE', default=False, cast=bool)

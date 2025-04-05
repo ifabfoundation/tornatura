@@ -38,7 +38,6 @@ async def list_users(
 async def user_info(
     token_info: Annotated[dict, Depends(SecurityChecker(IsAuthenticated))]
     ) -> User:
-    print(token_info)
     user_services = UserServices()
     user = user_services.get(token_info)
     return user

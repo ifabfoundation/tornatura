@@ -3,21 +3,28 @@ from core.api.v1.agrifields import router as agrifields_router
 from core.api.v1.users import router as users_router
 from core.api.v1.organizations import router as organizations_router
 from core.api.v1.surveys import router as surveys_router  
+from core.api.v1.files import router as files_router
 
 
 router = APIRouter()
 
 # Include feature routers with their specific prefixes
 router.include_router(
-    organizations_router,
-    prefix="/organizations",
-    tags=["Organizations"]
-)
-
-router.include_router(
     agrifields_router,
     prefix="/organizations/{org_id}/agrifields",
     tags=["AgriFields"]
+)
+
+router.include_router(
+    files_router,
+    prefix="/organizations/{org_id}/files",
+    tags=["Files"]
+)
+
+router.include_router(
+    organizations_router,
+    prefix="/organizations",
+    tags=["Organizations"]
 )
 
 router.include_router(
@@ -31,3 +38,4 @@ router.include_router(
     prefix="/users",
     tags=["Users"]
 )
+

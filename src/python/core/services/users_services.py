@@ -68,12 +68,14 @@ class UserServices:
         user = keycloak_admin.get_user(token_info["sub"])
         user = self._serialize(user)
 
-        if "admin" in token_info["resource_access"][config.APIConfig.KEYCLOAK_CLIENT_ID]["roles"]:
-            user.accountType = "admin"
-        elif "agronomist" in token_info["resource_access"][config.APIConfig.KEYCLOAK_CLIENT_ID]["roles"]:
-            user.accountType = "agronomist"
-        elif "company" in token_info["resource_access"][config.APIConfig.KEYCLOAK_CLIENT_ID]["roles"]:
-            user.accountType = "company"
+        if "admin-access" in token_info["resource_access"][config.APIConfig.KEYCLOAK_CLIENT_ID]["roles"]:
+            user.accountType = "Admin"
+        elif "agronomist-access" in token_info["resource_access"][config.APIConfig.KEYCLOAK_CLIENT_ID]["roles"]:
+            user.accountType = "Agronomist"
+        elif "company-owner-access" in token_info["resource_access"][config.APIConfig.KEYCLOAK_CLIENT_ID]["roles"]:
+            user.accountType = "Company"
+        elif "company-manager-access" in token_info["resource_access"][config.APIConfig.KEYCLOAK_CLIENT_ID]["roles"]:
+            user.accountType = "Company"
         
         user.organizations = [{"id": org_id, "name": token_info["organizations"][org_id]["name"], "roles": token_info["organizations"][org_id]["roles"]} for org_id in token_info["organizations"].keys()]
         return user

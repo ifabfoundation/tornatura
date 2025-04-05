@@ -6,6 +6,11 @@ class ErrorResponse(BaseModel):
     status: int
     detail: str | dict
 
+
+class FileInfo(BaseModel):
+    category: str
+    name: str
+
 class UserOrgananizationMembership(BaseModel):
     id: str
     name : str

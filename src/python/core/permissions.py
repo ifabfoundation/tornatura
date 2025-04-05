@@ -40,7 +40,7 @@ class IsAdmin(BasePermission):
     @classmethod
     def has_permission(cls, token_info):
         try:
-            if "admin" in token_info["resource_access"][config.APIConfig.KEYCLOAK_CLIENT_ID]["roles"]:
+            if "admin-access" in token_info["resource_access"][config.APIConfig.KEYCLOAK_CLIENT_ID]["roles"]:
                 return True
             else:
                 return False
@@ -54,7 +54,7 @@ class IsAgronomist(BasePermission):
     @classmethod
     def has_permission(cls, token_info):
         try:
-            if "agronomist" in token_info["resource_access"][config.APIConfig.KEYCLOAK_CLIENT_ID]["roles"]:
+            if "agronomist-access" in token_info["resource_access"][config.APIConfig.KEYCLOAK_CLIENT_ID]["roles"]:
                 return True
             else:
                 return False
@@ -161,4 +161,29 @@ class CanManageOrganizationAgrifields(BasePermission):
             
         except Exception as ex:
             logger.logger.error(f"Error checking manage organization's agrifields permission: {ex}")
+            return False
+
+class CanManageOrganizationDataFiles(BasePermission):
+    """
+    Permission to view an organization's data files
+    """
+    @classmethod
+    def has_object_permission(cls, token_info, organization):
+        try:
+            if IsAdmin.has_permission(token_info):
+                return True
+             
+            org_id = organization.orgId if hasattr(organization, 'orgId') else organization
+            
+            if "organizations" not in token_info:
+                return False
+            
+            if org_id not in token_info["organizations"]:
+                return False
+                
+            roles = token_info["organizations"][org_id]["roles"]
+            return "manage-datafiles" in roles
+            
+        except Exception as ex:
+            logger.logger.error(f"Error checking manage organization's datafiles permission: {ex}")
             return False
