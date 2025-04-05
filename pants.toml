@@ -1,0 +1,35 @@
+[GLOBAL]
+pants_version = "2.24.0"
+
+backend_packages = [
+  'pants.backend.codegen.protobuf.python',
+  'pants.backend.python',
+  'pants.backend.python.lint.black',
+  'pants.backend.python.lint.isort',
+  "pants.backend.docker",
+  "pants.backend.docker.lint.hadolint",
+  "pants.backend.experimental.helm",
+  "pants.backend.experimental.adhoc",
+  "pants.backend.shell",
+]
+
+[source]
+root_patterns = [
+  '/src/python',
+  '/test/python',
+  '/src/proto',
+  '/src/docker',
+  '/src/helm',
+  '/src/javascript',
+  '/src/deployment'
+]
+
+[python]
+interpreter_constraints = ["==3.12.*"]
+enable_resolves = true
+
+[python-infer]
+use_rust_parser = true
+
+[helm]
+version = "3.12.3"

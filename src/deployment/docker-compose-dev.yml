@@ -1,0 +1,54 @@
+version: '3'
+
+services:
+
+  postgres:
+    image: postgres
+    container_name: postgres
+    volumes:
+      - dbdata:/var/lib/postgresql
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: Pa55w0rd
+
+  keycloak:
+    image: quay.io/phasetwo/phasetwo-keycloak:21.1.2.1688664025
+    container_name: keycloak
+    command: start --spi-email-template-provider=freemarker-plus-mustache --spi-email-template-freemarker-plus-mustache-enabled=true
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: Pa55w0rd
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: Pa55w0rd
+      PROXY_ADDRESS_FORWARDING: 'true'
+      KC_HOSTNAME_STRICT: 'false'
+      KC_HTTP_ENABLED: 'true'
+      KC_PROXY: 'edge'
+      KC_LOG_LEVEL: INFO
+      JAVA_OPTS_APPEND: "-server -Xms256m -Xmx1024m"
+      KC_SPI_ORGANIZATION_PROVIDER: jpa
+      KC_SPI_ORGANIZATION_ENABLED: 'true'
+    
+    ports:
+      - 8088:8080
+    depends_on:
+      - postgres
+
+  mongo:
+    image: mongo:8.0.5
+    container_name: mongo
+    volumes:
+      - mongodata:/data/db
+    ports:
+      - '27017:27017'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: Pa55w0rd
+
+
+volumes:
+  mongodata:
+  dbdata:

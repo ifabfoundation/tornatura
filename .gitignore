@@ -1,0 +1,14 @@
+# Pants workspace files
+/.pants.*
+/dist/
+/.pids
+
+# ides
+.idea
+.vscode
+
+#vscode
+/build/
+
+#venv
+.venv
