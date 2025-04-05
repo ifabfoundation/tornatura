@@ -3,6 +3,8 @@ from fastapi import HTTPException, status
 from core.decorators import catch_api_exception
 from core.models import SurveysModel
 from core.serializers import Survey, SurveyMutationPayload
+from core.services.agrifields_services import AgriFieldServices
+from core.services.files_services import FileServices
 
 
 class SurveyServices:
@@ -19,17 +21,22 @@ class SurveyServices:
         Returns:
             Serializer instance or list of serializer instances
         """
+        file_services = FileServices()
+        agrifield_services = AgriFieldServices()
+       
         def _create_instance(item) -> Survey:
+            agrifield = agrifield_services.get(item.agrifieldId)
             return self.serializer(
                 id=str(item.id),
-                name=item.name,
-                note=item.note,
                 agrifieldId=item.agrifieldId,
-                location={
-                    "long": item.location.long,
-                    "lat": item.location.lat
+                name=item.name,
+                type=item.type, 
+                position={
+                    "lng": item.position.lng,
+                    "lat": item.position.lat
                 },
-                photos=item.photos,
+                photos=[file_services.get_file_url(agrifield.orgId, photo.category, photo.name) for photo in item.photos],
+                note=item.note,
                 creationTime=item.creationTime,
                 lastUpdateTime=item.lastUpdateTime
             )

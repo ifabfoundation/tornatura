@@ -9,6 +9,7 @@ from core import config
 from core.decorators import catch_api_exception
 from core.models import OrganizationModel
 from core.serializers import Organization, OrganizationCreatePayload, OrganizationUpdatePayload
+from core.services.files_services import FileServices
 
 
 def get_service_access_token():
@@ -72,13 +73,14 @@ class OrganizationServices:
         Returns:
             Serializer instance or list of serializer instances
         """
+        file_services = FileServices()
         def _create_instance(item: OrganizationModel) -> Organization:
             return self.serializer(
                 orgId=item.orgId,
                 name=item.name,
                 description=item.description,
-                logo=item.logo,
-                cover=item.cover,
+                logo=file_services.get_file_url(item.orgId, item.logo.category, item.logo.name),
+                cover=file_services.get_file_url(item.orgId, item.cover.category, item.cover.name),
                 creationTime=item.creationTime,
                 lastUpdateTime=item.lastUpdateTime
             )

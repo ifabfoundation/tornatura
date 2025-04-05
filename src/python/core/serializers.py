@@ -6,7 +6,6 @@ class ErrorResponse(BaseModel):
     status: int
     detail: str | dict
 
-
 class FileInfo(BaseModel):
     category: str
     name: str
@@ -27,14 +26,15 @@ class User(BaseModel):
     organizations: Optional[List[UserOrgananizationMembership]] = None
     creationTime: int
 
-class Location(BaseModel):
-    long: float
+class Point(BaseModel):
+    lng: float
     lat: float
 
 class AgriField(BaseModel):
     id: Optional[str] = None
     name: str
     description: str
+    map: List[Point]
     orgId: str
     creationTime: int
     lastUpdateTime: int
@@ -50,11 +50,12 @@ class Organization(BaseModel):
 
 class Survey(BaseModel):
     id: Optional[str] = None
-    name: str
-    note: str
     agrifieldId: str
-    location: Location
+    name: str
+    type: str
+    position: Point
     photos: List[str]
+    note: str
     creationTime: int
     lastUpdateTime: int
 
@@ -67,20 +68,23 @@ class PaginatedResponse(BaseModel):
 class OrganizationCreatePayload(BaseModel):
     name: str
     description: str
-    logo: str
-    cover: str
+    logo: FileInfo
+    cover: FileInfo
 
 class OrganizationUpdatePayload(BaseModel):
     description: str
-    logo: str
-    cover: str
+    logo: FileInfo
+    cover: FileInfo
 
 class AgriFieldMutationPayload(BaseModel):
     name: str
     description: str
+    map : List[Point]
 
 class SurveyMutationPayload(BaseModel):
     name: str
+    type: str
+    position: Point
+    photos: List[FileInfo]
     note: str
-    location: Location
-    photos: List[str]
+

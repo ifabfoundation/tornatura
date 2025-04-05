@@ -3,8 +3,13 @@ from mongoengine import *
 import datetime
 
 
-class Location(EmbeddedDocument):
-    long = DecimalField(required=True)
+class FileInfo(EmbeddedDocument):
+    category = DecimalField(required=True)
+    name = DecimalField(required=True)
+
+
+class Point(EmbeddedDocument):
+    lng = DecimalField(required=True)
     lat = DecimalField(required=True)
 
 
@@ -12,6 +17,7 @@ class AgriFieldModel(Document):
     """The object AgriField stored in the Database"""
     name = StringField(required=True)
     description = StringField(required=True, max_length=100)
+    map = ListField(EmbeddedDocumentField(Point), default=[])
     orgId = StringField(required=True)
     deleted = BooleanField(default=False)
     creationTime = IntField()
@@ -27,11 +33,11 @@ class AgriFieldModel(Document):
 
 class OrganizationModel(Document):
     """The object Organization stored in the Database"""
-    orgId = StringField(required=True)
+    orgId = StringField(required=True, unique=True)
     name = StringField(required=True)
     description = StringField(required=True, max_length=100)
-    logo = StringField(required=True)
-    cover = StringField(required=True)
+    logo = EmbeddedDocumentField(FileInfo, required=True)
+    cover = EmbeddedDocumentField(FileInfo, required=True)
     deleted = BooleanField(default=False)
     creationTime = IntField()
     lastUpdateTime = IntField()
@@ -47,10 +53,11 @@ class OrganizationModel(Document):
 class SurveysModel(Document):
     """The object Survey stored in the Database"""
     name = StringField(required=True)
+    type = StringField(required=True)
     note = StringField(required=True)
     agrifieldId = StringField(required=True)
-    location = EmbeddedDocumentField(Location, required=True)
-    photos = ListField(StringField())
+    position = EmbeddedDocumentField(Point, required=True)
+    photos = ListField(EmbeddedDocumentField(FileInfo), default=[])
     deleted = BooleanField(default=False)
     creationTime = IntField()
     lastUpdateTime = IntField()
