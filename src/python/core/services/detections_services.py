@@ -1,15 +1,15 @@
 import datetime
 from fastapi import HTTPException, status
 from core.decorators import catch_api_exception
-from core.models import SurveysModel
-from core.serializers import Survey, SurveyMutationPayload
+from core.models import DetectionModel
+from core.serializers import Detection, DetectionMutationPayload
 from core.services.agrifields_services import AgriFieldServices
 from core.services.files_services import FileServices
 
 
-class SurveyServices:
-    model = SurveysModel
-    serializer = Survey
+class DetectionServices:
+    model = DetectionModel
+    serializer = Detection
     
     def _serialize(self, obj, many=False):
         """Serialize object(s) to serializer instances
@@ -24,12 +24,11 @@ class SurveyServices:
         file_services = FileServices()
         agrifield_services = AgriFieldServices()
        
-        def _create_instance(item) -> Survey:
+        def _create_instance(item) -> Detection:
             agrifield = agrifield_services.get(item.agrifieldId)
             return self.serializer(
                 id=str(item.id),
                 agrifieldId=item.agrifieldId,
-                name=item.name,
                 type=item.type, 
                 position={
                     "lng": item.position.lng,
@@ -37,6 +36,7 @@ class SurveyServices:
                 },
                 photos=[file_services.get_file_url(agrifield.orgId, photo.category, photo.name) for photo in item.photos],
                 note=item.note,
+                details=item.details,
                 creationTime=item.creationTime,
                 lastUpdateTime=item.lastUpdateTime
             )
@@ -47,27 +47,27 @@ class SurveyServices:
     
     @catch_api_exception
     def list(self, agrifield_id: str):
-        """List surveys for an agricultural field
+        """List detections for an agricultural field
         
         Args:
             agrifield_id: ID of the agricultural field
             
         Returns:
-            serialized surveys
+            serialized detections
         """
-        surveys = self.model.objects(agrifieldId=agrifield_id, deleted=False)
-        return self._serialize(surveys, many=True)
+        detections = self.model.objects(agrifieldId=agrifield_id, deleted=False)
+        return self._serialize(detections, many=True)
     
     @catch_api_exception
-    def create(self, agrifield_id: str, payload: SurveyMutationPayload):
-        """Create survey
+    def create(self, agrifield_id: str, payload: DetectionMutationPayload):
+        """Create detection
         
         Args:
             agrifield_id: ID of the agricultural field
-            payload: Survey creation data
+            payload: Detection creation data
             
         Returns:
-            Serialized created survey
+            Serialized created detection
         """
         data = payload.model_dump()
         current_time = int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp() * 1000)
@@ -78,78 +78,80 @@ class SurveyServices:
             "lastUpdateTime": current_time
         })
 
-        survey = self.model(**data).save()
-        return self._serialize(survey)
+        detection = self.model(**data).save()
+        return self._serialize(detection)
     
     @catch_api_exception
-    def get(self, survey_id: str):
-        """Get survey by ID
+    def get(self, detection_id: str):
+        """Get detection by ID
         
         Args:
-            survey_id: ID of the survey
+            detection_id: ID of the detcetion
             
         Returns:
-            Serialized survey
+            Serialized detection
         """
-        survey = self.model.objects(id=survey_id, deleted=False).first()
-        if not survey:
+        detection = self.model.objects(id=detection_id, deleted=False).first()
+        if not detection:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="Survey not found"
+                detail="Detection not found"
             )
-        return self._serialize(survey)
+        return self._serialize(detection)
     
     @catch_api_exception
-    def update(self, survey_id: str, payload: SurveyMutationPayload):
-        """Update survey
+    def update(self, detection_id: str, payload: DetectionMutationPayload):
+        """Update detection
         
         Args:
-            survey_id: ID of the survey
-            payload: Survey update data
+            detection_id: ID of the detection
+            payload: Detection update data
             
         Returns:
-            Serialized updated survey
+            Serialized updated detection
         """
-        survey = self.model.objects(id=survey_id, deleted=False).first()
-        if not survey:
+        detection = self.model.objects(id=detection_id, deleted=False).first()
+        if not detection:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="Survey not found"
+                detail="Detection not found"
             )
         
         data = payload.model_dump()
         current_time = int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp() * 1000)
         
-        survey.name = data["name"]
-        survey.note = data["note"]
-        survey.location = data["location"]
-        survey.photos = data["photos"]
-        survey.lastUpdateTime = current_time
-        survey.save()
+        detection.type = data["type"]
+        detection.note = data["note"]
+        detection.position = data["position"]
+        detection.photos = data["photos"]
+        detection.details = data["details"]
+        detection.lastUpdateTime = current_time
+        detection.save()
         
-        return self._serialize(survey)
+        return self._serialize(detection)
     
     @catch_api_exception
-    def delete(self, survey_id: str):
-        """Soft delete survey
+    def delete(self, detection_id: str):
+        """Soft delete detection
         
         Args:
-            survey_id: ID of the survey
+            detection_id: ID of the detection
             
         Returns:
             None
         """
-        survey = self.model.objects(id=survey_id, deleted=False).first()
-        if not survey:
+        detection = self.model.objects(id=detection_id, deleted=False).first()
+        if not detection:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="Survey not found"
+                detail="Detection not found"
             )
         
-        survey.deleted = True
-        survey.save()
+        detection.deleted = True
+        detection.save()
         
         return None
         
     def __repr__(self):
-        return f"SurveyServices(model={self.model.__name__})"
+        return f"DetectionServices(model={self.model.__name__})"
+    

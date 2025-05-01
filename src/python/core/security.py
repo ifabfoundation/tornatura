@@ -11,9 +11,10 @@ from core.permissions import BasePermission
 class SecurityChecker(HTTPBearer):
     permissions_classes = ()
 
-    def __init__(self, *permission_classes: Type[BasePermission]):
+    def __init__(self, *permission_classes: Type[BasePermission], mutually_exclusive: bool = False):
         super(SecurityChecker, self).__init__(auto_error=True)
         self.permissions_classes = permission_classes
+        self.mutually_exclusive = mutually_exclusive
 
     async def __call__(self, request: Request):
         credentials: HTTPAuthorizationCredentials = await super(SecurityChecker, self).__call__(request)
@@ -27,15 +28,21 @@ class SecurityChecker(HTTPBearer):
             if not token_info:
                 raise HTTPException(status_code=403, detail="Invalid token credentials")
 
-            for permission_class in self.permissions_classes:
-                if not permission_class.has_permission(token_info):
+            conditions = [permission_class.has_permission(token_info) for permission_class in self.permissions_classes]
+            if self.mutually_exclusive:
+                if not any(conditions):
+                    raise HTTPException(
+                        status_code=status.HTTP_403_FORBIDDEN,
+                        detail="Permission denied")
+            else:
+                if not all(conditions):
                     raise HTTPException(
                         status_code=status.HTTP_403_FORBIDDEN,
                         detail="Permission denied")
                 
             return token_info
         else:
-            raise HTTPException(status_code=403, detail="Invalid authorization code.")
+            raise HTTPException(status_code=403, detail="Credentials not provided")
 
     def info_from_jwt(self, token, **kwargs):
         """
@@ -64,10 +71,18 @@ class SecurityChecker(HTTPBearer):
             
     def check_object_permission(self, token_info, obj):
         """Check if the user has permission for a specific object"""
-        for permission_class in self.permissions_classes:
-            if not permission_class.has_object_permission(token_info, obj):
+        conditions = [permission_class.has_object_permission(token_info, obj) for permission_class in self.permissions_classes]
+        if self.mutually_exclusive:
+            if not any(conditions):
+                 raise HTTPException(
+                    status_code=status.HTTP_403_FORBIDDEN, 
+                    detail="Permission denied for this resource"
+                )
+        else:
+            if not all(conditions):
                 raise HTTPException(
                     status_code=status.HTTP_403_FORBIDDEN, 
                     detail="Permission denied for this resource"
                 )
         return True
+    

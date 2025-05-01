@@ -1,8 +1,11 @@
 import datetime
+from enum import Enum
+import json
+from typing import Union
 from fastapi import HTTPException, status
 from keycloak import KeycloakOpenID
 import phasetwo
-from phasetwo.apis.tags import organizations_api, organization_roles_api
+from phasetwo.apis.tags import organizations_api, organization_roles_api, organization_memberships_api
 from phasetwo.model.organization_representation import OrganizationRepresentation
 from phasetwo.model.organization_role_representation import OrganizationRoleRepresentation
 from core import config
@@ -10,6 +13,19 @@ from core.decorators import catch_api_exception
 from core.models import OrganizationModel
 from core.serializers import Organization, OrganizationCreatePayload, OrganizationUpdatePayload
 from core.services.files_services import FileServices
+
+
+class OrganizationDefaultRole(Enum):
+    ViewOrganization = "view-organization"
+    ManageOrganization = "manage-organization"
+    ViewMembers = "view-members"
+    ManageMembers = "manage-members"
+
+class OrganizationCustomRole(Enum):
+    ManageAgrifields = "manage-agrifields"
+    ViewAgrifields = "view-agrifields"
+    ViewDataFiles = "view-datafiles"
+    ManageDataFiles = "manage-datafiles"
 
 
 def get_service_access_token():
@@ -24,40 +40,6 @@ def get_service_access_token():
     auth_payload = keycloak_openid.token(grant_type=["client_credentials"])
     return auth_payload["access_token"]
 
-
-def create_keycloak_organization(name: str):
-    token = get_service_access_token()
-
-    configuration = phasetwo.Configuration(
-        host=f"{config.APIConfig.KEYCLOAK_ENDPOINT}/realms",
-        access_token = token
-    )
-
-    client = phasetwo.ApiClient(configuration)
-
-    # Create a new Organization
-    orgs_api = organizations_api.OrganizationsApi(client)
-    roles_api = organization_roles_api.OrganizationRolesApi(client)
-    org = OrganizationRepresentation(name=name, realm=config.APIConfig.KEYCLOAK_REALM)
-    roles = [OrganizationRoleRepresentation(name="manage-agrifields"),
-                OrganizationRoleRepresentation(name="view-agrifields"),
-                OrganizationRoleRepresentation(name="view-datafiles"),
-                OrganizationRoleRepresentation(name="manage-datafiles"),]
-    try:
-        response = orgs_api.create_organization(org, path_params={
-            "realm": config.APIConfig.KEYCLOAK_REALM
-        })
-        org_id = response.response.headers["Location"].split('/')[-1]
-        for role in roles:
-            roles_api.create_organization_role(role, path_params={ 
-                "realm": config.APIConfig.KEYCLOAK_REALM,
-                "orgId": org_id
-            })
-        return org_id
-    except phasetwo.ApiException as e:
-        print("Exception when calling OrganizationsApi->create_organization: %s\n" % e)
-        return None
-    
 
 class OrganizationServices:
     serializer = Organization
@@ -81,6 +63,10 @@ class OrganizationServices:
                 description=item.description,
                 logo=file_services.get_file_url(item.orgId, item.logo.category, item.logo.name),
                 cover=file_services.get_file_url(item.orgId, item.cover.category, item.cover.name),
+                contacts={
+                    "phone": item.contacts.phone,
+                    "email": item.contacts.email
+                },
                 creationTime=item.creationTime,
                 lastUpdateTime=item.lastUpdateTime
             )
@@ -89,6 +75,114 @@ class OrganizationServices:
             return [_create_instance(item) for item in obj]
         return _create_instance(obj)
     
+    
+    @classmethod
+    def _create_keycloak_organization(cls, name: str):
+        token = get_service_access_token()
+
+        configuration = phasetwo.Configuration(
+            host=f"{config.APIConfig.KEYCLOAK_ENDPOINT}/realms",
+            access_token = token
+        )
+
+        client = phasetwo.ApiClient(configuration)
+
+        # Create a new Organization
+        orgs_api = organizations_api.OrganizationsApi(client)
+        roles_api = organization_roles_api.OrganizationRolesApi(client)
+        org = OrganizationRepresentation(name=name, realm=config.APIConfig.KEYCLOAK_REALM)
+        roles = [OrganizationRoleRepresentation(name=rolename.value) for rolename in OrganizationCustomRole]
+        try:
+            response = orgs_api.create_organization(org, path_params={
+                "realm": config.APIConfig.KEYCLOAK_REALM
+            })
+            org_id = response.response.headers["Location"].split('/')[-1]
+            for role in roles:
+                roles_api.create_organization_role(role, path_params={ 
+                    "realm": config.APIConfig.KEYCLOAK_REALM,
+                    "orgId": org_id
+                })
+            return org_id
+        except phasetwo.ApiException as e:
+            print("Exception when calling OrganizationsApi->create_organization: %s\n" % e)
+            return None
+    
+    @classmethod
+    def is_organization_exists(cls, name: str):
+        token = get_service_access_token()
+
+        configuration = phasetwo.Configuration(
+            host=f"{config.APIConfig.KEYCLOAK_ENDPOINT}/realms",
+            access_token = token
+        )
+
+        client = phasetwo.ApiClient(configuration)
+        orgs_api = organizations_api.OrganizationsApi(client)
+
+        try:
+            response = orgs_api.get_organizations(
+                path_params={
+                "realm": config.APIConfig.KEYCLOAK_REALM
+                },
+                query_params={
+                    "search": name
+                }
+            )
+            organizations = json.loads(response.response.data)
+            if len(organizations) > 0:
+                return True
+            else:
+                return False
+        except phasetwo.ApiException as e:
+            return False
+    
+    @classmethod
+    def assign_role(cls, org_id: str, user_id: str, role: OrganizationDefaultRole | OrganizationCustomRole):
+        token = get_service_access_token()
+
+        configuration = phasetwo.Configuration(
+            host=f"{config.APIConfig.KEYCLOAK_ENDPOINT}/realms",
+            access_token = token
+        )
+
+        client = phasetwo.ApiClient(configuration)
+        roles_api = organization_roles_api.OrganizationRolesApi(client)
+
+        try:
+            roles_api.grant_user_organization_role(
+                path_params={
+                    "realm": config.APIConfig.KEYCLOAK_REALM,
+                    "userId": user_id,
+                    "orgId": org_id,
+                    "name": role.value
+                },
+            )
+        except phasetwo.ApiException as e:
+            print("Exception when calling OrganizationRolesApi->grant_user_organization_role: %s\n" % e)
+    
+    @classmethod
+    def add_member(cls, org_id: str, user_id: str):
+        token = get_service_access_token()
+
+        configuration = phasetwo.Configuration(
+            host=f"{config.APIConfig.KEYCLOAK_ENDPOINT}/realms",
+            access_token = token
+        )
+
+        client = phasetwo.ApiClient(configuration)
+        memberships_api = organization_memberships_api.OrganizationMembershipsApi(client)
+
+        try:
+            memberships_api.add_organization_member(
+                path_params={
+                    "realm": config.APIConfig.KEYCLOAK_REALM,
+                    "userId": user_id,
+                    "orgId": org_id,
+                },
+            )
+        except phasetwo.ApiException as e:
+            print("Exception when calling OrganizationMembershipsApi->add_organization_member: %s\n" % e)
+
     @catch_api_exception
     def list(self):
         """List organizations
@@ -117,15 +211,27 @@ class OrganizationServices:
         """
         data = payload.model_dump()
         current_time = int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp() * 1000)
-        org_id = create_keycloak_organization(payload.name)
+        org_id = self._create_keycloak_organization(payload.name)
 
         if org_id is None:
              raise HTTPException(
                         status_code=status.HTTP_400_BAD_REQUEST,
                         detail="Bad Request organization already exists") 
 
+        file_services = FileServices()
+        logo = file_services.upload_local_file(org_id, "media", "media/logo.jpg")
+        cover = file_services.upload_local_file(org_id, "media", "media/cover.jpg")
+
         data.update({
             "orgId": org_id,
+            "logo": {
+                "name": logo,
+                "category": "media"
+            },
+            "cover": {
+                "name": cover,
+                "category": "media"
+            },
             "creationTime": current_time,
             "lastUpdateTime": current_time
         })
@@ -150,6 +256,7 @@ class OrganizationServices:
         organization.description = payload.description
         organization.logo = payload.logo
         organization.cover = payload.cover
+        organization.contacts = payload.contacts
         organization.lastUpdateTime = current_time
         organization.save()
     

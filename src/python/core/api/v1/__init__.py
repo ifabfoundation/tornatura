@@ -2,8 +2,9 @@ from fastapi import APIRouter
 from core.api.v1.agrifields import router as agrifields_router
 from core.api.v1.users import router as users_router
 from core.api.v1.organizations import router as organizations_router
-from core.api.v1.surveys import router as surveys_router  
+from core.api.v1.detections import router as detections_router  
 from core.api.v1.files import router as files_router
+from core.api.v1.feedback import router as feedbacks_router
 
 
 router = APIRouter()
@@ -28,14 +29,20 @@ router.include_router(
 )
 
 router.include_router(
-    surveys_router,
-    prefix="/organizations/{org_id}/agrifields/{agrifield_id}/surveys",
-    tags=["Surveys"]
+    detections_router,
+    prefix="/organizations/{org_id}/agrifields/{agrifield_id}/detections",
+    tags=["Detections"]
 )
 
 router.include_router(
     users_router,
     prefix="/users",
     tags=["Users"]
+)
+
+router.include_router(
+    feedbacks_router,
+    prefix="/feedbacks",
+    tags=["Feedbacks"]
 )
 

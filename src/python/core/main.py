@@ -28,6 +28,7 @@ async def validation_exception_handler(request, exc: RequestValidationError):
     }).model_dump()
     return JSONResponse(payload, status_code=422)
 
+
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request, exc: RequestValidationError):
     logger.logger.error(exc)
@@ -46,22 +47,23 @@ app.add_middleware(
 # Include the router
 app.include_router(
     v1_router, 
-    prefix="/api/v1",
+    prefix="/v1",
     responses={
-    401: {
-        "description": "Unauthorized to access this resource",
-        "model": ErrorResponse,
+        401: {
+            "description": "Unauthorized to access this resource",
+            "model": ErrorResponse,
+        },
+        403: {
+            "description": "Unauthorized to access this resource",
+            "model": ErrorResponse,
+        },
+        422: {
+            "description": "Validation error",
+            "model": ErrorResponse,
+        }, 
+        400: {
+            "description": "Bad Request",
+            "model": ErrorResponse,
+        },
     },
-    403: {
-        "description": "Unauthorized to access this resource",
-        "model": ErrorResponse,
-    },
-    422: {
-        "description": "Validation error",
-        "model": ErrorResponse,
-    },
-    400: {
-        "description": "Bad Request",
-        "model": ErrorResponse,
-    },
-},)
+)

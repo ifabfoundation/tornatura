@@ -1,10 +1,11 @@
 from typing import Annotated, List
-from fastapi import APIRouter, Depends, Path, Query
-from core.permissions import CanManageOrganization, CanViewOrganization, IsAdmin, IsAuthenticated
+from fastapi import APIRouter, Depends, HTTPException, Path, Query, status
+from core.permissions import CanManageOrganization, CanViewOrganization, IsAdmin, IsAgronomist, IsAuthenticated
 from core.security import SecurityChecker
-from core.serializers import ErrorResponse, Organization, OrganizationCreatePayload, OrganizationUpdatePayload, PaginatedResponse
+from core.serializers import AccountTypeEnum, ErrorResponse, Organization, OrganizationCreatePayload, OrganizationUpdatePayload, PaginatedResponse
 
-from core.services.organizations_services import OrganizationServices
+from core.services.organizations_services import OrganizationCustomRole, OrganizationDefaultRole, OrganizationServices
+from core.services.users_services import UserServices
 from core.utils import paginate
 
 
@@ -37,11 +38,27 @@ async def list_organizations(
     response_description="Organization Info",
 )
 async def create_organization(
-    token_info: Annotated[dict, Depends(SecurityChecker(IsAuthenticated))],
+    token_info: Annotated[dict, Depends(SecurityChecker(IsAgronomist, IsAdmin))],
     payload: OrganizationCreatePayload, 
     ) -> Organization:
     organization_services = OrganizationServices()
+    # check if organization with the same name already exists
+    if organization_services.is_organization_exists(payload.name):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, 
+            detail="Organization with the same name already exists"
+        )
     organization = organization_services.create(payload)
+    # assign organization roles to the user if agronomist
+    user_services = UserServices()
+    user = user_services.get(token_info["sub"])
+    if user.accountType == AccountTypeEnum.agronomist:
+        organization_services.add_member(user_id=user.id, org_id=organization.orgId)
+        organization_services.assign_role(user_id=user.id, org_id=organization.orgId, role=OrganizationDefaultRole.ManageOrganization)
+        organization_services.assign_role(user_id=user.id, org_id=organization.orgId, role=OrganizationDefaultRole.ManageMembers)
+        organization_services.assign_role(user_id=user.id, org_id=organization.orgId, role=OrganizationCustomRole.ManageAgrifields)
+        organization_services.assign_role(user_id=user.id, org_id=organization.orgId, role=OrganizationCustomRole.ManageDataFiles)
+
     return organization
 
 

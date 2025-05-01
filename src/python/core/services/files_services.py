@@ -41,7 +41,8 @@ class FileServices:
             bucket_name,
             object_name,
             file.file,
-            file_size)
+            file_size
+        )
 
         return file_name
 
@@ -65,3 +66,25 @@ class FileServices:
         )
         
         return url
+    
+
+    def upload_local_file(self, org_id: str, category: str, file_path: str):
+        """Upload a local file to MinIO bucket"""
+        minio_client = self._get_minio_client()
+        prefix = f"{org_id.split('-')[0]}"
+        # Ensure the bucket exists
+        bucket_name = "data" if category == "data" else "media"
+        if not minio_client.bucket_exists(bucket_name):
+            minio_client.make_bucket(bucket_name)
+
+        # Upload the file
+        file_name = secure_filename(file_path.split("/")[-1])
+        object_name = f"{prefix}/{file_name}"
+        minio_client.fput_object(
+            bucket_name,
+            object_name,
+            file_path,
+        )
+
+        return file_name
+        

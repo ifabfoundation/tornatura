@@ -1,3 +1,4 @@
+from enum import Enum
 from pydantic import BaseModel
 from typing import Any, List, Optional
 
@@ -5,6 +6,10 @@ from typing import Any, List, Optional
 class ErrorResponse(BaseModel):
     status: int
     detail: str | dict
+
+class StatusResponse(BaseModel):
+    status: int
+    message: str
 
 class FileInfo(BaseModel):
     category: str
@@ -15,15 +20,28 @@ class UserOrgananizationMembership(BaseModel):
     name : str
     roles: List[str]
 
+class AccountTypeEnum(str, Enum):
+    admin = 'Admin'
+    agronomist = 'Agronomist'
+    standard = 'Standard'
+
+class FeedbackCategoryEnum(str, Enum):
+    NewFeature = 'New Feature'
+    bugFixing = 'Bug Fixing'
+    Improvement = 'Improvement'
+    Other = 'Other'
+
+
 class User(BaseModel):
-    id: Optional[str] = None
+    id: str
     firstName: str
     lastName: str
     email: str
     emailVerified: bool
     enabled: bool
-    accountType: Optional[str] = None
-    organizations: Optional[List[UserOrgananizationMembership]] = None
+    accountType: AccountTypeEnum
+    phone: str
+    organizations: List[UserOrgananizationMembership] = []
     creationTime: int
 
 class Point(BaseModel):
@@ -31,7 +49,7 @@ class Point(BaseModel):
     lat: float
 
 class AgriField(BaseModel):
-    id: Optional[str] = None
+    id: str
     name: str
     description: str
     map: List[Point]
@@ -39,23 +57,36 @@ class AgriField(BaseModel):
     creationTime: int
     lastUpdateTime: int
 
+class Contacts(BaseModel):
+    email: str
+    phone : str
+
 class Organization(BaseModel):
-    orgId: Optional[str] = None
+    orgId: str
     name: str
     description: str
     logo: str
     cover: str
+    contacts: Contacts
     creationTime: int
     lastUpdateTime: int
 
-class Survey(BaseModel):
-    id: Optional[str] = None
+class Detection(BaseModel):
+    id: str
     agrifieldId: str
-    name: str
     type: str
     position: Point
     photos: List[str]
     note: str
+    details: dict
+    creationTime: int
+    lastUpdateTime: int
+
+class Feedback(BaseModel):
+    id: str
+    category: FeedbackCategoryEnum
+    feedback: str
+    author: str
     creationTime: int
     lastUpdateTime: int
 
@@ -68,23 +99,35 @@ class PaginatedResponse(BaseModel):
 class OrganizationCreatePayload(BaseModel):
     name: str
     description: str
-    logo: FileInfo
-    cover: FileInfo
+    contacts: Contacts
 
 class OrganizationUpdatePayload(BaseModel):
     description: str
     logo: FileInfo
     cover: FileInfo
-
+    contacts: Contacts
+    
 class AgriFieldMutationPayload(BaseModel):
     name: str
     description: str
     map : List[Point]
 
-class SurveyMutationPayload(BaseModel):
-    name: str
+class DetectionMutationPayload(BaseModel):
     type: str
     position: Point
     photos: List[FileInfo]
     note: str
+    details: dict
 
+class UserCreatePayload(BaseModel):
+    firstName: str
+    lastName: str
+    email: str
+    accountType: AccountTypeEnum
+    phone: str
+    organization: Optional[OrganizationCreatePayload] = None
+
+class FeedbackCreatePayload(BaseModel):
+    category: FeedbackCategoryEnum
+    feedback: str
+    author: str

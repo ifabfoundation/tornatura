@@ -1,6 +1,8 @@
 # encoding: utf-8
 from fastapi import Request, logger
 from core import config
+from core.services.organizations_services import OrganizationCustomRole, OrganizationDefaultRole
+from core.services.users_services import ClientRole
 
 
 class BasePermission:
@@ -40,7 +42,7 @@ class IsAdmin(BasePermission):
     @classmethod
     def has_permission(cls, token_info):
         try:
-            if "admin-access" in token_info["resource_access"][config.APIConfig.KEYCLOAK_CLIENT_ID]["roles"]:
+            if ClientRole.Admin.value in token_info["resource_access"][config.APIConfig.KEYCLOAK_CLIENT_ID]["roles"]:
                 return True
             else:
                 return False
@@ -54,7 +56,7 @@ class IsAgronomist(BasePermission):
     @classmethod
     def has_permission(cls, token_info):
         try:
-            if "agronomist-access" in token_info["resource_access"][config.APIConfig.KEYCLOAK_CLIENT_ID]["roles"]:
+            if ClientRole.Agronomist.value in token_info["resource_access"][config.APIConfig.KEYCLOAK_CLIENT_ID]["roles"]:
                 return True
             else:
                 return False
@@ -80,7 +82,7 @@ class CanViewOrganization(BasePermission):
                 return False
                 
             roles = token_info["organizations"][org_id]["roles"]
-            return "view-organization" in roles or "manage-organization" in roles
+            return OrganizationDefaultRole.ViewOrganization.value in roles or OrganizationDefaultRole.ManageOrganization.value in roles
             
         except Exception as ex:
             logger.logger.error(f"Error checking view organization permission: {ex}")
@@ -106,7 +108,7 @@ class CanManageOrganization(BasePermission):
                 return False
                 
             roles = token_info["organizations"][org_id]["roles"]
-            return "manage-organization" in roles
+            return OrganizationDefaultRole.ManageOrganization.value in roles
             
         except Exception as ex:
             logger.logger.error(f"Error checking manage organization permission: {ex}")
@@ -132,7 +134,7 @@ class CanViewOrganizationAgrifields(BasePermission):
                 return False
                 
             roles = token_info["organizations"][org_id]["roles"]
-            return "view-agrifields" in roles or "manage-agrifields" in roles
+            return OrganizationCustomRole.ViewAgrifields.value in roles or OrganizationCustomRole.ManageAgrifields.value in roles
             
         except Exception as ex:
             logger.logger.error(f"Error checking view organization's agrifields permission: {ex}")
@@ -157,7 +159,7 @@ class CanManageOrganizationAgrifields(BasePermission):
                 return False
                 
             roles = token_info["organizations"][org_id]["roles"]
-            return "manage-agrifields" in roles
+            return OrganizationCustomRole.ManageAgrifields.value in roles
             
         except Exception as ex:
             logger.logger.error(f"Error checking manage organization's agrifields permission: {ex}")
@@ -182,7 +184,7 @@ class CanManageOrganizationDataFiles(BasePermission):
                 return False
                 
             roles = token_info["organizations"][org_id]["roles"]
-            return "manage-datafiles" in roles
+            return OrganizationCustomRole.ManageDataFiles.value in roles
             
         except Exception as ex:
             logger.logger.error(f"Error checking manage organization's datafiles permission: {ex}")

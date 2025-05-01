@@ -2,10 +2,10 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Path, Query
 from core.permissions import CanManageOrganizationAgrifields, CanViewOrganizationAgrifields, IsAuthenticated
 from core.security import SecurityChecker
-from core.serializers import ErrorResponse, PaginatedResponse, Survey, SurveyMutationPayload
+from core.serializers import ErrorResponse, PaginatedResponse, Detection, DetectionMutationPayload
 from core.services.agrifields_services import AgriFieldServices
 from core.services.organizations_services import OrganizationServices
-from core.services.surveys_services import SurveyServices
+from core.services.detections_services import DetectionServices
 from core.utils import paginate
 
 
@@ -14,11 +14,11 @@ router = APIRouter()
 
 @router.get(
     "",
-    operation_id="list_surveys",
-    summary="List Surveys",
-    response_description="List of surveys for an agriculture field",
+    operation_id="list_detections",
+    summary="List Detections",
+    response_description="List detections for an agriculture field",
 )
-async def list_surveys(
+async def list_detections(
     token_info: Annotated[dict, Depends(SecurityChecker(IsAuthenticated))],
     org_id: str = Path(..., description="Organization ID"), 
     agrifield_id: str = Path(..., description="Agriculture Field ID"), 
@@ -35,8 +35,8 @@ async def list_surveys(
     agrifield_service = AgriFieldServices()
     agrifield_service.get(agrifield_id)
 
-    survey_service = SurveyServices()
-    data = survey_service.list(agrifield_id)
+    detection_service = DetectionServices()
+    data = detection_service.list(agrifield_id)
     count = len(data)
     data = paginate(data, page, limit)
     return PaginatedResponse(data=data, total=count, page=page, limit=limit)
@@ -44,16 +44,16 @@ async def list_surveys(
 
 @router.post(
     "",
-    operation_id="create_survey",
-    summary="Create Survey",
-    response_description="Survey detail",
+    operation_id="create_detection",
+    summary="Create Detection",
+    response_description="Detection detail",
 )
-async def create_survey(
+async def create_detection(
     token_info: Annotated[dict, Depends(SecurityChecker(IsAuthenticated))],
-    payload: SurveyMutationPayload,
+    payload: DetectionMutationPayload,
     org_id: str = Path(..., description="Organization ID"), 
     agrifield_id: str = Path(..., description="Agriculture Field ID"),
-) -> Survey:
+) -> Detection:
     organization_services = OrganizationServices()
     organization = organization_services.get(org_id)
 
@@ -64,6 +64,6 @@ async def create_survey(
     agrifield_service = AgriFieldServices()
     agrifield_service.get(agrifield_id)
 
-    survey_service = SurveyServices()
-    survey = survey_service.create(agrifield_id, payload)
-    return survey
+    detection_service = DetectionServices()
+    detection = detection_service.create(agrifield_id, payload)
+    return detection
