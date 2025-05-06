@@ -1,0 +1,77 @@
+{
+    "total": 4,
+    "page": 1,
+    "limit": 25,
+    "data": [
+        {
+            "id": "f24d27ab-8c1a-48c2-bd48-aedd1b00d91b",
+            "firstName": "Mario",
+            "lastName": "Bianchi",
+            "email": "bianchi@example.com",
+            "emailVerified": true,
+            "enabled": true,
+            "accountType": "Standard",
+            "phone": "+345678954678",
+            "organizations": [
+                {
+                    "id": "d68243d2-f648-412a-b4f9-6d99144b29f8",
+                    "name": "AIA sas",
+                    "roles": [
+                        "manage-organization",
+                        "manage-members",
+                        "manage-agrifields",
+                        "manage-datafiles"
+                    ]
+                }
+            ],
+            "creationTime": 1745657316734
+        },
+        {
+            "id": "58324ee5-ab70-4249-b404-e7befe517f9e",
+            "firstName": "Mario",
+            "lastName": "Rossi",
+            "email": "mario@handhy.com",
+            "emailVerified": true,
+            "enabled": true,
+            "accountType": "Agronomist",
+            "phone": "+3934567890",
+            "organizations": [],
+            "creationTime": 1745585535923
+        },
+        {
+            "id": "4999c8c6-66ab-427c-9025-ad553d69a6ab",
+            "firstName": "Pippo",
+            "lastName": "Marco",
+            "email": "pippo@example.com",
+            "emailVerified": true,
+            "enabled": true,
+            "accountType": "Agronomist",
+            "phone": "+393524652398",
+            "organizations": [],
+            "creationTime": 1745573462039
+        },
+        {
+            "id": "b74a283e-21b4-4aee-85d4-fca44ac4acff",
+            "firstName": "Tony ",
+            "lastName": "Wilson",
+            "email": "tony.wilson@ifabfoundation.org",
+            "emailVerified": true,
+            "enabled": true,
+            "accountType": "Admin",
+            "phone": "+393662423509",
+            "organizations": [
+                {
+                    "id": "f86dc18a-5105-4574-a423-19b548bc67ae",
+                    "name": "Agricolus srl",
+                    "roles": [
+                        "view-agrifields",
+                        "manage-agrifields",
+                        "view-organization",
+                        "manage-organization"
+                    ]
+                }
+            ],
+            "creationTime": 1743220393291
+        }
+    ]
+}

@@ -1,13 +1,17 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { userReducer } from "./features/users/state/user-slice";
+import { usersReducer } from "./features/users/state/user-slice";
 import { headerbarReducer } from "./features/headerbar/state/headerbar-slice";
 import { companiesReducer } from "./features/companies/state/companies-slice";
+import { sidebarReducer } from "./features/sidebar/state/sidebar-slice";
+import { feedbackReducer } from "./features/feedbacks/state/feedbacks-slice";
 
 const store = configureStore({
   reducer: {
     companies: companiesReducer,
     headerbar: headerbarReducer,
-    users: userReducer,
+    users: usersReducer,
+    sidebar: sidebarReducer,
+    feedbacks: feedbackReducer
   },
 });
 

@@ -1,66 +1,111 @@
 import React from 'react';
-import {Spinner} from 'react-bootstrap';
 
-import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import { authStore } from './providers/auth-providers';
-import { useAppDispatch } from './hooks';
+import { useAppDispatch, useAppSelector } from './hooks';
 import { getUserInfo } from './features/users/utils';
-import { userActions } from './features/users/state/user-slice';
+import { userActions, userSelectors } from './features/users/state/user-slice';
 import { Outlet } from 'react-router-dom';
-import TopBar from './components/top-bar';
-import SideBar from './components/side-bar';
-import { headerbarActions } from './features/headerbar/state/headerbar-slice';
+import TopBar from './components/Topbar';
+import SideBar, { MenuItemEntry } from './components/Sidebar';
 import { companiesActions } from './features/companies/state/companies-slice';
+import logo from './assets/images/logo.svg';
+import { AccountTypeEnum } from '@tornatura/coreapis';
+import { SidebarActions } from './features/sidebar/state/sidebar-slice';
+import { feedbacksActions } from './features/feedbacks/state/feedbacks-slice';
 
 
-
-export function Demo() {
-  const dispatch = useAppDispatch();
-
-  React.useEffect(() => {
-    dispatch(headerbarActions.setTitle({title: "Dashboard", subtitle: "Subtitle"}));
-  }, []); 
-
+export function Loading() {
   return (
-    <div>
-      <h1>Dashboard</h1>
-    </div>
+    <>
+      <div className="loading-cont">
+        <div>
+          <img className="blink" src={logo} alt="loading"  width="50px"/>
+          <p className="color-white mt-2"></p>
+        </div>
+      </div>
+    </>
   );
 }
 
-export function Demo2() {
-  const dispatch = useAppDispatch();
-
-  React.useEffect(() => {
-    dispatch(headerbarActions.setTitle({title: "Dashboard 2", subtitle: "Subtitle"}));
-  }, []); 
-
-  return (
-    <div>
-      <h1>Dashboard 2</h1>
-    </div>
-  );
-}
 
 function MainApp() {
+  const dispatch = useAppDispatch();
+  const currentUser = useAppSelector(userSelectors.selectCurrentUser);
 
+  React.useEffect(() => {
+    let menuEntries : MenuItemEntry[] = []
+    if (currentUser.accountType === AccountTypeEnum.Admin) {
+      menuEntries = [
+        {
+          "id": "companies",
+          "icon": "chart",
+          "text": "Aziende",
+          "path":  "/companies",
+        }, 
+        {
+        
+          "id": "users",
+          "icon": "pages",
+          "text": "Utenti",
+          "path": "/users" ,
+        },
+        {
+          "id": "feedbacks",
+          "icon": "diamond",
+          "text": "Feedbacks",
+          "path": "/feedbacks" ,
+        },
+        {
+          "id": "aziende",
+          "icon": "diamond",
+          "text": "Aziende",
+          "path": "/aziende" ,
+        },
+      ];
+      dispatch(userActions.fetchUsersAction());
+      dispatch(companiesActions.fetchCompanies());
+      dispatch(feedbacksActions.fetchFeedbackAction());
+    } else if (currentUser.accountType === AccountTypeEnum.Agronomist) {
+      menuEntries = [
+        {
+          "id": "companies",
+          "icon": "chart",
+          "text": "Aziende",
+          "path":  "/companies",
+        }, 
+        {
+          "id": "users",
+          "icon": "pages",
+          "text": "Utenti",
+          "path": "/users" ,
+        },
+        {
+          "id": "feedbacks",
+          "icon": "diamond",
+          "text": "Feedbacks",
+          "path": "/feedbacks" ,
+        }
+      ];
+      dispatch(userActions.fetchUsersAction());
+      dispatch(companiesActions.fetchCompanies());
+      dispatch(feedbacksActions.fetchFeedbackAction());
+    }
+    dispatch(SidebarActions.setMenuEntriesAction(menuEntries));
+  }, [currentUser]);
+
+  
   return (
-    <div className="dashboard">
-      <header className="header">
+    <div id="app" className="main-app">
+      <SideBar />
+      <div className="ui-right">
         <TopBar />
-      </header>
-      <div className="main-content">
-        <aside className="sidebar">
-          <SideBar />
-        </aside>
-        <section className="content">
-          <Outlet />
-        </section>
+        <div className="content-area">
+          <div className="content">
+            <Outlet />
+          </div>
+        </div>
       </div>
-      <footer className="footer">
-        <p>©2025 Tornatura</p>
-      </footer>
     </div>
   );
 }
@@ -74,21 +119,19 @@ function App() {
     if (initialized && authenticated) {
       getUserInfo().then((profile) => {
         if (profile) {
-          dispatch(userActions.setCurrentUserAction(profile));
-          dispatch(companiesActions.fetchCompanies());
+          dispatch(userActions.setCurrentUserAction(profile)); 
           console.log("User profile loaded", profile);
           setLoaded(true);
         }
-      });     
+      });    
     }
+    setLoaded(true);
   }, [authenticated, initialized]);
 
   return authenticated && initialized && loaded ? (
     <MainApp />
   ) : (
-    <Spinner animation="border" role="status">
-      <span className="visually-hidden">Loading...</span>
-    </Spinner>
+    <Loading />
   );
 }
 

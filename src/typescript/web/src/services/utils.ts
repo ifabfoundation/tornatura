@@ -1,5 +1,5 @@
 import keycloakInstance from "../providers/keycloak";
-import { Configuration}  from "@tornatura/coreapis";
+import { Configuration }  from "@tornatura/coreapis";
 
 
 const COREAPIS_BASE_PATH = process.env.REACT_APP_COREAPIS_SERVER_URL;

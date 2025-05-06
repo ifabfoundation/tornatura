@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="10px" viewBox="0 0 16 10" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>sorted-desc</title>
+    <g id="sorted-desc" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Group-3-Copy" transform="translate(8.166667, 6.000000) scale(1, -1) translate(-8.166667, -6.000000) translate(3.666667, 3.000000)" fill="#788A9A" fill-rule="nonzero">
+            <path d="M5.64874467,-0.737403321 C5.90309037,-0.997433918 6.33412785,-1.01492918 6.61149382,-0.77648008 C6.86752394,-0.556373219 6.90311959,-0.195122044 6.70703108,0.0636737589 L6.65317569,0.126097251 L3.95069244,2.88779024 L6.65317569,5.65076085 C6.88795635,5.8907891 6.89011538,6.25357269 6.67090245,6.49551193 L6.61149382,6.55333818 C6.35546369,6.77344504 5.96849453,6.77546914 5.710426,6.56995702 L5.64874467,6.51426142 L2.10218167,2.88842905 L5.64874467,-0.737403321 Z" id="Path" transform="translate(4.467275, 2.888429) scale(1, -1) rotate(-90.000000) translate(-4.467275, -2.888429) "></path>
+        </g>
+    </g>
+</svg>
