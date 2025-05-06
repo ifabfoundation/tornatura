@@ -1,5 +1,6 @@
 from enum import Enum
 import json
+from jinja2 import Environment, FileSystemLoader
 from keycloak import KeycloakAdmin, KeycloakOpenID
 import phasetwo
 from phasetwo.apis.tags import users_api
@@ -8,7 +9,9 @@ from phasetwo.model.organization_role_representation import OrganizationRoleRepr
 from core import config
 from core.decorators import catch_api_exception
 from core.serializers import AccountTypeEnum, User, UserCreatePayload
+from core.utils import send_email
 
+env = Environment(loader=FileSystemLoader('templates/'))
 
 class ClientRole(Enum):
     Admin = "admin-access"
@@ -209,8 +212,9 @@ class UserServices:
             "organizations": self._list_user_organizations(user_id)
         })
 
-        # send registration email with default password if sending successfully verified email
-        # TODO implement sending email
+        template = env.get_template('email_registration.html')
+        email_body = template.render(realName=user["firstName"], pwd="tornatura", link="https://tornatura.com")
+        send_email(receiver_email=user["email"], subject="Benvenuto su Tornatura", email_body=email_body)
         
         return self._serialize(user)
     

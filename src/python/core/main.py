@@ -6,6 +6,7 @@ from fastapi.exceptions import RequestValidationError, ResponseValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException
+import uvicorn
 
 from core.serializers import ErrorResponse
 from core.api.v1 import router as v1_router
@@ -67,3 +68,6 @@ app.include_router(
         },
     },
 )
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8080, log_level="info")

@@ -1,6 +1,6 @@
 import os
 from typing import Annotated, List
-from fastapi import APIRouter, Depends, HTTPException, Path, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Path, Query, Request, status
 from core.permissions import IsAdmin, IsAuthenticated
 from core.security import SecurityChecker
 from core.serializers import AccountTypeEnum, ErrorResponse, PaginatedResponse, StatusResponse, User, UserCreatePayload
@@ -63,6 +63,7 @@ async def user_info(
 )
 async def user_registration(
     payload: UserCreatePayload,
+    request: Request
     ) -> StatusResponse:
     user_services = UserServices()
     organization_services = OrganizationServices()

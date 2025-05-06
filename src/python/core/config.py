@@ -26,3 +26,9 @@ class APIConfig(object):
     MINIO_ACCESS_KEY = config('MINIO_ACCESS_KEY', default='')
     MINIO_SECRET_KEY = config('MINIO_SECRET_KEY', default='')
     MINIO_SECURE = config('MINIO_SECURE', default=False, cast=bool)
+
+    SMTP_EMAIL = config('SMTP_EMAIL', default='')
+    SMTP_PASSWORD = config('SMTP_PASSWORD', default='')
+    SMTP_HOST = config('SMTP_HOST', default='')
+    SMTP_PORT = config('SMTP_PORT', default='')
+

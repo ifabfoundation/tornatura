@@ -59,7 +59,7 @@ class SecurityChecker(HTTPBearer):
         keycloak_openid = KeycloakOpenID(server_url=config.APIConfig.KEYCLOAK_ENDPOINT,
                                         client_id=config.APIConfig.KEYCLOAK_CLIENT_ID,
                                         realm_name=config.APIConfig.KEYCLOAK_REALM)
-
+        
         options = {"aud": config.APIConfig.KEYCLOAK_CLIENT_ID, "exp": None}
 
         try:

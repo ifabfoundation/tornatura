@@ -1,8 +1,13 @@
 import datetime
+
+from jinja2 import Environment, FileSystemLoader
+from core import config
 from core.decorators import catch_api_exception
 from core.models import FeedbackModel
 from core.serializers import Feedback, FeedbackCreatePayload
+from core.utils import send_email
 
+env = Environment(loader=FileSystemLoader('templates/'))
 
 class FeedbackServices:
     model = FeedbackModel
@@ -49,9 +54,12 @@ class FeedbackServices:
             "lastUpdateTime": current_time
         })
 
-        #TODO; send email for notification
         feedback = self.model(**data).save()
+        
+        template = env.get_template('email_feedback.html')
+        email_body = template.render()
+        send_email(receiver_email=config.APIConfig.SMTP_EMAIL, subject="Nuovo Feedback", email_body=email_body)
+
         return self._serialize(feedback)
     
-
     
