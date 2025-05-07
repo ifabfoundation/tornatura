@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html class="login-pf">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="robots" content="noindex, nofollow">
+
+            <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <title>Sign in to Handhy</title>
+            <link rel="icon" href="https://auth.handhy.com/realms/kaira/assets/img/favicon" />
+            <link href="https://auth.handhy.com/resources/db28n/common/keycloak/web_modules/@patternfly/react-core/dist/styles/base.css" rel="stylesheet" />
+            <link href="https://auth.handhy.com/resources/db28n/common/keycloak/web_modules/@patternfly/react-core/dist/styles/app.css" rel="stylesheet" />
+            <link href="https://auth.handhy.com/resources/db28n/common/keycloak/node_modules/patternfly/dist/css/patternfly.min.css" rel="stylesheet" />
+            <link href="https://auth.handhy.com/resources/db28n/common/keycloak/node_modules/patternfly/dist/css/patternfly-additions.min.css" rel="stylesheet" />
+            <link href="https://auth.handhy.com/resources/db28n/common/keycloak/lib/pficon/pficon.css" rel="stylesheet" />
+            <link href="https://auth.handhy.com/resources/db28n/login/attributes/css/login.css" rel="stylesheet" />
+            <link href="https://auth.handhy.com/resources/db28n/login/attributes/css/default-login.css" rel="stylesheet" />
+            <link href="https://auth.handhy.com/realms/kaira/assets/css/login.css" rel="stylesheet" />
+</head>
+
+<body class="">
+<div class="login-pf-page">
+    <div id="kc-header" class="login-pf-page-header">
+        <div id="kc-header-wrapper" class="">
+	    <div class="kc-logo-text" style="background-image: url(/realms/kaira/assets/img/logo);"><span>Handhy</span></div>
+	</div>
+    </div>
+    <div class="card-pf">
+        <header class="login-pf-header">
+                <div class="pf-c-dropdown" id="kc-locale">
+                    <div id="kc-locale-wrapper" class="">
+                        <div id="kc-locale-dropdown" class="">
+                            <a href="#" id="kc-current-locale-link">English</a>
+                            <ul class="pf-c-dropdown__menu pf-m-align-right">
+                                    <li class="">
+                                        <a class="pf-c-dropdown__menu-item" href="/realms/kaira/login-actions/authenticate?client_id=account-console&amp;tab_id=uuGGLw-wC8w&amp;execution=7bc264ca-fb22-4dab-b006-4ba83ad055cc&amp;kc_locale=en">English</a>
+                                    </li>
+                                    <li class="">
+                                        <a class="pf-c-dropdown__menu-item" href="/realms/kaira/login-actions/authenticate?client_id=account-console&amp;tab_id=uuGGLw-wC8w&amp;execution=7bc264ca-fb22-4dab-b006-4ba83ad055cc&amp;kc_locale=it">Italiano</a>
+                                    </li>
+                                    <li class="">
+                                        <a class="pf-c-dropdown__menu-item" href="/realms/kaira/login-actions/authenticate?client_id=account-console&amp;tab_id=uuGGLw-wC8w&amp;execution=7bc264ca-fb22-4dab-b006-4ba83ad055cc&amp;kc_locale=fr">Français</a>
+                                    </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <h1 id="kc-page-title">        Sign in to your account
+
+</h1>
+      </header>
+      <div id="kc-content">
+        <div id="kc-content-wrapper">
+
+
+    <div id="kc-form">
+      <div id="kc-form-wrapper">
+            <form id="kc-form-login" onsubmit="login.disabled = true; return true;" action="https://auth.handhy.com/realms/kaira/login-actions/authenticate?session_code=KkTLI_cL-GDE4gG7e9nw8n7h4WrijheTqOeVobiFGTI&amp;execution=7bc264ca-fb22-4dab-b006-4ba83ad055cc&amp;client_id=account-console&amp;tab_id=uuGGLw-wC8w" method="post">
+                    <div class="form-group">
+                        <label for="username" class="pf-c-form__label pf-c-form__label-text">Email</label>
+
+                        <input tabindex="1" id="username" class="pf-c-form-control" name="username" value=""  type="text" autofocus autocomplete="off"
+                               aria-invalid=""
+                        />
+
+
+                    </div>
+
+                <div class="form-group">
+                    <label for="password" class="pf-c-form__label pf-c-form__label-text">Password</label>
+
+                    <input tabindex="2" id="password" class="pf-c-form-control" name="password" type="password" autocomplete="off"
+                           aria-invalid=""
+                    />
+
+
+                </div>
+
+                <div class="form-group login-pf-settings">
+                    <div id="kc-form-options">
+                        </div>
+                        <div class="">
+                        </div>
+
+                  </div>
+
+                  <div id="kc-form-buttons" class="form-group">
+                      <input type="hidden" id="id-hidden-input" name="credentialId" />
+                      <input tabindex="4" class="pf-c-button pf-m-primary pf-m-block btn-lg" name="login" id="kc-login" type="submit" value="Sign In"/>
+                  </div>
+            </form>
+        </div>
+
+    </div>
+
+
+
+            <div id="kc-social-providers" class="kc-social-section kc-social-gray">
+                <hr/>
+                <h4>Or sign in with</h4>
+
+                <ul class="pf-c-login__main-footer-links kc-social-links ">
+                        <a id="social-google" class="pf-c-button pf-m-control pf-m-block kc-social-item kc-social-gray "
+                                type="button" href="/realms/kaira/broker/google/login?client_id=account-console&amp;tab_id=uuGGLw-wC8w&amp;session_code=KkTLI_cL-GDE4gG7e9nw8n7h4WrijheTqOeVobiFGTI">
+                                <i class="kc-social-provider-logo kc-social-gray fa fa-google" aria-hidden="true"></i>
+                                <span class="kc-social-provider-name kc-social-icon-text">Google</span>
+                        </a>
+                </ul>
+            </div>
+
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,301 @@
+@font-face {
+  font-family: "SF Pro Display";
+  font-style: normal;
+  font-weight: 400;
+  src: url("https://handhy-sigrid.s3.eu-central-1.amazonaws.com/assets/fonts/SF-Pro-Display-Regular.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "SF Pro Display";
+  font-style: normal;
+  font-weight: 700;
+  src: url("https://handhy-sigrid.s3.eu-central-1.amazonaws.com/assets/fonts/FontsFree-Net-SFProDisplay-Bold.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "SF Pro Display";
+  font-style: normal;
+  font-weight: 400;
+  src: url("https://handhy-sigrid.s3.eu-central-1.amazonaws.com/assets/fonts/FontsFree-Net-SFProDisplay-Semibold.ttf") format("truetype");
+}
+
+body {
+    --border-radius: 40px;
+    --pf-global--primary-color--100: #0066CC;
+    /* --pf-global--BackgroundColor--100: black; */
+    font-family: 'SF Pro Display', Helvetica !important; 
+    font-weight: 400;
+    font-style: normal;
+
+}
+
+@media (max-width: 767px) {
+  #kc-header-wrapper {
+      padding: 60px 0 0 0; 
+  }
+
+  div.kc-logo-text {
+      margin: 0 auto;
+  }
+}
+
+/* Elementi generici */
+
+a, button, input, select, h1, h2, h3, h4, h5, * {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-top-width: medium;
+  border-top-style: none;
+  border-top-color: currentcolor;
+  border-right-width: medium;
+  border-right-style: none;
+  border-right-color: currentcolor;
+  border-bottom-width: medium;
+  border-bottom-style: none;
+  border-bottom-color: currentcolor;
+  border-left-width: medium;
+  border-left-style: none;
+  border-left-color: currentcolor;
+  text-decoration: none;
+  background: none;
+  -webkit-font-smoothing: antialiased;
+}  
+
+body {
+  font-size: 14px;
+}
+/* PAGINA LOGIN */
+.login-pf-page {
+    margin: auto 20px;
+    margin-top: 5%;
+    margin-bottom: 50%;
+}
+
+/* Header */
+#kc-header-wrapper {
+all: initial;
+display: flex;
+justify-content: center;
+}
+
+
+/* Card login >>>card-accedi */
+ .card-pf {
+background: #fff;
+border-radius: 20px;
+padding: 20px;
+display: flex;
+flex-direction: column;
+gap: 0px;
+align-items: center;
+justify-content: flex-start;
+flex-shrink: 0;
+position: relative;
+border-top:initial;
+} 
+.kc-locale-dropdown {
+  float: right;
+}
+
+/* Card login header >>>accedi */
+header.login-pf-header {
+  width: 100%;
+}
+.login-pf-page-header {
+color: var(--colors-white, #ffffff);
+text-align: center;
+font-size: 25px;
+line-height: 150%;
+font-weight: 400;
+position: relative;
+align-self: stretch;
+} 
+
+.login-pf-page .login-pf-header {
+  margin-bottom: initial;
+}
+
+
+/* Contenuto card >>>frame-762468 */
+ #kc-content {
+display: flex;
+flex-direction: column;
+gap: 16px;
+align-items: center;
+justify-content: flex-start;
+align-self: stretch;
+flex-shrink: 0;
+position: relative;
+} 
+/* Wrapper contenuto */
+ #kc-content-wrapper {
+width:  100%; 
+display: flex;
+flex-direction: column;
+align-content: center;
+} 
+/* Form  >>>frame-762467 */
+ #kc-form-wrapper {
+display: flex;
+flex-direction: column;
+gap: 16px;
+align-items: center;
+justify-content: flex-start;
+align-self: stretch;
+flex-shrink: 0;
+position: relative;
+width: 100%;
+} 
+
+#kc-page-title {
+  /* color: var(--colors-white, #ffffff); */
+text-align: center;
+font-size: 25px;
+line-height: 150%;
+font-weight: 400;
+position: relative;
+align-self: stretch;
+padding-top: 20px;
+margin-top: 0px;
+}
+
+/* Campi username e password */
+.form-group {
+  display: flex;
+flex-direction: column;
+gap: 4px;
+align-items: flex-start;
+justify-content: flex-start;
+align-self: stretch;
+flex-shrink: 0;
+position: relative;
+}
+/* Aree di input */
+.form-group input.pf-c-form-control[type=text], .form-group input.pf-c-form-control[type=password]{
+    padding: 6px 12px;
+    /* color: white; */
+    color: grey!important;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    align-self: stretch;
+    flex-shrink: 0;
+    position: relative;
+    border: unset;
+    border-bottom: 2px solid grey;
+    background-color: unset;
+}
+/* Label aree di input */
+.form-group label {
+  /* color: var(--colors-white, #ffffff); */
+text-align: left;
+font-size: 14px;
+line-height: 150%;
+font-weight: 400;
+position: relative;
+align-self: stretch;
+}
+/* Campo pulsante login */
+#kc-form-login {
+  display: flex;
+flex-direction: column;
+
+align-items: center;
+justify-content: flex-start;
+align-self: stretch;
+flex-shrink: 0;
+position: relative;
+}
+/* Pulsante login */
+#kc-form-buttons #kc-login {
+  background: var(--pf-global--primary-color--100);
+  border-radius: 40px;
+  border-style: solid;
+  border-color: var(--components-button-primary-bordercolor, rgba(0, 0, 0, 0));
+  border-width: 1px;
+  padding: 8px 46px 8px 46px;
+  display: flex;
+  flex-direction: row;
+  gap: 0px;
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
+  flex-shrink: 0;
+  height: 40px;
+  position: relative;
+  box-shadow: var(--dropshadow-box-shadow,
+  0px 2px 10px 0px rgba(0, 0, 0, 0.1),
+  0px 2px 2px 0px rgba(0, 0, 0, 0.1));
+  color: var(--components-button-primary-color, #ffffff);
+  text-align: center;
+  font-family: "SfProDisplay-Semibold", sans-serif;
+  font-size: 16px;
+  line-height: 150%;
+  font-weight: 600;
+  position: relative;
+}
+
+#kc-form-buttons {
+  margin-top: initial;
+}
+
+/* Login settings >>>frame-4372 */
+.login-pf-settings {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+}
+
+/* Pulsante login social */
+.pf-c-button.pf-m-control {
+  background-color: white;
+  border-radius: var(--border-radius);
+ 
+  
+}
+/* Rimozione bordo bianco intorno al pulsante login social */
+.pf-c-button::after {
+  content: '';
+  border: initial;
+}
+
+/* Sottosezione nuovo utente */
+#kc-info {
+  width: 100%;
+  margin: initial;
+}
+#kc-info-wrapper {
+  background-color: unset;
+  border-top: 1px solid white;
+  
+}
+/* Checkbox */
+input[type=checkbox] {
+  accent-color: var(--pf-global--primary-color--100)
+}
+/* Collegamenti */
+a {
+  color: var(--pf-global--primary-color--100);
+  text-decoration: none;
+}
+
+/* Imposta colore dell'outline quando l'elemento è in focus */
+.pf-c-form-control {
+  --pf-global--primary-color--100: unset
+}
+
+input:focus {
+  outline-color: var(--pf-global--primary-color--100);
+}
+
+.checkbox {
+  margin-bottom: unset;
+}
