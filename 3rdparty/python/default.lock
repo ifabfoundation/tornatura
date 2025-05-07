@@ -9,6 +9,7 @@
 //     "CPython==3.12.*"
 //   ],
 //   "generated_with_requirements": [
+//     "Jinja2==3.1.6",
 //     "Werkzeug==3.1.3",
 //     "fastapi-cli==0.0.7",
 //     "fastapi==0.115.11",
@@ -814,6 +815,27 @@
           ],
           "requires_python": ">=3.6",
           "version": "3.10"
+        },
+        {
+          "artifacts": [
+            {
+              "algorithm": "sha256",
+              "hash": "85ece4451f492d0c13c5dd7c13a64681a86afae63a5f347908daf103ce6d2f67",
+              "url": "https://files.pythonhosted.org/packages/62/a1/3d680cbfd5f4b8f15abc1d571870c5fc3e594bb582bc3b64ea099db13e56/jinja2-3.1.6-py3-none-any.whl"
+            },
+            {
+              "algorithm": "sha256",
+              "hash": "0137fb05990d35f1275a587e9aee6d56da821fc83491a0fb838183be43f66d6d",
+              "url": "https://files.pythonhosted.org/packages/df/bf/f7da0350254c0ed7c72f3e33cef02e048281fec7ecec5f032d4aac52226b/jinja2-3.1.6.tar.gz"
+            }
+          ],
+          "project_name": "jinja2",
+          "requires_dists": [
+            "Babel>=2.7; extra == \"i18n\"",
+            "MarkupSafe>=2.0"
+          ],
+          "requires_python": ">=3.7",
+          "version": "3.1.6"
         },
         {
           "artifacts": [
@@ -2000,6 +2022,7 @@
   "pip_version": "24.2",
   "prefer_older_binary": false,
   "requirements": [
+    "Jinja2==3.1.6",
     "Werkzeug==3.1.3",
     "fastapi-cli==0.0.7",
     "fastapi==0.115.11",
