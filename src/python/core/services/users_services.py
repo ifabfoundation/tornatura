@@ -1,5 +1,6 @@
 from enum import Enum
 import json
+import os
 from jinja2 import Environment, FileSystemLoader
 from keycloak import KeycloakAdmin, KeycloakOpenID
 import phasetwo
@@ -11,7 +12,7 @@ from core.decorators import catch_api_exception
 from core.serializers import AccountTypeEnum, User, UserCreatePayload
 from core.utils import send_email
 
-env = Environment(loader=FileSystemLoader('templates/'))
+env = Environment(loader=FileSystemLoader(os.path.join(config.APIConfig.BASE_DIR, 'templates/')))
 
 class ClientRole(Enum):
     Admin = "admin-access"
@@ -213,7 +214,7 @@ class UserServices:
         })
 
         template = env.get_template('email_registration.html')
-        email_body = template.render(realName=user["firstName"], pwd="tornatura", link="https://tornatura.com")
+        email_body = template.render(realName=user["firstName"], pwd="tornatura", link="https://app.tornatura.it")
         send_email(receiver_email=user["email"], subject="Benvenuto su Tornatura", email_body=email_body)
         
         return self._serialize(user)

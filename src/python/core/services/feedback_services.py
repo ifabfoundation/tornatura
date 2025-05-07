@@ -1,4 +1,5 @@
 import datetime
+import os
 
 from jinja2 import Environment, FileSystemLoader
 from core import config
@@ -7,7 +8,7 @@ from core.models import FeedbackModel
 from core.serializers import Feedback, FeedbackCreatePayload
 from core.utils import send_email
 
-env = Environment(loader=FileSystemLoader('templates/'))
+env = Environment(loader=FileSystemLoader(os.path.join(config.APIConfig.BASE_DIR, 'templates/')))
 
 class FeedbackServices:
     model = FeedbackModel

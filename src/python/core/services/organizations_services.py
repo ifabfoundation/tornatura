@@ -1,6 +1,7 @@
 import datetime
 from enum import Enum
 import json
+import os
 from typing import Union
 from fastapi import HTTPException, status
 from keycloak import KeycloakOpenID
@@ -219,8 +220,8 @@ class OrganizationServices:
                         detail="Bad Request organization already exists") 
 
         file_services = FileServices()
-        logo = file_services.upload_local_file(org_id, "media", "media/logo.jpg")
-        cover = file_services.upload_local_file(org_id, "media", "media/cover.jpg")
+        logo = file_services.upload_local_file(org_id, "media", os.path.join(config.APIConfig.BASE_DIR, "media/logo.jpg"))
+        cover = file_services.upload_local_file(org_id, "media", os.path.join(config.APIConfig.BASE_DIR, "media/cover.jpg"))
 
         data.update({
             "orgId": org_id,

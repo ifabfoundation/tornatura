@@ -8,7 +8,7 @@ _HERE = os.path.dirname(__file__)
 
 
 class APIConfig(object):
-    BASE_DIR = Path(_HERE).parent
+    BASE_DIR = _HERE
 
     KEYCLOAK_CLIENT_ID = config('KEYCLOAK_CLIENT_ID', default='')
     KEYCLOAK_CLIENT_SECRET = config('KEYCLOAK_CLIENT_SECRET', default='')

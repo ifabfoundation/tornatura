@@ -27,7 +27,7 @@ class AgriFieldServices:
                 id=str(item.id),
                 name=item.name,
                 description=item.description,
-                map=[{point.lng, point.lat} for point in item.map],
+                map=[{"lng": point.lng, "lat": point.lat} for point in item.map],
                 orgId=item.orgId,
                 creationTime=item.creationTime,
                 lastUpdateTime=item.lastUpdateTime

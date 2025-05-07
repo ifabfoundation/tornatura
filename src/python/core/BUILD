@@ -3,6 +3,7 @@ python_sources(
     dependencies=[
         "3rdparty/python:reqs#phasetwo-sdk",
         "3rdparty/python:reqs#python-multipart",
+        "3rdparty/python:reqs#Jinja2",
     ],
 )
 
