@@ -38,7 +38,7 @@ async def list_organizations(
     response_description="Organization Info",
 )
 async def create_organization(
-    token_info: Annotated[dict, Depends(SecurityChecker(IsAgronomist, IsAdmin))],
+    token_info: Annotated[dict, Depends(SecurityChecker(IsAgronomist, IsAdmin, mutually_exclusive=True))],
     payload: OrganizationCreatePayload, 
     ) -> Organization:
     organization_services = OrganizationServices()
@@ -51,7 +51,7 @@ async def create_organization(
     organization = organization_services.create(payload)
     # assign organization roles to the user if agronomist
     user_services = UserServices()
-    user = user_services.get(token_info["sub"])
+    user = user_services.get(token_info)
     if user.accountType == AccountTypeEnum.agronomist:
         organization_services.add_member(user_id=user.id, org_id=organization.orgId)
         organization_services.assign_role(user_id=user.id, org_id=organization.orgId, role=OrganizationDefaultRole.ManageOrganization)

@@ -191,7 +191,7 @@ class UserServices:
         data.update({
             "username": payload.email,
             "enabled": True,
-            "emailVerified": False,
+            "emailVerified": True,
             "groups": ["tornatura"],
             "attributes": {
                 "phone": [payload.phone]
