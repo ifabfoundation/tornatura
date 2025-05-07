@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="30px" height="30px" viewBox="0 0 30 30" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>icon-ifab-enlarge-y</title>
+    <g id="icon-ifab-enlarge-y" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+        <g id="Group-5" transform="translate(8.1422, 9.0729)" stroke="#EAFF00" stroke-width="1.5">
+            <line x1="4.72750924" y1="8.05739846" x2="0.988021744" y2="11.796886" id="Path-10"></line>
+            <line x1="13.4430402" y1="0.203114042" x2="9.70355273" y2="3.94260154" id="Path-10-Copy" transform="translate(11.2155, 2) scale(-1, -1) translate(-11.2155, -2)"></line>
+            <polyline id="Path-11" points="0.988021744 8.05739846 0.988021744 11.796886 4.72750924 11.796886"></polyline>
+            <polyline id="Path-11-Copy" transform="translate(10.8578, 1.9271) scale(-1, -1) translate(-10.8578, -1.9271)" points="8.98802174 0.0573984608 8.98802174 3.79688596 12.7275092 3.79688596"></polyline>
+        </g>
+    </g>
+</svg>

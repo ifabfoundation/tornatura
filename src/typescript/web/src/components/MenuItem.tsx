@@ -1,4 +1,4 @@
-import Icon, { IconName, IconState } from '../components/Icon';
+import Icon, { IconName, IconState } from "../components/Icon";
 import { Link } from "react-router-dom";
 
 interface MenuItemProps {
@@ -15,7 +15,7 @@ function MenuItem({ icon, text, state, path }: MenuItemProps) {
     <li className={className}>
       <Icon iconName={icon} state={state} />
       <Link to={path}>
-        <span className="text font-m">{text}</span>
+        <span className="text">{text}</span>
       </Link>
     </li>
   );

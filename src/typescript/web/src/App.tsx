@@ -5,7 +5,7 @@ import { authStore } from './providers/auth-providers';
 import { useAppDispatch, useAppSelector } from './hooks';
 import { getUserInfo } from './features/users/utils';
 import { userActions, userSelectors } from './features/users/state/user-slice';
-import { Outlet } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
 import TopBar from './components/Topbar';
 import SideBar, { MenuItemEntry } from './components/Sidebar';
 import { companiesActions } from './features/companies/state/companies-slice';
@@ -13,6 +13,7 @@ import logo from './assets/images/logo.svg';
 import { AccountTypeEnum } from '@tornatura/coreapis';
 import { SidebarActions } from './features/sidebar/state/sidebar-slice';
 import { feedbacksActions } from './features/feedbacks/state/feedbacks-slice';
+import { fieldsActions } from './features/fields/state/fields-slice';
 
 
 export function Loading() {
@@ -35,6 +36,7 @@ function MainApp() {
 
   React.useEffect(() => {
     let menuEntries : MenuItemEntry[] = []
+    let menuBottomEntries : MenuItemEntry[] = []
     if (currentUser.accountType === AccountTypeEnum.Admin) {
       menuEntries = [
         {
@@ -55,43 +57,39 @@ function MainApp() {
           "icon": "diamond",
           "text": "Feedbacks",
           "path": "/feedbacks" ,
-        },
-        {
-          "id": "aziende",
-          "icon": "diamond",
-          "text": "Aziende",
-          "path": "/aziende" ,
-        },
+        }
       ];
       dispatch(userActions.fetchUsersAction());
-      dispatch(companiesActions.fetchCompanies());
+      dispatch(companiesActions.fetchCompaniesAction());
       dispatch(feedbacksActions.fetchFeedbackAction());
     } else if (currentUser.accountType === AccountTypeEnum.Agronomist) {
       menuEntries = [
         {
           "id": "companies",
           "icon": "chart",
-          "text": "Aziende",
+          "text": "Aziende gestite",
           "path":  "/companies",
         }, 
-        {
-          "id": "users",
-          "icon": "pages",
-          "text": "Utenti",
-          "path": "/users" ,
-        },
-        {
-          "id": "feedbacks",
-          "icon": "diamond",
-          "text": "Feedbacks",
-          "path": "/feedbacks" ,
-        }
       ];
-      dispatch(userActions.fetchUsersAction());
-      dispatch(companiesActions.fetchCompanies());
-      dispatch(feedbacksActions.fetchFeedbackAction());
+
+      menuBottomEntries = [
+        {
+          "id": "feedback",
+          "icon": "chart",
+          "text": "Invia Feedback",
+          "path":  "/feedback",
+        }, 
+      ];
+
+      if (currentUser.organizations) {
+        for (let org of currentUser.organizations){
+          dispatch(companiesActions.getCompanyAction(org.id));
+          dispatch(fieldsActions.fetchCompanyFieldsAction(org.id));
+        }
+      }
     }
     dispatch(SidebarActions.setMenuEntriesAction(menuEntries));
+    dispatch(SidebarActions.setMenuBottomEntriesAction(menuBottomEntries));
   }, [currentUser]);
 
   
@@ -99,7 +97,7 @@ function MainApp() {
     <div id="app" className="main-app">
       <SideBar />
       <div className="ui-right">
-        <TopBar />
+        <TopBar showBackButton={true} />
         <div className="content-area">
           <div className="content">
             <Outlet />
@@ -111,28 +109,37 @@ function MainApp() {
 }
 
 function App() {
+  // const location = useLocation();
   const { initialized, authenticated } = React.useContext(authStore);
   const [loaded, setLoaded] = React.useState(false);
   const dispatch = useAppDispatch();
 
+  const loadData = async () => {
+    const profile = await getUserInfo();
+    if (profile) {
+      await dispatch(userActions.setCurrentUserAction(profile));
+      console.log("User profile loaded", profile);
+      setLoaded(true);
+    }
+  }
+
   React.useEffect(() => {
     if (initialized && authenticated) {
-      getUserInfo().then((profile) => {
-        if (profile) {
-          dispatch(userActions.setCurrentUserAction(profile)); 
-          console.log("User profile loaded", profile);
-          setLoaded(true);
-        }
-      });    
+      loadData();
     }
-    setLoaded(true);
   }, [authenticated, initialized]);
 
-  return authenticated && initialized && loaded ? (
-    <MainApp />
-  ) : (
-    <Loading />
-  );
+  console.log("App initialized", initialized, authenticated, loaded);
+
+  if (!initialized) {
+    return <Loading />;
+  } else if (!authenticated) {  
+    return <Navigate to="/welcome" />;
+  } else if (!loaded) {
+    return <Loading />;
+  } else {
+    return <MainApp />;
+  } 
 }
 
 export default App;

@@ -12,7 +12,7 @@
   "dependencies": {
     "@react-keycloak/web": "^3.4.0",
     "@reduxjs/toolkit": "^2.6.1",
-    "@tornatura/coreapis": "file:../coreapis-sdk",
+    "@tornatura/coreapis": "file:../libs/tornatura-coreapis-1.0.2.tgz",
     "axios": "^1.8.4",
     "bootstrap": "^5.3.5",
     "formik": "^2.4.6",

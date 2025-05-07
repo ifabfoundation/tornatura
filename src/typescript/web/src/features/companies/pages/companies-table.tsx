@@ -57,7 +57,7 @@ export function CompanyTable() {
       "email": c.contacts.email,
       "phone": c.contacts.phone
     }
-  } );
+  });
 
   return (
    <Fragment>

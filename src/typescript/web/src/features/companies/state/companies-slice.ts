@@ -4,7 +4,7 @@ import {
   createAsyncThunk,
   createEntityAdapter,
 } from "@reduxjs/toolkit";
-import { Organization, OrganizationsApi } from "@tornatura/coreapis";
+import { Organization, OrganizationCreatePayload, OrganizationsApi } from "@tornatura/coreapis";
 import { getCoreApiConfiguration } from "../../../services/utils";
 import { AuxState } from "../../../hooks";
 import { RootState } from "../../../store";
@@ -33,6 +33,32 @@ export const fetchCompanies = createAsyncThunk(
   }
 );
 
+export const getCompany = createAsyncThunk(
+  "companies/getCompany",
+  async (orgId: string) => {
+    const apiConfig = await getCoreApiConfiguration();
+    const organizationsApi = new OrganizationsApi(apiConfig);
+    const company = organizationsApi.getOrganization(orgId).then((response) => {
+      return response.data;
+    });
+    return company;
+  }
+);
+
+export const addNewCompany = createAsyncThunk(
+  "companies/addNewCompany",
+  async (body: OrganizationCreatePayload, { rejectWithValue }) => {
+    const apiConfig = await getCoreApiConfiguration();
+    const organizationsApi = new OrganizationsApi(apiConfig);
+    try {
+      const response = await organizationsApi.createOrganization(body);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
 const companiesSlice = createSlice({
   name: "companies",
   initialState,
@@ -45,16 +71,22 @@ const companiesSlice = createSlice({
     builder.addCase(fetchCompanies.pending, (state) => {
       state.status = "pending";
     });
-
     builder.addCase(fetchCompanies.fulfilled, (state, action) => {
       state.status = "succeeded";
       state.total = action.payload.total;
       companiesAdapter.upsertMany(state, action.payload.data as Organization[]);
     });
-
     builder.addCase(fetchCompanies.rejected, (state, action) => {
       state.status = "failed";
       state.error = action.error.message;
+    });
+    builder.addCase(getCompany.fulfilled, (state, action) => {
+      state.status = "succeeded";
+      companiesAdapter.upsertOne(state, action.payload as Organization);
+    });
+    builder.addCase(addNewCompany.fulfilled, (state, action) => {
+      state.status = "succeeded";
+      companiesAdapter.addOne(state, action.payload as Organization);
     });
   },
 });
@@ -69,8 +101,10 @@ export const companiesSelectors = {
 };
 
 export const companiesActions = {
-  setCompanies: companiesSlice.actions.setCompanies,
-  fetchCompanies: fetchCompanies,
+  setCompaniesAction: companiesSlice.actions.setCompanies,
+  fetchCompaniesAction: fetchCompanies,
+  getCompanyAction: getCompany,
+  addNewCompanyAction: addNewCompany,
 };
 
 
