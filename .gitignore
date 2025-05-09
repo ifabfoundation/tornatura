@@ -13,5 +13,6 @@
 #venv
 .venv
 
-#env
-.env
+#typescript
+node_modules
+pippos
