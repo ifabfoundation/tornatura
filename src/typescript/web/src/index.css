@@ -12940,7 +12940,7 @@ body {
   justify-content: center;
   height: 40px;
   padding: 10px 20px;
-  border-radius: 10px;
+  border-radius: 5px;
   border: 0;
   cursor: pointer;
   outline: none;
@@ -12978,6 +12978,29 @@ body {
   padding: 5px 10px;
 }
 
+#app a.button.accent,
+#app input[type="submit"].accent,
+#app button.accent {
+  background-color: #3d401a;
+  color: #eaff00;
+  text-decoration: none;
+}
+
+#app a.button.accent:hover,
+#app input[type="submit"].accent:hover,
+#app button.accent:hover {
+  background-color: #333516;
+}
+
+#app a.button.accent:active,
+#app a.button.accent .active,
+#app input[type="submit"].accent:active,
+#app input[type="submit"].accent .active,
+#app button.accent:active,
+#app button.accent .active {
+  background-color: #282a11;
+}
+
 #app a.button.primary,
 #app input[type="submit"].primary,
 #app button.primary {
@@ -12989,7 +13012,7 @@ body {
 #app a.button.primary:hover,
 #app input[type="submit"].primary:hover,
 #app button.primary:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: #545454;
 }
 
 #app a.button.primary:active,
@@ -12998,13 +13021,15 @@ body {
 #app input[type="submit"].primary .active,
 #app button.primary:active,
 #app button.primary .active {
-  background-color: #3d401a;
+  background-color: black;
 }
 
 #app a.button.secondary,
 #app input[type="submit"].secondary,
 #app button.secondary {
-  background-color: #d8d8d8;
+  background-color: transparent;
+  border: 1px solid #1f1f1f;
+  color: #1f1f1f;
   text-decoration: none;
 }
 
@@ -13021,6 +13046,18 @@ body {
 #app button.secondary:active,
 #app button.secondary .active {
   background-color: #8b8b8b;
+}
+
+#app a.button + a.button,
+#app a.button + input[type="submit"],
+#app a.button + button,
+#app input[type="submit"] + a.button,
+#app input[type="submit"] + input[type="submit"],
+#app input[type="submit"] + button,
+#app button + a.button,
+#app button + input[type="submit"],
+#app button + button {
+  margin-left: 10px;
 }
 
 #app .label {
@@ -13282,7 +13319,7 @@ body {
 #app .form-row input,
 #app .form-row select,
 #app .form-row textarea {
-  padding-left: 15px;
+  padding-left: 10px;
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -13380,7 +13417,7 @@ body {
 #app .form-row select:active,
 #app .form-row textarea:hover,
 #app .form-row textarea:active {
-  background-color: #8b8b8b;
+  border: 1px solid #bbbbbb;
 }
 
 #app .input-row input:focus,
@@ -13389,7 +13426,7 @@ body {
 #app .form-row input:focus,
 #app .form-row select:focus,
 #app .form-row textarea:focus {
-  border: 1px solid #1f1f1f;
+  border: 1px solid #8b8b8b;
 }
 
 #app .input-row input::placeholder,
@@ -13518,7 +13555,6 @@ body {
   left: 0;
   bottom: 0;
   width: 100%;
-  padding-top: 70px;
   padding-bottom: 0;
   display: flex;
   flex-flow: column nowrap;
@@ -13715,6 +13751,7 @@ body {
 #app .sidebar ul.menu-items {
   padding-left: 20px;
   padding-right: 20px;
+  margin: 10px 0;
 }
 
 #app .sidebar ul.menu-items li.menu-item {
@@ -13728,7 +13765,7 @@ body {
   height: 50px;
   margin: 0 -10px;
   padding: 10px;
-  border-radius: 10px;
+  border-radius: 5px;
 }
 
 #app .sidebar ul.menu-items li.menu-item:hover {
@@ -13802,6 +13839,10 @@ body {
 
 #app .sidebar ul.menu-items li.menu-item.selected .text {
   color: #eaff00;
+}
+
+#app .sidebar ul.menu-items li.menu-item + li.menu-item {
+  margin-top: 7px;
 }
 
 #app .ui-right {
@@ -14012,13 +14053,13 @@ ul.list-group li.list-group-item.file::before {
 }
 
 ul.list-group li.list-group-item:first-child {
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
 }
 
 ul.list-group li.list-group-item:last-child {
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
 }
 
 ul.list-group li.list-group-item:hover {
@@ -14182,11 +14223,11 @@ ul.list-group li.list-group-item:hover {
 }
 
 .component-table-cozy .data-row .cell:first-child {
-  border-radius: 10px 0 0 10px;
+  border-radius: 5px 0 0 5px;
 }
 
 .component-table-cozy .data-row .cell:last-child {
-  border-radius: 0 10px 10px 0;
+  border-radius: 0 5px 5px 0;
 }
 
 .component-table-cozy .data-row .cell.arrow {
@@ -14424,7 +14465,7 @@ ul.list-group li.list-group-item:hover {
 .card .img-container {
   position: relative;
   overflow: hidden;
-  border-radius: 10px;
+  border-radius: 5px;
   margin-bottom: -30px;
   background-color: #bbbbbb;
 }

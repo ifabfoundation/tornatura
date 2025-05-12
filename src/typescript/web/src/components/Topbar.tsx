@@ -32,7 +32,7 @@ export default function TopBar({ showBackButton }: TopBarProps) {
           <h2>{title}</h2>
           <div className="title-comment"></div>
         </div>
-        <div className="font-s-labels">
+        <div className="font-s-label">
           {currentUser?.firstName} {currentUser?.lastName}
         </div>
       </div>

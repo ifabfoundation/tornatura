@@ -13,7 +13,7 @@ $body-bg: #eee;
 // actual new colors
 $c-yelo_dark: #3d401a;
 $c-yelo: #eaff00;
-$c-blue: #1f1f1f;
+$c-dark: #1f1f1f;
 $c-green: #4dffbc;
 $c-red: #ff4d4d;
 $c-grey_1: #efefef; // lightest
@@ -24,22 +24,22 @@ $c-grey_5: #545454;
 $c-grey_6: #1f1f1f;
 
 // legacy
-// $c-blue_dark: $c-yelo_dark;
-// $c-blue_light: $c-yelo;
+// $c-dark_dark: $c-yelo_dark;
+// $c-dark_light: $c-yelo;
 
 // color assignments
 $c-shadow: $c-grey_6;
-$c-sidebar_vibrant: $c-blue;
+$c-sidebar_vibrant: $c-dark;
 $c-sidebar_dark: $c-yelo_dark;
 $c-sidebar_light: $c-yelo;
 $c-selection: $c-green;
-$c-btn_primary: $c-blue;
+$c-btn_primary: $c-dark;
 $c-bg: $c-grey_2;
 
 $header-h: 60px;
 $space: 30px;
 $space-half: 15px;
-$r: 10px;
+$r: 5px;
 $sidebar-btn-h: 50px;
 $btn-h: 40px;
 
@@ -198,20 +198,34 @@ body {
       padding: 5px 10px;
     }
 
-    &.primary {
-      background-color: $c-blue;
-      color: white;
+    &.accent {
+      background-color: $c-yelo_dark;
+      color: $c-yelo;
       &:hover {
-        background-color: rgba(white, 0.1);
+        background-color: darken($c-yelo_dark, 3%);
       }
       &:active,
       .active {
-        background-color: $c-yelo_dark;
+        background-color: darken($c-yelo_dark, 6%);
+      }
+      text-decoration: none;
+    }
+    &.primary {
+      background-color: $c-dark;
+      color: white;
+      &:hover {
+        background-color: $c-grey_5;
+      }
+      &:active,
+      .active {
+        background-color: black;
       }
       text-decoration: none;
     }
     &.secondary {
-      background-color: $c-bg;
+      background-color: transparent;
+      border: 1px solid $c-dark;
+      color: $c-dark;
       &:hover {
         background-color: $c-grey_3;
       }
@@ -221,6 +235,18 @@ body {
       }
       text-decoration: none;
     }
+  }
+
+  a.button + a.button,
+  a.button + input[type="submit"],
+  a.button + button,
+  input[type="submit"] + a.button,
+  input[type="submit"] + input[type="submit"],
+  input[type="submit"] + button,
+  button + a.button,
+  button + input[type="submit"],
+  button + button {
+    margin-left: $space/3;
   }
 
   .label {
@@ -337,7 +363,7 @@ body {
     input,
     select,
     textarea {
-      padding-left: 15px;
+      padding-left: 10px;
       display: flex;
       align-items: center;
       justify-content: flex-start;
@@ -356,10 +382,11 @@ body {
       }
       &:hover,
       &:active {
-        background-color: $c-grey_4;
+        // background-color: $c-grey_1;
+        border: 1px solid $c-grey_3;
       }
       &:focus {
-        border: 1px solid $c-blue;
+        border: 1px solid $c-grey_4;
       }
       &::placeholder {
         color: rgba(black, 0.3);
@@ -443,7 +470,7 @@ body {
       left: 0;
       bottom: 0;
       width: 100%;
-      padding-top: 70px;
+      // padding-top: 70px;
       padding-bottom: 0;
       display: flex;
       flex-flow: column nowrap;
@@ -556,6 +583,7 @@ body {
     ul.menu-items {
       padding-left: 20px;
       padding-right: 20px;
+      margin: 10px 0;
       li.menu-item {
         position: relative;
         display: flex;
@@ -600,6 +628,9 @@ body {
           .text {
             color: $c-sidebar_light;
           }
+        }
+        & + li.menu-item {
+          margin-top: 7px;
         }
       }
     }
@@ -978,7 +1009,7 @@ $hb-color-on-hover: #eee;
       border-color: $c-grey_3;
     }
     &.active .page-link {
-      background-color: $c-blue;
+      background-color: $c-dark;
       color: white;
     }
   }
@@ -1010,7 +1041,7 @@ $dark-1: #3a4a7c;
   a.button {
     &.secondary {
       background-color: $dark-5;
-      color: $c-blue;
+      color: $c-dark;
       &:hover {
         background-color: $dark-6;
       }
@@ -1115,7 +1146,7 @@ $dark-1: #3a4a7c;
         background-color: $dark-1;
       }
       &:focus {
-        border: 1px solid $c-blue;
+        border: 1px solid $c-dark;
       }
       &::placeholder {
         color: rgba(white, 0.3);
@@ -1160,9 +1191,9 @@ $dark-1: #3a4a7c;
         border-color: $dark-2;
       }
       &.active .page-link {
-        background-color: $c-blue;
+        background-color: $c-dark;
         color: white;
-        border-color: $c-blue;
+        border-color: $c-dark;
       }
     }
   }
