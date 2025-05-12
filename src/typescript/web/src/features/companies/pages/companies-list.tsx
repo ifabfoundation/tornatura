@@ -1,4 +1,4 @@
-import { Card, Col, Container, Row } from "react-bootstrap";
+import { Card, Col, Container, Row, Image } from "react-bootstrap";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { companiesSelectors } from "../state/companies-slice";
 import React from "react";
@@ -24,22 +24,22 @@ export function CompaniesList() {
       <Row>
         {companies.map((company, index) => {
           return (
-            <Col md={6} xl={4} key={index} style={{ display: "flex", alignItems: "stretch" }}>
+            <Col md={6} xl={4} key={index} style={{ display: "flex", alignItems: "stretch" }} className="mb-5">
               <Card onClick={() => handleCompanyClick(company.orgId)}>
-                <Card.Header>{company.name}</Card.Header>
-                <Card.Img variant="top" src={company.cover} />
+                <Card.Header>
+                  <Image src={company.cover} roundedCircle width="30px" className="me-3" />
+                  <span>{company.name}</span>
+                </Card.Header>
+                <Card.Img variant="top" src={company.cover}/>
                 <Card.Body>
-                  <Card.Text>{company.description}</Card.Text>
                 </Card.Body>
               </Card>
             </Col>
           );
         })}
-        <Col md={6} xl={4} style={{ display: "flex", alignItems: "stretch" }}>
+        <Col md={6} xl={4}>
           <Card onClick={() => navigate("/companies/new-company")}>
-            <Card.Body>
-              + Nuova azienda
-            </Card.Body>
+            <Card.Img variant="top" height="250"/>
           </Card>
         </Col>
       </Row>

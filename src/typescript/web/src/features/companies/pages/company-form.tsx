@@ -46,10 +46,10 @@ export function CompanyForm() {
         resetForm({});
         setSubmitting(false);
         navigate("/companies");
-     })
-     .catch(_ => {
-       setSubmitting(false);
-     });
+      })
+      .catch(_ => {
+        setSubmitting(false);
+      });
     },
   });
   

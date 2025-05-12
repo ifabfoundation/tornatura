@@ -5,6 +5,7 @@ import { companiesReducer } from "./features/companies/state/companies-slice";
 import { sidebarReducer } from "./features/sidebar/state/sidebar-slice";
 import { feedbackReducer } from "./features/feedbacks/state/feedbacks-slice";
 import { fieldsReducer } from "./features/fields/state/fields-slice";
+import { detectionsReducer } from "./features/detections/state/detections-slice";
 
 const store = configureStore({
   reducer: {
@@ -13,7 +14,8 @@ const store = configureStore({
     users: usersReducer,
     sidebar: sidebarReducer,
     feedbacks: feedbackReducer,
-    fields: fieldsReducer
+    fields: fieldsReducer,
+    detections: detectionsReducer
   },
 });
 

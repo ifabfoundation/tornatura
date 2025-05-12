@@ -1,4 +1,4 @@
-import { useAppDispatch, useAppSelector } from "../hooks";
+import { useAppSelector } from "../hooks";
 import { userSelectors } from "../features/users/state/user-slice";
 import keycloakInstance from "../providers/keycloak";
 import { headerbarSelectors } from "../features/headerbar/state/headerbar-slice";
@@ -11,7 +11,7 @@ interface TopBarProps {
 }
 
 export default function TopBar({ showBackButton }: TopBarProps) {
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const currentUser = useAppSelector(userSelectors.selectCurrentUser);
   const title = useAppSelector(headerbarSelectors.selectTitle);

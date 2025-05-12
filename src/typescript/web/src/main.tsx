@@ -8,6 +8,8 @@ import { AppRoutes } from './routes.tsx'
 import { BrowserRouter } from 'react-router-dom'
 
 import 'bootstrap/dist/css/bootstrap.min.css'
+import 'mapbox-gl/dist/mapbox-gl.css';
+import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
 import './index.css'
 
 createRoot(document.getElementById('root')!).render(

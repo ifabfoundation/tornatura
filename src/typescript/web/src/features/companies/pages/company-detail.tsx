@@ -1,35 +1,45 @@
 import React from "react";
-import { useAppDispatch, useAppSelector } from "../../../hooks";
-import { companiesSelectors } from "../state/companies-slice";
+import { useAppDispatch } from "../../../hooks";
 import { Outlet, useParams } from "react-router-dom";
 import { MenuItemEntry } from "../../../components/Sidebar";
 import { SidebarActions } from "../../sidebar/state/sidebar-slice";
 
 export function CompanyDetail() {
   const dispatch = useAppDispatch();
-  const { companyId } = useParams();
-  const currentCompany = useAppSelector((state) =>
-    companiesSelectors.selectCompanybyId(state, companyId ?? "default")
-  );
+  const { companyId, fieldId } = useParams();
 
   React.useEffect(() => {
-    let menuEntries: MenuItemEntry[] = [];
-    menuEntries = [
-      {
-        id: "fields",
-        icon: "ifab_grid",
-        text: "Campi dell'azienda",
-        path: `/companies/${companyId}/fields`,
-      },
-      {
-        id: "detections",
-        icon: "ifab_checklist",
-        text: "Lista dei rilevamenti",
-        path: `/companies/${companyId}/detections`,
-      },
-    ];
-    dispatch(SidebarActions.setMenuEntriesAction(menuEntries));
-  }, [currentCompany]);
-
-  return <Outlet />;
+    if (companyId && !fieldId) {
+      let menuEntries : MenuItemEntry[] = [];
+      let menuBottomEntries : MenuItemEntry[] = [];
+      menuEntries = [
+        {
+          "id": "fields",
+          "icon": "ifab_grid",
+          "text": "Campi dell'azienda",
+          "path":  `/companies/${companyId}/fields`,
+        }, 
+        {
+          "id": "detections",
+          "icon": "ifab_checklist",
+          "text": "lista dei rilevamenti",
+          "path":  `/companies/${companyId}/detections`,
+        }, 
+      ];  
+      menuBottomEntries = [
+        {
+          "id": "feedback",
+          "icon": "ifab_baloon",
+          "text": "Invia Feedback",
+          "path":  "/new-feedback",
+        }, 
+      ];
+      dispatch(SidebarActions.setMenuEntriesAction(menuEntries));
+      dispatch(SidebarActions.setMenuBottomEntriesAction(menuBottomEntries));
+    }
+  }, [companyId, fieldId]);
+  
+  return (
+    <Outlet />
+  );
 }
