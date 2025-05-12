@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="30px" height="30px" viewBox="0 0 30 30" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>icon-ifab-baloon-w</title>
+    <g id="icon-ifab-baloon-w" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+        <g id="Group-2" transform="translate(8.7265, 10.1143)" stroke="#FFFFFF" stroke-width="1.5">
+            <g id="Group">
+                <ellipse id="Oval" cx="6.27349673" cy="3.68595309" rx="6.27349673" ry="3.68595309"></ellipse>
+            </g>
+            <path d="M8.55592028,9.7713793 C8.55592028,8.78691873 7.7578573,7.98885575 6.77339673,7.98885575" id="Path" transform="translate(7.6647, 8.8801) scale(-1, -1) translate(-7.6647, -8.8801)"></path>
+        </g>
+    </g>
+</svg>
