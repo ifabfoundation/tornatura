@@ -1,32 +1,22 @@
-@font-face {
-  font-family: "SF Pro Display";
-  font-style: normal;
-  font-weight: 400;
-  src: url("https://handhy-sigrid.s3.eu-central-1.amazonaws.com/assets/fonts/SF-Pro-Display-Regular.otf") format("opentype");
-}
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
-@font-face {
-  font-family: "SF Pro Display";
+/*
+.inter-<uniquifier> {
+  font-family: "Inter", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: <weight>;
   font-style: normal;
-  font-weight: 700;
-  src: url("https://handhy-sigrid.s3.eu-central-1.amazonaws.com/assets/fonts/FontsFree-Net-SFProDisplay-Bold.ttf") format("truetype");
 }
-
-@font-face {
-  font-family: "SF Pro Display";
-  font-style: normal;
-  font-weight: 400;
-  src: url("https://handhy-sigrid.s3.eu-central-1.amazonaws.com/assets/fonts/FontsFree-Net-SFProDisplay-Semibold.ttf") format("truetype");
-}
+*/
 
 body {
-    --border-radius: 40px;
-    --pf-global--primary-color--100: #0066CC;
-    /* --pf-global--BackgroundColor--100: black; */
-    font-family: 'SF Pro Display', Helvetica !important; 
-    font-weight: 400;
-    font-style: normal;
-
+  --border-radius: 20px;
+  --pf-global--primary-color--100: #0066CC;
+  /* --pf-global--BackgroundColor--100: black; */
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  background-color: #d8d8d8 !important;
 }
 
 @media (max-width: 767px) {
@@ -232,7 +222,7 @@ position: relative;
   0px 2px 2px 0px rgba(0, 0, 0, 0.1));
   color: var(--components-button-primary-color, #ffffff);
   text-align: center;
-  font-family: "SfProDisplay-Semibold", sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: 16px;
   line-height: 150%;
   font-weight: 600;
@@ -299,3 +289,35 @@ input:focus {
 .checkbox {
   margin-bottom: unset;
 }
+
+/******************************************************/
+/******************************************************/
+/******************************************************/
+
+input[type="text"], 
+input[type="password"] {
+  border: 1px solid #bbbbbb !important;
+  height: 40px;
+  border-radius: 5px;
+}
+input[type="text"]:hover, 
+input[type="password"]:hover {
+  background-color: #grey !important;
+}
+input[type="text"]:focus, 
+input[type="text"]:focus-visible, 
+input[type="password"]:focus,
+input[type="password"]:focus-visible {
+  border-color: #eaff00;
+}
+#kc-form-buttons #kc-login {
+  background-color: #3d401a;
+  color: #eaff00;
+  height: 40px;
+  border-radius: 5px;
+}
+
+
+
+
+
