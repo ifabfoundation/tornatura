@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="30px" height="30px" viewBox="0 0 30 30" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>icon-ifab-asterisk-w</title>
+    <g id="icon-ifab-asterisk-w" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+        <g id="Group-2" transform="translate(10, 9)" stroke="#FFFFFF" stroke-width="1.5">
+            <line x1="4.99993536" y1="0.5" x2="4.99993536" y2="10.5" id="Line-3"></line>
+            <line x1="8.53553391" y1="1.96443074" x2="1.46446609" y2="9.03549855" id="Line-3-Copy"></line>
+            <line x1="8.53553391" y1="1.96438074" x2="1.46446609" y2="9.03544855" id="Line-3-Copy-2" transform="translate(5, 5.4999) rotate(45) translate(-5, -5.4999)"></line>
+            <line x1="8.53556926" y1="9.0355132" x2="1.46450145" y2="1.96444538" id="Line-3-Copy-3"></line>
+        </g>
+    </g>
+</svg>

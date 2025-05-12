@@ -44,6 +44,15 @@ import icon_ifab_baloon_y from "../assets/images/icons/icon-ifab-baloon-y.svg";
 import icon_ifab_grid_b from "../assets/images/icons/icon-ifab-grid-b.svg";
 import icon_ifab_grid_w from "../assets/images/icons/icon-ifab-grid-w.svg";
 import icon_ifab_grid_y from "../assets/images/icons/icon-ifab-grid-y.svg";
+import icon_ifab_wheat_b from "../assets/images/icons/icon-ifab-wheat-b.svg";
+import icon_ifab_wheat_w from "../assets/images/icons/icon-ifab-wheat-w.svg";
+import icon_ifab_wheat_y from "../assets/images/icons/icon-ifab-wheat-y.svg";
+import icon_ifab_size_b from "../assets/images/icons/icon-ifab-size-b.svg";
+import icon_ifab_size_w from "../assets/images/icons/icon-ifab-size-w.svg";
+import icon_ifab_size_y from "../assets/images/icons/icon-ifab-size-y.svg";
+import icon_ifab_asterisk_b from "../assets/images/icons/icon-ifab-asterisk-b.svg";
+import icon_ifab_asterisk_w from "../assets/images/icons/icon-ifab-asterisk-w.svg";
+import icon_ifab_asterisk_y from "../assets/images/icons/icon-ifab-asterisk-y.svg";
 
 // Legacy icons
 import icon_archive_n from "../assets/images/icons/icon-archive-n.svg";
@@ -144,6 +153,19 @@ const icons = {
   ifab_grid: {
     normal: { light: icon_ifab_grid_w, dark: icon_ifab_grid_b },
     selected: { light: icon_ifab_grid_y, dark: icon_ifab_grid_b },
+  },
+  // these are swapped for usage on white bg, needs fix
+  ifab_size: {
+    normal: { light: icon_ifab_size_b, dark: icon_ifab_size_w },
+    selected: { light: icon_ifab_size_y, dark: icon_ifab_size_b },
+  },
+  ifab_wheat: {
+    normal: { light: icon_ifab_wheat_b, dark: icon_ifab_wheat_w },
+    selected: { light: icon_ifab_wheat_y, dark: icon_ifab_wheat_b },
+  },
+  ifab_asterisk: {
+    normal: { light: icon_ifab_asterisk_b, dark: icon_ifab_asterisk_w },
+    selected: { light: icon_ifab_asterisk_y, dark: icon_ifab_asterisk_b },
   },
 
   // ---------------------------------
