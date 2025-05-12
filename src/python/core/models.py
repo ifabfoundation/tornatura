@@ -9,8 +9,8 @@ class FileInfo(EmbeddedDocument):
 
 
 class Point(EmbeddedDocument):
-    lng = DecimalField(required=True)
-    lat = DecimalField(required=True)
+    lng = DecimalField(required=True, precision=14)
+    lat = DecimalField(required=True, precision=14)
 
 
 class Contacts(EmbeddedDocument):
@@ -22,6 +22,8 @@ class AgriFieldModel(Document):
     """The object AgriField stored in the Database"""
     name = StringField(required=True)
     description = StringField(required=True, max_length=100)
+    harvest = StringField(required=True, default="barbabietola")
+    area = DecimalField(required=True, default=150.0)
     map = ListField(EmbeddedDocumentField(Point), default=[])
     orgId = StringField(required=True)
     deleted = BooleanField(default=False)

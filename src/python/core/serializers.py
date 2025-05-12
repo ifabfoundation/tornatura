@@ -52,6 +52,8 @@ class AgriField(BaseModel):
     id: str
     name: str
     description: str
+    harvest: str
+    area: float
     map: List[Point]
     orgId: str
     creationTime: int
@@ -111,6 +113,8 @@ class AgriFieldMutationPayload(BaseModel):
     name: str
     description: str
     map : List[Point]
+    harvest: str
+    area: float
 
 class DetectionMutationPayload(BaseModel):
     type: str

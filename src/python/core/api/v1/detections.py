@@ -23,7 +23,7 @@ async def list_detections(
     org_id: str = Path(..., description="Organization ID"), 
     agrifield_id: str = Path(..., description="Agriculture Field ID"), 
     page: int = Query(1, ge=1, description="Page number"), 
-    limit: int = Query(25, ge=1, le=100, description="Items per page"),
+    limit: int = Query(25, ge=1, le=1000, description="Items per page"),
 ) -> PaginatedResponse:
     organization_services = OrganizationServices()
     organization = organization_services.get(org_id)

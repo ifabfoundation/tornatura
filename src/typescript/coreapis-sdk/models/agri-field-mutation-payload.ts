@@ -38,4 +38,16 @@ export interface AgriFieldMutationPayload {
      * @memberof AgriFieldMutationPayload
      */
     map: Array<Point>;
+
+    /**
+     * @type {string}
+     * @memberof AgriFieldMutationPayload
+     */
+    harvest: string;
+
+    /**
+     * @type {number}
+     * @memberof AgriFieldMutationPayload
+     */
+    area: number;
 }

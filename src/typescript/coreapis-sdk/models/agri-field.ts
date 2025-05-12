@@ -40,6 +40,18 @@ export interface AgriField {
     description: string;
 
     /**
+     * @type {string}
+     * @memberof AgriField
+     */
+    harvest: string;
+
+    /**
+     * @type {number}
+     * @memberof AgriField
+     */
+    area: number;
+
+    /**
      * @type {Array<Point>}
      * @memberof AgriField
      */

@@ -27,6 +27,8 @@ class AgriFieldServices:
                 id=str(item.id),
                 name=item.name,
                 description=item.description,
+                harvest=item.harvest,
+                area=item.area,
                 map=[{"lng": point.lng, "lat": point.lat} for point in item.map],
                 orgId=item.orgId,
                 creationTime=item.creationTime,
@@ -53,6 +55,8 @@ class AgriFieldServices:
         """
         data = payload.model_dump()
         current_time = int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp() * 1000)
+
+        print(data)
 
         data.update({
             "orgId": org_id,
