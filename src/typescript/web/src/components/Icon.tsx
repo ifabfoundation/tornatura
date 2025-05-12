@@ -16,6 +16,7 @@ rocket
 dark
 */
 
+// New icons
 import icon_ifab_dashboard_b from "../assets/images/icons/icon-ifab-dashboard-b.svg";
 import icon_ifab_dashboard_w from "../assets/images/icons/icon-ifab-dashboard-w.svg";
 import icon_ifab_dashboard_y from "../assets/images/icons/icon-ifab-dashboard-y.svg";
@@ -34,7 +35,17 @@ import icon_ifab_user_y from "../assets/images/icons/icon-ifab-user-y.svg";
 import icon_ifab_users_b from "../assets/images/icons/icon-ifab-users-b.svg";
 import icon_ifab_users_w from "../assets/images/icons/icon-ifab-users-w.svg";
 import icon_ifab_users_y from "../assets/images/icons/icon-ifab-users-y.svg";
+import icon_ifab_pin_b from "../assets/images/icons/icon-ifab-pin-b.svg";
+import icon_ifab_pin_w from "../assets/images/icons/icon-ifab-pin-w.svg";
+import icon_ifab_pin_y from "../assets/images/icons/icon-ifab-pin-y.svg";
+import icon_ifab_baloon_b from "../assets/images/icons/icon-ifab-baloon-b.svg";
+import icon_ifab_baloon_w from "../assets/images/icons/icon-ifab-baloon-w.svg";
+import icon_ifab_baloon_y from "../assets/images/icons/icon-ifab-baloon-y.svg";
+import icon_ifab_grid_b from "../assets/images/icons/icon-ifab-grid-b.svg";
+import icon_ifab_grid_w from "../assets/images/icons/icon-ifab-grid-w.svg";
+import icon_ifab_grid_y from "../assets/images/icons/icon-ifab-grid-y.svg";
 
+// Legacy icons
 import icon_archive_n from "../assets/images/icons/icon-archive-n.svg";
 import icon_archive_s from "../assets/images/icons/icon-archive-s.svg";
 import icon_archive_i from "../assets/images/icons/icon-archive-i.svg";
@@ -110,6 +121,10 @@ const icons = {
     normal: { light: icon_ifab_alert_w, dark: icon_ifab_alert_b },
     selected: { light: icon_ifab_alert_y, dark: icon_ifab_alert_b },
   },
+  ifab_enlarge: {
+    normal: { light: icon_ifab_enlarge_w, dark: icon_ifab_enlarge_b },
+    selected: { light: icon_ifab_enlarge_y, dark: icon_ifab_enlarge_b },
+  },
   ifab_user: {
     normal: { light: icon_ifab_user_w, dark: icon_ifab_user_b },
     selected: { light: icon_ifab_user_y, dark: icon_ifab_user_b },
@@ -117,6 +132,18 @@ const icons = {
   ifab_users: {
     normal: { light: icon_ifab_users_w, dark: icon_ifab_users_b },
     selected: { light: icon_ifab_users_y, dark: icon_ifab_users_b },
+  },
+  ifab_pin: {
+    normal: { light: icon_ifab_pin_w, dark: icon_ifab_pin_b },
+    selected: { light: icon_ifab_pin_y, dark: icon_ifab_pin_b },
+  },
+  ifab_baloon: {
+    normal: { light: icon_ifab_baloon_w, dark: icon_ifab_baloon_b },
+    selected: { light: icon_ifab_baloon_y, dark: icon_ifab_baloon_b },
+  },
+  ifab_grid: {
+    normal: { light: icon_ifab_grid_w, dark: icon_ifab_grid_b },
+    selected: { light: icon_ifab_grid_y, dark: icon_ifab_grid_b },
   },
 
   // ---------------------------------

@@ -24,14 +24,14 @@ $c-grey_5: #545454;
 $c-grey_6: #1f1f1f;
 
 // legacy
-$c-blue_dark: $c-yelo_dark;
-$c-blue_light: $c-yelo;
+// $c-blue_dark: $c-yelo_dark;
+// $c-blue_light: $c-yelo;
 
 // color assignments
 $c-shadow: $c-grey_6;
 $c-sidebar_vibrant: $c-blue;
-$c-sidebar_dark: $c-blue_dark;
-$c-sidebar_light: $c-blue_light;
+$c-sidebar_dark: $c-yelo_dark;
+$c-sidebar_light: $c-yelo;
 $c-selection: $c-green;
 $c-btn_primary: $c-blue;
 $c-bg: $c-grey_2;
@@ -412,8 +412,8 @@ body {
         left: 0;
         right: 0;
         height: 1px;
-        background-color: green;
-        background-image: url("./assets/images/line-colors.svg");
+        background-color: rgba(white, 0.05);
+        background-image: none;
 
         transition: all 0.5s;
         background-repeat: repeat-x;
@@ -429,7 +429,8 @@ body {
           }
         }
 
-        &.loading {
+        &[data-loading="true"] {
+          background-image: url("./assets/images/line-colors.svg");
           animation: phaseBackground 10s linear infinite;
         }
       }

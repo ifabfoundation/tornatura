@@ -44,7 +44,7 @@ export default function SideBar() {
           <div className="flex-grow-1 mt-1">
             <img src={logo} className="logo" alt="logo" width="135px" />
           </div>
-          <div className="line-colors loading" />
+          <div className="line-colors" data-loading="true" />
         </header>
         <div className="hamburger-col"></div>
         <div className="level-1">
