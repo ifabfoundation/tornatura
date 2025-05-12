@@ -597,7 +597,7 @@ body {
         }
         height: $sidebar-btn-h;
         margin: 0 -10px;
-        padding: 10px;
+        padding: 0 10px;
         border-radius: $r;
         a {
           color: white;
@@ -983,6 +983,7 @@ $hb-color-on-hover: #eee;
     display: flex;
     align-items: center;
     justify-content: flex-start;
+    @include font-m-600;
   }
   .img-container {
     position: relative;
@@ -994,11 +995,77 @@ $hb-color-on-hover: #eee;
   img.card-img-top {
     aspect-ratio: 4/3;
     object-fit: cover;
+    border-radius: 0;
   }
   .card-body {
     padding: 0;
     margin-top: $space;
   }
+}
+
+.llist-group {
+  .llist-group-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+    height: 37px;
+    @include font-s-600;
+    & + .llist-group-item {
+      border-top: 1px solid $c-grey_1;
+    }
+  }
+}
+
+.cardlet {
+  background-color: white;
+  padding: 10px 5px 5px 15px;
+  border-radius: $r;
+  height: 87px;
+  margin-bottom: $space * 0.66;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-between;
+  align-items: stretch;
+  transition: all 0.3s;
+  header {
+    @include font-s-label;
+  }
+  .cardlet-content {
+    @include font-xl;
+    max-width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+}
+.cardlet-button {
+  color: $c-yelo;
+  padding: 10px 5px 5px 15px;
+  border-radius: $r;
+  height: 87px;
+  margin-bottom: $space * 0.62;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 10px;
+  @include font-m-600;
+  transition: all 0.3s;
+  cursor: pointer;
+
+  // -------------------
+  // from .button of class .accent
+  background-color: $c-yelo_dark;
+  color: $c-yelo;
+  &:hover {
+    background-color: darken($c-yelo_dark, 3%);
+  }
+  &:active,
+  .active {
+    background-color: darken($c-yelo_dark, 6%);
+  }
+  text-decoration: none;
+  // -------------------
 }
 
 .pagination {

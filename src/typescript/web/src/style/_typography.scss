@@ -117,3 +117,23 @@ $font-sans: "Inter", sans-serif;
 .font-l {
   @include font-l;
 }
+
+// --------------------------------
+
+@mixin font-xl {
+  @include font-style(
+    $font-fam: $font-sans,
+    $xs: 36px,
+    $sm: 36px,
+    $md: 36px,
+    $lg: 36px,
+    $xl: 36px,
+    $letter-sp: 0.02em,
+    $line-h: 1.3em,
+    $weight: 400,
+    $style: normal
+  );
+}
+.font-xl {
+  @include font-xl;
+}

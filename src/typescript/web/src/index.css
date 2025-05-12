@@ -12432,6 +12432,41 @@ fieldset:disabled .btn {
   }
 }
 
+.font-xl {
+  font-family: "Inter", sans-serif;
+  font-size: 36px;
+  letter-spacing: 0.02em;
+  line-height: 1.3em;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  font-optical-sizing: auto;
+}
+
+@media (min-width: 576px) {
+  .font-xl {
+    font-size: 36px;
+  }
+}
+
+@media (min-width: 768px) {
+  .font-xl {
+    font-size: 36px;
+  }
+}
+
+@media (min-width: 992px) {
+  .font-xl {
+    font-size: 36px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .font-xl {
+    font-size: 36px;
+  }
+}
+
 /* http://meyerweb.com/eric/tools/css/reset/ 
    v2.0 | 20110126
    License: none (public domain)
@@ -13764,7 +13799,7 @@ body {
   transition: all 0.2s;
   height: 50px;
   margin: 0 -10px;
-  padding: 10px;
+  padding: 0 10px;
   border-radius: 5px;
 }
 
@@ -14460,6 +14495,39 @@ ul.list-group li.list-group-item:hover {
   display: flex;
   align-items: center;
   justify-content: flex-start;
+  font-family: "Inter", sans-serif;
+  font-size: 16px;
+  letter-spacing: 0.02em;
+  line-height: 1.3em;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  font-optical-sizing: auto;
+  font-weight: 600;
+}
+
+@media (min-width: 576px) {
+  .card .card-header {
+    font-size: 16px;
+  }
+}
+
+@media (min-width: 768px) {
+  .card .card-header {
+    font-size: 16px;
+  }
+}
+
+@media (min-width: 992px) {
+  .card .card-header {
+    font-size: 16px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .card .card-header {
+    font-size: 16px;
+  }
 }
 
 .card .img-container {
@@ -14473,11 +14541,205 @@ ul.list-group li.list-group-item:hover {
 .card img.card-img-top {
   aspect-ratio: 4/3;
   object-fit: cover;
+  border-radius: 0;
 }
 
 .card .card-body {
   padding: 0;
   margin-top: 30px;
+}
+
+.llist-group .llist-group-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  height: 37px;
+  font-family: "Inter", sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  line-height: 1.3em;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  font-optical-sizing: auto;
+  font-weight: 600;
+}
+
+@media (min-width: 576px) {
+  .llist-group .llist-group-item {
+    font-size: 11px;
+  }
+}
+
+@media (min-width: 768px) {
+  .llist-group .llist-group-item {
+    font-size: 11px;
+  }
+}
+
+@media (min-width: 992px) {
+  .llist-group .llist-group-item {
+    font-size: 11px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .llist-group .llist-group-item {
+    font-size: 11px;
+  }
+}
+
+.llist-group .llist-group-item + .llist-group-item {
+  border-top: 1px solid #efefef;
+}
+
+.cardlet {
+  background-color: white;
+  padding: 10px 5px 5px 15px;
+  border-radius: 5px;
+  height: 87px;
+  margin-bottom: 19.8px;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-between;
+  align-items: stretch;
+  transition: all 0.3s;
+}
+
+.cardlet header {
+  font-family: "Inter", sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  line-height: 1.3em;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+@media (min-width: 576px) {
+  .cardlet header {
+    font-size: 11px;
+  }
+}
+
+@media (min-width: 768px) {
+  .cardlet header {
+    font-size: 11px;
+  }
+}
+
+@media (min-width: 992px) {
+  .cardlet header {
+    font-size: 11px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .cardlet header {
+    font-size: 11px;
+  }
+}
+
+.cardlet .cardlet-content {
+  font-family: "Inter", sans-serif;
+  font-size: 36px;
+  letter-spacing: 0.02em;
+  line-height: 1.3em;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  font-optical-sizing: auto;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+@media (min-width: 576px) {
+  .cardlet .cardlet-content {
+    font-size: 36px;
+  }
+}
+
+@media (min-width: 768px) {
+  .cardlet .cardlet-content {
+    font-size: 36px;
+  }
+}
+
+@media (min-width: 992px) {
+  .cardlet .cardlet-content {
+    font-size: 36px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .cardlet .cardlet-content {
+    font-size: 36px;
+  }
+}
+
+.cardlet-button {
+  color: #eaff00;
+  padding: 10px 5px 5px 15px;
+  border-radius: 5px;
+  height: 87px;
+  margin-bottom: 18.6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 10px;
+  font-family: "Inter", sans-serif;
+  font-size: 16px;
+  letter-spacing: 0.02em;
+  line-height: 1.3em;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  transition: all 0.3s;
+  cursor: pointer;
+  background-color: #3d401a;
+  color: #eaff00;
+  text-decoration: none;
+}
+
+@media (min-width: 576px) {
+  .cardlet-button {
+    font-size: 16px;
+  }
+}
+
+@media (min-width: 768px) {
+  .cardlet-button {
+    font-size: 16px;
+  }
+}
+
+@media (min-width: 992px) {
+  .cardlet-button {
+    font-size: 16px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .cardlet-button {
+    font-size: 16px;
+  }
+}
+
+.cardlet-button:hover {
+  background-color: #333516;
+}
+
+.cardlet-button:active,
+.cardlet-button .active {
+  background-color: #282a11;
 }
 
 .pagination .page-item .page-link {

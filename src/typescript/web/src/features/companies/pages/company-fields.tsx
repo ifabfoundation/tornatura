@@ -6,7 +6,7 @@ import { headerbarActions } from "../../headerbar/state/headerbar-slice";
 import { Card, Col, Container, ListGroup, Row } from "react-bootstrap";
 import { fieldsSelectors } from "../../fields/state/fields-slice";
 import { AgriField, Point } from "@tornatura/coreapis";
-
+import Icon from "../../../components/Icon";
 
 function getFieldMapGeoJson(field: AgriField) {
   let data: number[][] = [];
@@ -14,34 +14,34 @@ function getFieldMapGeoJson(field: AgriField) {
     data.push([point.lng, point.lat]);
   });
   return {
-    "type": "Feature",
-    "properties": {
-      "fill": "%23c4c920"
+    type: "Feature",
+    properties: {
+      fill: "%23c4c920",
     },
-    "geometry": {
-      "coordinates": [
-        data
-      ],
-      "type": "Polygon"
-    }
-  }
+    geometry: {
+      coordinates: [data],
+      type: "Polygon",
+    },
+  };
 }
-
 
 export function CompanyFields() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { companyId } = useParams();
-  const currentCompany = useAppSelector(state => companiesSelectors.selectCompanybyId(state, companyId ?? "default"));
-  const fields = useAppSelector(state => fieldsSelectors.selectFieldsByOrgId(state, currentCompany.orgId));
+  const currentCompany = useAppSelector((state) =>
+    companiesSelectors.selectCompanybyId(state, companyId ?? "default")
+  );
+  const fields = useAppSelector((state) =>
+    fieldsSelectors.selectFieldsByOrgId(state, currentCompany.orgId)
+  );
 
   React.useEffect(() => {
-    dispatch(headerbarActions.setTitle({title: "Campi", subtitle: ""}));
+    dispatch(headerbarActions.setTitle({ title: "Campi", subtitle: "" }));
   }, []);
 
-  React.useEffect(() => {
-  }, [currentCompany]);
-  
+  React.useEffect(() => {}, [currentCompany]);
+
   return (
     <Container>
       <Row>
@@ -50,19 +50,34 @@ export function CompanyFields() {
             <Col md={6} xl={4} key={index} className="mb-5">
               <Card onClick={() => navigate(`/companies/${companyId}/fields/${field.id}`)}>
                 <Card.Header>{field.name}</Card.Header>
-                <Card.Img variant="top" src={`https://api.mapbox.com/styles/v1/mapbox/satellite-v9/static/geojson(${JSON.stringify(getFieldMapGeoJson(field))})/auto/640x480?access_token=${process.env.REACT_APP_MAPBOX_API_TOKEN}`}/>
-                <ListGroup variant="flush">
-                  <ListGroup.Item>{field.harvest}</ListGroup.Item>
-                  <ListGroup.Item>{field.area} he</ListGroup.Item>
-                  <ListGroup.Item>{22} rilevamenti</ListGroup.Item>
-                </ListGroup>
+                <Card.Img
+                  variant="top"
+                  src={`https://api.mapbox.com/styles/v1/mapbox/satellite-v9/static/geojson(${JSON.stringify(
+                    getFieldMapGeoJson(field)
+                  )})/auto/640x480?access_token=${process.env.REACT_APP_MAPBOX_API_TOKEN}`}
+                />
+                <div className="llist-group">
+                  <div className="llist-group-item">
+                    <span className="d-flex align-items-center">
+                      <Icon iconName={"ifab_wheat"} state={"normal"} /> {field.harvest}
+                    </span>
+                    <span className="d-flex align-items-center">
+                      <Icon iconName={"ifab_size"} state={"normal"} /> {field.area} he
+                    </span>
+                  </div>
+                  <div className="llist-group-item">
+                    <span className="d-flex align-items-center">
+                      <Icon iconName={"ifab_asterisk"} state={"normal"} /> {22} rilevamenti
+                    </span>
+                  </div>
+                </div>
               </Card>
             </Col>
           );
         })}
         <Col md={6} xl={4}>
           <Card onClick={() => navigate(`/companies/${companyId}/fields/new-field`)}>
-            <Card.Img variant="top"/>
+            <Card.Img variant="top" />
           </Card>
         </Col>
       </Row>

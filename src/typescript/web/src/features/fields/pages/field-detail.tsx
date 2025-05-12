@@ -4,7 +4,6 @@ import React from "react";
 import { MenuItemEntry } from "../../../components/Sidebar";
 import { SidebarActions } from "../../sidebar/state/sidebar-slice";
 
-
 export function FieldDetail() {
   const dispatch = useAppDispatch();
   const { companyId, fieldId } = useParams();
@@ -14,42 +13,40 @@ export function FieldDetail() {
       return;
     }
 
-    let menuEntries : MenuItemEntry[] = [];
-    let menuBottomEntries : MenuItemEntry[] = [];
+    let menuEntries: MenuItemEntry[] = [];
+    let menuBottomEntries: MenuItemEntry[] = [];
 
     menuEntries = [
       {
-        "id": "fields",
-        "icon": "chart",
-        "text": "Dashboard campo",
-        "path":  `/companies/${companyId}/fields/${fieldId}`,
-      }, 
+        id: "fields",
+        icon: "ifab_grid",
+        text: "Dashboard campo",
+        path: `/companies/${companyId}/fields/${fieldId}`,
+      },
       {
-        "id": "detections",
-        "icon": "chart",
-        "text": "Rilevamenti campo",
-        "path":  `/companies/${companyId}/fields/${fieldId}/detections`,
-      }, 
+        id: "detections",
+        icon: "ifab_checklist",
+        text: "Rilevamenti campo",
+        path: `/companies/${companyId}/fields/${fieldId}/detections`,
+      },
       {
-        "id": "mappa",
-        "icon": "chart",
-        "text": "Mappa",
-        "path":  `/companies/${companyId}/fields/${fieldId}/map`,
-      }, 
-    ];  
+        id: "mappa",
+        icon: "ifab_pin",
+        text: "Mappa",
+        path: `/companies/${companyId}/fields/${fieldId}/map`,
+      },
+    ];
     menuBottomEntries = [
       {
-        "id": "feedback",
-        "icon": "chart",
-        "text": "Invia Feedback",
-        "path":  "/new-feedback",
-      }, 
+        id: "feedback",
+        icon: "ifab_baloon",
+        text: "Invia Feedback",
+        path: "/new-feedback",
+      },
     ];
     dispatch(SidebarActions.setMenuEntriesAction(menuEntries));
     dispatch(SidebarActions.setMenuBottomEntriesAction(menuBottomEntries));
   }, [companyId, fieldId]);
-  
-  return (
-    <Outlet />
-  );
+
+  return <Outlet />;
 }
