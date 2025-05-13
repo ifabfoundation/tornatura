@@ -53,6 +53,18 @@ import icon_ifab_size_y from "../assets/images/icons/icon-ifab-size-y.svg";
 import icon_ifab_asterisk_b from "../assets/images/icons/icon-ifab-asterisk-b.svg";
 import icon_ifab_asterisk_w from "../assets/images/icons/icon-ifab-asterisk-w.svg";
 import icon_ifab_asterisk_y from "../assets/images/icons/icon-ifab-asterisk-y.svg";
+import icon_ifab_larr_b from "../assets/images/icons/icon-ifab-larr-b.svg";
+import icon_ifab_larr_w from "../assets/images/icons/icon-ifab-larr-w.svg";
+import icon_ifab_larr_y from "../assets/images/icons/icon-ifab-larr-y.svg";
+import icon_ifab_x_b from "../assets/images/icons/icon-ifab-x-b.svg";
+import icon_ifab_x_w from "../assets/images/icons/icon-ifab-x-w.svg";
+import icon_ifab_x_y from "../assets/images/icons/icon-ifab-x-y.svg";
+import icon_ifab_uarr_b from "../assets/images/icons/icon-ifab-uarr-b.svg";
+import icon_ifab_uarr_w from "../assets/images/icons/icon-ifab-uarr-w.svg";
+import icon_ifab_uarr_y from "../assets/images/icons/icon-ifab-uarr-y.svg";
+import icon_ifab_home_b from "../assets/images/icons/icon-ifab-home-b.svg";
+import icon_ifab_home_w from "../assets/images/icons/icon-ifab-home-w.svg";
+import icon_ifab_home_y from "../assets/images/icons/icon-ifab-home-y.svg";
 
 // Legacy icons
 import icon_archive_n from "../assets/images/icons/icon-archive-n.svg";
@@ -153,6 +165,22 @@ const icons = {
   ifab_grid: {
     normal: { light: icon_ifab_grid_w, dark: icon_ifab_grid_b },
     selected: { light: icon_ifab_grid_y, dark: icon_ifab_grid_b },
+  },
+  ifab_larr: {
+    normal: { light: icon_ifab_larr_w, dark: icon_ifab_larr_b },
+    selected: { light: icon_ifab_larr_y, dark: icon_ifab_larr_b },
+  },
+  ifab_x: {
+    normal: { light: icon_ifab_x_w, dark: icon_ifab_x_b },
+    selected: { light: icon_ifab_x_y, dark: icon_ifab_x_b },
+  },
+  ifab_uarr: {
+    normal: { light: icon_ifab_uarr_w, dark: icon_ifab_uarr_b },
+    selected: { light: icon_ifab_uarr_y, dark: icon_ifab_uarr_b },
+  },
+  ifab_home: {
+    normal: { light: icon_ifab_home_w, dark: icon_ifab_home_b },
+    selected: { light: icon_ifab_home_y, dark: icon_ifab_home_b },
   },
   // these are swapped for usage on white bg, needs fix
   ifab_size: {

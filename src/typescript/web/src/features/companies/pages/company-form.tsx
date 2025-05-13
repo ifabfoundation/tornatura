@@ -1,6 +1,6 @@
 import { useFormik } from "formik";
 import React from "react";
-import * as Yup from 'yup';
+import * as Yup from "yup";
 import { headerbarActions } from "../../headerbar/state/headerbar-slice";
 import { useAppDispatch } from "../../../hooks";
 import { OrganizationCreatePayload } from "@tornatura/coreapis";
@@ -8,53 +8,51 @@ import { companiesActions } from "../state/companies-slice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useNavigate } from "react-router-dom";
 
-
-
 export function CompanyForm() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   React.useEffect(() => {
-    dispatch(headerbarActions.setTitle({title: "Nuova Azienda", subtitle: "Subtitle"}));
-  }, []); 
+    dispatch(headerbarActions.setTitle({ title: "Nuova Azienda", subtitle: "Subtitle" }));
+  }, []);
 
   const formik = useFormik({
     initialValues: {
-      name: '',
-      description: '',
-      email: '',
-      phone: ''
+      name: "",
+      description: "",
+      email: "",
+      phone: "",
     },
     validationSchema: Yup.object({
-      name: Yup.string().required('nome richiesto'),
-      description: Yup.string().required('descrizione richiesta'),
-      email: Yup.string().email('Email non valida').required('Email richiesta'),
-      phone: Yup.string().required('Telefono richiesto'),
+      name: Yup.string().required("nome richiesto"),
+      description: Yup.string().required("descrizione richiesta"),
+      email: Yup.string().email("Email non valida").required("Email richiesta"),
+      phone: Yup.string().required("Telefono richiesto"),
     }),
-    onSubmit: (values, {setSubmitting, resetForm}) => {
+    onSubmit: (values, { setSubmitting, resetForm }) => {
       const organization: OrganizationCreatePayload = {
         name: values.name,
         description: values.description,
         contacts: {
           email: values.email,
-          phone: values.phone
-        }
-      }
+          phone: values.phone,
+        },
+      };
       dispatch(companiesActions.addNewCompanyAction(organization))
-      .then(unwrapResult)
-      .then(_ => {
-        resetForm({});
-        setSubmitting(false);
-        navigate("/companies");
-      })
-      .catch(_ => {
-        setSubmitting(false);
-      });
+        .then(unwrapResult)
+        .then((_) => {
+          resetForm({});
+          setSubmitting(false);
+          navigate("/companies");
+        })
+        .catch((_) => {
+          setSubmitting(false);
+        });
     },
   });
-  
+
   return (
-    <form  onSubmit={formik.handleSubmit} autoComplete="off">
+    <form onSubmit={formik.handleSubmit} autoComplete="off">
       <div className="input-row">
         <label>
           Denominazione
@@ -69,7 +67,8 @@ export function CompanyForm() {
           />
         </label>
         {formik.touched.name && formik.errors.name ? (
-          <div className="error">{formik.errors.name}</div>) : null}
+          <div className="error">{formik.errors.name}</div>
+        ) : null}
       </div>
       <div className="input-row">
         <label>
@@ -85,7 +84,8 @@ export function CompanyForm() {
           />
         </label>
         {formik.touched.email && formik.errors.email ? (
-          <div className="error">{formik.errors.email}</div>) : null}
+          <div className="error">{formik.errors.email}</div>
+        ) : null}
       </div>
       <div className="input-row">
         <label>
@@ -101,7 +101,8 @@ export function CompanyForm() {
           />
         </label>
         {formik.touched.phone && formik.errors.phone ? (
-          <div className="error">{formik.errors.phone}</div>) : null}
+          <div className="error">{formik.errors.phone}</div>
+        ) : null}
       </div>
       <div className="input-row">
         <label>
@@ -115,11 +116,11 @@ export function CompanyForm() {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.description}
-          >
-          </textarea>
+          ></textarea>
         </label>
         {formik.touched.description && formik.errors.description ? (
-          <div className="error">{formik.errors.description}</div>) : null}
+          <div className="error">{formik.errors.description}</div>
+        ) : null}
       </div>
       <hr />
       <div className="buttons-wrapper">

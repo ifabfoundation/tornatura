@@ -6,9 +6,10 @@ import { IconName } from "./Icon";
 import { useAppSelector } from "../hooks";
 import { SidebarSelectors } from "../features/sidebar/state/sidebar-slice";
 import larr from "../assets/images/larr.svg";
-import './Sidebar.css'
+import "./Sidebar.css";
 import { companiesSelectors } from "../features/companies/state/companies-slice";
 import { fieldsSelectors } from "../features/fields/state/fields-slice";
+import Icon from "../components/Icon";
 
 export interface MenuItemEntry {
   id: string;
@@ -17,7 +18,6 @@ export interface MenuItemEntry {
   path: string;
 }
 
-
 function CompanySelector() {
   const navigate = useNavigate();
   const { companyId } = useParams();
@@ -25,17 +25,19 @@ function CompanySelector() {
 
   const handleCompanyChange = async (id: string) => {
     navigate(`/companies/${id}/fields`, { replace: true });
-  }
+  };
 
   const handeleBackClick = async () => {
     navigate(`/companies`, { replace: true });
-  }
+  };
 
   return (
-    <li className="menu-item">
-      <img src={larr} alt="back" onClick={handeleBackClick} />
-      <div className="input-row ms-2">
-        <label>
+    <li className="context-selector">
+      <button onClick={handeleBackClick}>
+        <Icon iconName={"ifab_x"} state={"normal"} />
+      </button>
+      <div className="main-area">
+        <label data-name="SELEZIONE AZIENDA">
           <select
             id="company"
             name="company"
@@ -45,34 +47,38 @@ function CompanySelector() {
               handleCompanyChange(selectedCompanyId);
             }}
           >
-            {companies.map(company => (
-              <option key={company.orgId} value={company.orgId}>{company.name}</option>
+            {companies.map((company) => (
+              <option key={company.orgId} value={company.orgId}>
+                {company.name}
+              </option>
             ))}
           </select>
         </label>
-      </div>  
+      </div>
     </li>
-  )
+  );
 }
 
 function FieldSelector() {
   const navigate = useNavigate();
   const { fieldId, companyId } = useParams();
-  const fields = useAppSelector(state => fieldsSelectors.selectFieldsByOrgId(state, companyId));
+  const fields = useAppSelector((state) => fieldsSelectors.selectFieldsByOrgId(state, companyId));
 
   const handleFieldChange = async (id: string) => {
     navigate(`/companies/${companyId}/fields/${id}`, { replace: true });
-  }
+  };
 
   const handeleBackClick = async () => {
     navigate(`/companies/${companyId}/fields`, { replace: true });
-  }
+  };
 
   return (
-    <li className="menu-item">
-      <img src={larr} alt="back" onClick={handeleBackClick} />
-      <div className="input-row ms-2">
-        <label>
+    <li className="context-selector">
+      <button onClick={handeleBackClick}>
+        <Icon iconName={"ifab_x"} state={"normal"} />
+      </button>
+      <div className="main-area">
+        <label data-name="SELEZIONE CAMPO">
           <select
             id="field"
             name="field"
@@ -82,14 +88,16 @@ function FieldSelector() {
               handleFieldChange(selectedFieldId);
             }}
           >
-            {fields.map(field => (
-              <option key={field.id} value={field.id}>{field.name}</option>
+            {fields.map((field) => (
+              <option key={field.id} value={field.id}>
+                {field.name}
+              </option>
             ))}
           </select>
         </label>
-      </div>  
+      </div>
     </li>
-  )
+  );
 }
 
 export default function SideBar() {
@@ -127,9 +135,9 @@ export default function SideBar() {
           <div className="line-colors" data-loading="false" />
         </header>
         <div className="hamburger-col"></div>
-        <div className="level-1" style={{width: "inrehit", paddingTop: "0"}}>
+        <div className="level-1" style={{ width: "inrehit", paddingTop: "0" }}>
           <ul className="menu-items">
-            {params?.companyId  && <CompanySelector />}
+            {params?.companyId && <CompanySelector />}
             {params?.fieldId && <FieldSelector />}
             <div className="mt-4"></div>
             {menuEntries.map((item, i) => {

@@ -5,41 +5,50 @@ import React from "react";
 import { headerbarActions } from "../../headerbar/state/headerbar-slice";
 import { useNavigate } from "react-router-dom";
 
-
 export function CompaniesList() {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const companies = useAppSelector(companiesSelectors.selectAllCompanies);
 
   React.useEffect(() => {
-    dispatch(headerbarActions.setTitle({title: "Aziende gestite", subtitle: "Subtitle"}));
-  }, []); 
+    dispatch(headerbarActions.setTitle({ title: "Aziende gestite", subtitle: "Subtitle" }));
+  }, []);
 
   const handleCompanyClick = (companyId: string) => {
     navigate(`/companies/${companyId}/fields`);
-  }
+  };
 
   return (
     <Container>
       <Row>
         {companies.map((company, index) => {
           return (
-            <Col md={6} xl={4} key={index} style={{ display: "flex", alignItems: "stretch" }} className="mb-5">
+            <Col
+              md={6}
+              xl={4}
+              key={index}
+              style={{ display: "flex", alignItems: "stretch" }}
+              className="mb-4"
+            >
               <Card onClick={() => handleCompanyClick(company.orgId)}>
                 <Card.Header>
-                  <Image src={company.cover} roundedCircle width="30px" className="me-3" />
-                  <span>{company.name}</span>
+                  {/* <Image src={company.cover} roundedCircle width="30px" className="me-3" /> */}
+                  <div className="round-thumb" style={{ backgroundImage: company.cover }}></div>
+                  <span style={{ marginLeft: 10 }}>{company.name}</span>
                 </Card.Header>
-                <Card.Img variant="top" src={company.cover}/>
-                <Card.Body>
-                </Card.Body>
+                <Card.Img
+                  variant="top"
+                  src={
+                    /* company.cover */ "https://tornatura.it/tmp-storage/assets/images/default-card-image.png"
+                  }
+                />
               </Card>
             </Col>
           );
         })}
         <Col md={6} xl={4}>
           <Card onClick={() => navigate("/companies/new-company")}>
-            <Card.Img variant="top" height="250"/>
+            <Card.Img variant="top" height="250" />
           </Card>
         </Col>
       </Row>

@@ -47,7 +47,7 @@ export function CompanyFields() {
       <Row>
         {fields.map((field: AgriField, index: number) => {
           return (
-            <Col md={6} xl={4} key={index} className="mb-5">
+            <Col md={6} xl={4} key={index} className="mb-4">
               <Card onClick={() => navigate(`/companies/${companyId}/fields/${field.id}`)}>
                 <Card.Header>{field.name}</Card.Header>
                 <Card.Img

@@ -13526,6 +13526,148 @@ body {
   }
 }
 
+#app .context-selector {
+  height: 77px;
+  background-color: rgba(84, 84, 84, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0 10px;
+}
+
+#app .context-selector button {
+  width: 37px;
+  height: 37px;
+  min-width: 37px;
+  max-width: 37px;
+  padding: 0;
+  background-color: rgba(139, 139, 139, 0.5);
+  border-radius: 5px;
+  margin-right: 10px;
+}
+
+#app .context-selector button:hover {
+  background-color: rgba(139, 139, 139, 0.7);
+}
+
+#app .context-selector button:active {
+  background-color: rgba(139, 139, 139, 0.25);
+}
+
+#app .context-selector .main-area {
+  position: relative;
+  height: 0;
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  margin-left: -2px;
+}
+
+#app .context-selector label {
+  flex-grow: 1;
+  width: 100%;
+}
+
+#app .context-selector label::before {
+  content: "AZIENDA";
+  content: attr(data-name);
+  position: absolute;
+  left: 0;
+  top: 21px;
+  margin-left: 3px;
+  display: block;
+  font-family: "Inter", sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  line-height: 1.3em;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: white;
+}
+
+@media (min-width: 576px) {
+  #app .context-selector label::before {
+    font-size: 11px;
+  }
+}
+
+@media (min-width: 768px) {
+  #app .context-selector label::before {
+    font-size: 11px;
+  }
+}
+
+@media (min-width: 992px) {
+  #app .context-selector label::before {
+    font-size: 11px;
+  }
+}
+
+@media (min-width: 1200px) {
+  #app .context-selector label::before {
+    font-size: 11px;
+  }
+}
+
+#app .context-selector select {
+  color: white;
+  font-family: "Inter", sans-serif;
+  font-size: 16px;
+  letter-spacing: 0.02em;
+  line-height: 1.3em;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  width: 100%;
+  background-color: transparent;
+  padding: 0;
+  margin: 0;
+  border: none !important;
+  border-color: none !important;
+  padding-top: 17px !important;
+  height: 69px;
+  cursor: pointer;
+}
+
+@media (min-width: 576px) {
+  #app .context-selector select {
+    font-size: 16px;
+  }
+}
+
+@media (min-width: 768px) {
+  #app .context-selector select {
+    font-size: 16px;
+  }
+}
+
+@media (min-width: 992px) {
+  #app .context-selector select {
+    font-size: 16px;
+  }
+}
+
+@media (min-width: 1200px) {
+  #app .context-selector select {
+    font-size: 16px;
+  }
+}
+
+#app .context-selector select:hover {
+  background-color: rgba(139, 139, 139, 0.1);
+}
+
+#app .context-selector + .context-selector {
+  margin-top: 5px !important;
+}
+
 #app .sidebar {
   width: 320px;
   min-width: 320px;
@@ -13783,9 +13925,16 @@ body {
   background-color: #1f1f1f;
 }
 
+#app .sidebar .context-selector {
+  margin: 0 -20px;
+}
+
 #app .sidebar ul.menu-items {
   padding-left: 20px;
   padding-right: 20px;
+}
+
+#app .sidebar ul.menu-items:not(:first-child) {
   margin: 10px 0;
 }
 
@@ -14486,6 +14635,10 @@ ul.list-group li.list-group-item:hover {
 .card {
   background-color: white;
   padding: 0;
+  width: 100%;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s;
 }
 
 .card .card-header {
@@ -14495,6 +14648,7 @@ ul.list-group li.list-group-item:hover {
   display: flex;
   align-items: center;
   justify-content: flex-start;
+  padding-left: 12px;
   font-family: "Inter", sans-serif;
   font-size: 16px;
   letter-spacing: 0.02em;
@@ -14547,6 +14701,18 @@ ul.list-group li.list-group-item:hover {
 .card .card-body {
   padding: 0;
   margin-top: 30px;
+}
+
+.card:hover {
+  box-shadow: 0 2px 30px 0 rgba(31, 31, 31, 0.25);
+  transform: translate(2px, -2px);
+}
+
+.round-thumb {
+  width: 27px;
+  height: 27px;
+  border-radius: 50%;
+  background-color: #bbbbbb;
 }
 
 .llist-group .llist-group-item {
