@@ -7,41 +7,41 @@ import { DetectionTableComponent } from "../../detections/components/detections-
 import { detectionsSelectors } from "../../detections/state/detections-slice";
 import _ from "lodash";
 
-
-
 export function FieldDetections() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const {fieldId, companyId } = useParams();
-  const detections = useAppSelector(state => detectionsSelectors.selectDetectionbyFieldId(state, fieldId ?? "default"));
+  const { fieldId, companyId } = useParams();
+  const detections = useAppSelector((state) =>
+    detectionsSelectors.selectDetectionbyFieldId(state, fieldId ?? "default")
+  );
 
   React.useEffect(() => {
-    dispatch(headerbarActions.setTitle({title: "Tutti i rilevamenti", subtitle: "Subtitle"}));
-  }, []); 
-  
+    dispatch(headerbarActions.setTitle({ title: "Tutti i rilevamenti", subtitle: "Subtitle" }));
+  }, []);
+
   return (
     <Fragment>
       <Container>
         <Row>
-          <Col md={1} xl={9}>
-            <Card>
-              <Card.Header>RILEVAMENTI</Card.Header>
-              <Card.Body style={{margin: "20px", fontSize: "40px"}}>
-                <h1>{detections.length}</h1>
-              </Card.Body>
-            </Card>
+          <Col>
+            <div className="cardlet">
+              <header>RILEVAMENTI</header>
+              <div className="cardlet-content">{detections.length}</div>
+            </div>
           </Col>
-          <Col md={1} xl={3}>
-            <Card onClick={() => navigate(`/companies/${companyId}/fields/${fieldId}/new-detection`)}>
-              <Card.Body style={{margin: "20px", fontSize: "40px"}}>
-                <h1>+ Nuovo Rilevamento</h1>
-              </Card.Body>
-            </Card>
+          <Col>
+            <a
+              className="cardlet-button"
+              onClick={() => navigate(`/companies/${companyId}/fields/${fieldId}/new-detection`)}
+            >
+              <span className="d-md-none">+</span>
+              <span className="d-none d-md-inline">+ Nuovo Rilevamento</span>
+            </a>
           </Col>
         </Row>
         <Row className="mt-4">
           <Col md={1} xl={12}>
-            <DetectionTableComponent detections={detections}/>
+            <DetectionTableComponent detections={detections} />
           </Col>
         </Row>
       </Container>

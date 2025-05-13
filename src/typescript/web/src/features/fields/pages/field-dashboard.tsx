@@ -19,7 +19,6 @@ export function FieldDashboard() {
   const detections = useAppSelector((state) =>
     detectionsSelectors.selectDetectionbyFieldId(state, fieldId ?? "default")
   );
-  
 
   React.useEffect(() => {
     dispatch(headerbarActions.setTitle({ title: "Dashboard", subtitle: "Subtitle" }));
@@ -48,19 +47,27 @@ export function FieldDashboard() {
             </div>
           </Col>
           <Col md={6} xl={3}>
-            <a className="cardlet-button" onClick={() => navigate(`/companies/${companyId}/fields/${fieldId}/new-detection`)}>
+            <a
+              className="cardlet-button"
+              onClick={() => navigate(`/companies/${companyId}/fields/${fieldId}/new-detection`)}
+            >
               + Nuovo Rilevamento
             </a>
           </Col>
         </Row>
         <Row className="mt-4">
-          <Col md={1} xl={6}>
+          <Col xl={6}>
             <Card onClick={() => navigate(`/companies/${companyId}/fields/${fieldId}/map`)}>
               <Card.Header>Mappa del campo</Card.Header>
-              <Card.Img variant="top" src={`https://api.mapbox.com/styles/v1/mapbox/satellite-v9/static/geojson(${JSON.stringify(getFieldMapGeoJson(currentField))})/auto/640x480?access_token=${process.env.REACT_APP_MAPBOX_API_TOKEN}`}/>
+              <Card.Img
+                variant="top"
+                src={`https://api.mapbox.com/styles/v1/mapbox/satellite-v9/static/geojson(${JSON.stringify(
+                  getFieldMapGeoJson(currentField)
+                )})/auto/640x480?access_token=${process.env.REACT_APP_MAPBOX_API_TOKEN}`}
+              />
             </Card>
           </Col>
-          <Col md={1} xl={6}>
+          <Col xl={6}>
             <Card>
               <Card.Header>Rilevamenti</Card.Header>
               <Card.Body>
@@ -78,11 +85,11 @@ export function FieldDashboard() {
                       }
                       return (
                         <tr key={index}>
-                          <td>{c.toLocaleString('it-IT')}</td>
+                          <td>{c.toLocaleString("it-IT")}</td>
                           <td>{d.type}</td>
                           <td>{summary}</td>
                         </tr>
-                      )
+                      );
                     })}
                   </tbody>
                 </Table>

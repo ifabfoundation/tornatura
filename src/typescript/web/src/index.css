@@ -12434,7 +12434,7 @@ fieldset:disabled .btn {
 
 .font-xl {
   font-family: "Inter", sans-serif;
-  font-size: 36px;
+  font-size: 32px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -12445,25 +12445,25 @@ fieldset:disabled .btn {
 
 @media (min-width: 576px) {
   .font-xl {
-    font-size: 36px;
+    font-size: 32px;
   }
 }
 
 @media (min-width: 768px) {
   .font-xl {
-    font-size: 36px;
+    font-size: 32px;
   }
 }
 
 @media (min-width: 992px) {
   .font-xl {
-    font-size: 36px;
+    font-size: 32px;
   }
 }
 
 @media (min-width: 1200px) {
   .font-xl {
-    font-size: 36px;
+    font-size: 32px;
   }
 }
 
@@ -13562,6 +13562,14 @@ body {
   align-items: center;
   height: 100%;
   margin-left: -2px;
+  color: #d8d8d8;
+  transition: all 0.2s;
+}
+
+#app .context-selector .main-area:hover {
+  color: #d8d8d8;
+  color: white;
+  color: #eaff00;
 }
 
 #app .context-selector label {
@@ -13587,7 +13595,6 @@ body {
   font-optical-sizing: auto;
   font-weight: 600;
   text-transform: uppercase;
-  color: white;
 }
 
 @media (min-width: 576px) {
@@ -13615,7 +13622,8 @@ body {
 }
 
 #app .context-selector select {
-  color: white;
+  height: 77px;
+  width: 100%;
   font-family: "Inter", sans-serif;
   font-size: 16px;
   letter-spacing: 0.02em;
@@ -13625,14 +13633,13 @@ body {
   font-stretch: normal;
   font-optical-sizing: auto;
   font-weight: 600;
-  width: 100%;
+  color: inherit;
   background-color: transparent;
   padding: 0;
   margin: 0;
   border: none !important;
   border-color: none !important;
   padding-top: 17px !important;
-  height: 69px;
   cursor: pointer;
 }
 
@@ -13658,10 +13665,6 @@ body {
   #app .context-selector select {
     font-size: 16px;
   }
-}
-
-#app .context-selector select:hover {
-  background-color: rgba(139, 139, 139, 0.1);
 }
 
 #app .context-selector + .context-selector {
@@ -13934,8 +13937,8 @@ body {
   padding-right: 20px;
 }
 
-#app .sidebar ul.menu-items:not(:first-child) {
-  margin: 10px 0;
+#app .sidebar ul.menu-items:last-child {
+  margin-bottom: 10px;
 }
 
 #app .sidebar ul.menu-items li.menu-item {
@@ -14190,6 +14193,17 @@ body {
     padding-left: 30px;
     padding-right: 30px;
   }
+}
+
+#app .ui-right .content-area .content.full-bleed {
+  padding: 0 !important;
+}
+
+#app #map {
+  background-color: #ff4d4d;
+  height: 350px;
+  height: calc(100vh - 60px);
+  margin: -54px -42px;
 }
 
 #app.ws-app {
@@ -14764,7 +14778,7 @@ ul.list-group li.list-group-item:hover {
   background-color: white;
   padding: 10px 5px 5px 15px;
   border-radius: 5px;
-  height: 87px;
+  height: 77px;
   margin-bottom: 19.8px;
   display: flex;
   flex-flow: column nowrap;
@@ -14812,7 +14826,7 @@ ul.list-group li.list-group-item:hover {
 
 .cardlet .cardlet-content {
   font-family: "Inter", sans-serif;
-  font-size: 36px;
+  font-size: 32px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -14827,25 +14841,25 @@ ul.list-group li.list-group-item:hover {
 
 @media (min-width: 576px) {
   .cardlet .cardlet-content {
-    font-size: 36px;
+    font-size: 32px;
   }
 }
 
 @media (min-width: 768px) {
   .cardlet .cardlet-content {
-    font-size: 36px;
+    font-size: 32px;
   }
 }
 
 @media (min-width: 992px) {
   .cardlet .cardlet-content {
-    font-size: 36px;
+    font-size: 32px;
   }
 }
 
 @media (min-width: 1200px) {
   .cardlet .cardlet-content {
-    font-size: 36px;
+    font-size: 32px;
   }
 }
 
@@ -14853,7 +14867,7 @@ ul.list-group li.list-group-item:hover {
   color: #eaff00;
   padding: 10px 5px 5px 15px;
   border-radius: 5px;
-  height: 87px;
+  height: 77px;
   margin-bottom: 18.6px;
   display: flex;
   align-items: center;

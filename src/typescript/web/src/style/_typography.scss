@@ -123,11 +123,11 @@ $font-sans: "Inter", sans-serif;
 @mixin font-xl {
   @include font-style(
     $font-fam: $font-sans,
-    $xs: 36px,
-    $sm: 36px,
-    $md: 36px,
-    $lg: 36px,
-    $xl: 36px,
+    $xs: 32px,
+    $sm: 32px,
+    $md: 32px,
+    $lg: 32px,
+    $xl: 32px,
     $letter-sp: 0.02em,
     $line-h: 1.3em,
     $weight: 400,

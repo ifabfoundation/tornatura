@@ -38,7 +38,7 @@ function CompanySelector() {
         <Icon iconName={"ifab_x"} state={"normal"} />
       </button>
       <div className="main-area">
-        <label data-name="SELEZIONE AZIENDA">
+        <label data-name="AZIENDA">
           <select
             id="company"
             name="company"
@@ -79,7 +79,7 @@ function FieldSelector() {
         <Icon iconName={"ifab_x"} state={"normal"} />
       </button>
       <div className="main-area">
-        <label data-name="SELEZIONE CAMPO">
+        <label data-name="CAMPO">
           <select
             id="field"
             name="field"
@@ -139,7 +139,9 @@ export default function SideBar() {
         <div className="hamburger-col"></div>
         <div className="level-1" style={{ width: "inrehit", paddingTop: "0" }}>
           <ul className="menu-items">
-            {params?.companyId && currentUser.accountType === AccountTypeEnum.Agronomist && <CompanySelector />}
+            {params?.companyId && currentUser.accountType === AccountTypeEnum.Agronomist && (
+              <CompanySelector />
+            )}
             {params?.fieldId && <FieldSelector />}
             <div className="mt-4"></div>
             {menuEntries.map((item, i) => {

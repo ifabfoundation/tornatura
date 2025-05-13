@@ -7,20 +7,20 @@ import { fieldsSelectors } from "../state/fields-slice";
 import mapboxgl, { LngLatLike } from "mapbox-gl";
 import { useParams } from "react-router-dom";
 import { Point } from "@tornatura/coreapis";
-import * as turf from '@turf/turf';
-
+import * as turf from "@turf/turf";
 
 export function FieldMap() {
   const dispatch = useAppDispatch();
   const { fieldId } = useParams();
-  const currentField = useAppSelector(state => fieldsSelectors.selectFieldbyId(state, fieldId ?? "default"));
+  const currentField = useAppSelector((state) =>
+    fieldsSelectors.selectFieldbyId(state, fieldId ?? "default")
+  );
   const mapContainerRef = React.useRef<HTMLDivElement>(null);
   const mapRef = React.useRef<any>(null);
 
   React.useEffect(() => {
-    dispatch(headerbarActions.setTitle({title: "Mappa", subtitle: "Subtitle"}));
-  }, []); 
-
+    dispatch(headerbarActions.setTitle({ title: "Mappa", subtitle: "Subtitle" }));
+  }, []);
 
   React.useEffect(() => {
     if (mapContainerRef.current && currentField) {
@@ -33,57 +33,53 @@ export function FieldMap() {
 
       let centroid: LngLatLike = [12.5736108, 41.29246];
       if (data.length > 2) {
-        const polygon = turf.polygon([
-          data
-        ]);
+        const polygon = turf.polygon([data]);
         const result = turf.centroid(polygon);
         centroid = [result.geometry.coordinates[0], result.geometry.coordinates[1]];
       }
 
       mapRef.current = new mapboxgl.Map({
         container: mapContainerRef.current,
-        style: 'mapbox://styles/mapbox/satellite-v9',
+        style: "mapbox://styles/mapbox/satellite-v9",
         center: centroid,
-        zoom: 14
+        zoom: 14,
       });
 
-      mapRef.current.on('load', () => {
-        const source = mapRef.current.getSource('maine');
+      mapRef.current.on("load", () => {
+        const source = mapRef.current.getSource("maine");
         if (!source) {
-          mapRef.current.addSource('maine', {
-            type: 'geojson',
+          mapRef.current.addSource("maine", {
+            type: "geojson",
             data: {
-              type: 'Feature',
+              type: "Feature",
               geometry: {
-                type: 'Polygon',
-                coordinates: [
-                  data
-                ]
-              }
-            }
+                type: "Polygon",
+                coordinates: [data],
+              },
+            },
           });
         }
 
         mapRef.current.addLayer({
-          id: 'maine',
-          type: 'fill',
-          source: 'maine',
+          id: "maine",
+          type: "fill",
+          source: "maine",
           layout: {},
           paint: {
-            'fill-color': '#c4c920',
-            'fill-opacity': 0.7
-          }
+            "fill-color": "#c4c920",
+            "fill-opacity": 0.7,
+          },
         });
       });
     }
   }, [mapContainerRef, currentField]);
-  
+
   return (
     <Fragment>
       <Container>
         <Row className="mt-4">
-          <Col md={1} xl={12}>
-            <div ref={mapContainerRef} id="map" style={{ height: '750px' }}></div>
+          <Col xs={12}>
+            <div ref={mapContainerRef} id="map"></div>
           </Col>
         </Row>
       </Container>
