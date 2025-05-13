@@ -23,7 +23,7 @@ export function DetectionTableComponent({ detections }: IDetection) {
       type: "text",
     }, 
     {
-      headerText: "Tipo",
+      headerText: "Tipologia",
       id: "type",
       sortable: true,
       style: "normal",
@@ -36,6 +36,13 @@ export function DetectionTableComponent({ detections }: IDetection) {
       style: "small-grey",
       type: "text",
     }, 
+    {
+      headerText: "Dettaglio",
+      id: "summary",
+      sortable: true,
+      style: "normal",
+      type: "text",
+    },
     
   ]
 
@@ -43,10 +50,20 @@ export function DetectionTableComponent({ detections }: IDetection) {
   const tableColumns = columns;
   const data = detections.map((d) => { 
     const c = new Date(d.creationTime);
+    let summary = "";
+    if (d.details.desease) {
+      summary = d.details.desease;
+    } else if (d.details.insect) {
+      summary = d.details.insect;
+    } else if (d.details.parasite) {
+      summary = d.details.parasite;
+    }
+
     return {
-      "creationTime": c.toLocaleDateString(),
+      "creationTime": c.toLocaleString('it-IT'),
       "note": d.note,
-      "type": d.type
+      "type": d.type,
+      "summary": summary,
     }
   });
 

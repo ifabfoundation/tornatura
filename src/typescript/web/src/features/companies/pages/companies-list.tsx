@@ -1,4 +1,4 @@
-import { Card, Col, Container, Row, Image } from "react-bootstrap";
+import { Card, Col, Container, Row } from "react-bootstrap";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { companiesSelectors } from "../state/companies-slice";
 import React from "react";
@@ -33,7 +33,7 @@ export function CompaniesList() {
               <Card onClick={() => handleCompanyClick(company.orgId)}>
                 <Card.Header>
                   {/* <Image src={company.cover} roundedCircle width="30px" className="me-3" /> */}
-                  <div className="round-thumb" style={{ backgroundImage: company.cover }}></div>
+                  <div className="round-thumb" style={{ backgroundImage: company.logo }}></div>
                   <span style={{ marginLeft: 10 }}>{company.name}</span>
                 </Card.Header>
                 <Card.Img

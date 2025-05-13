@@ -62,7 +62,7 @@ export function FeedbackTable() {
       "category": f.category,
       "feedback": f.feedback,
       "author": c,
-      "creationTime": d.toLocaleString()
+      "creationTime": d.toLocaleString('it-IT'),
     }
   } );
 

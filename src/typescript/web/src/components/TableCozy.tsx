@@ -56,7 +56,7 @@ const TableCozy: React.FC<TableCozyProps> = ({columns, data, options}) => {
 
   if (data.length === 0) {
     return (
-      <div className="font-m">No items</div>
+      <div className="font-m">Nessun dato</div>
     );
   }
 

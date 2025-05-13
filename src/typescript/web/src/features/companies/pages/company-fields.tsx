@@ -3,12 +3,14 @@ import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { companiesSelectors } from "../state/companies-slice";
 import { useNavigate, useParams } from "react-router-dom";
 import { headerbarActions } from "../../headerbar/state/headerbar-slice";
-import { Card, Col, Container, ListGroup, Row } from "react-bootstrap";
+import { Card, Col, Container, Row } from "react-bootstrap";
 import { fieldsSelectors } from "../../fields/state/fields-slice";
 import { AgriField, Point } from "@tornatura/coreapis";
 import Icon from "../../../components/Icon";
+import _ from "lodash";
+import { detectionsSelectors } from "../../detections/state/detections-slice";
 
-function getFieldMapGeoJson(field: AgriField) {
+export function getFieldMapGeoJson(field: AgriField) {
   let data: number[][] = [];
   field.map.forEach((point: Point) => {
     data.push([point.lng, point.lat]);
@@ -35,6 +37,7 @@ export function CompanyFields() {
   const fields = useAppSelector((state) =>
     fieldsSelectors.selectFieldsByOrgId(state, currentCompany.orgId)
   );
+  const detections = useAppSelector(detectionsSelectors.selectDetections);
 
   React.useEffect(() => {
     dispatch(headerbarActions.setTitle({ title: "Campi", subtitle: "" }));
@@ -46,6 +49,7 @@ export function CompanyFields() {
     <Container>
       <Row>
         {fields.map((field: AgriField, index: number) => {
+          const numberOdDetections = detections.filter( d => d.agrifieldId === field.id).length;
           return (
             <Col md={6} xl={4} key={index} className="mb-4">
               <Card onClick={() => navigate(`/companies/${companyId}/fields/${field.id}`)}>
@@ -67,7 +71,7 @@ export function CompanyFields() {
                   </div>
                   <div className="llist-group-item">
                     <span className="d-flex align-items-center">
-                      <Icon iconName={"ifab_asterisk"} state={"normal"} /> {22} rilevamenti
+                      <Icon iconName={"ifab_asterisk"} state={"normal"} /> {numberOdDetections} rilevamenti
                     </span>
                   </div>
                 </div>

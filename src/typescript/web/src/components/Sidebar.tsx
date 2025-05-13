@@ -5,11 +5,12 @@ import logo from "../assets/images/logo-full-white-color.svg";
 import { IconName } from "./Icon";
 import { useAppSelector } from "../hooks";
 import { SidebarSelectors } from "../features/sidebar/state/sidebar-slice";
-import larr from "../assets/images/larr.svg";
 import "./Sidebar.css";
 import { companiesSelectors } from "../features/companies/state/companies-slice";
 import { fieldsSelectors } from "../features/fields/state/fields-slice";
 import Icon from "../components/Icon";
+import { userSelectors } from "../features/users/state/user-slice";
+import { AccountTypeEnum } from "@tornatura/coreapis";
 
 export interface MenuItemEntry {
   id: string;
@@ -103,6 +104,7 @@ function FieldSelector() {
 export default function SideBar() {
   let location = useLocation();
   let params = useParams();
+  const currentUser = useAppSelector(userSelectors.selectCurrentUser);
   const { menuEntries, menuBottomEntries } = useAppSelector(SidebarSelectors.selectMenuEntries);
   const [currentEntry, setCurrentEntry] = React.useState<string>("companies");
 
@@ -137,7 +139,7 @@ export default function SideBar() {
         <div className="hamburger-col"></div>
         <div className="level-1" style={{ width: "inrehit", paddingTop: "0" }}>
           <ul className="menu-items">
-            {params?.companyId && <CompanySelector />}
+            {params?.companyId && currentUser.accountType === AccountTypeEnum.Agronomist && <CompanySelector />}
             {params?.fieldId && <FieldSelector />}
             <div className="mt-4"></div>
             {menuEntries.map((item, i) => {

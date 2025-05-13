@@ -9,7 +9,7 @@ import { Navigate, Outlet, useParams } from 'react-router-dom';
 import TopBar from './components/Topbar';
 import SideBar, { MenuItemEntry } from './components/Sidebar';
 import { companiesActions } from './features/companies/state/companies-slice';
-import logo from './assets/images/logo.svg';
+import logo from './assets/images/logo.png';
 import { AccountTypeEnum, AgriField } from '@tornatura/coreapis';
 import { SidebarActions } from './features/sidebar/state/sidebar-slice';
 import { feedbacksActions } from './features/feedbacks/state/feedbacks-slice';
@@ -130,7 +130,7 @@ function App() {
         await dispatch(userActions.fetchUsersAction());
         await dispatch(companiesActions.fetchCompaniesAction());
         await dispatch(feedbacksActions.fetchFeedbackAction());
-      } else if (profile.accountType === AccountTypeEnum.Agronomist) {
+      } else if (profile.accountType === AccountTypeEnum.Agronomist || profile.accountType === AccountTypeEnum.Standard) {
         if (profile.organizations) {
           for (let org of profile.organizations){
             await dispatch(companiesActions.getCompanyAction(org.id));

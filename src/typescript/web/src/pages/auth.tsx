@@ -114,13 +114,15 @@ function SignupStep2({action, onBackClick, onNextClick}: SignupProps) {
       firstName: '',
       lastName: '',
       email: '',
-      phone: ''
+      phone: '',
+      privacy: false,
     },
     validationSchema: Yup.object({
       firstName: Yup.string().required('nome richiesto'),
       lastName: Yup.string().required('cognome richiesto'),
       email: Yup.string().email('Email non valida').required('Email richiesta'),
       phone: Yup.string().required('Telefono richiesto'),
+      privacy: Yup.boolean().oneOf([true], 'Devi accettare la privacy policy'),
     }),
     onSubmit: (values, {setSubmitting, resetForm}) => {
       onNextClick(values);
@@ -193,6 +195,21 @@ function SignupStep2({action, onBackClick, onNextClick}: SignupProps) {
         </label>
         {formik.touched.phone && formik.errors.phone ? (
           <div className="error">{formik.errors.phone}</div>) : null}
+      </div>
+      <div className="input-row">
+        <label>
+          Consenso sulla privacy <a href="informativa_privacy.pdf">Informativa sulla privacy</a>
+          <input
+            id="privacy"
+            name="privacy"
+            type="checkbox"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            checked={formik.values.privacy}
+          />
+        </label>
+        {formik.touched.privacy && formik.errors.privacy ? (
+          <div className="error">{formik.errors.privacy}</div>) : null}
       </div>
       <hr />
       <div className="buttons-wrapper">
