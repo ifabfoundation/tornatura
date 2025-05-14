@@ -58,32 +58,51 @@ body {
 }
 /* PAGINA LOGIN */
 .login-pf-page {
-    margin: auto 20px;
-    margin-top: 5%;
+/*    margin: auto 20px;*/
+/*    margin-top: 5%;*/
+    padding-top: 0 !important;
     margin-bottom: 50%;
 }
 
 /* Header */
+#kc-header {
+  height: 60px;
+  background-color: black;
+  background-color: #1f1f1f;
+  margin-bottom: 10vh;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 20px;
+}
+#kc-header::after {
+  content: url("https://tornatura.it/tmp-storage/assets/images/logo-color-white.svg");
+  height: 30px;
+}
+
+
 #kc-header-wrapper {
 all: initial;
-display: flex;
+display: none;
 justify-content: center;
 }
 
 
 /* Card login >>>card-accedi */
- .card-pf {
-background: #fff;
-border-radius: 20px;
-padding: 20px;
-display: flex;
-flex-direction: column;
-gap: 0px;
-align-items: center;
-justify-content: flex-start;
-flex-shrink: 0;
-position: relative;
-border-top:initial;
+.card-pf {
+  background: #fff;
+  border-radius: 20px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  align-items: center;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  position: relative;
+  border-top:initial;
+  box-shadow: none;
+  border-radius: 10px;
 } 
 .kc-locale-dropdown {
   float: right;
@@ -141,26 +160,26 @@ width: 100%;
 
 #kc-page-title {
   /* color: var(--colors-white, #ffffff); */
-text-align: center;
-font-size: 25px;
-line-height: 150%;
-font-weight: 400;
-position: relative;
-align-self: stretch;
-padding-top: 20px;
-margin-top: 0px;
+  text-align: center;
+  font-size: 20px;
+  line-height: 150%;
+  font-weight: 600;
+  position: relative;
+  align-self: stretch;
+  padding-top: 20px;
+  margin-top: 0px;
 }
 
 /* Campi username e password */
 .form-group {
   display: flex;
-flex-direction: column;
-gap: 4px;
-align-items: flex-start;
-justify-content: flex-start;
-align-self: stretch;
-flex-shrink: 0;
-position: relative;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
 }
 /* Aree di input */
 .form-group input.pf-c-form-control[type=text], .form-group input.pf-c-form-control[type=password]{
@@ -182,12 +201,13 @@ position: relative;
 /* Label aree di input */
 .form-group label {
   /* color: var(--colors-white, #ffffff); */
-text-align: left;
-font-size: 14px;
-line-height: 150%;
-font-weight: 400;
-position: relative;
-align-self: stretch;
+  text-align: left;
+  font-size: 11px;
+  text-transform: uppercase;
+  line-height: 150%;
+  font-weight: 600;
+  position: relative;
+  align-self: stretch;
 }
 /* Campo pulsante login */
 #kc-form-login {
