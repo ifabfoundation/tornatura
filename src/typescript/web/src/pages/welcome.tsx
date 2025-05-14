@@ -1,13 +1,10 @@
-import { Button } from "react-bootstrap";
+import { Button, Container, Row, Col } from "react-bootstrap";
 import keycloakInstance from "../providers/keycloak";
 import { Link } from "react-router-dom";
 
-
-
 export function Welcome() {
-
   const handleLoginClick = async () => {
-    await keycloakInstance.login({redirectUri: window.location.origin});
+    await keycloakInstance.login({ redirectUri: window.location.origin });
   };
 
   return (
@@ -15,11 +12,29 @@ export function Welcome() {
       <div className="ui-right">
         <div className="content-area">
           <div className="content">
-            <h1>Benvenuto su Tornatura</h1>
-            <h2>Hai un account?</h2>
-            <Button onClick={handleLoginClick}>Login</Button>
-            <h2>Non hai un account registrarti</h2>
-            <Link to="/signup">Registrarti</Link>
+            <div className="spacer" style={{ marginTop: "25vh" }}></div>
+            <Container>
+              <Row>
+                <Col></Col>
+                <Col md="auto" className="text-center">
+                  <h1 className="mb-3">Benvenuto su Tornatura</h1>
+                  <div className="bg-white p-4 rounded">
+                    <div className="spacer d-none d-md-block" style={{ width: "320px" }}></div>
+
+                    <p className="my-3">Hai un account?</p>
+                    <Button className="accent" onClick={handleLoginClick}>
+                      Login
+                    </Button>
+                    <div className="spacer my-5"></div>
+                    <p className="my-3">Crea un nuovo account</p>
+                    <Link className="button secondary" to="/signup">
+                      Registrati
+                    </Link>
+                  </div>
+                </Col>
+                <Col></Col>
+              </Row>
+            </Container>
           </div>
         </div>
       </div>
