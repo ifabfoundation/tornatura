@@ -137,26 +137,27 @@ export default function SideBar() {
           <div className="line-colors" data-loading="false" />
         </header>
         <div className="hamburger-col"></div>
-        <div className="level-1" style={{ width: "inrehit", paddingTop: "0" }}>
-          <ul className="menu-items">
+        <div className="level-1">
+          <div>
             {params?.companyId && currentUser.accountType === AccountTypeEnum.Agronomist && (
               <CompanySelector />
             )}
             {params?.fieldId && <FieldSelector />}
-            <div className="mt-4"></div>
-            {menuEntries.map((item, i) => {
-              const state = currentEntry === item.id ? "selected" : "normal";
-              return (
-                <MenuItem
-                  key={i}
-                  icon={item.icon}
-                  text={item.text}
-                  state={state}
-                  path={item.path}
-                />
-              );
-            })}
-          </ul>
+            <ul className="menu-items">
+              {menuEntries.map((item, i) => {
+                const state = currentEntry === item.id ? "selected" : "normal";
+                return (
+                  <MenuItem
+                    key={i}
+                    icon={item.icon}
+                    text={item.text}
+                    state={state}
+                    path={item.path}
+                  />
+                );
+              })}
+            </ul>
+          </div>
           <ul className="menu-items">
             {menuBottomEntries.map((item, i) => {
               const state = currentEntry === item.id ? "selected" : "normal";

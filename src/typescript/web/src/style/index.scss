@@ -68,6 +68,9 @@ $ms-sidebar-transition: 100ms;
 .color-white {
   color: white;
 }
+.color-gray {
+  color: gray;
+}
 @keyframes blinkk {
   50% {
     opacity: 0.3;
@@ -75,6 +78,9 @@ $ms-sidebar-transition: 100ms;
 }
 .blink {
   animation: blinkk 1.7s linear infinite;
+}
+.no-u {
+  text-decoration: none;
 }
 
 .space-1 {
@@ -183,7 +189,8 @@ body {
     cursor: pointer;
     outline: none;
     min-width: 140px;
-    @include transition(background-color 100ms);
+    @include font-m-600;
+    transition: background-color 100ms;
     &:hover {
       text-decoration: none;
     }
@@ -234,6 +241,12 @@ body {
         background-color: $c-grey_4;
       }
       text-decoration: none;
+    }
+    &.wider {
+      min-width: 200px;
+    }
+    &.wide {
+      width: 100%;
     }
   }
 
@@ -403,6 +416,14 @@ body {
       width: 100%;
     }
 
+    input[type="checkbox"] {
+      width: 20px;
+      min-width: 20px;
+      height: 20px;
+      margin-right: 10px;
+      cursor: pointer;
+    }
+
     .error {
       @include font-s;
       color: $red;
@@ -417,10 +438,10 @@ body {
     justify-content: flex-start;
     padding: 0 10px;
     button {
-      width: 37px;
-      height: 37px;
-      min-width: 37px;
-      max-width: 37px;
+      width: 36px;
+      height: 36px;
+      min-width: 36px;
+      max-width: 36px;
       padding: 0;
       background-color: rgba($c-grey_4, 0.5);
       border-radius: $r;
@@ -443,6 +464,7 @@ body {
       margin-left: -2px; // compensate left margin of select of 1 0r 2 px
       color: $c-grey_2;
       transition: all 0.2s;
+      padding-left: 2px;
 
       &:hover {
         color: $c-grey_2;
@@ -455,12 +477,11 @@ body {
       // background-color: rgba(red, 0.1);
       width: 100%;
       &::before {
-        content: "AZIENDA";
         content: attr(data-name);
         position: absolute;
         left: 0;
         top: 21px;
-        margin-left: 3px;
+        margin-left: 6px;
         display: block;
         @include font-s-label;
       }
@@ -485,7 +506,7 @@ body {
       // }
     }
     & + .context-selector {
-      margin-top: 5px !important;
+      margin-top: 2px !important;
     }
   }
 
@@ -546,11 +567,11 @@ body {
     .level-1 {
       z-index: 2;
       position: absolute; // fixed
-      top: 70px;
+      top: $header-h;
       left: 0;
       bottom: 0;
       width: 100%;
-      // padding-top: 70px;
+      // padding-top: 10px;
       padding-bottom: 0;
       display: flex;
       flex-flow: column nowrap;
@@ -560,24 +581,16 @@ body {
         @include transition(visibility 0s $ms-sidebar-transition);
       }
     }
-    .level-2 {
-      z-index: 1;
-      opacity: 0;
-      position: absolute;
-      width: 200px;
-      top: 102px;
-      right: 0;
-      bottom: 0;
-      @include transition(opacity $ms-sidebar-transition);
-      // .submenu-label {
-      //   @include font-s;
-      //   padding: 0 20px;
-      //   margin-bottom: 20px;
-      //   text-align: center;
-      //   text-transform: uppercase;
-      //   color: $c-sidebar_light;
-      // }
-    }
+    // .level-2 {
+    //   z-index: 1;
+    //   opacity: 0;
+    //   position: absolute;
+    //   width: 200px;
+    //   top: 102px;
+    //   right: 0;
+    //   bottom: 0;
+    //   @include transition(opacity $ms-sidebar-transition);
+    // }
 
     .level-1,
     .level-2 {
@@ -660,13 +673,13 @@ body {
       }
     }
 
-    .context-selector {
-      margin: 0 -20px;
-    }
-
     ul.menu-items {
       padding-left: 20px;
       padding-right: 20px;
+      margin-top: 10px;
+      &:first-child {
+        padding-top: 10px;
+      }
       &:last-child {
         margin-bottom: 10px;
       }
@@ -716,7 +729,7 @@ body {
           }
         }
         & + li.menu-item {
-          margin-top: 7px;
+          margin-top: 2px;
         }
       }
     }
@@ -790,7 +803,7 @@ body {
       flex-grow: 1;
       overflow-y: scroll;
       .content {
-        padding: $space;
+        padding: 20px;
         @include media-breakpoint-up(xl) {
           padding-left: $space;
           padding-right: $space;
@@ -803,7 +816,7 @@ body {
   }
 
   #map {
-    background-color: $c-red;
+    // background-color: $c-red;
     height: 350px;
     height: calc(100vh - #{$header-h});
     // implement better way to remove padding from content in some cases like the map
@@ -1075,6 +1088,7 @@ $hb-color-on-hover: #eee;
   padding: 0;
   width: 100%;
   overflow: hidden;
+  margin-bottom: 20px;
   .card-header {
     border: none;
     background-color: white;
@@ -1103,11 +1117,46 @@ $hb-color-on-hover: #eee;
   }
 
   // only if cards are links = cliccable items
-  cursor: pointer;
-  transition: all 0.3s;
-  &:hover {
-    box-shadow: 0 2px 30px 0 rgba($c-shadow, 0.25);
-    transform: translate(2px, -2px);
+  &.with-hover-effect {
+    cursor: pointer;
+    transition: all 0.15s;
+    &:hover {
+      box-shadow: 0 2px 30px 0 rgba($c-shadow, 0.25);
+      transform: translate(2px, -2px);
+    }
+  }
+  &.add-item {
+    background-color: transparent;
+    border: 2px dashed $c-grey_3;
+    position: relative;
+    min-height: 300px;
+    height: calc(100% - 20px);
+    @include font-m-600;
+    &::before {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      content: "+";
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      color: $c-grey_4;
+      border: 2px dashed $c-grey_3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    &::after {
+      content: attr(data-text);
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 15px;
+      text-align: center;
+      color: $c-grey_4;
+    }
   }
 }
 
@@ -1384,6 +1433,10 @@ $dark-1: #3a4a7c;
 // ------------------------------------------------------------------------
 // Layout
 // ------------------------------------------------------------------------
+
+.ui-right .content-area .content .container {
+  margin: 0 -10px;
+}
 
 // .container {
 //   margin-left: $space;

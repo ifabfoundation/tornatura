@@ -1,3 +1,4 @@
+import Icon from "../../../components/Icon";
 import { Card, Col, Container, Row } from "react-bootstrap";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { companiesSelectors } from "../state/companies-slice";
@@ -9,6 +10,8 @@ export function CompaniesList() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const companies = useAppSelector(companiesSelectors.selectAllCompanies);
+  const numCampi = 0;
+  const numRilevamenti = 0;
 
   React.useEffect(() => {
     dispatch(headerbarActions.setTitle({ title: "Aziende gestite", subtitle: "Subtitle" }));
@@ -23,14 +26,8 @@ export function CompaniesList() {
       <Row>
         {companies.map((company, index) => {
           return (
-            <Col
-              md={6}
-              xl={4}
-              key={index}
-              style={{ display: "flex", alignItems: "stretch" }}
-              className="mb-4"
-            >
-              <Card onClick={() => handleCompanyClick(company.orgId)}>
+            <Col md={6} xl={4} key={index} style={{ display: "flex", alignItems: "stretch" }}>
+              <Card className="with-hover-effect" onClick={() => handleCompanyClick(company.orgId)}>
                 <Card.Header>
                   {/* <Image src={company.cover} roundedCircle width="30px" className="me-3" /> */}
                   <div className="round-thumb" style={{ backgroundImage: company.logo }}></div>
@@ -42,14 +39,20 @@ export function CompaniesList() {
                     /* company.cover */ "https://tornatura.it/tmp-storage/assets/images/default-card-image.png"
                   }
                 />
+                <div className="llist-group">
+                  <div className="llist-group-item">{"N campi"}</div>
+                  <div className="llist-group-item">{"N rilevamenti"}</div>
+                </div>
               </Card>
             </Col>
           );
         })}
         <Col md={6} xl={4}>
-          <Card onClick={() => navigate("/companies/new-company")}>
-            <Card.Img variant="top" height="250" />
-          </Card>
+          <Card
+            className="add-item with-hover-effect"
+            data-text="Invita un'azienda"
+            onClick={() => navigate("/companies/new-company")}
+          ></Card>
         </Col>
       </Row>
     </Container>

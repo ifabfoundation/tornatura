@@ -49,10 +49,13 @@ export function CompanyFields() {
     <Container>
       <Row>
         {fields.map((field: AgriField, index: number) => {
-          const numberOdDetections = detections.filter( d => d.agrifieldId === field.id).length;
+          const numberOdDetections = detections.filter((d) => d.agrifieldId === field.id).length;
           return (
-            <Col md={6} xl={4} key={index} className="mb-4">
-              <Card onClick={() => navigate(`/companies/${companyId}/fields/${field.id}`)}>
+            <Col md={6} xl={4} key={index}>
+              <Card
+                className="with-hover-effect"
+                onClick={() => navigate(`/companies/${companyId}/fields/${field.id}`)}
+              >
                 <Card.Header>{field.name}</Card.Header>
                 <Card.Img
                   variant="top"
@@ -71,7 +74,8 @@ export function CompanyFields() {
                   </div>
                   <div className="llist-group-item">
                     <span className="d-flex align-items-center">
-                      <Icon iconName={"ifab_asterisk"} state={"normal"} /> {numberOdDetections} rilevamenti
+                      <Icon iconName={"ifab_asterisk"} state={"normal"} /> {numberOdDetections}{" "}
+                      rilevamenti
                     </span>
                   </div>
                 </div>
@@ -80,9 +84,11 @@ export function CompanyFields() {
           );
         })}
         <Col md={6} xl={4}>
-          <Card onClick={() => navigate(`/companies/${companyId}/fields/new-field`)}>
-            <Card.Img variant="top" />
-          </Card>
+          <Card
+            className="add-item with-hover-effect"
+            data-text="Aggiungi un campo"
+            onClick={() => navigate(`/companies/${companyId}/fields/new-field`)}
+          ></Card>
         </Col>
       </Row>
     </Container>

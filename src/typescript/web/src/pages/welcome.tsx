@@ -22,12 +22,12 @@ export function Welcome() {
                     <div className="spacer d-none d-md-block" style={{ width: "320px" }}></div>
 
                     <p className="my-3">Hai un account?</p>
-                    <Button className="accent" onClick={handleLoginClick}>
+                    <Button className="accent wide" onClick={handleLoginClick}>
                       Login
                     </Button>
                     <div className="spacer my-5"></div>
                     <p className="my-3">Crea un nuovo account</p>
-                    <Link className="button secondary" to="/signup">
+                    <Link className="button wide secondary" to="/signup">
                       Registrati
                     </Link>
                   </div>

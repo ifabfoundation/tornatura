@@ -24,10 +24,10 @@ export function CompanyForm() {
       phone: "",
     },
     validationSchema: Yup.object({
-      name: Yup.string().required("nome richiesto"),
-      description: Yup.string().required("descrizione richiesta"),
-      email: Yup.string().email("Email non valida").required("Email richiesta"),
-      phone: Yup.string().required("Telefono richiesto"),
+      name: Yup.string().required("Campo necessario"),
+      description: Yup.string().required("Campo necessario"),
+      email: Yup.string().email("Email non valida").required("Campo necessario"),
+      phone: Yup.string().required("Campo necessario"),
     }),
     onSubmit: (values, { setSubmitting, resetForm }) => {
       const organization: OrganizationCreatePayload = {

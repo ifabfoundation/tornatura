@@ -36,10 +36,16 @@ export default function TopBar({ showBackButton }: TopBarProps) {
           {currentUser?.firstName} {currentUser?.lastName}
         </div>
       </div>
-      <div className="user-icon"></div>
-      <a className="button secondary ml-2" data-type="round" onClick={handleSignOut}>
+      {/* <div className="user-icon"></div> */}
+      <span>{" "}</span>
+      <a className="font-s-label no-u color-gray pointer" onClick={handleSignOut}>
+        Logout
+      </a>
+      {/* 
+      <a className="button secondary" data-type="round" onClick={handleSignOut}>
         <Icon iconName="logout" state="normal" />
       </a>
+       */}
     </div>
   );
 }

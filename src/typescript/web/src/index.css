@@ -12580,6 +12580,10 @@ ul li {
   color: white;
 }
 
+.color-gray {
+  color: gray;
+}
+
 @keyframes blinkk {
   50% {
     opacity: 0.3;
@@ -12588,6 +12592,10 @@ ul li {
 
 .blink {
   animation: blinkk 1.7s linear infinite;
+}
+
+.no-u {
+  text-decoration: none;
 }
 
 .space-1 {
@@ -12980,14 +12988,47 @@ body {
   cursor: pointer;
   outline: none;
   min-width: 140px;
+  font-family: "Inter", sans-serif;
+  font-size: 16px;
+  letter-spacing: 0.02em;
+  line-height: 1.3em;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  font-optical-sizing: auto;
+  font-weight: 600;
   transition: background-color 100ms;
 }
 
-@media (prefers-reduced-motion: reduce) {
+@media (min-width: 576px) {
   #app a.button,
   #app input[type="submit"],
   #app button {
-    transition: none;
+    font-size: 16px;
+  }
+}
+
+@media (min-width: 768px) {
+  #app a.button,
+  #app input[type="submit"],
+  #app button {
+    font-size: 16px;
+  }
+}
+
+@media (min-width: 992px) {
+  #app a.button,
+  #app input[type="submit"],
+  #app button {
+    font-size: 16px;
+  }
+}
+
+@media (min-width: 1200px) {
+  #app a.button,
+  #app input[type="submit"],
+  #app button {
+    font-size: 16px;
   }
 }
 
@@ -13081,6 +13122,18 @@ body {
 #app button.secondary:active,
 #app button.secondary .active {
   background-color: #8b8b8b;
+}
+
+#app a.button.wider,
+#app input[type="submit"].wider,
+#app button.wider {
+  min-width: 200px;
+}
+
+#app a.button.wide,
+#app input[type="submit"].wide,
+#app button.wide {
+  width: 100%;
 }
 
 #app a.button + a.button,
@@ -13485,6 +13538,15 @@ body {
   width: 100%;
 }
 
+#app .input-row input[type="checkbox"],
+#app .form-row input[type="checkbox"] {
+  width: 20px;
+  min-width: 20px;
+  height: 20px;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
 #app .input-row .error,
 #app .form-row .error {
   font-family: "Inter", sans-serif;
@@ -13536,10 +13598,10 @@ body {
 }
 
 #app .context-selector button {
-  width: 37px;
-  height: 37px;
-  min-width: 37px;
-  max-width: 37px;
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  max-width: 36px;
   padding: 0;
   background-color: rgba(139, 139, 139, 0.5);
   border-radius: 5px;
@@ -13564,6 +13626,7 @@ body {
   margin-left: -2px;
   color: #d8d8d8;
   transition: all 0.2s;
+  padding-left: 2px;
 }
 
 #app .context-selector .main-area:hover {
@@ -13578,12 +13641,11 @@ body {
 }
 
 #app .context-selector label::before {
-  content: "AZIENDA";
   content: attr(data-name);
   position: absolute;
   left: 0;
   top: 21px;
-  margin-left: 3px;
+  margin-left: 6px;
   display: block;
   font-family: "Inter", sans-serif;
   font-size: 11px;
@@ -13668,7 +13730,7 @@ body {
 }
 
 #app .context-selector + .context-selector {
-  margin-top: 5px !important;
+  margin-top: 2px !important;
 }
 
 #app .sidebar {
@@ -13731,7 +13793,7 @@ body {
 #app .sidebar .level-1 {
   z-index: 2;
   position: absolute;
-  top: 70px;
+  top: 60px;
   left: 0;
   bottom: 0;
   width: 100%;
@@ -13754,23 +13816,6 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   #app .sidebar .level-1 .menu-item .text {
-    transition: none;
-  }
-}
-
-#app .sidebar .level-2 {
-  z-index: 1;
-  opacity: 0;
-  position: absolute;
-  width: 200px;
-  top: 102px;
-  right: 0;
-  bottom: 0;
-  transition: opacity 100ms;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  #app .sidebar .level-2 {
     transition: none;
   }
 }
@@ -13928,13 +13973,14 @@ body {
   background-color: #1f1f1f;
 }
 
-#app .sidebar .context-selector {
-  margin: 0 -20px;
-}
-
 #app .sidebar ul.menu-items {
   padding-left: 20px;
   padding-right: 20px;
+  margin-top: 10px;
+}
+
+#app .sidebar ul.menu-items:first-child {
+  padding-top: 10px;
 }
 
 #app .sidebar ul.menu-items:last-child {
@@ -14029,7 +14075,7 @@ body {
 }
 
 #app .sidebar ul.menu-items li.menu-item + li.menu-item {
-  margin-top: 7px;
+  margin-top: 2px;
 }
 
 #app .ui-right {
@@ -14185,7 +14231,7 @@ body {
 }
 
 #app .ui-right .content-area .content {
-  padding: 30px;
+  padding: 20px;
 }
 
 @media (min-width: 1200px) {
@@ -14200,7 +14246,6 @@ body {
 }
 
 #app #map {
-  background-color: #ff4d4d;
   height: 350px;
   height: calc(100vh - 60px);
   margin: -54px -42px;
@@ -14651,8 +14696,7 @@ ul.list-group li.list-group-item:hover {
   padding: 0;
   width: 100%;
   overflow: hidden;
-  cursor: pointer;
-  transition: all 0.3s;
+  margin-bottom: 20px;
 }
 
 .card .card-header {
@@ -14717,9 +14761,82 @@ ul.list-group li.list-group-item:hover {
   margin-top: 30px;
 }
 
-.card:hover {
+.card.with-hover-effect {
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.card.with-hover-effect:hover {
   box-shadow: 0 2px 30px 0 rgba(31, 31, 31, 0.25);
   transform: translate(2px, -2px);
+}
+
+.card.add-item {
+  background-color: transparent;
+  border: 2px dashed #bbbbbb;
+  position: relative;
+  min-height: 300px;
+  height: calc(100% - 20px);
+  font-family: "Inter", sans-serif;
+  font-size: 16px;
+  letter-spacing: 0.02em;
+  line-height: 1.3em;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  font-optical-sizing: auto;
+  font-weight: 600;
+}
+
+@media (min-width: 576px) {
+  .card.add-item {
+    font-size: 16px;
+  }
+}
+
+@media (min-width: 768px) {
+  .card.add-item {
+    font-size: 16px;
+  }
+}
+
+@media (min-width: 992px) {
+  .card.add-item {
+    font-size: 16px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .card.add-item {
+    font-size: 16px;
+  }
+}
+
+.card.add-item::before {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  content: "+";
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  color: #8b8b8b;
+  border: 2px dashed #bbbbbb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card.add-item::after {
+  content: attr(data-text);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 15px;
+  text-align: center;
+  color: #8b8b8b;
 }
 
 .round-thumb {
@@ -15118,6 +15235,10 @@ ul.list-group li.list-group-item:hover {
   background-color: #1f1f1f;
   color: white;
   border-color: #1f1f1f;
+}
+
+.ui-right .content-area .content .container {
+  margin: 0 -10px;
 }
 
 .CodeMirror .CodeMirror-scroll {
