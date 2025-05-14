@@ -193,7 +193,7 @@ function SignupStep2({ action, onBackClick, onNextClick }: SignupProps) {
       </div>
       <div className="input-row">
         <label>
-          Phone
+          Telefono
           <input
             id="phone"
             name="phone"
