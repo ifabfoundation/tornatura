@@ -18,6 +18,7 @@ const initialState = usersAdapter.getInitialState<AuxState>({
     firstName: "Tornatura",
     lastName: "User",
     email: "user@example.com",
+    piva: '',
     emailVerified: false,
     enabled: true,
     accountType: AccountTypeEnum.Admin,

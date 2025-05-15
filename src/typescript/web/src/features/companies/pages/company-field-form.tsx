@@ -142,7 +142,7 @@ const FieldFormStep2 = ({ action, onBackClick, onNextClick }: FieldProps) => {
         container: mapContainerRef.current,
         style: "mapbox://styles/mapbox/satellite-v9",
         center: currentPosition ? [currentPosition.lng, currentPosition.lat] : [12.5736108, 41.29246],
-        zoom: 5,
+        zoom: 9,
       });
 
       const draw = new MapboxDraw({
@@ -178,15 +178,15 @@ const FieldFormStep2 = ({ action, onBackClick, onNextClick }: FieldProps) => {
         }
       }
     }
-  }, [mapContainerRef]);
+  }, [mapContainerRef, currentPosition]);
 
   return (
     <>
       <h4>Disegna la mappa del campo</h4>
       <hr />
-      <div ref={mapContainerRef} id="map" style={{ height: "400px" }}></div>
+      <div ref={mapContainerRef} id="map" style={{ height: "500px" }}></div>
       <hr />
-      <div className="buttons-wrapper">
+      <div className="buttons-wrapper mt-5">
         <button className="secondary" onClick={onBackClick}>
           Indietro
         </button>
