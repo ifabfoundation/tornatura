@@ -4,7 +4,6 @@ import keycloakInstance from "../providers/keycloak";
 import { headerbarSelectors } from "../features/headerbar/state/headerbar-slice";
 import larr from "../assets/images/larr.svg";
 import { useNavigate } from "react-router-dom";
-import Icon from "./Icon";
 
 interface TopBarProps {
   showBackButton?: boolean;

@@ -17,6 +17,10 @@ class Contacts(EmbeddedDocument):
     email = StringField(required=True)
     phone = StringField(required=True)
 
+class Office(EmbeddedDocument):
+    state = StringField(required=True)
+    city = StringField(required=True)
+
 
 class AgriFieldModel(Document):
     """The object AgriField stored in the Database"""
@@ -42,9 +46,17 @@ class OrganizationModel(Document):
     """The object Organization stored in the Database"""
     orgId = StringField(required=True, unique=True)
     name = StringField(required=True)
-    description = StringField(required=True, max_length=100)
+    piva = StringField(required=True, default="")
+    rapresentative = StringField(required=True, default="")
+    rapresentativeContact = StringField(required=True, default="")
+    office = EmbeddedDocumentField(Office, required=True, default=Office(
+        state="",
+        city=""
+    ))
+    legalForm = StringField(required=True, default="")
     logo = EmbeddedDocumentField(FileInfo, required=True)
     cover = EmbeddedDocumentField(FileInfo, required=True)
+    description = StringField(required=True, default="")
     contacts = EmbeddedDocumentField(Contacts, required=True)
     deleted = BooleanField(default=False)
     creationTime = IntField()

@@ -31,4 +31,5 @@ class APIConfig(object):
     SMTP_PASSWORD = config('SMTP_PASSWORD', default='')
     SMTP_HOST = config('SMTP_HOST', default='')
     SMTP_PORT = config('SMTP_PORT', default='')
+    FRONTEND_URL = config('FRONTEND_URL', default='')
 

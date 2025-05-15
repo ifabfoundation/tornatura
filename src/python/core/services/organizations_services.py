@@ -61,7 +61,14 @@ class OrganizationServices:
             return self.serializer(
                 orgId=item.orgId,
                 name=item.name,
-                description=item.description,
+                piva=item.piva,
+                rapresentative=item.rapresentative,
+                rapresentativeContact=item.rapresentativeContact,
+                legalForm=item.legalForm,
+                office={
+                    "state": item.office.state,
+                    "city": item.office.city
+                },
                 logo=file_services.get_file_url(item.orgId, item.logo.category, item.logo.name),
                 cover=file_services.get_file_url(item.orgId, item.cover.category, item.cover.name),
                 contacts={

@@ -16,7 +16,7 @@ const AuthProvider = (props: PropsWithChildren) => {
   useEffect(() => {
     if (!keycloakInstance.didInitialize) {
       keycloakInstance
-        .init({ onLoad: "check-sso", checkLoginIframe: true })
+        .init({ onLoad: "check-sso", checkLoginIframe: false })
         .then((authenticated) => {
           setAuthenticated(authenticated);
           setInitialized(true);

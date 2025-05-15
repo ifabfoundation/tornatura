@@ -1,11 +1,14 @@
 import React from "react";
-import { Container, Row, Col } from "react-bootstrap";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { AccountTypeEnum, Configuration, UserCreatePayload, UsersApi } from "@tornatura/coreapis";
 import { useNavigate } from "react-router-dom";
+import { Button, Col, Container, Row } from "react-bootstrap";
+import keycloakInstance from "../providers/keycloak";
+import TopHeader from "../components/TopHeader";
 
 interface SignupProps {
+  formData: UserCreatePayload;
   action: string;
   onBackClick?: () => Promise<void>;
   onNextClick: (data: any) => Promise<void>;
@@ -15,20 +18,32 @@ function SignupStep3({ action, onBackClick, onNextClick }: SignupProps) {
   const formik = useFormik({
     initialValues: {
       name: "",
-      description: "",
+      piva: "",
+      state: "",
+      city: "",
+      legalForm: "",
+      rappresentative: "",
+      rappresentativeContact: "",
       email: "",
       phone: "",
     },
     validationSchema: Yup.object({
-      name: Yup.string().required("Campo necessario"),
-      description: Yup.string().required("Campo necessario"),
-      email: Yup.string().email("Email non valida").required("Campo necessario"),
-      phone: Yup.string().required("Campo necessario"),
+      name: Yup.string().required("Campo obbligatorio"),
+      piva: Yup.string().required("Campo obbligatorio"),
+      state: Yup.string().required("Campo obbligatorio"),
+      city: Yup.string().required("Campo obbligatorio"),
+      legalForm: Yup.string().required("Campo obbligatorio"),
+      rappresentative: Yup.string().required("Campo obbligatorio"),
+      rappresentativeContact: Yup.string().required("Campo obbligatorio"),
     }),
     onSubmit: (values, { setSubmitting, resetForm }) => {
-      onNextClick(values);
-      resetForm({});
-      setSubmitting(false);
+      onNextClick(values).then((_) => {
+        resetForm({});
+      } ).catch((_) => {
+        setSubmitting(false);
+      }).finally(() => {
+        setSubmitting(false);
+      })
     },
   });
 
@@ -36,12 +51,12 @@ function SignupStep3({ action, onBackClick, onNextClick }: SignupProps) {
     <form onSubmit={formik.handleSubmit} autoComplete="off">
       <div className="input-row">
         <label>
-          Denominazione Aziendale
+          Ragione Sociale
           <input
             id="name"
             name="name"
             type="text"
-            placeholder="Agricolus s.r.l"
+            placeholder="Ragione Sociale"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.name}
@@ -49,6 +64,108 @@ function SignupStep3({ action, onBackClick, onNextClick }: SignupProps) {
         </label>
         {formik.touched.name && formik.errors.name ? (
           <div className="error">{formik.errors.name}</div>
+        ) : null}
+      </div>
+      <div className="input-row">
+        <label>
+          Partita Iva
+          <input
+            id="piva"
+            name="piva"
+            type="text"
+            placeholder="P.IVA"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.piva}
+          />
+        </label>
+        {formik.touched.piva && formik.errors.piva ? (
+          <div className="error">{formik.errors.piva}</div>
+        ) : null}
+      </div>
+      <div className="input-row">
+        <label>
+          Regione Sede legale
+          <input
+            id="state"
+            name="state"
+            type="text"
+            placeholder="Regione Sede legale"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.state}
+          />
+        </label>
+        {formik.touched.state && formik.errors.state ? (
+          <div className="error">{formik.errors.state}</div>
+        ) : null}
+      </div>
+      <div className="input-row">
+        <label>
+          Comune sede legale
+          <input
+            id="city"
+            name="city"
+            type="text"
+            placeholder="Comune sede legale"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.city}
+          />
+        </label>
+        {formik.touched.city && formik.errors.city ? (
+          <div className="error">{formik.errors.city}</div>
+        ) : null}
+      </div>
+      <div className="input-row">
+        <label>
+          Forma giuridica
+          <input
+            id="legalForm"
+            name="legalForm"
+            type="text"
+            placeholder="Forma giuridica"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.legalForm}
+          />
+        </label>
+        {formik.touched.legalForm && formik.errors.legalForm ? (
+          <div className="error">{formik.errors.legalForm}</div>
+        ) : null}
+      </div>
+      <div className="input-row">
+        <label>
+          Legale rappresentante
+          <input
+            id="rappresentative"
+            name="rappresentative"
+            type="text"
+            placeholder="Rappresentante Legale"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.rappresentative}
+          />
+        </label>
+        {formik.touched.rappresentative && formik.errors.rappresentative ? (
+          <div className="error">{formik.errors.rappresentative}</div>
+        ) : null}
+      </div>
+      <div className="input-row">
+        <label>
+          Contatto Legale rappresentante
+          <input
+            id="rappresentativeContact"
+            name="rappresentativeContact"
+            type="text"
+            placeholder="Contatto Rappresentante"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.rappresentativeContact}
+          />
+        </label>
+        {formik.touched.rappresentativeContact && formik.errors.rappresentativeContact ? (
+          <div className="error">{formik.errors.rappresentativeContact}</div>
         ) : null}
       </div>
       <div className="input-row">
@@ -85,24 +202,6 @@ function SignupStep3({ action, onBackClick, onNextClick }: SignupProps) {
           <div className="error">{formik.errors.phone}</div>
         ) : null}
       </div>
-      <div className="input-row">
-        <label>
-          Descrizione
-          <textarea
-            id="description"
-            name="description"
-            placeholder=""
-            rows={15}
-            cols={50}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.description}
-          ></textarea>
-        </label>
-        {formik.touched.description && formik.errors.description ? (
-          <div className="error">{formik.errors.description}</div>
-        ) : null}
-      </div>
       <hr />
       <div className="buttons-wrapper">
         <button className="secondary" onClick={onBackClick}>
@@ -114,27 +213,31 @@ function SignupStep3({ action, onBackClick, onNextClick }: SignupProps) {
   );
 }
 
-function SignupStep2({ action, onBackClick, onNextClick }: SignupProps) {
+function SignupStep2({ formData, action, onBackClick, onNextClick }: SignupProps) {
   const formik = useFormik({
     initialValues: {
       firstName: "",
       lastName: "",
       email: "",
+      piva: "",
       phone: "",
       privacy: false,
       privacy2: false,
     },
     validationSchema: Yup.object({
-      firstName: Yup.string().required("Campo necessario"),
-      lastName: Yup.string().required("Campo necessario"),
-      email: Yup.string().email("Email non valida").required("Campo necessario"),
-      phone: Yup.string().required("Campo necessario"),
+      firstName: Yup.string().required("Campo obbligatorio"),
+      lastName: Yup.string().required("Campo obbligatorio"),
+      email: Yup.string().email("Email non valida").required("Campo obbligatorio"),
+      phone: Yup.string().required("Campo obbligatorio"),
       privacy: Yup.boolean().oneOf([true], "È necessaria l'accettazione"),
       privacy2: Yup.boolean().oneOf([true], "È necessaria l'accettazione"),
     }),
-    onSubmit: (values, { setSubmitting, resetForm }) => {
-      onNextClick(values);
-      resetForm({});
+    onSubmit: (values, { setSubmitting, setErrors }) => {
+      if (!values.piva && formData.accountType === AccountTypeEnum.Agronomist) {
+        setErrors({ "piva": "Campo obbligatorio" });
+      } else {
+        onNextClick(values);
+      }
       setSubmitting(false);
     },
   });
@@ -191,6 +294,23 @@ function SignupStep2({ action, onBackClick, onNextClick }: SignupProps) {
           <div className="error">{formik.errors.email}</div>
         ) : null}
       </div>
+      {formData.accountType === AccountTypeEnum.Agronomist && <div className="input-row">
+        <label>
+          Partita Iva
+          <input
+            id="piva"
+            name="piva"
+            type="text"
+            placeholder="P.IVA"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.piva}
+          />
+        </label>
+        {formik.touched.piva && formik.errors.piva ? (
+          <div className="error">{formik.errors.piva}</div>
+        ) : null}
+      </div>}
       <div className="input-row">
         <label>
           Telefono
@@ -250,7 +370,7 @@ function SignupStep2({ action, onBackClick, onNextClick }: SignupProps) {
       </div>
       <hr />
       <div className="buttons-wrapper">
-        <button className="secondary" onClick={onBackClick}>
+        <button className="secondary" type="button" onClick={onBackClick}>
           Indietro
         </button>
         <input type="submit" className="primary" value={action} />
@@ -259,7 +379,7 @@ function SignupStep2({ action, onBackClick, onNextClick }: SignupProps) {
   );
 }
 
-function SignupStep1({ action, onNextClick }: SignupProps) {
+function SignupStep1({ onBackClick, action, onNextClick }: SignupProps) {
   const formik = useFormik({
     initialValues: {
       accountType: "Agronomist",
@@ -290,6 +410,9 @@ function SignupStep1({ action, onNextClick }: SignupProps) {
       </div>
       <hr />
       <div className="buttons-wrapper">
+        <button className="secondary" type="button" onClick={onBackClick}>
+          Indietro
+        </button>
         <input type="submit" className="primary" value={action} />
       </div>
     </form>
@@ -306,6 +429,7 @@ export function Signup() {
     firstName: "",
     lastName: "",
     email: "",
+    piva: "",
     accountType: AccountTypeEnum.Agronomist,
     phone: "",
   });
@@ -315,7 +439,7 @@ export function Signup() {
     const usersApi = new UsersApi(apiConfig);
     const response = await usersApi.registerUser(payload);
     if (response.status === 201) {
-      navigate("/welcome", { replace: true });
+      setStep(4);
     } else {
       console.error("Error creating account", response);
     }
@@ -339,6 +463,7 @@ export function Signup() {
         firstName: data.firstName,
         lastName: data.lastName,
         email: data.email,
+        piva: data.piva,
         phone: data.phone,
       };
       if (data.accountType === AccountTypeEnum.Standard) {
@@ -353,7 +478,14 @@ export function Signup() {
         ...formData,
         organization: {
           name: data.name,
-          description: data.description,
+          piva: data.piva,
+          legalForm: data.legalForm,
+          office: {
+            state: data.state,
+            city: data.city
+          },
+          rapresentative: data.rappresentative,
+          rapresentativeContact: data.rappresentativeContact,
           contacts: {
             email: data.email,
             phone: data.phone,
@@ -367,12 +499,19 @@ export function Signup() {
   const handleBackClick = async () => {
     if (step > 1) {
       setStep(step - 1);
+    } else {
+      navigate(-1);
     }
+  };
+
+  const handleLoginClick = async () => {
+    await keycloakInstance.login({ redirectUri: window.location.origin });
   };
 
   return (
     <div id="app" className="main-app">
       <div className="ui-right">
+        <TopHeader/>
         <div className="content-area">
           <div className="content">
             {/* <Container>
@@ -380,21 +519,41 @@ export function Signup() {
                 <Col></Col>
                 <Col md={auto}> */}
             <div style={{ margin: "150px" }}>
-              {step === 1 && <SignupStep1 action={action} onNextClick={handleNextClick} />}
-              {step === 2 && (
-                <SignupStep2
-                  action={action}
-                  onBackClick={handleBackClick}
-                  onNextClick={handleNextClick}
-                />
-              )}
-              {step === 3 && (
-                <SignupStep3
-                  action={action}
-                  onBackClick={handleBackClick}
-                  onNextClick={handleNextClick}
-                />
-              )}
+                {step === 1 && <SignupStep1 formData={formData} action={action} onNextClick={handleNextClick} onBackClick={handleBackClick}/>}
+                {step === 2 && (
+                  <SignupStep2
+                    formData={formData}
+                    action={action}
+                    onBackClick={handleBackClick}
+                    onNextClick={handleNextClick}
+                  />
+                )}
+                {step === 3 && (
+                  <SignupStep3
+                    formData={formData}
+                    action={action}
+                    onBackClick={handleBackClick}
+                    onNextClick={handleNextClick}
+                  />
+                )}
+                {step === 4 && 
+                  <Container>
+                    <Row>
+                      <Col></Col>
+                      <Col md="auto" className="text-center">
+                        <h1 className="mb-3">Registrazione</h1>
+                        <div className="bg-white p-4 rounded">
+                          <div className="spacer d-none d-md-block" style={{ width: "320px" }}></div>
+                          <p className="my-3">Registrazione Avvenuta con successo. Riceverai una email di conferma dell'avvenuta registrazione</p>
+                          <Button className="accent wide" onClick={handleLoginClick}>
+                            Vai al Login
+                          </Button>
+                        </div>
+                      </Col>
+                      <Col></Col>
+                    </Row>
+                  </Container>
+                }
             </div>
             {/*                 </Col>
                 <Col></Col>

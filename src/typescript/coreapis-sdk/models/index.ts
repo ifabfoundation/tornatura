@@ -10,6 +10,7 @@ export * from './feedback';
 export * from './feedback-category-enum';
 export * from './feedback-create-payload';
 export * from './file-info';
+export * from './office';
 export * from './organization';
 export * from './organization-create-payload';
 export * from './organization-update-payload';

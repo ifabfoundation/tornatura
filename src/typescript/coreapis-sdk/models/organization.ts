@@ -13,6 +13,7 @@
  */
 
 import { Contacts } from './contacts';
+import { Office } from './office';
  /**
  * 
  *
@@ -37,7 +38,31 @@ export interface Organization {
      * @type {string}
      * @memberof Organization
      */
-    description: string;
+    piva: string;
+
+    /**
+     * @type {string}
+     * @memberof Organization
+     */
+    rapresentative: string;
+
+    /**
+     * @type {string}
+     * @memberof Organization
+     */
+    rapresentativeContact: string;
+
+    /**
+     * @type {string}
+     * @memberof Organization
+     */
+    legalForm: string;
+
+    /**
+     * @type {Office}
+     * @memberof Organization
+     */
+    office: Office;
 
     /**
      * @type {string}

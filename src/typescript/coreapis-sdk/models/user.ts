@@ -71,6 +71,12 @@ export interface User {
     phone: string;
 
     /**
+     * @type {string}
+     * @memberof User
+     */
+    piva: string;
+
+    /**
      * @type {Array<UserOrgananizationMembership>}
      * @memberof User
      */

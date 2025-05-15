@@ -1,6 +1,7 @@
 import { Button, Container, Row, Col } from "react-bootstrap";
 import keycloakInstance from "../providers/keycloak";
 import { Link } from "react-router-dom";
+import TopHeader from "../components/TopHeader";
 
 export function Welcome() {
   const handleLoginClick = async () => {
@@ -10,6 +11,7 @@ export function Welcome() {
   return (
     <div id="app" className="main-app">
       <div className="ui-right">
+        <TopHeader />
         <div className="content-area">
           <div className="content">
             <div className="spacer" style={{ marginTop: "25vh" }}></div>

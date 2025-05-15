@@ -19,20 +19,35 @@ export function CompanyForm() {
   const formik = useFormik({
     initialValues: {
       name: "",
-      description: "",
+      piva: "",
+      state: "",
+      city: "",
+      legalForm: "",
+      rappresentative: "",
+      rappresentativeContact: "",
       email: "",
       phone: "",
     },
     validationSchema: Yup.object({
-      name: Yup.string().required("Campo necessario"),
-      description: Yup.string().required("Campo necessario"),
-      email: Yup.string().email("Email non valida").required("Campo necessario"),
-      phone: Yup.string().required("Campo necessario"),
+      name: Yup.string().required("Campo obbligatorio"),
+      piva: Yup.string().required("Campo obbligatorio"),
+      state: Yup.string().required("Campo obbligatorio"),
+      city: Yup.string().required("Campo obbligatorio"),
+      legalForm: Yup.string().required("Campo obbligatorio"),
+      rappresentative: Yup.string().required("Campo obbligatorio"),
+      rappresentativeContact: Yup.string().required("Campo obbligatorio"),
     }),
     onSubmit: (values, { setSubmitting, resetForm }) => {
       const organization: OrganizationCreatePayload = {
         name: values.name,
-        description: values.description,
+        piva: values.piva,
+        legalForm: values.legalForm,
+        office: {
+          state: values.state,
+          city: values.city
+        },
+        rapresentative: values.rappresentative,
+        rapresentativeContact: values.rappresentativeContact,
         contacts: {
           email: values.email,
           phone: values.phone,
@@ -55,12 +70,12 @@ export function CompanyForm() {
     <form onSubmit={formik.handleSubmit} autoComplete="off">
       <div className="input-row">
         <label>
-          Denominazione
+          Ragione Sociale
           <input
             id="name"
             name="name"
             type="text"
-            placeholder="Agricolus s.r.l"
+            placeholder="Ragione Sociale"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.name}
@@ -72,7 +87,109 @@ export function CompanyForm() {
       </div>
       <div className="input-row">
         <label>
-          Email
+          Partita Iva
+          <input
+            id="piva"
+            name="piva"
+            type="text"
+            placeholder="P.IVA"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.piva}
+          />
+        </label>
+        {formik.touched.piva && formik.errors.piva ? (
+          <div className="error">{formik.errors.piva}</div>
+        ) : null}
+      </div>
+      <div className="input-row">
+        <label>
+          Regione Sede legale
+          <input
+            id="state"
+            name="state"
+            type="text"
+            placeholder="Regione Sede legale"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.state}
+          />
+        </label>
+        {formik.touched.state && formik.errors.state ? (
+          <div className="error">{formik.errors.state}</div>
+        ) : null}
+      </div>
+      <div className="input-row">
+        <label>
+          Comune sede legale
+          <input
+            id="city"
+            name="city"
+            type="text"
+            placeholder="Comune sede legale"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.city}
+          />
+        </label>
+        {formik.touched.city && formik.errors.city ? (
+          <div className="error">{formik.errors.city}</div>
+        ) : null}
+      </div>
+      <div className="input-row">
+        <label>
+          Forma giuridica
+          <input
+            id="legalForm"
+            name="legalForm"
+            type="text"
+            placeholder="Forma giuridica"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.legalForm}
+          />
+        </label>
+        {formik.touched.legalForm && formik.errors.legalForm ? (
+          <div className="error">{formik.errors.legalForm}</div>
+        ) : null}
+      </div>
+      <div className="input-row">
+        <label>
+          Legale rappresentante
+          <input
+            id="rappresentative"
+            name="rappresentative"
+            type="text"
+            placeholder="Rappresentante Legale"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.rappresentative}
+          />
+        </label>
+        {formik.touched.rappresentative && formik.errors.rappresentative ? (
+          <div className="error">{formik.errors.rappresentative}</div>
+        ) : null}
+      </div>
+      <div className="input-row">
+        <label>
+          Contatto Legale rappresentante
+          <input
+            id="rappresentativeContact"
+            name="rappresentativeContact"
+            type="text"
+            placeholder="Contatto Rappresentante"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.rappresentativeContact}
+          />
+        </label>
+        {formik.touched.rappresentativeContact && formik.errors.rappresentativeContact ? (
+          <div className="error">{formik.errors.rappresentativeContact}</div>
+        ) : null}
+      </div>
+      <div className="input-row">
+        <label>
+          Email di Contatto
           <input
             id="email"
             name="email"
@@ -102,24 +219,6 @@ export function CompanyForm() {
         </label>
         {formik.touched.phone && formik.errors.phone ? (
           <div className="error">{formik.errors.phone}</div>
-        ) : null}
-      </div>
-      <div className="input-row">
-        <label>
-          Descrizione
-          <textarea
-            id="description"
-            name="description"
-            placeholder=""
-            rows={15}
-            cols={50}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.description}
-          ></textarea>
-        </label>
-        {formik.touched.description && formik.errors.description ? (
-          <div className="error">{formik.errors.description}</div>
         ) : null}
       </div>
       <hr />

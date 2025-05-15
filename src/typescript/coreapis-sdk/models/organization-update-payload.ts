@@ -14,6 +14,7 @@
 
 import { Contacts } from './contacts';
 import { FileInfo } from './file-info';
+import { Office } from './office';
  /**
  * 
  *
@@ -26,7 +27,25 @@ export interface OrganizationUpdatePayload {
      * @type {string}
      * @memberof OrganizationUpdatePayload
      */
-    description: string;
+    rapresentative: string;
+
+    /**
+     * @type {string}
+     * @memberof OrganizationUpdatePayload
+     */
+    rapresentativeContact: string;
+
+    /**
+     * @type {string}
+     * @memberof OrganizationUpdatePayload
+     */
+    legalForm: string;
+
+    /**
+     * @type {Office}
+     * @memberof OrganizationUpdatePayload
+     */
+    office: Office;
 
     /**
      * @type {FileInfo}
