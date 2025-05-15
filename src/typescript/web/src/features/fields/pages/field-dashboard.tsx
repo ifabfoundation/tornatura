@@ -30,19 +30,19 @@ export function FieldDashboard() {
         <Row>
           <Col md={6} xl={3}>
             <div className="cardlet">
-              <header>Tipologia</header>
+              <div className="cardlet-header">Tipologia</div>
               <div className="cardlet-content">{currentField?.harvest ?? ""}</div>
             </div>
           </Col>
           <Col md={6} xl={3}>
             <div className="cardlet">
-              <header>Dimensione del campo</header>
+              <div className="cardlet-header">Dimensione del campo</div>
               <div className="cardlet-content">{currentField?.area ?? ""} he</div>
             </div>
           </Col>
           <Col md={6} xl={3}>
             <div className="cardlet">
-              <header>Rilevamenti</header>
+              <div className="cardlet-header">Rilevamenti</div>
               <div className="cardlet-content">{detections.length}</div>
             </div>
           </Col>
@@ -57,8 +57,16 @@ export function FieldDashboard() {
         </Row>
         <Row className="mt-4">
           <Col xl={6}>
-            <Card onClick={() => navigate(`/companies/${companyId}/fields/${fieldId}/map`)}>
-              <Card.Header>Mappa del campo</Card.Header>
+            <Card>
+              <div className="cardlet-header">
+                <span>Mappa del campo</span>
+                <button
+                  className="slim-y narrow-x primary"
+                  onClick={() => navigate(`/companies/${companyId}/fields/${fieldId}/map`)}
+                >
+                  Espandi la mappa
+                </button>
+              </div>
               <Card.Img
                 variant="top"
                 src={`https://api.mapbox.com/styles/v1/mapbox/satellite-v9/static/geojson(${JSON.stringify(
@@ -69,8 +77,16 @@ export function FieldDashboard() {
           </Col>
           <Col xl={6}>
             <Card>
-              <Card.Header>Rilevamenti</Card.Header>
-              <Card.Body>
+              <div className="cardlet-header">
+                <span>Rilevamenti</span>
+                <button
+                  className="slim-y narrow-x primary"
+                  onClick={() => navigate(`/companies/${companyId}/fields/${fieldId}/detections`)}
+                >
+                  Tutti i rilevamenti
+                </button>
+              </div>
+              <Card.Body className="mt-0">
                 <Table responsive>
                   <tbody>
                     {detections.map((d: Detection, index) => {

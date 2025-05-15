@@ -75,7 +75,7 @@ function FieldFormStep1({ action, onNextClick }: FieldProps) {
       </div>
       <div className="input-row">
         <label>
-          Area (Ettari)
+          Area in ettari
           <input
             id="area"
             name="area"
@@ -133,7 +133,6 @@ const FieldFormStep2 = ({ action, onBackClick, onNextClick }: FieldProps) => {
     }
   }, []);
 
-
   React.useEffect(() => {
     if (mapContainerRef.current) {
       mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_API_TOKEN;
@@ -141,7 +140,9 @@ const FieldFormStep2 = ({ action, onBackClick, onNextClick }: FieldProps) => {
       mapRef.current = new mapboxgl.Map({
         container: mapContainerRef.current,
         style: "mapbox://styles/mapbox/satellite-v9",
-        center: currentPosition ? [currentPosition.lng, currentPosition.lat] : [12.5736108, 41.29246],
+        center: currentPosition
+          ? [currentPosition.lng, currentPosition.lat]
+          : [12.5736108, 41.29246],
         zoom: 9,
       });
 

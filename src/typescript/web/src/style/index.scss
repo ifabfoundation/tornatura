@@ -121,6 +121,20 @@ body {
 }
 
 // --------------------------------------------------------------------------------------------------
+// Mixins
+// --------------------------------------------------------------------------------------------------
+
+@mixin card-hover-effect {
+  cursor: pointer;
+  transition: all 0.15s;
+  &:hover {
+    box-shadow: 0 2px 30px 0 rgba($c-shadow, 0.25);
+    // transform: translate(2px, -2px);
+    transform: scale(1.02);
+  }
+}
+
+// --------------------------------------------------------------------------------------------------
 // inside App
 // --------------------------------------------------------------------------------------------------
 
@@ -248,6 +262,13 @@ body {
     &.wide {
       width: 100%;
     }
+    &.slim-y {
+      height: 30px;
+    }
+    &.narrow-x {
+      width: auto;
+      min-width: auto;
+    }
   }
 
   a.button + a.button,
@@ -272,6 +293,13 @@ body {
     padding: $space/2;
     border-radius: 10px;
     border: 0px solid $c-grey_4;
+  }
+
+  table.table-responsive {
+    td {
+      background-color: white;
+      border-bottom: 1px solid $c-grey_1;
+    }
   }
 
   .modal-bg {
@@ -754,6 +782,10 @@ body {
       align-items: center;
       padding-right: $space;
       box-shadow: 0 2px 10px 0 rgba($c-grey_6, 0.15);
+      &.dark {
+        background-color: $c-grey_6;
+        padding: 2px 20px 0 20px;
+      }
       .back {
         width: $header-h;
         min-width: $header-h;
@@ -888,7 +920,7 @@ ul.list-group {
   display: table;
   width: 100%;
   max-width: 100%;
-  border-spacing: 0 15px;
+  border-spacing: 0 5px;
   margin-left: auto;
   margin-right: auto;
   // @include media-breakpoint-up(xl) {
@@ -911,7 +943,8 @@ ul.list-group {
   header {
     display: table-row;
     .cell {
-      @include font-s;
+      @include font-s-label;
+      padding-bottom: 3px;
       color: $c-grey_6;
       pointer-events: none;
       span {
@@ -1089,6 +1122,18 @@ $hb-color-on-hover: #eee;
   width: 100%;
   overflow: hidden;
   margin-bottom: 20px;
+  .cardlet-header {
+    &,
+    span {
+      @include font-s-label;
+    }
+    height: 43px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid $c-grey_1;
+    padding: 0 7px 0 15px;
+  }
   .card-header {
     border: none;
     background-color: white;
@@ -1118,12 +1163,7 @@ $hb-color-on-hover: #eee;
 
   // only if cards are links = cliccable items
   &.with-hover-effect {
-    cursor: pointer;
-    transition: all 0.15s;
-    &:hover {
-      box-shadow: 0 2px 30px 0 rgba($c-shadow, 0.25);
-      transform: translate(2px, -2px);
-    }
+    @include card-hover-effect;
   }
   &.add-item {
     background-color: transparent;
@@ -1192,7 +1232,7 @@ $hb-color-on-hover: #eee;
   justify-content: space-between;
   align-items: stretch;
   transition: all 0.3s;
-  header {
+  .cardlet-header {
     @include font-s-label;
   }
   .cardlet-content {
@@ -1216,6 +1256,8 @@ $hb-color-on-hover: #eee;
   @include font-m-600;
   transition: all 0.3s;
   cursor: pointer;
+
+  @include card-hover-effect;
 
   // -------------------
   // from .button of class .accent

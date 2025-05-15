@@ -12364,7 +12364,7 @@ fieldset:disabled .btn {
 
 .font-m {
   font-family: "Inter", sans-serif;
-  font-size: 16px;
+  font-size: 15px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -12375,25 +12375,25 @@ fieldset:disabled .btn {
 
 @media (min-width: 576px) {
   .font-m {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
 @media (min-width: 768px) {
   .font-m {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
 @media (min-width: 992px) {
   .font-m {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
 @media (min-width: 1200px) {
   .font-m {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
@@ -12434,7 +12434,7 @@ fieldset:disabled .btn {
 
 .font-xl {
   font-family: "Inter", sans-serif;
-  font-size: 32px;
+  font-size: 27px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -12445,25 +12445,25 @@ fieldset:disabled .btn {
 
 @media (min-width: 576px) {
   .font-xl {
-    font-size: 32px;
+    font-size: 27px;
   }
 }
 
 @media (min-width: 768px) {
   .font-xl {
-    font-size: 32px;
+    font-size: 27px;
   }
 }
 
 @media (min-width: 992px) {
   .font-xl {
-    font-size: 32px;
+    font-size: 27px;
   }
 }
 
 @media (min-width: 1200px) {
   .font-xl {
-    font-size: 32px;
+    font-size: 27px;
   }
 }
 
@@ -12624,7 +12624,7 @@ ul li {
 
 body {
   font-family: "Inter", sans-serif;
-  font-size: 16px;
+  font-size: 15px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -12638,25 +12638,25 @@ body {
 
 @media (min-width: 576px) {
   body {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
 @media (min-width: 768px) {
   body {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
 @media (min-width: 992px) {
   body {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
 @media (min-width: 1200px) {
   body {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
@@ -12675,7 +12675,7 @@ body {
 
 #app {
   font-family: "Inter", sans-serif;
-  font-size: 16px;
+  font-size: 15px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -12691,25 +12691,25 @@ body {
 
 @media (min-width: 576px) {
   #app {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
 @media (min-width: 768px) {
   #app {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
 @media (min-width: 992px) {
   #app {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
 @media (min-width: 1200px) {
   #app {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
@@ -12797,7 +12797,7 @@ body {
 
 #app h3, #app .h3 {
   font-family: "Inter", sans-serif;
-  font-size: 16px;
+  font-size: 15px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -12809,31 +12809,31 @@ body {
 
 @media (min-width: 576px) {
   #app h3, #app .h3 {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
 @media (min-width: 768px) {
   #app h3, #app .h3 {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
 @media (min-width: 992px) {
   #app h3, #app .h3 {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
 @media (min-width: 1200px) {
   #app h3, #app .h3 {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
 #app h4, #app .h4 {
   font-family: "Inter", sans-serif;
-  font-size: 16px;
+  font-size: 15px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -12845,25 +12845,25 @@ body {
 
 @media (min-width: 576px) {
   #app h4, #app .h4 {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
 @media (min-width: 768px) {
   #app h4, #app .h4 {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
 @media (min-width: 992px) {
   #app h4, #app .h4 {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
 @media (min-width: 1200px) {
   #app h4, #app .h4 {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
@@ -12942,7 +12942,7 @@ body {
 
 #app p {
   font-family: "Inter", sans-serif;
-  font-size: 16px;
+  font-size: 15px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -12953,25 +12953,25 @@ body {
 
 @media (min-width: 576px) {
   #app p {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
 @media (min-width: 768px) {
   #app p {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
 @media (min-width: 992px) {
   #app p {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
 @media (min-width: 1200px) {
   #app p {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
@@ -12989,7 +12989,7 @@ body {
   outline: none;
   min-width: 140px;
   font-family: "Inter", sans-serif;
-  font-size: 16px;
+  font-size: 15px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -13004,7 +13004,7 @@ body {
   #app a.button,
   #app input[type="submit"],
   #app button {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
@@ -13012,7 +13012,7 @@ body {
   #app a.button,
   #app input[type="submit"],
   #app button {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
@@ -13020,7 +13020,7 @@ body {
   #app a.button,
   #app input[type="submit"],
   #app button {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
@@ -13028,7 +13028,7 @@ body {
   #app a.button,
   #app input[type="submit"],
   #app button {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
@@ -13136,6 +13136,19 @@ body {
   width: 100%;
 }
 
+#app a.button.slim-y,
+#app input[type="submit"].slim-y,
+#app button.slim-y {
+  height: 30px;
+}
+
+#app a.button.narrow-x,
+#app input[type="submit"].narrow-x,
+#app button.narrow-x {
+  width: auto;
+  min-width: auto;
+}
+
 #app a.button + a.button,
 #app a.button + input[type="submit"],
 #app a.button + button,
@@ -13189,6 +13202,11 @@ body {
   padding: 15px;
   border-radius: 10px;
   border: 0px solid #8b8b8b;
+}
+
+#app table.table-responsive td {
+  background-color: white;
+  border-bottom: 1px solid #efefef;
 }
 
 #app .modal-bg {
@@ -13420,7 +13438,7 @@ body {
   margin: 5px 0;
   border: 1px solid transparent;
   font-family: "Inter", sans-serif;
-  font-size: 16px;
+  font-size: 15px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -13437,7 +13455,7 @@ body {
   #app .form-row input,
   #app .form-row select,
   #app .form-row textarea {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
@@ -13448,7 +13466,7 @@ body {
   #app .form-row input,
   #app .form-row select,
   #app .form-row textarea {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
@@ -13459,7 +13477,7 @@ body {
   #app .form-row input,
   #app .form-row select,
   #app .form-row textarea {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
@@ -13470,7 +13488,7 @@ body {
   #app .form-row input,
   #app .form-row select,
   #app .form-row textarea {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
@@ -13687,7 +13705,7 @@ body {
   height: 77px;
   width: 100%;
   font-family: "Inter", sans-serif;
-  font-size: 16px;
+  font-size: 15px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -13707,25 +13725,25 @@ body {
 
 @media (min-width: 576px) {
   #app .context-selector select {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
 @media (min-width: 768px) {
   #app .context-selector select {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
 @media (min-width: 992px) {
   #app .context-selector select {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
 @media (min-width: 1200px) {
   #app .context-selector select {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
@@ -14016,7 +14034,7 @@ body {
   align-items: center;
   padding-left: 40px;
   font-family: "Inter", sans-serif;
-  font-size: 16px;
+  font-size: 15px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -14028,25 +14046,25 @@ body {
 
 @media (min-width: 576px) {
   #app .sidebar ul.menu-items li.menu-item a {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
 @media (min-width: 768px) {
   #app .sidebar ul.menu-items li.menu-item a {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
 @media (min-width: 992px) {
   #app .sidebar ul.menu-items li.menu-item a {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
 @media (min-width: 1200px) {
   #app .sidebar ul.menu-items li.menu-item a {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
@@ -14103,6 +14121,11 @@ body {
   #app .ui-right .headerbar {
     transition: none;
   }
+}
+
+#app .ui-right .headerbar.dark {
+  background-color: #1f1f1f;
+  padding: 2px 20px 0 20px;
 }
 
 #app .ui-right .headerbar .back {
@@ -14313,7 +14336,7 @@ ul.list-group li.list-group-item:hover {
   display: table;
   width: 100%;
   max-width: 100%;
-  border-spacing: 0 15px;
+  border-spacing: 0 5px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -14347,6 +14370,9 @@ ul.list-group li.list-group-item:hover {
   font-style: normal;
   font-stretch: normal;
   font-optical-sizing: auto;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding-bottom: 3px;
   color: #1f1f1f;
   pointer-events: none;
 }
@@ -14432,7 +14458,7 @@ ul.list-group li.list-group-item:hover {
 
 .component-table-cozy .data-row .cell {
   font-family: "Inter", sans-serif;
-  font-size: 16px;
+  font-size: 15px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -14443,25 +14469,25 @@ ul.list-group li.list-group-item:hover {
 
 @media (min-width: 576px) {
   .component-table-cozy .data-row .cell {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
 @media (min-width: 768px) {
   .component-table-cozy .data-row .cell {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
 @media (min-width: 992px) {
   .component-table-cozy .data-row .cell {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
 @media (min-width: 1200px) {
   .component-table-cozy .data-row .cell {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
@@ -14655,7 +14681,7 @@ ul.list-group li.list-group-item:hover {
 .nav-tabs .nav-link.active, .nav-tabs .nav-link.active:hover {
   color: black;
   font-family: "Inter", sans-serif;
-  font-size: 16px;
+  font-size: 15px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -14669,25 +14695,25 @@ ul.list-group li.list-group-item:hover {
 
 @media (min-width: 576px) {
   .nav-tabs .nav-link.active, .nav-tabs .nav-link.active:hover {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
 @media (min-width: 768px) {
   .nav-tabs .nav-link.active, .nav-tabs .nav-link.active:hover {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
 @media (min-width: 992px) {
   .nav-tabs .nav-link.active, .nav-tabs .nav-link.active:hover {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
 @media (min-width: 1200px) {
   .nav-tabs .nav-link.active, .nav-tabs .nav-link.active:hover {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
@@ -14699,6 +14725,57 @@ ul.list-group li.list-group-item:hover {
   margin-bottom: 20px;
 }
 
+.card .cardlet-header {
+  height: 43px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #efefef;
+  padding: 0 7px 0 15px;
+}
+
+.card .cardlet-header,
+.card .cardlet-header span {
+  font-family: "Inter", sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  line-height: 1.3em;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+@media (min-width: 576px) {
+  .card .cardlet-header,
+  .card .cardlet-header span {
+    font-size: 11px;
+  }
+}
+
+@media (min-width: 768px) {
+  .card .cardlet-header,
+  .card .cardlet-header span {
+    font-size: 11px;
+  }
+}
+
+@media (min-width: 992px) {
+  .card .cardlet-header,
+  .card .cardlet-header span {
+    font-size: 11px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .card .cardlet-header,
+  .card .cardlet-header span {
+    font-size: 11px;
+  }
+}
+
 .card .card-header {
   border: none;
   background-color: white;
@@ -14708,7 +14785,7 @@ ul.list-group li.list-group-item:hover {
   justify-content: flex-start;
   padding-left: 12px;
   font-family: "Inter", sans-serif;
-  font-size: 16px;
+  font-size: 15px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -14720,25 +14797,25 @@ ul.list-group li.list-group-item:hover {
 
 @media (min-width: 576px) {
   .card .card-header {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
 @media (min-width: 768px) {
   .card .card-header {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
 @media (min-width: 992px) {
   .card .card-header {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
 @media (min-width: 1200px) {
   .card .card-header {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
@@ -14768,7 +14845,7 @@ ul.list-group li.list-group-item:hover {
 
 .card.with-hover-effect:hover {
   box-shadow: 0 2px 30px 0 rgba(31, 31, 31, 0.25);
-  transform: translate(2px, -2px);
+  transform: scale(1.02);
 }
 
 .card.add-item {
@@ -14778,7 +14855,7 @@ ul.list-group li.list-group-item:hover {
   min-height: 300px;
   height: calc(100% - 20px);
   font-family: "Inter", sans-serif;
-  font-size: 16px;
+  font-size: 15px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -14790,25 +14867,25 @@ ul.list-group li.list-group-item:hover {
 
 @media (min-width: 576px) {
   .card.add-item {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
 @media (min-width: 768px) {
   .card.add-item {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
 @media (min-width: 992px) {
   .card.add-item {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
 @media (min-width: 1200px) {
   .card.add-item {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
@@ -14904,7 +14981,7 @@ ul.list-group li.list-group-item:hover {
   transition: all 0.3s;
 }
 
-.cardlet header {
+.cardlet .cardlet-header {
   font-family: "Inter", sans-serif;
   font-size: 11px;
   letter-spacing: 0.02em;
@@ -14918,32 +14995,32 @@ ul.list-group li.list-group-item:hover {
 }
 
 @media (min-width: 576px) {
-  .cardlet header {
+  .cardlet .cardlet-header {
     font-size: 11px;
   }
 }
 
 @media (min-width: 768px) {
-  .cardlet header {
+  .cardlet .cardlet-header {
     font-size: 11px;
   }
 }
 
 @media (min-width: 992px) {
-  .cardlet header {
+  .cardlet .cardlet-header {
     font-size: 11px;
   }
 }
 
 @media (min-width: 1200px) {
-  .cardlet header {
+  .cardlet .cardlet-header {
     font-size: 11px;
   }
 }
 
 .cardlet .cardlet-content {
   font-family: "Inter", sans-serif;
-  font-size: 32px;
+  font-size: 27px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -14958,25 +15035,25 @@ ul.list-group li.list-group-item:hover {
 
 @media (min-width: 576px) {
   .cardlet .cardlet-content {
-    font-size: 32px;
+    font-size: 27px;
   }
 }
 
 @media (min-width: 768px) {
   .cardlet .cardlet-content {
-    font-size: 32px;
+    font-size: 27px;
   }
 }
 
 @media (min-width: 992px) {
   .cardlet .cardlet-content {
-    font-size: 32px;
+    font-size: 27px;
   }
 }
 
 @media (min-width: 1200px) {
   .cardlet .cardlet-content {
-    font-size: 32px;
+    font-size: 27px;
   }
 }
 
@@ -14991,7 +15068,7 @@ ul.list-group li.list-group-item:hover {
   justify-content: center;
   padding: 0 10px;
   font-family: "Inter", sans-serif;
-  font-size: 16px;
+  font-size: 15px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -15001,6 +15078,8 @@ ul.list-group li.list-group-item:hover {
   font-weight: 600;
   transition: all 0.3s;
   cursor: pointer;
+  cursor: pointer;
+  transition: all 0.15s;
   background-color: #3d401a;
   color: #eaff00;
   text-decoration: none;
@@ -15008,26 +15087,31 @@ ul.list-group li.list-group-item:hover {
 
 @media (min-width: 576px) {
   .cardlet-button {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
 @media (min-width: 768px) {
   .cardlet-button {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
 @media (min-width: 992px) {
   .cardlet-button {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
 @media (min-width: 1200px) {
   .cardlet-button {
-    font-size: 16px;
+    font-size: 15px;
   }
+}
+
+.cardlet-button:hover {
+  box-shadow: 0 2px 30px 0 rgba(31, 31, 31, 0.25);
+  transform: scale(1.02);
 }
 
 .cardlet-button:hover {

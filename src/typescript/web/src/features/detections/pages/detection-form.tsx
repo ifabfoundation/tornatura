@@ -33,7 +33,7 @@ function DetectionFormStep3({ action, onBackClick, onNextClick }: DetectionProps
     <form onSubmit={formik.handleSubmit} autoComplete="off">
       <div className="input-row">
         <label>
-          Nome Malattia
+          Nome malattia
           <input
             id="desease"
             name="desease"
@@ -50,12 +50,12 @@ function DetectionFormStep3({ action, onBackClick, onNextClick }: DetectionProps
       </div>
       <div className="input-row">
         <label>
-          Nome parasita
+          Nome parassita
           <input
             id="parasite"
             name="parasite"
             type="text"
-            placeholder="Nome parasita"
+            placeholder="Nome parassita"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.parasite}

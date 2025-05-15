@@ -25,7 +25,7 @@ export function FieldDetections() {
         <Row>
           <Col>
             <div className="cardlet">
-              <header>RILEVAMENTI</header>
+              <div className="cardlet-header">RILEVAMENTI</div>
               <div className="cardlet-content">{detections.length}</div>
             </div>
           </Col>
