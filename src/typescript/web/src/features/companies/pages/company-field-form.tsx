@@ -31,9 +31,8 @@ function FieldFormStep1({ action, onNextClick }: FieldProps) {
       harvest: Yup.string().required("Campo necessario"),
       area: Yup.number().required("Campo necessario"),
     }),
-    onSubmit: (values, { setSubmitting, resetForm }) => {
+    onSubmit: (values, { setSubmitting }) => {
       onNextClick(values);
-      resetForm({});
       setSubmitting(false);
     },
   });
@@ -64,7 +63,7 @@ function FieldFormStep1({ action, onNextClick }: FieldProps) {
             id="harvest"
             name="harvest"
             type="text"
-            placeholder="Tipo di coltura"
+            placeholder="Coltura del campo"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.harvest}
@@ -76,7 +75,7 @@ function FieldFormStep1({ action, onNextClick }: FieldProps) {
       </div>
       <div className="input-row">
         <label>
-          Area
+          Area (Ettari)
           <input
             id="area"
             name="area"
@@ -121,6 +120,19 @@ const FieldFormStep2 = ({ action, onBackClick, onNextClick }: FieldProps) => {
   const mapContainerRef = React.useRef<HTMLDivElement>(null);
   const mapRef = React.useRef<any>(null);
   const [map, setMap] = React.useState<Point[]>([]);
+  const [currentPosition, setCurrentPosition] = React.useState<Point>();
+
+  React.useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        setCurrentPosition({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        });
+      });
+    }
+  }, []);
+
 
   React.useEffect(() => {
     if (mapContainerRef.current) {
@@ -129,7 +141,7 @@ const FieldFormStep2 = ({ action, onBackClick, onNextClick }: FieldProps) => {
       mapRef.current = new mapboxgl.Map({
         container: mapContainerRef.current,
         style: "mapbox://styles/mapbox/satellite-v9",
-        center: [12.5736108, 41.29246],
+        center: currentPosition ? [currentPosition.lng, currentPosition.lat] : [12.5736108, 41.29246],
         zoom: 5,
       });
 
@@ -172,7 +184,7 @@ const FieldFormStep2 = ({ action, onBackClick, onNextClick }: FieldProps) => {
     <>
       <h4>Disegna la mappa del campo</h4>
       <hr />
-      <div ref={mapContainerRef} id="map" style={{ height: "450px" }}></div>
+      <div ref={mapContainerRef} id="map" style={{ height: "400px" }}></div>
       <hr />
       <div className="buttons-wrapper">
         <button className="secondary" onClick={onBackClick}>

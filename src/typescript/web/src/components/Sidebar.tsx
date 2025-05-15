@@ -111,7 +111,7 @@ export default function SideBar() {
   React.useEffect(() => {
     let entry;
     for (let item of menuEntries) {
-      if (location.pathname.includes(item.path)) {
+      if (location.pathname === item.path) {
         entry = item.id;
         setCurrentEntry(entry);
         break;
@@ -119,7 +119,7 @@ export default function SideBar() {
     }
 
     for (let item of menuBottomEntries) {
-      if (location.pathname.includes(item.path)) {
+      if (location.pathname === item.path) {
         entry = item.id;
         setCurrentEntry(entry);
         break;

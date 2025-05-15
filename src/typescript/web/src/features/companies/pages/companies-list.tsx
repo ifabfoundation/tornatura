@@ -1,4 +1,3 @@
-import Icon from "../../../components/Icon";
 import { Card, Col, Container, Row } from "react-bootstrap";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { companiesSelectors } from "../state/companies-slice";
@@ -10,8 +9,6 @@ export function CompaniesList() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const companies = useAppSelector(companiesSelectors.selectAllCompanies);
-  const numCampi = 0;
-  const numRilevamenti = 0;
 
   React.useEffect(() => {
     dispatch(headerbarActions.setTitle({ title: "Aziende gestite", subtitle: "Subtitle" }));
@@ -35,14 +32,12 @@ export function CompaniesList() {
                 </Card.Header>
                 <Card.Img
                   variant="top"
-                  src={
-                    /* company.cover */ "https://tornatura.it/tmp-storage/assets/images/default-card-image.png"
-                  }
+                  src={company.cover}
                 />
-                <div className="llist-group">
-                  <div className="llist-group-item">{"N campi"}</div>
-                  <div className="llist-group-item">{"N rilevamenti"}</div>
-                </div>
+                {<div className="llist-group">
+                  <div className="llist-group-item">{company.office.city}</div>
+                  <div className="llist-group-item">{company.office.state}</div>
+                </div>}
               </Card>
             </Col>
           );

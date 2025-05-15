@@ -301,7 +301,7 @@ export function DetectionForm() {
   };
 
   const handleBackClick = async () => {
-    if (step > 2) {
+    if (step > 1) {
       setStep(step - 1);
       setAction("Avanti");
     }

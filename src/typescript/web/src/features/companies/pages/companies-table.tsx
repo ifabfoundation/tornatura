@@ -20,28 +20,43 @@ export function CompanyTable() {
 
   const columns: TableColumn[] = [
     {
-      headerText: "Nome",
+      headerText: "Ragione Sociale",
       id: "name",
-      sortable: true,
-      style: "normal",
-      type: "text",
-    }, {
-      headerText: "",
-      id: "description",
-      sortable: false,
-      style: "small-grey",
-      type: "text",
-    }, 
-    {
-      headerText: "Email",
-      id: "email",
       sortable: true,
       style: "normal",
       type: "text",
     },
     {
-      headerText: "Telefono",
-      id: "phone",
+      headerText: "Partita Iva",
+      id: "piva",
+      sortable: true,
+      style: "normal",
+      type: "text",
+    },
+    {
+      headerText: "Regione sede legale",
+      id: "state",
+      sortable: true,
+      style: "normal",
+      type: "text",
+    },
+    {
+      headerText: "Comune sede legale",
+      id: "city",
+      sortable: true,
+      style: "normal",
+      type: "text",
+    },
+    {
+      headerText: "Legale Rappresentante",
+      id: "rapresentative",
+      sortable: true,
+      style: "normal",
+      type: "text",
+    },
+    {
+      headerText: "Contatto Rappresentante",
+      id: "rapresentativeContact",
       sortable: true,
       style: "normal",
       type: "text",
@@ -53,7 +68,11 @@ export function CompanyTable() {
   const data = companies.map((c) => { 
     return {
       "name": c.name,
-      "description": c.description,
+      "piva": c.piva,
+      "state": c.office.state,
+      "city": c.office.city,
+      "rapresentative": c.rapresentative,
+      "rapresentativeContact": c.rapresentativeContact,
       "email": c.contacts.email,
       "phone": c.contacts.phone
     }
