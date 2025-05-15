@@ -1,7 +1,19 @@
 <html>
-<body>
-    <h1>Buongiorno {{realmName}}</h1>
-    <p>Benvenuto in Tornatura, la tua password per accedere: {{ pwd }}</p>
-    <p><a href="{{link}}">Vai su tornatura</a></p>
+<head>
+  <!-- Embed web font with fallback -->
+  <style type="text/css">
+    /* For supported email clients */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+    *, body, table, td, a {
+      font-family: 'Inter', Arial, sans-serif;
+    }
+  </style>
+</head>
+<body style="font-family: 'Inter', Arial, sans-serif;">
+    <img style="width: 150px;" width="150" src="https://tornatura.it/tmp-storage/assets/images/logo-color-black.png" />
+    <h3>Ciao {{realmName}}</h3>
+    <p>Benvenuto in Tornatura!</p>
+    <p>La tua password per accedere: {{ pwd }}</p>
+    <p><a style="padding: 10px 15px; border-radius: 5px; text-decoration: none; display: inline-block; background-color: #3D401A; color: #EAFF00;" href="{{link}}">Accedi</a></p>
 </body>
 </html>
