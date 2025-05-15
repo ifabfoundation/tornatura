@@ -15,7 +15,7 @@ export function Welcome() {
         <div className="content-area">
           <div className="content">
             <div className="spacer" style={{ marginTop: "25vh" }}></div>
-            <Container>
+            <Container className="welcome">
               <Row>
                 <Col></Col>
                 <Col md="auto" className="text-center">
