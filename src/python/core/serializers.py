@@ -41,6 +41,7 @@ class User(BaseModel):
     enabled: bool
     accountType: AccountTypeEnum
     phone: str
+    piva: str
     organizations: List[UserOrgananizationMembership] = []
     creationTime: int
 
@@ -63,10 +64,18 @@ class Contacts(BaseModel):
     email: str
     phone : str
 
+class Office(BaseModel):
+    state: str
+    city : str
+
 class Organization(BaseModel):
     orgId: str
     name: str
-    description: str
+    piva: str
+    rapresentative: str
+    rapresentativeContact: str
+    legalForm: str
+    office: Office
     logo: str
     cover: str
     contacts: Contacts
@@ -100,11 +109,18 @@ class PaginatedResponse(BaseModel):
     
 class OrganizationCreatePayload(BaseModel):
     name: str
-    description: str
+    piva: str
+    rapresentative: str
+    rapresentativeContact: str
+    legalForm: str
+    office: Office
     contacts: Contacts
 
 class OrganizationUpdatePayload(BaseModel):
-    description: str
+    rapresentative: str
+    rapresentativeContact: str
+    legalForm: str
+    office: Office
     logo: FileInfo
     cover: FileInfo
     contacts: Contacts
@@ -129,6 +145,7 @@ class UserCreatePayload(BaseModel):
     email: str
     accountType: AccountTypeEnum
     phone: str
+    piva: Optional[str] = None
     organization: Optional[OrganizationCreatePayload] = None
 
 class FeedbackCreatePayload(BaseModel):

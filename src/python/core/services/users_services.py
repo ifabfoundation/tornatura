@@ -1,6 +1,8 @@
 from enum import Enum
 import json
 import os
+import random
+import string
 from jinja2 import Environment, FileSystemLoader
 from keycloak import KeycloakAdmin, KeycloakOpenID
 import phasetwo
@@ -54,6 +56,7 @@ class UserServices:
                 email=item.get("email"),
                 emailVerified=item.get("emailVerified"),
                 phone=item.get("attributes", {}).pop("phone", [''])[0],
+                piva=item.get("attributes", {}).pop("piva", [''])[0],
                 accountType=item.get("accountType"),
                 organizations=item.get("organizations", []),
                 creationTime=item.get("createdTimestamp")
@@ -189,17 +192,23 @@ class UserServices:
         data.pop("accountType")
         data.pop("phone")
         data.pop("organization")
+        piva = data.pop("piva")
+        piva = piva if piva is not None else ""
         data.update({
             "username": payload.email,
             "enabled": True,
             "emailVerified": True,
             "groups": ["tornatura"],
             "attributes": {
-                "phone": [payload.phone]
+                "phone": [payload.phone],
+                "piva": [piva],
             }
         })
         user_id = keycloak_admin.create_user(data, True)
-        keycloak_admin.set_user_password(user_id, "tornatura", temporary=True)
+
+        length = 10
+        random_string = ''.join(random.choices(string.ascii_letters + string.digits, k=length))
+        keycloak_admin.set_user_password(user_id, random_string, temporary=True)
         
         if AccountTypeEnum.agronomist == payload.accountType:
             rolename =  ClientRole.Agronomist
@@ -214,7 +223,7 @@ class UserServices:
         })
 
         template = env.get_template('email_registration.html')
-        email_body = template.render(realName=user["firstName"], pwd="tornatura", link="https://app.tornatura.it")
+        email_body = template.render(realName=user["firstName"], pwd=random_string, link=config.APIConfig.FRONTEND_URL)
         send_email(receiver_email=user["email"], subject="Benvenuto su Tornatura", email_body=email_body)
         
         return self._serialize(user)

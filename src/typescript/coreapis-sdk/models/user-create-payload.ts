@@ -53,6 +53,12 @@ export interface UserCreatePayload {
     phone: string;
 
     /**
+     * @type {string}
+     * @memberof UserCreatePayload
+     */
+    piva?: string | null;
+
+    /**
      * @type {OrganizationCreatePayload}
      * @memberof UserCreatePayload
      */
