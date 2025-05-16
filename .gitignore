@@ -15,4 +15,5 @@
 
 #typescript
 node_modules
-pippos
+
+.DS_Store

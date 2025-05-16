@@ -466,7 +466,7 @@ export function Signup() {
         piva: data.piva,
         phone: data.phone,
       };
-      if (data.accountType === AccountTypeEnum.Standard) {
+      if (formData.accountType === AccountTypeEnum.Standard) {
         setFormData(payload);
         setAction("Iscriviti");
         setStep(step + 1);
