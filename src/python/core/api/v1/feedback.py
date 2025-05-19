@@ -5,6 +5,7 @@ from core.permissions import IsAdmin, IsAuthenticated
 from core.security import SecurityChecker
 from core.serializers import Feedback, FeedbackCreatePayload, PaginatedResponse
 from core.services.feedback_services import FeedbackServices
+from core.services.users_services import UserServices
 from core.utils import paginate
 
 
@@ -41,5 +42,7 @@ async def add_feedback(
     payload: FeedbackCreatePayload, 
     ) -> Feedback:
     feedback_services = FeedbackServices()
-    feedback = feedback_services.create(payload)
+    user_services = UserServices()
+    user = user_services.get(token_info)
+    feedback = feedback_services.create(user, payload)
     return feedback

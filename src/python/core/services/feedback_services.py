@@ -5,7 +5,7 @@ from jinja2 import Environment, FileSystemLoader
 from core import config
 from core.decorators import catch_api_exception
 from core.models import FeedbackModel
-from core.serializers import Feedback, FeedbackCreatePayload
+from core.serializers import Feedback, FeedbackCreatePayload, User
 from core.utils import send_email
 
 env = Environment(loader=FileSystemLoader(os.path.join(config.APIConfig.BASE_DIR, 'templates/')))
@@ -45,20 +45,24 @@ class FeedbackServices:
         return self._serialize(detections, many=True)
     
     @catch_api_exception
-    def create(self, payload: FeedbackCreatePayload):
+    def create(self, user: User, payload: FeedbackCreatePayload):
         """Create feedback"""
         data = payload.model_dump()
         current_time = int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp() * 1000)
 
         data.update({
+            "author": user.id,
             "creationTime": current_time,
             "lastUpdateTime": current_time
         })
 
         feedback = self.model(**data).save()
-        
         template = env.get_template('email_feedback.html')
-        email_body = template.render()
+        email_body = template.render(name=user.firstName, 
+                                     email=user.email, 
+                                     phone=user.phone, 
+                                     message=feedback.feedback, 
+                                     link=config.APIConfig.FRONTEND_URL)
         send_email(receiver_email=config.APIConfig.SMTP_EMAIL, subject="Nuovo Feedback", email_body=email_body)
 
         return self._serialize(feedback)
