@@ -13113,6 +13113,7 @@ body {
 #app input[type="submit"].secondary:hover,
 #app button.secondary:hover {
   background-color: #bbbbbb;
+  border-color: #bbbbbb;
 }
 
 #app a.button.secondary:active,
@@ -13122,6 +13123,7 @@ body {
 #app button.secondary:active,
 #app button.secondary .active {
   background-color: #8b8b8b;
+  border-color: #8b8b8b;
 }
 
 #app a.button.wider,
@@ -14254,7 +14256,7 @@ body {
 }
 
 #app .ui-right .content-area .content {
-  padding: 20px;
+  padding: 20px 10px;
 }
 
 @media (min-width: 1200px) {
@@ -15319,10 +15321,6 @@ ul.list-group li.list-group-item:hover {
   background-color: #1f1f1f;
   color: white;
   border-color: #1f1f1f;
-}
-
-.ui-right .content-area .content .container {
-  margin: 0 -10px;
 }
 
 .CodeMirror .CodeMirror-scroll {

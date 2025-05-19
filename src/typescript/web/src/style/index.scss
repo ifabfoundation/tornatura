@@ -249,10 +249,12 @@ body {
       color: $c-dark;
       &:hover {
         background-color: $c-grey_3;
+        border-color: $c-grey_3;
       }
       &:active,
       .active {
         background-color: $c-grey_4;
+        border-color: $c-grey_4;
       }
       text-decoration: none;
     }
@@ -835,7 +837,7 @@ body {
       flex-grow: 1;
       overflow-y: scroll;
       .content {
-        padding: 20px;
+        padding: 20px 10px;
         @include media-breakpoint-up(xl) {
           padding-left: $space;
           padding-right: $space;
@@ -1476,9 +1478,9 @@ $dark-1: #3a4a7c;
 // Layout
 // ------------------------------------------------------------------------
 
-.ui-right .content-area .content .container {
-  margin: 0 -10px;
-}
+// .ui-right .content-area .content .container {
+//   margin: 0 -10px;
+// }
 
 // .container {
 //   margin-left: $space;
