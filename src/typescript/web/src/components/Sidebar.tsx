@@ -107,6 +107,7 @@ export default function SideBar() {
   const currentUser = useAppSelector(userSelectors.selectCurrentUser);
   const { menuEntries, menuBottomEntries } = useAppSelector(SidebarSelectors.selectMenuEntries);
   const [currentEntry, setCurrentEntry] = React.useState<string>("companies");
+  const mobileOpen = useAppSelector((state) => state.sidebar.mobileOpen);
 
   React.useEffect(() => {
     let entry;
@@ -129,7 +130,7 @@ export default function SideBar() {
 
   return (
     <Fragment>
-      <div className="sidebar">
+      <div className={"sidebar" + (mobileOpen ? " open" : "")}>
         <header style={{ zIndex: 5 }}>
           <div className="flex-grow-1 mt-1">
             <img src={logo} className="logo" alt="logo" width="135px" />

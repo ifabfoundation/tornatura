@@ -134,9 +134,7 @@ function App() {
         if (profile.organizations) {
           for (let org of profile.organizations) {
             await dispatch(companiesActions.getCompanyAction(org.id));
-            const response = await dispatch(
-              fieldsActions.fetchCompanyFieldsAction(org.id)
-            );
+            const response = await dispatch(fieldsActions.fetchCompanyFieldsAction(org.id));
             const responseData = await unwrapResult(response);
             const fields = responseData.data as AgriField[];
             for (let field of fields) {

@@ -36,7 +36,9 @@ export function FieldDashboard() {
           </Col>
           <Col md={6} xl={3}>
             <div className="cardlet">
-              <div className="cardlet-header">Dimensione del campo</div>
+              <div className="cardlet-header">
+                Dimensione<span className="only-dsk"> del campo</span>
+              </div>
               <div className="cardlet-content">{currentField?.area ?? ""} he</div>
             </div>
           </Col>

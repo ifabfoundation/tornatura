@@ -29,7 +29,7 @@ $c-grey_6: #1f1f1f;
 
 // color assignments
 $c-shadow: $c-grey_6;
-$c-sidebar_vibrant: $c-dark;
+$c-sidebar_bg: $c-dark;
 $c-sidebar_dark: $c-yelo_dark;
 $c-sidebar_light: $c-yelo;
 $c-selection: $c-green;
@@ -81,6 +81,17 @@ $ms-sidebar-transition: 100ms;
 }
 .no-u {
   text-decoration: none;
+}
+
+.only-dsk {
+  @include media-breakpoint-down(sm) {
+    display: none;
+  }
+}
+.only-mob {
+  @include media-breakpoint-up(md) {
+    display: none;
+  }
 }
 
 .space-1 {
@@ -554,10 +565,27 @@ body {
     left: 0;
     right: 0;
     height: $header-h;
-    background-color: $c-sidebar_dark;
+    background-color: $c-sidebar_bg;
+    color: white;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    .logo-wrapper {
+      width: 50px;
+      padding: 7px 0 0 12px;
+      img {
+        width: 24px;
+      }
+    }
+    .title {
+      @include font-m-600;
+    }
+    .hamburger-wrapper {
+      width: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
   }
 
   .sidebar {
@@ -567,19 +595,22 @@ body {
     position: relative;
     @include media-breakpoint-down(sm) {
       position: fixed;
+      width: 100vw;
+      top: 0;
+      bottom: 0;
+      z-index: 5;
+      right: -110vw;
+      opacity: 0;
+      transition: all 0.3s;
       &.open {
-        left: 0;
         right: 0;
-        top: 0;
-        bottom: 0;
-        z-index: 5;
+        opacity: 1;
       }
     }
-    background-color: $c-sidebar_vibrant;
+    background-color: $c-sidebar_bg;
     display: flex;
     flex-flow: column nowrap;
-    transition: width $ms-sidebar-transition,
-      background-color $ms-sidebar-transition;
+    transition: width $ms-sidebar-transition, background-color $ms-sidebar-transition;
 
     header {
       height: $header-h;
@@ -678,7 +709,7 @@ body {
         pointer-events: none;
       }
       @include transition(background-color $ms-sidebar-transition);
-      background-color: $c-sidebar_vibrant;
+      background-color: $c-sidebar_bg;
     }
 
     &.double {
@@ -710,7 +741,7 @@ body {
       &.open {
         background-color: $c-sidebar_dark;
         .level-1 {
-          background-color: $c-sidebar_vibrant;
+          background-color: $c-sidebar_bg;
           width: 200px;
           .menu-item {
             .text {
@@ -726,7 +757,7 @@ body {
           opacity: 0.4;
         }
         .hamburger-col {
-          background-color: $c-sidebar_vibrant;
+          background-color: $c-sidebar_bg;
         }
       }
     }
@@ -1006,10 +1037,7 @@ ul.list-group {
     height: 60px;
     background-color: white;
     box-shadow: 0 2px 10px 0 rgba($c-shadow, 0.05);
-    @include transition(
-      box-shadow 300ms,
-      background-color $ms-sidebar-transition
-    );
+    @include transition(box-shadow 300ms, background-color $ms-sidebar-transition);
     &.clickable {
       cursor: pointer;
       &:hover {
