@@ -1,22 +1,21 @@
-
-import { createSlice } from '@reduxjs/toolkit';
-import { RootState } from '../../../store';
-import { MenuItemEntry } from '../../../components/Sidebar';
-
+import { createSlice } from "@reduxjs/toolkit";
+import { RootState } from "../../../store";
+import { MenuItemEntry } from "../../../components/Sidebar";
 
 interface SidebarState {
   menuEntries: MenuItemEntry[];
   menuBottomEntries: MenuItemEntry[];
+  mobileOpen: boolean;
 }
 
 const initialState: SidebarState = {
   menuEntries: [],
-  menuBottomEntries: []
+  menuBottomEntries: [],
+  mobileOpen: false,
 };
 
-
 export const sidebarSlice = createSlice({
-  name: 'sidebar',
+  name: "sidebar",
   initialState: initialState,
   reducers: {
     setMenuEntries: (state, action) => {
@@ -24,7 +23,10 @@ export const sidebarSlice = createSlice({
     },
     setMenuBottomEntries: (state, action) => {
       state.menuBottomEntries = action.payload;
-    }
+    },
+    setMobileOpen: (state, action) => {
+      state.mobileOpen = action.payload;
+    },
   },
 });
 
@@ -35,7 +37,7 @@ export const SidebarSelectors = {
 export const SidebarActions = {
   setMenuEntriesAction: sidebarSlice.actions.setMenuEntries,
   setMenuBottomEntriesAction: sidebarSlice.actions.setMenuBottomEntries,
+  setMenuMobileOpen: sidebarSlice.actions.setMobileOpen,
 };
 
 export const sidebarReducer = sidebarSlice.reducer;
-

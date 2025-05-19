@@ -8,6 +8,7 @@ import { userActions, userSelectors } from "./features/users/state/user-slice";
 import { Navigate, Outlet, useParams } from "react-router-dom";
 import TopBar from "./components/Topbar";
 import SideBar, { MenuItemEntry } from "./components/Sidebar";
+import MobileHeaderBar from "./components/MobileHeaderBar";
 import { companiesActions } from "./features/companies/state/companies-slice";
 import logo from "./assets/images/logo.png";
 import { AccountTypeEnum, AgriField } from "@tornatura/coreapis";
@@ -100,6 +101,7 @@ function MainApp() {
   return (
     <div id="app" className="main-app">
       <SideBar />
+      <MobileHeaderBar />
       <div className="ui-right">
         <TopBar /* showBackButton */ />
         <div className="content-area">
@@ -132,12 +134,17 @@ function App() {
         if (profile.organizations) {
           for (let org of profile.organizations) {
             await dispatch(companiesActions.getCompanyAction(org.id));
-            const response = await dispatch(fieldsActions.fetchCompanyFieldsAction(org.id));
+            const response = await dispatch(
+              fieldsActions.fetchCompanyFieldsAction(org.id)
+            );
             const responseData = await unwrapResult(response);
             const fields = responseData.data as AgriField[];
             for (let field of fields) {
               await dispatch(
-                detectionsActions.fetchFieldDetectionsAction({ orgId: org.id, fieldId: field.id })
+                detectionsActions.fetchFieldDetectionsAction({
+                  orgId: org.id,
+                  fieldId: field.id,
+                })
               );
             }
           }

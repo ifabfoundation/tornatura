@@ -544,15 +544,42 @@ body {
   // Components
   // --------------------------------------------------------------------------------------------------
 
+  .mobile-headerbar {
+    z-index: 6;
+    @include media-breakpoint-up(md) {
+      display: none;
+    }
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: $header-h;
+    background-color: $c-sidebar_dark;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
   .sidebar {
     width: 320px;
     min-width: 320px;
     bottom: 0;
+    position: relative;
+    @include media-breakpoint-down(sm) {
+      position: fixed;
+      &.open {
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        z-index: 5;
+      }
+    }
     background-color: $c-sidebar_vibrant;
     display: flex;
     flex-flow: column nowrap;
-    position: relative;
-    @include transition(width $ms-sidebar-transition, background-color $ms-sidebar-transition);
+    transition: width $ms-sidebar-transition,
+      background-color $ms-sidebar-transition;
 
     header {
       height: $header-h;
@@ -597,6 +624,7 @@ body {
     .level-1 {
       z-index: 2;
       position: absolute; // fixed
+      overflow-y: scroll;
       top: $header-h;
       left: 0;
       bottom: 0;
@@ -978,7 +1006,10 @@ ul.list-group {
     height: 60px;
     background-color: white;
     box-shadow: 0 2px 10px 0 rgba($c-shadow, 0.05);
-    @include transition(box-shadow 300ms, background-color $ms-sidebar-transition);
+    @include transition(
+      box-shadow 300ms,
+      background-color $ms-sidebar-transition
+    );
     &.clickable {
       cursor: pointer;
       &:hover {
