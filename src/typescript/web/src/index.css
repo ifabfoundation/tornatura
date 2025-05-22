@@ -13851,9 +13851,9 @@ body {
 @media (max-width: 575.98px) {
   #app .sidebar {
     position: fixed;
-    width: 100vw;
     top: 0;
     bottom: 0;
+    width: 100vw;
     z-index: 5;
     right: -110vw;
     opacity: 0;

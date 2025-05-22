@@ -593,11 +593,16 @@ body {
     min-width: 320px;
     bottom: 0;
     position: relative;
+
+    // --- mobile sidebar
+    // @include media-breakpoint-down(xs) {
+    //   width: 100vw;
+    // }
     @include media-breakpoint-down(sm) {
       position: fixed;
-      width: 100vw;
       top: 0;
       bottom: 0;
+      width: 100vw;
       z-index: 5;
       right: -110vw;
       opacity: 0;
@@ -1553,6 +1558,17 @@ $dark-1: #3a4a7c;
 //     max-width: 100%;
 //   }
 // }
+
+// Bootstrap React Breakpoints
+// ------------------ ------------ ----------
+// Breakpoint         Class infix  Dimensions
+// ------------------ ------------ ----------
+// X-Small            None         <576px
+// Small              sm           ≥576px
+// Medium             md           ≥768px
+// Large              lg           ≥992px
+// Extra large        xl           ≥1200px
+// Extra extra large  xxl          ≥1400px
 
 // ---------------------------------------------------------------------------
 // Other external
