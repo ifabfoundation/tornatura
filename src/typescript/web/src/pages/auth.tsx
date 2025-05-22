@@ -37,13 +37,16 @@ function SignupStep3({ action, onBackClick, onNextClick }: SignupProps) {
       rappresentativeContact: Yup.string().required("Campo obbligatorio"),
     }),
     onSubmit: (values, { setSubmitting, resetForm }) => {
-      onNextClick(values).then((_) => {
-        resetForm({});
-      } ).catch((_) => {
-        setSubmitting(false);
-      }).finally(() => {
-        setSubmitting(false);
-      })
+      onNextClick(values)
+        .then((_) => {
+          resetForm({});
+        })
+        .catch((_) => {
+          setSubmitting(false);
+        })
+        .finally(() => {
+          setSubmitting(false);
+        });
     },
   });
 
@@ -234,7 +237,7 @@ function SignupStep2({ formData, action, onBackClick, onNextClick }: SignupProps
     }),
     onSubmit: (values, { setSubmitting, setErrors }) => {
       if (!values.piva && formData.accountType === AccountTypeEnum.Agronomist) {
-        setErrors({ "piva": "Campo obbligatorio" });
+        setErrors({ piva: "Campo obbligatorio" });
       } else {
         onNextClick(values);
       }
@@ -294,23 +297,25 @@ function SignupStep2({ formData, action, onBackClick, onNextClick }: SignupProps
           <div className="error">{formik.errors.email}</div>
         ) : null}
       </div>
-      {formData.accountType === AccountTypeEnum.Agronomist && <div className="input-row">
-        <label>
-          Partita Iva
-          <input
-            id="piva"
-            name="piva"
-            type="text"
-            placeholder="P.IVA"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.piva}
-          />
-        </label>
-        {formik.touched.piva && formik.errors.piva ? (
-          <div className="error">{formik.errors.piva}</div>
-        ) : null}
-      </div>}
+      {formData.accountType === AccountTypeEnum.Agronomist && (
+        <div className="input-row">
+          <label>
+            Partita Iva
+            <input
+              id="piva"
+              name="piva"
+              type="text"
+              placeholder="P.IVA"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.piva}
+            />
+          </label>
+          {formik.touched.piva && formik.errors.piva ? (
+            <div className="error">{formik.errors.piva}</div>
+          ) : null}
+        </div>
+      )}
       <div className="input-row">
         <label>
           Telefono
@@ -482,7 +487,7 @@ export function Signup() {
           legalForm: data.legalForm,
           office: {
             state: data.state,
-            city: data.city
+            city: data.city,
           },
           rapresentative: data.rappresentative,
           rapresentativeContact: data.rappresentativeContact,
@@ -511,49 +516,59 @@ export function Signup() {
   return (
     <div id="app" className="main-app">
       <div className="ui-right">
-        <TopHeader/>
+        <TopHeader />
         <div className="content-area">
           <div className="content">
             {/* <Container>
               <Row>
                 <Col></Col>
                 <Col md={auto}> */}
-            <div style={{ margin: "150px" }}>
-                {step === 1 && <SignupStep1 formData={formData} action={action} onNextClick={handleNextClick} onBackClick={handleBackClick}/>}
-                {step === 2 && (
-                  <SignupStep2
-                    formData={formData}
-                    action={action}
-                    onBackClick={handleBackClick}
-                    onNextClick={handleNextClick}
-                  />
-                )}
-                {step === 3 && (
-                  <SignupStep3
-                    formData={formData}
-                    action={action}
-                    onBackClick={handleBackClick}
-                    onNextClick={handleNextClick}
-                  />
-                )}
-                {step === 4 && 
-                  <Container>
-                    <Row>
-                      <Col></Col>
-                      <Col md="auto" className="text-center">
-                        <h1 className="mb-3">Registrazione</h1>
-                        <div className="bg-white p-4 rounded">
-                          <div className="spacer d-none d-md-block" style={{ width: "320px" }}></div>
-                          <p className="my-3">Registrazione Avvenuta con successo. Riceverai una email di conferma dell'avvenuta registrazione</p>
-                          <Button className="accent wide" onClick={handleLoginClick}>
-                            Vai al Login
-                          </Button>
-                        </div>
-                      </Col>
-                      <Col></Col>
-                    </Row>
-                  </Container>
-                }
+            <div>
+              {step === 1 && (
+                <SignupStep1
+                  formData={formData}
+                  action={action}
+                  onNextClick={handleNextClick}
+                  onBackClick={handleBackClick}
+                />
+              )}
+              {step === 2 && (
+                <SignupStep2
+                  formData={formData}
+                  action={action}
+                  onBackClick={handleBackClick}
+                  onNextClick={handleNextClick}
+                />
+              )}
+              {step === 3 && (
+                <SignupStep3
+                  formData={formData}
+                  action={action}
+                  onBackClick={handleBackClick}
+                  onNextClick={handleNextClick}
+                />
+              )}
+              {step === 4 && (
+                <Container>
+                  <Row>
+                    <Col></Col>
+                    <Col md="auto" className="text-center">
+                      <h1 className="mb-3">Registrazione</h1>
+                      <div className="bg-white p-4 rounded">
+                        <div className="spacer d-none d-md-block" style={{ width: "320px" }}></div>
+                        <p className="my-3">
+                          Registrazione Avvenuta con successo. Riceverai una email di conferma
+                          dell'avvenuta registrazione
+                        </p>
+                        <Button className="accent wide" onClick={handleLoginClick}>
+                          Vai al Login
+                        </Button>
+                      </div>
+                    </Col>
+                    <Col></Col>
+                  </Row>
+                </Container>
+              )}
             </div>
             {/*                 </Col>
                 <Col></Col>

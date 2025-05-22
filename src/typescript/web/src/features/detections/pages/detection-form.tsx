@@ -308,7 +308,7 @@ export function DetectionForm() {
   };
 
   return (
-    <div style={{ margin: "150px" }}>
+    <div>
       {step === 1 && <DetectionFormStep1 action={action} onNextClick={handleNextClick} />}
       {step === 2 && (
         <DetectionFormStep2
