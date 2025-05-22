@@ -3,8 +3,8 @@ import React, { Fragment } from "react";
 import MenuItem from "./MenuItem";
 import logo from "../assets/images/logo-full-white-color.svg";
 import { IconName } from "./Icon";
-import { useAppSelector } from "../hooks";
-import { SidebarSelectors } from "../features/sidebar/state/sidebar-slice";
+import { useAppDispatch, useAppSelector } from "../hooks";
+import { SidebarActions, SidebarSelectors } from "../features/sidebar/state/sidebar-slice";
 import "./Sidebar.css";
 import { companiesSelectors } from "../features/companies/state/companies-slice";
 import { fieldsSelectors } from "../features/fields/state/fields-slice";
@@ -104,6 +104,7 @@ function FieldSelector() {
 export default function SideBar() {
   let location = useLocation();
   let params = useParams();
+  const dispatch = useAppDispatch();
   const currentUser = useAppSelector(userSelectors.selectCurrentUser);
   const { menuEntries, menuBottomEntries } = useAppSelector(SidebarSelectors.selectMenuEntries);
   const [currentEntry, setCurrentEntry] = React.useState<string>("companies");
@@ -126,6 +127,11 @@ export default function SideBar() {
         break;
       }
     }
+
+    if (mobileOpen) {
+      dispatch(SidebarActions.setMenuMobileOpen(false));
+    }
+
   }, [location, menuEntries, menuBottomEntries]);
 
   return (
