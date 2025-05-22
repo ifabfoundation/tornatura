@@ -308,7 +308,7 @@ export function DetectionForm() {
   };
 
   return (
-    <div>
+    <div className="form-wrapper">
       {step === 1 && <DetectionFormStep1 action={action} onNextClick={handleNextClick} />}
       {step === 2 && (
         <DetectionFormStep2

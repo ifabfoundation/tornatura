@@ -13175,6 +13175,26 @@ body {
   margin-left: 10px;
 }
 
+#app .form-wrapper {
+  width: 100%;
+  margin-top: 80px;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 100%;
+}
+
+@media (min-width: 768px) {
+  #app .form-wrapper {
+    max-width: 80%;
+  }
+}
+
+@media (min-width: 1200px) {
+  #app .form-wrapper {
+    max-width: 800px;
+  }
+}
+
 #app .label {
   font-family: "Inter", sans-serif;
   font-size: 11px;

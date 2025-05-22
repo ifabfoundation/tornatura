@@ -267,7 +267,7 @@ export function CompanyFieldForm() {
   };
 
   return (
-    <div>
+    <div className="form-wrapper">
       {step === 1 && <FieldFormStep1 action={action} onNextClick={handleNextClick} />}
       {step === 2 && (
         <FieldFormStep2

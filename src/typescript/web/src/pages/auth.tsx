@@ -523,7 +523,7 @@ export function Signup() {
               <Row>
                 <Col></Col>
                 <Col md={auto}> */}
-            <div>
+            <div className="form-wrapper">
               {step === 1 && (
                 <SignupStep1
                   formData={formData}
