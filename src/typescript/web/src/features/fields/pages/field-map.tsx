@@ -76,13 +76,7 @@ export function FieldMap() {
 
   return (
     <Fragment>
-      <Container>
-        <Row className="mt-4">
-          <Col xs={12}>
-            <div ref={mapContainerRef} id="map"></div>
-          </Col>
-        </Row>
-      </Container>
+      <div ref={mapContainerRef} id="map"></div>
     </Fragment>
   );
 }

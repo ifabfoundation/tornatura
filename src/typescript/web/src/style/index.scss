@@ -942,7 +942,7 @@ body {
     height: 350px;
     height: calc(100vh - #{$header-h});
     // implement better way to remove padding from content in some cases like the map
-    margin: -54px -42px;
+    margin: -20px -10px;
   }
 
   // --------------------------------------------------------------------------------------------------
