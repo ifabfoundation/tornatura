@@ -1214,7 +1214,7 @@ $hb-color-on-hover: #eee;
   margin-bottom: 20px;
   .cardlet-header {
     &,
-    span {
+    span.title {
       @include font-s-label;
     }
     height: 43px;
@@ -1326,7 +1326,8 @@ $hb-color-on-hover: #eee;
     @include font-s-label;
   }
   .cardlet-content {
-    @include font-xl;
+    @include font-l-600;
+    padding-bottom: 4px;
     max-width: 100%;
     overflow: hidden;
     white-space: nowrap;
