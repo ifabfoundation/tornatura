@@ -580,9 +580,26 @@ body {
       justify-content: center;
       border: 1px solid $c-bg;
       flex-grow: 1;
-      background-color: $c-grey_4;
+      background-color: rgba(white, 0.3);
       width: 33.33%;
       border-radius: $r;
+      margin: 0 -6px;
+
+      clip-path: polygon(
+        15px 50%,
+        0% 0%,
+        calc(100% - 15px) 0%,
+        100% 50%,
+        calc(100% - 15px) 100%,
+        0% 100%
+      );
+      &:first-child {
+        clip-path: polygon(0% 0%, calc(100% - 15px) 0%, 100% 50%, calc(100% - 15px) 100%, 0% 100%);
+      }
+      &:last-child {
+        clip-path: polygon(15px 50%, 0% 0%, 100% 0%, 100% 100%, 0% 100%);
+      }
+
       @include font-m-600;
       &::before {
         @include font-s-label;
@@ -617,7 +634,11 @@ body {
       }
       &[data-current="false"] {
         @include media-breakpoint-down(md) {
-          width: 60px;
+          width: 90px;
+          &:first-child,
+          &:last-child {
+            width: 80px;
+          }
           flex-grow: 0;
           span {
             display: none;
