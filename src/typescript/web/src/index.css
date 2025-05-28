@@ -14406,7 +14406,7 @@ body {
 #app #map {
   height: 350px;
   height: calc(100vh - 60px);
-  margin: -54px -42px;
+  margin: -20px -10px;
 }
 
 #app.ws-app {
@@ -14870,7 +14870,7 @@ ul.list-group li.list-group-item:hover {
 }
 
 .card .cardlet-header,
-.card .cardlet-header span {
+.card .cardlet-header span.title {
   font-family: "Inter", sans-serif;
   font-size: 11px;
   letter-spacing: 0.02em;
@@ -14885,28 +14885,28 @@ ul.list-group li.list-group-item:hover {
 
 @media (min-width: 576px) {
   .card .cardlet-header,
-  .card .cardlet-header span {
+  .card .cardlet-header span.title {
     font-size: 11px;
   }
 }
 
 @media (min-width: 768px) {
   .card .cardlet-header,
-  .card .cardlet-header span {
+  .card .cardlet-header span.title {
     font-size: 11px;
   }
 }
 
 @media (min-width: 992px) {
   .card .cardlet-header,
-  .card .cardlet-header span {
+  .card .cardlet-header span.title {
     font-size: 11px;
   }
 }
 
 @media (min-width: 1200px) {
   .card .cardlet-header,
-  .card .cardlet-header span {
+  .card .cardlet-header span.title {
     font-size: 11px;
   }
 }
@@ -15155,13 +15155,15 @@ ul.list-group li.list-group-item:hover {
 
 .cardlet .cardlet-content {
   font-family: "Inter", sans-serif;
-  font-size: 27px;
+  font-size: 20px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
   font-style: normal;
   font-stretch: normal;
   font-optical-sizing: auto;
+  font-weight: 600;
+  padding-bottom: 4px;
   max-width: 100%;
   overflow: hidden;
   white-space: nowrap;
@@ -15170,25 +15172,25 @@ ul.list-group li.list-group-item:hover {
 
 @media (min-width: 576px) {
   .cardlet .cardlet-content {
-    font-size: 27px;
+    font-size: 20px;
   }
 }
 
 @media (min-width: 768px) {
   .cardlet .cardlet-content {
-    font-size: 27px;
+    font-size: 20px;
   }
 }
 
 @media (min-width: 992px) {
   .cardlet .cardlet-content {
-    font-size: 27px;
+    font-size: 20px;
   }
 }
 
 @media (min-width: 1200px) {
   .cardlet .cardlet-content {
-    font-size: 27px;
+    font-size: 20px;
   }
 }
 

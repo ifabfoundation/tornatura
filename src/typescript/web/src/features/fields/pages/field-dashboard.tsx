@@ -34,7 +34,7 @@ export function FieldDashboard() {
               <div className="cardlet-content">{currentField?.harvest ?? ""}</div>
             </div>
           </Col>
-          <Col md={6} xl={3}>
+          <Col xs={6} xl={3}>
             <div className="cardlet">
               <div className="cardlet-header">
                 Dimensione<span className="only-dsk"> del campo</span>
@@ -42,7 +42,7 @@ export function FieldDashboard() {
               <div className="cardlet-content">{currentField?.area ?? ""} he</div>
             </div>
           </Col>
-          <Col md={6} xl={3}>
+          <Col xs={6} xl={3}>
             <div className="cardlet">
               <div className="cardlet-header">Rilevamenti</div>
               <div className="cardlet-content">{detections.length}</div>
@@ -61,12 +61,12 @@ export function FieldDashboard() {
           <Col xl={6}>
             <Card>
               <div className="cardlet-header">
-                <span>Mappa del campo</span>
+                <span className="title">Mappa del campo</span>
                 <button
                   className="slim-y narrow-x primary"
                   onClick={() => navigate(`/companies/${companyId}/fields/${fieldId}/map`)}
                 >
-                  Espandi la mappa
+                  Espandi<span className="d-none d-sm-inline"> la mappa</span>
                 </button>
               </div>
               <Card.Img
@@ -80,12 +80,13 @@ export function FieldDashboard() {
           <Col xl={6}>
             <Card>
               <div className="cardlet-header">
-                <span>Rilevamenti</span>
+                <span className="title">Rilevamenti</span>
                 <button
                   className="slim-y narrow-x primary"
                   onClick={() => navigate(`/companies/${companyId}/fields/${fieldId}/detections`)}
                 >
-                  Tutti i rilevamenti
+                  <span className="d-sm-none">Espandi</span>
+                  <span className="d-none d-sm-inline">Tutti i rilevamenti</span>
                 </button>
               </div>
               <Card.Body className="mt-0">
