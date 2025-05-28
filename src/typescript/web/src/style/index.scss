@@ -569,6 +569,64 @@ body {
   // Components
   // --------------------------------------------------------------------------------------------------
 
+  ol.stepper {
+    display: flex;
+    height: 60px;
+    width: 100%;
+    li {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid $c-bg;
+      flex-grow: 1;
+      background-color: $c-grey_4;
+      width: 33.33%;
+      border-radius: $r;
+      @include font-m-600;
+      &::before {
+        @include font-s-label;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: 16px;
+        width: 16px;
+        border-radius: 50%;
+        margin: 0 7px;
+      }
+      &[data-done="true"] {
+        background-color: $c-dark;
+        color: white;
+        &::before {
+          content: "✓";
+          background-color: white;
+          color: $c-dark;
+        }
+      }
+      &[data-current="true"] {
+        background-color: $c-yelo_dark;
+        color: $c-yelo;
+        &::before {
+          content: attr(data-step-num);
+          background-color: $c-yelo;
+          color: $c-dark;
+        }
+      }
+      span {
+        // min-width: 200px;
+      }
+      &[data-current="false"] {
+        @include media-breakpoint-down(md) {
+          width: 60px;
+          flex-grow: 0;
+          span {
+            display: none;
+          }
+        }
+      }
+    }
+  }
+
   .mobile-headerbar {
     z-index: 6;
     @include media-breakpoint-up(lg) {
