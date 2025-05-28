@@ -1,6 +1,6 @@
 {
   "name": "@tornatura/coreapis",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Sdk Client for Tornatura Core APIs",
   "author": "tony.wilson@ifabfoundation.org",
   "keywords": [

@@ -85,6 +85,7 @@ class Organization(BaseModel):
 class Detection(BaseModel):
     id: str
     agrifieldId: str
+    detectionTime: int
     type: str
     position: Point
     photos: List[str]
@@ -133,6 +134,7 @@ class AgriFieldMutationPayload(BaseModel):
     area: float
 
 class DetectionMutationPayload(BaseModel):
+    detectionTime: int
     type: str
     position: Point
     photos: List[FileInfo]

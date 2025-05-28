@@ -9,17 +9,17 @@ import { unwrapResult } from "@reduxjs/toolkit";
 import { detectionsActions } from "../state/detections-slice";
 
 interface DetectionProps {
+  formData: DetectionMutationPayload;
   action: string;
   onBackClick?: () => Promise<void>;
   onNextClick: (data: any) => Promise<void>;
 }
 
-function DetectionFormStep3({ action, onBackClick, onNextClick }: DetectionProps) {
+function DetectionFormStep3({ formData, action, onBackClick, onNextClick }: DetectionProps) {
   const formik = useFormik({
     initialValues: {
-      desease: "",
+      detectionTime: 0,
       note: "",
-      parasite: "",
       insect: "",
     },
     onSubmit: (values, { setSubmitting, resetForm }) => {
@@ -31,43 +31,10 @@ function DetectionFormStep3({ action, onBackClick, onNextClick }: DetectionProps
 
   return (
     <form onSubmit={formik.handleSubmit} autoComplete="off">
+      <h4>Dati del rilevamento: Insetti</h4>
       <div className="input-row">
         <label>
-          Nome malattia
-          <input
-            id="desease"
-            name="desease"
-            type="text"
-            placeholder="Nome malattia"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.desease}
-          />
-        </label>
-        {formik.touched.desease && formik.errors.desease ? (
-          <div className="error">{formik.errors.desease}</div>
-        ) : null}
-      </div>
-      <div className="input-row">
-        <label>
-          Nome parassita
-          <input
-            id="parasite"
-            name="parasite"
-            type="text"
-            placeholder="Nome parassita"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.parasite}
-          />
-        </label>
-        {formik.touched.parasite && formik.errors.parasite ? (
-          <div className="error">{formik.errors.parasite}</div>
-        ) : null}
-      </div>
-      <div className="input-row">
-        <label>
-          Nome insetto
+          Nome dell'insetto
           <input
             id="insect"
             name="insect"
@@ -111,11 +78,11 @@ function DetectionFormStep3({ action, onBackClick, onNextClick }: DetectionProps
   );
 }
 
-function DetectionFormStep2({ action, onBackClick, onNextClick }: DetectionProps) {
+function DetectionFormStep1({ formData, action, onBackClick, onNextClick }: DetectionProps) {
   const formik = useFormik({
     initialValues: {
-      latitude: 0,
-      longitude: 0,
+      latitude: formData.position.lat || 0,
+      longitude: formData.position.lng || 0,
     },
     validationSchema: Yup.object({
       latitude: Yup.number().required("posizione richiesta"),
@@ -141,6 +108,7 @@ function DetectionFormStep2({ action, onBackClick, onNextClick }: DetectionProps
 
   return (
     <form onSubmit={formik.handleSubmit} autoComplete="off">
+      <h4>La tua posizione</h4>
       <div className="input-row">
         <label>
           Latitudine
@@ -186,7 +154,7 @@ function DetectionFormStep2({ action, onBackClick, onNextClick }: DetectionProps
   );
 }
 
-function DetectionFormStep1({ action, onNextClick }: DetectionProps) {
+function DetectionFormStep2({ action, onNextClick }: DetectionProps) {
   const formik = useFormik({
     initialValues: {
       type: "Malattia",
@@ -200,6 +168,7 @@ function DetectionFormStep1({ action, onNextClick }: DetectionProps) {
 
   return (
     <form onSubmit={formik.handleSubmit} autoComplete="off">
+      <h4>Cosa vuoi segnalare?</h4>
       <div className="input-row">
         <label>
           Tipologia
@@ -213,7 +182,7 @@ function DetectionFormStep1({ action, onNextClick }: DetectionProps) {
             <option value="Malattie">Malattie</option>
             <option value="Insetti">Insetti</option>
             <option value="Parassiti">Parassiti</option>
-            <option value="Andamento Crescita">Andamento Crescita</option>
+            <option value="Altro">Altro</option>
           </select>
         </label>
       </div>
@@ -232,6 +201,7 @@ export function DetectionForm() {
   const [step, setStep] = React.useState(1);
   const [action, setAction] = React.useState("Avanti");
   const [formData, setFormData] = React.useState<DetectionMutationPayload>({
+    detectionTime: new Date().getTime(),
     type: "",
     note: "",
     position: {
@@ -309,21 +279,30 @@ export function DetectionForm() {
 
   return (
     <div className="form-wrapper">
-      {step === 1 && <DetectionFormStep1 action={action} onNextClick={handleNextClick} />}
-      {step === 2 && (
-        <DetectionFormStep2
-          action={action}
-          onBackClick={handleBackClick}
-          onNextClick={handleNextClick}
-        />
-      )}
-      {step === 3 && (
-        <DetectionFormStep3
-          action={action}
-          onBackClick={handleBackClick}
-          onNextClick={handleNextClick}
-        />
-      )}
+      <ol className="stepper">
+        <li className={step >= 1 ? "active" : ""}>Posizione</li>
+        <li className={step >= 2 ? "active" : ""}>Categoria</li>
+        <li className={step == 3 ? "active" : ""}>Dati</li>
+      </ol>
+      <div>
+        {step === 1 && <DetectionFormStep1 formData={formData} action={action} onNextClick={handleNextClick} />}
+        {step === 2 && (
+          <DetectionFormStep2
+            formData={formData}
+            action={action}
+            onBackClick={handleBackClick}
+            onNextClick={handleNextClick}
+          />
+        )}
+        {step === 3 && (
+          <DetectionFormStep3
+            formData={formData}
+            action={action}
+            onBackClick={handleBackClick}
+            onNextClick={handleNextClick}
+          />
+        )}
+      </div>
     </div>
   );
 }

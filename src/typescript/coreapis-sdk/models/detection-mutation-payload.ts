@@ -23,6 +23,12 @@ import { Point } from './point';
 export interface DetectionMutationPayload {
 
     /**
+     * @type {number}
+     * @memberof DetectionMutationPayload
+     */
+    detectionTime: number;
+
+    /**
      * @type {string}
      * @memberof DetectionMutationPayload
      */

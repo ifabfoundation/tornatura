@@ -31,11 +31,11 @@ export function CompanyForm() {
     validationSchema: Yup.object({
       name: Yup.string().required("Campo obbligatorio"),
       piva: Yup.string().required("Campo obbligatorio"),
-      state: Yup.string().required("Campo obbligatorio"),
-      city: Yup.string().required("Campo obbligatorio"),
-      legalForm: Yup.string().required("Campo obbligatorio"),
-      rappresentative: Yup.string().required("Campo obbligatorio"),
-      rappresentativeContact: Yup.string().required("Campo obbligatorio"),
+      email: Yup.string().required("Campo obbligatorio"),
+      phone: Yup.string().required("Campo obbligatorio"),
+      // legalForm: Yup.string().required("Campo obbligatorio"),
+      // rappresentative: Yup.string().required("Campo obbligatorio"),
+      // rappresentativeContact: Yup.string().required("Campo obbligatorio"),
     }),
     onSubmit: (values, { setSubmitting, resetForm }) => {
       const organization: OrganizationCreatePayload = {
@@ -70,7 +70,7 @@ export function CompanyForm() {
     <form onSubmit={formik.handleSubmit} autoComplete="off">
       <div className="input-row">
         <label>
-          Ragione Sociale
+          Nominazione Impresa
           <input
             id="name"
             name="name"
@@ -104,92 +104,7 @@ export function CompanyForm() {
       </div>
       <div className="input-row">
         <label>
-          Regione Sede legale
-          <input
-            id="state"
-            name="state"
-            type="text"
-            placeholder="Regione Sede legale"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.state}
-          />
-        </label>
-        {formik.touched.state && formik.errors.state ? (
-          <div className="error">{formik.errors.state}</div>
-        ) : null}
-      </div>
-      <div className="input-row">
-        <label>
-          Comune sede legale
-          <input
-            id="city"
-            name="city"
-            type="text"
-            placeholder="Comune sede legale"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.city}
-          />
-        </label>
-        {formik.touched.city && formik.errors.city ? (
-          <div className="error">{formik.errors.city}</div>
-        ) : null}
-      </div>
-      <div className="input-row">
-        <label>
-          Forma giuridica
-          <input
-            id="legalForm"
-            name="legalForm"
-            type="text"
-            placeholder="Forma giuridica"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.legalForm}
-          />
-        </label>
-        {formik.touched.legalForm && formik.errors.legalForm ? (
-          <div className="error">{formik.errors.legalForm}</div>
-        ) : null}
-      </div>
-      <div className="input-row">
-        <label>
-          Legale rappresentante
-          <input
-            id="rappresentative"
-            name="rappresentative"
-            type="text"
-            placeholder="Rappresentante Legale"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.rappresentative}
-          />
-        </label>
-        {formik.touched.rappresentative && formik.errors.rappresentative ? (
-          <div className="error">{formik.errors.rappresentative}</div>
-        ) : null}
-      </div>
-      <div className="input-row">
-        <label>
-          Contatto Legale rappresentante
-          <input
-            id="rappresentativeContact"
-            name="rappresentativeContact"
-            type="text"
-            placeholder="Contatto Rappresentante"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.rappresentativeContact}
-          />
-        </label>
-        {formik.touched.rappresentativeContact && formik.errors.rappresentativeContact ? (
-          <div className="error">{formik.errors.rappresentativeContact}</div>
-        ) : null}
-      </div>
-      <div className="input-row">
-        <label>
-          Email di Contatto
+          Email
           <input
             id="email"
             name="email"

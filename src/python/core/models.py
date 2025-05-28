@@ -73,6 +73,7 @@ class OrganizationModel(Document):
 class DetectionModel(Document):
     """The object Detection stored in the Database"""
     agrifieldId = StringField(required=True)
+    detectionTime = IntField(default=None)
     type = StringField(required=True)
     note = StringField(required=True)
     details = DictField(default={})

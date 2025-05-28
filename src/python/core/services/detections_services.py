@@ -1,7 +1,7 @@
 import datetime
 from fastapi import HTTPException, status
 from core.decorators import catch_api_exception
-from core.models import DetectionModel
+from core.models import DetectionModel, FileInfo, Point
 from core.serializers import Detection, DetectionMutationPayload
 from core.services.agrifields_services import AgriFieldServices
 from core.services.files_services import FileServices
@@ -29,6 +29,7 @@ class DetectionServices:
             return self.serializer(
                 id=str(item.id),
                 agrifieldId=item.agrifieldId,
+                detectionTime=item.detectionTime if item.detectionTime else item.creationTime,
                 type=item.type, 
                 position={
                     "lng": item.position.lng,
@@ -116,14 +117,15 @@ class DetectionServices:
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Detection not found"
             )
-        
+        print(f"Updating detection {detection_id} with payload: {payload}")
         data = payload.model_dump()
         current_time = int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp() * 1000)
         
+        detection.detectionTime = data["detectionTime"]
         detection.type = data["type"]
         detection.note = data["note"]
-        detection.position = data["position"]
-        detection.photos = data["photos"]
+        detection.position = Point(**data["position"])
+        detection.photos = [FileInfo(**photo) for photo in data["photos"]]
         detection.details = data["details"]
         detection.lastUpdateTime = current_time
         detection.save()

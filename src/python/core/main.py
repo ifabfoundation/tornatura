@@ -23,18 +23,10 @@ async def http_exception_handler(request, exc: HTTPException):
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request, exc: RequestValidationError):
-    logger.logger.error(exc)
     payload = ErrorResponse(status=422, detail={
         "errors": exc.errors(),
     }).model_dump()
     return JSONResponse(payload, status_code=422)
-
-
-@app.exception_handler(RequestValidationError)
-async def validation_exception_handler(request, exc: RequestValidationError):
-    logger.logger.error(exc)
-    payload = ErrorResponse(status=500, detail="Server internal error, please retry later").model_dump()
-    return JSONResponse(payload, status_code=500)
 
 
 app.add_middleware(
