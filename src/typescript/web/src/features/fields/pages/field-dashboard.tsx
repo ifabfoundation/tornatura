@@ -71,9 +71,9 @@ export function FieldDashboard() {
               </div>
               <Card.Img
                 variant="top"
-                src={`https://api.mapbox.com/styles/v1/mapbox/satellite-v9/static/geojson(${JSON.stringify(
+                src={`https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v12/static/geojson(${JSON.stringify(
                   getFieldMapGeoJson(currentField)
-                )})/auto/640x480?access_token=${process.env.REACT_APP_MAPBOX_API_TOKEN}`}
+                )})/auto/1024x768?access_token=${process.env.REACT_APP_MAPBOX_API_TOKEN}`}
               />
             </Card>
           </Col>
@@ -93,7 +93,7 @@ export function FieldDashboard() {
                 <Table responsive>
                   <tbody>
                     {detections.map((d: Detection, index) => {
-                      const c = new Date(d.creationTime);
+                      const c = new Date(d.detectionTime);
                       let summary = "";
                       if (d.details.desease) {
                         summary = d.details.desease;

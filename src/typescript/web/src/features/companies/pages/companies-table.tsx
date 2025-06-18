@@ -34,33 +34,19 @@ export function CompanyTable() {
       type: "text",
     },
     {
-      headerText: "Regione sede legale",
-      id: "state",
+      headerText: "Email",
+      id: "email",
       sortable: true,
       style: "normal",
       type: "text",
     },
     {
-      headerText: "Comune sede legale",
-      id: "city",
+      headerText: "Telefono",
+      id: "phone",
       sortable: true,
       style: "normal",
       type: "text",
     },
-    {
-      headerText: "Legale Rappresentante",
-      id: "rapresentative",
-      sortable: true,
-      style: "normal",
-      type: "text",
-    },
-    {
-      headerText: "Contatto Rappresentante",
-      id: "rapresentativeContact",
-      sortable: true,
-      style: "normal",
-      type: "text",
-    }
   ]
 
   const tableOptions = options;

@@ -61,6 +61,28 @@ export const addNewDetection = createAsyncThunk(
   }
 );
 
+
+interface IUpdateDetectionPayload {
+  orgId: string;
+  fieldId: string;
+  detectionId: string;
+  body: DetectionMutationPayload
+}
+
+export const updateDetection = createAsyncThunk(
+  "detections/updateDetection",
+  async ({orgId, fieldId, detectionId, body}: IUpdateDetectionPayload, { rejectWithValue }) => {
+    const apiConfig = await getCoreApiConfiguration()
+    const apiInstance = new DetectionsApi(apiConfig);
+    try {
+      const response = await apiInstance.updateDetection(body, orgId, fieldId, detectionId);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
 const detectionsSlice = createSlice({
   name: "detections",
   initialState,
@@ -85,6 +107,10 @@ const detectionsSlice = createSlice({
     builder.addCase(addNewDetection.fulfilled, (state, action) => {
       detectionsAdapter.upsertOne(state, action.payload as Detection);
     });
+
+    builder.addCase(updateDetection.fulfilled, (state, action) => {
+      detectionsAdapter.upsertOne(state, action.payload as Detection);
+    });
   },
 });
 
@@ -106,6 +132,7 @@ export const detectionsSelectors = {
 export const detectionsActions = {
   fetchFieldDetectionsAction: fetchFieldDetections,
   addNewDetectionAction: addNewDetection,
+  updateDetectionAction: updateDetection,
 };
 
 

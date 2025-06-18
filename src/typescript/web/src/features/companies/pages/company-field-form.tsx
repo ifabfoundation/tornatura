@@ -2,6 +2,7 @@ import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import mapboxgl from "mapbox-gl";
+import { SearchBox } from "@mapbox/search-js-react";
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import { AgriFieldMutationPayload, Point } from "@tornatura/coreapis";
 import { useNavigate, useParams } from "react-router-dom";
@@ -10,6 +11,7 @@ import { companiesSelectors } from "../state/companies-slice";
 import { headerbarActions } from "../../headerbar/state/headerbar-slice";
 import { fieldsActions } from "../../fields/state/fields-slice";
 import { unwrapResult } from "@reduxjs/toolkit";
+
 
 interface FieldProps {
   action: string;
@@ -119,6 +121,8 @@ function FieldFormStep1({ action, onNextClick }: FieldProps) {
 const FieldFormStep2 = ({ action, onBackClick, onNextClick }: FieldProps) => {
   const mapContainerRef = React.useRef<HTMLDivElement>(null);
   const mapRef = React.useRef<any>(null);
+  const [mapLoaded, setMapLoaded] = React.useState(false);
+  const [inputValue, setInputValue] = React.useState("");
   const [map, setMap] = React.useState<Point[]>([]);
   const [currentPosition, setCurrentPosition] = React.useState<Point>();
 
@@ -139,7 +143,7 @@ const FieldFormStep2 = ({ action, onBackClick, onNextClick }: FieldProps) => {
 
       mapRef.current = new mapboxgl.Map({
         container: mapContainerRef.current,
-        style: "mapbox://styles/mapbox/satellite-v9",
+        style: "mapbox://styles/mapbox/satellite-streets-v12",
         center: currentPosition
           ? [currentPosition.lng, currentPosition.lat]
           : [12.5736108, 41.29246],
@@ -154,6 +158,11 @@ const FieldFormStep2 = ({ action, onBackClick, onNextClick }: FieldProps) => {
         },
         defaultMode: "draw_polygon",
       });
+
+      mapRef.current.on("load", () => {
+        setMapLoaded(true);
+      });
+
       mapRef.current.addControl(draw);
 
       mapRef.current.on("draw.create", updateArea);
@@ -185,6 +194,20 @@ const FieldFormStep2 = ({ action, onBackClick, onNextClick }: FieldProps) => {
     <>
       <h4>Disegna la mappa del campo</h4>
       <hr />
+      {mapLoaded && <SearchBox
+        options={{
+          language: 'it',
+          country: 'IT'
+        }}
+        accessToken={process.env.REACT_APP_MAPBOX_API_TOKEN ?? ""}
+        map={mapRef.current}
+        mapboxgl={mapboxgl}
+        value={inputValue}
+        onChange={(d) => {
+          setInputValue(d);
+        }}
+        marker
+      ></SearchBox>}
       <div ref={mapContainerRef} id="map" style={{ height: "500px" }}></div>
       <hr />
       <div className="buttons-wrapper mt-5">

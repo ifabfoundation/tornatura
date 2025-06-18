@@ -1,9 +1,9 @@
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import React, { Fragment } from "react";
 import { headerbarActions } from "../../headerbar/state/headerbar-slice";
-import { Col, Container, Row } from "react-bootstrap";
 import _ from "lodash";
 import { fieldsSelectors } from "../state/fields-slice";
+import { SearchBox } from "@mapbox/search-js-react";
 import mapboxgl, { LngLatLike } from "mapbox-gl";
 import { useParams } from "react-router-dom";
 import { Point } from "@tornatura/coreapis";
@@ -17,6 +17,8 @@ export function FieldMap() {
   );
   const mapContainerRef = React.useRef<HTMLDivElement>(null);
   const mapRef = React.useRef<any>(null);
+  const [mapLoaded, setMapLoaded] = React.useState(false);
+  const [inputValue, setInputValue] = React.useState("");
 
   React.useEffect(() => {
     dispatch(headerbarActions.setTitle({ title: "Mappa", subtitle: "Subtitle" }));
@@ -40,7 +42,7 @@ export function FieldMap() {
 
       mapRef.current = new mapboxgl.Map({
         container: mapContainerRef.current,
-        style: "mapbox://styles/mapbox/satellite-v9",
+        style: "mapbox://styles/mapbox/satellite-streets-v12",
         center: centroid,
         zoom: 14,
       });
@@ -70,12 +72,30 @@ export function FieldMap() {
             "fill-opacity": 0.7,
           },
         });
+
+        setMapLoaded(true);
       });
     }
   }, [mapContainerRef, currentField]);
 
   return (
     <Fragment>
+      {mapLoaded && <div style={{maxWidth: "400px", margin: '20px', zIndex: 2}}>
+        <SearchBox
+          options={{
+            language: 'it',
+            country: 'IT'
+          }}
+          accessToken={process.env.REACT_APP_MAPBOX_API_TOKEN ?? ""}
+          map={mapRef.current}
+          mapboxgl={mapboxgl}
+          value={inputValue}
+          onChange={(d) => {
+            setInputValue(d);
+          }}
+          marker
+        />
+      </div>}
       <div ref={mapContainerRef} id="map"></div>
     </Fragment>
   );

@@ -1,12 +1,14 @@
 import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { DetectionMutationPayload } from "@tornatura/coreapis";
+import { DetectionMutationPayload, FilesApi } from "@tornatura/coreapis";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch } from "../../../hooks";
 import { headerbarActions } from "../../headerbar/state/headerbar-slice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { detectionsActions } from "../state/detections-slice";
+import { FileWithPath, useDropzone } from "react-dropzone";
+import { getCoreApiConfiguration } from "../../../services/utils";
 
 interface DetectionProps {
   formData: DetectionMutationPayload;
@@ -15,23 +17,387 @@ interface DetectionProps {
   onNextClick: (data: any) => Promise<void>;
 }
 
-function DetectionFormStep3({ formData, action, onBackClick, onNextClick }: DetectionProps) {
+
+function DetectionFormMalattia({action, onBackClick, onNextClick }: DetectionProps) {
+  const [files, setFiles] = React.useState<FileWithPath[]>([]);
+
   const formik = useFormik({
     initialValues: {
-      detectionTime: 0,
+      detectionTime: "",
       note: "",
-      insect: "",
+      desease: "",
+      infectedPlants: 0,
+      uprootedPlants: 0
     },
+    validationSchema: Yup.object({
+      detectionTime: Yup.string().required("Specifica la data del rilevamento"),
+      desease: Yup.string().required("Specifica il nome della malattia"),
+      infectedPlants: Yup.number().min(0, "La percentuale di piante contagiate deve essere possitiva").max(100),
+      uprootedPlants: Yup.number().required("Specifica il numero di piante estirpate"),
+    }),
     onSubmit: (values, { setSubmitting, resetForm }) => {
-      onNextClick(values);
+      const data = {
+        detectionTime: new Date(values.detectionTime).getTime(),
+        note: values.note,
+        details: {
+          desease: values.desease,
+          infectedPlants: values.infectedPlants,
+          uprootedPlants: values.uprootedPlants,
+        },
+        files: files
+      }
+      onNextClick(data);
       resetForm({});
       setSubmitting(false);
     },
   });
 
+  const onDrop = React.useCallback((acceptedFiles: any) => {
+    setFiles(acceptedFiles);
+  }, []);
+
+  const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop, multiple: false});
+
+  const filesPreview = files.map((file: FileWithPath)  => (
+    <li key={file.name}>
+      <span className="mr-2">{file.name}</span>
+    </li>
+  ));
+
+  return (
+    <form onSubmit={formik.handleSubmit} autoComplete="off">
+      <h4>Dati del rilevamento: Malattia</h4>
+      <div className="input-row">
+        <label>
+          Data del rilevamento
+          <input
+            id="detectionTime"
+            name="detectionTime"
+            type="datetime-local"
+            placeholder="Data rilevamento"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.detectionTime}
+          />
+        </label>
+        {formik.touched.detectionTime && formik.errors.detectionTime ? (
+          <div className="error">{formik.errors.detectionTime}</div>
+        ) : null}
+      </div>
+      <div className="input-row">
+        <label>
+          Nome della malattia
+          <input
+            id="desease"
+            name="desease"
+            type="text"
+            placeholder="Nome malattia"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.desease}
+          />
+        </label>
+        {formik.touched.desease && formik.errors.desease ? (
+          <div className="error">{formik.errors.desease}</div>
+        ) : null}
+      </div>
+      <div className="input-row">
+        <label>
+          Percentuale Piante Contagiate
+          <input
+            id="infectedPlants"
+            name="infectedPlants"
+            type="text"
+            placeholder="Percentuale Piante Contagiate"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.infectedPlants}
+          />
+        </label>
+        {formik.touched.infectedPlants && formik.errors.infectedPlants ? (
+          <div className="error">{formik.errors.infectedPlants}</div>
+        ) : null}
+      </div>
+      <div className="input-row">
+        <label>
+          Numero di Piante Estirpate
+          <input
+            id="uprootedPlants"
+            name="uprootedPlants"
+            type="text"
+            placeholder="Nome Piante Estirpate"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.uprootedPlants}
+          />
+        </label>
+        {formik.touched.uprootedPlants && formik.errors.uprootedPlants ? (
+          <div className="error">{formik.errors.uprootedPlants}</div>
+        ) : null}
+      </div>
+      <div className="input-row">
+        <label>
+          Nota aggiuntiva
+          <textarea
+            id="note"
+            name="note"
+            placeholder=""
+            rows={15}
+            cols={50}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.note}
+          ></textarea>
+        </label>
+        {formik.touched.note && formik.errors.note ? (
+          <div className="error">{formik.errors.note}</div>
+        ) : null}
+      </div>
+      <div className="input-row">
+        <div {...getRootProps()}>
+          <input {...getInputProps()} accept='.png, .jpeg, .jpg'/>
+            {
+              isDragActive ? <p>Trascina i file qui...</p> : <p>Trascina e rilascia alcuni file qui, oppure fai clic per selezionarli</p>
+            }
+        </div>
+        --------------------------------------------------------------------------
+        <div>
+          <ul>{filesPreview}</ul>
+        </div>
+      </div>
+      <hr />
+      <div className="buttons-wrapper">
+        <button className="secondary" onClick={onBackClick}>
+          Indietro
+        </button>
+        <input type="submit" className="primary" value={action} />
+      </div>
+    </form>
+  );
+}
+
+
+function DetectionFormParassita({action, onBackClick, onNextClick }: DetectionProps) {
+  const [files, setFiles] = React.useState<FileWithPath[]>([]);
+
+  const formik = useFormik({
+    initialValues: {
+      detectionTime: "",
+      note: "",
+      parasite: "",
+      infectedPlants: 0,
+      uprootedPlants: 0
+    },
+    validationSchema: Yup.object({
+      detectionTime: Yup.string().required("Specifica la data del rilevamento"),
+      parasite: Yup.string().required("Specifica il nome del parassita"),
+      infectedPlants: Yup.number().min(0, "La percentuale di piante contagiate deve essere possitiva").max(100),
+      uprootedPlants: Yup.number().required("Specifica il numero di piante estirpate"),
+    }),
+    onSubmit: (values, { setSubmitting, resetForm }) => {
+      const data = {
+        detectionTime: new Date(values.detectionTime).getTime(),
+        note: values.note,
+        details: {
+          parasite: values.parasite,
+          infectedPlants: values.infectedPlants,
+          uprootedPlants: values.uprootedPlants,
+        },
+        files: files
+      }
+      onNextClick(data);
+      resetForm({});
+      setSubmitting(false);
+    },
+  });
+
+  const onDrop = React.useCallback((acceptedFiles: any) => {
+    setFiles(acceptedFiles);
+  }, []);
+
+  const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop, multiple: false});
+
+  const filesPreview = files.map((file: FileWithPath)  => (
+    <li key={file.name}>
+      <span className="mr-2">{file.name}</span>
+    </li>
+  ));
+
+  return (
+    <form onSubmit={formik.handleSubmit} autoComplete="off">
+      <h4>Dati del rilevamento: Parassita</h4>
+      <div className="input-row">
+        <label>
+          Data del rilevamento
+          <input
+            id="detectionTime"
+            name="detectionTime"
+            type="datetime-local"
+            placeholder="Data rilevamento"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.detectionTime}
+          />
+        </label>
+        {formik.touched.detectionTime && formik.errors.detectionTime ? (
+          <div className="error">{formik.errors.detectionTime}</div>
+        ) : null}
+      </div>
+      <div className="input-row">
+        <label>
+          Nome del parassita
+          <input
+            id="parasite"
+            name="parasite"
+            type="text"
+            placeholder="Nome malattia"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.parasite}
+          />
+        </label>
+        {formik.touched.parasite && formik.errors.parasite ? (
+          <div className="error">{formik.errors.parasite}</div>
+        ) : null}
+      </div>
+      <div className="input-row">
+        <label>
+          Percentuale Piante Contagiate
+          <input
+            id="infectedPlants"
+            name="infectedPlants"
+            type="text"
+            placeholder="Percentuale Piante Contagiate"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.infectedPlants}
+          />
+        </label>
+        {formik.touched.infectedPlants && formik.errors.infectedPlants ? (
+          <div className="error">{formik.errors.infectedPlants}</div>
+        ) : null}
+      </div>
+      <div className="input-row">
+        <label>
+          Numero di Piante Estirpate
+          <input
+            id="uprootedPlants"
+            name="uprootedPlants"
+            type="text"
+            placeholder="Nome Piante Estirpate"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.uprootedPlants}
+          />
+        </label>
+        {formik.touched.uprootedPlants && formik.errors.uprootedPlants ? (
+          <div className="error">{formik.errors.uprootedPlants}</div>
+        ) : null}
+      </div>
+      <div className="input-row">
+        <label>
+          Nota aggiuntiva
+          <textarea
+            id="note"
+            name="note"
+            placeholder=""
+            rows={15}
+            cols={50}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.note}
+          ></textarea>
+        </label>
+        {formik.touched.note && formik.errors.note ? (
+          <div className="error">{formik.errors.note}</div>
+        ) : null}
+      </div>
+      <div className="input-row">
+        <div {...getRootProps()}>
+          <input {...getInputProps()} accept='.png, .jpeg, .jpg'/>
+            {
+              isDragActive ? <p>Trascina i file qui...</p> : <p>Trascina e rilascia alcuni file qui, oppure fai clic per selezionarli</p>
+            }
+        </div>
+        --------------------------------------------------------------------------
+        <div>
+          <ul>{filesPreview}</ul>
+        </div>
+      </div>
+      <hr />
+      <div className="buttons-wrapper">
+        <button className="secondary" onClick={onBackClick}>
+          Indietro
+        </button>
+        <input type="submit" className="primary" value={action} />
+      </div>
+    </form>
+  );
+}
+
+function DetectionFormInsetto({action, onBackClick, onNextClick }: DetectionProps) {
+  const [files, setFiles] = React.useState<FileWithPath[]>([]);
+
+  const formik = useFormik({
+    initialValues: {
+      detectionTime: "",
+      note: "",
+      insect: "",
+      trapsNumber: 0,
+    },
+    validationSchema: Yup.object({
+      detectionTime: Yup.string().required("Specifica la data del rilevamento"),
+      insect: Yup.string().required("Specifica il nome dell'insetto"),
+      trapsNumber: Yup.number()
+    }),
+    onSubmit: (values, { setSubmitting, resetForm }) => {
+      const data = {
+        detectionTime: new Date(values.detectionTime).getTime(),
+        note: values.note,
+        details: {
+          insect: values.insect,
+          trapsNumber: values.trapsNumber,
+        },
+        files: files
+      }
+      onNextClick(data);
+      resetForm({});
+      setSubmitting(false);
+    },
+  });
+
+  const onDrop = React.useCallback((acceptedFiles: any) => {
+    setFiles(acceptedFiles);
+  }, []);
+
+  const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop, multiple: false});
+
+  const filesPreview = files.map((file: FileWithPath)  => (
+    <li key={file.name}>
+      <span className="mr-2">{file.name}</span>
+    </li>
+  ));
+
   return (
     <form onSubmit={formik.handleSubmit} autoComplete="off">
       <h4>Dati del rilevamento: Insetti</h4>
+      <div className="input-row">
+        <label>
+          Data del rilevamento
+          <input
+            id="detectionTime"
+            name="detectionTime"
+            type="datetime-local"
+            placeholder="Data rilevamento"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.detectionTime}
+          />
+        </label>
+        {formik.touched.detectionTime && formik.errors.detectionTime ? (
+          <div className="error">{formik.errors.detectionTime}</div>
+        ) : null}
+      </div>
       <div className="input-row">
         <label>
           Nome dell'insetto
@@ -51,7 +417,24 @@ function DetectionFormStep3({ formData, action, onBackClick, onNextClick }: Dete
       </div>
       <div className="input-row">
         <label>
-          Noa aggiuntiva
+          Numero di trappole
+          <input
+            id="trapsNumber"
+            name="trapsNumber"
+            type="text"
+            placeholder="Numero di trappole"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.trapsNumber}
+          />
+        </label>
+        {formik.touched.trapsNumber && formik.errors.trapsNumber ? (
+          <div className="error">{formik.errors.trapsNumber}</div>
+        ) : null}
+      </div>
+      <div className="input-row">
+        <label>
+          Nota aggiuntiva
           <textarea
             id="note"
             name="note"
@@ -67,6 +450,18 @@ function DetectionFormStep3({ formData, action, onBackClick, onNextClick }: Dete
           <div className="error">{formik.errors.note}</div>
         ) : null}
       </div>
+      <div className="input-row">
+        <div {...getRootProps()}>
+          <input {...getInputProps()} accept='.png, .jpeg, .jpg'/>
+            {
+              isDragActive ? <p>Trascina i file qui...</p> : <p>Trascina e rilascia alcuni file qui, oppure fai clic per selezionarli</p>
+            }
+        </div>
+        --------------------------------------------------------------------------
+        <div>
+          <ul>{filesPreview}</ul>
+        </div>
+      </div>
       <hr />
       <div className="buttons-wrapper">
         <button className="secondary" onClick={onBackClick}>
@@ -78,7 +473,104 @@ function DetectionFormStep3({ formData, action, onBackClick, onNextClick }: Dete
   );
 }
 
-function DetectionFormStep1({ formData, action, onBackClick, onNextClick }: DetectionProps) {
+function DetectionFormAltro({action, onBackClick, onNextClick }: DetectionProps) {
+  const [files, setFiles] = React.useState<FileWithPath[]>([]);
+
+  const formik = useFormik({
+    initialValues: {
+      detectionTime: "",
+      note: ""
+    },
+    validationSchema: Yup.object({
+      detectionTime: Yup.string().required("Specifica la data del rilevamento"),
+    }),
+    onSubmit: (values, { setSubmitting, resetForm }) => {
+      const data = {
+        detectionTime: new Date(values.detectionTime).getTime(),
+        note: values.note,
+        details: {
+        },
+        files: files
+      }
+      onNextClick(data);
+      resetForm({});
+      setSubmitting(false);
+    },
+  });
+
+  const onDrop = React.useCallback((acceptedFiles: any) => {
+    setFiles(acceptedFiles);
+  }, []);
+
+  const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop, multiple: false});
+  const filesPreview = files.map((file: FileWithPath)  => (
+    <li key={file.name}>
+      <span className="mr-2">{file.name}</span>
+    </li>
+  ));
+
+  return (
+    <form onSubmit={formik.handleSubmit} autoComplete="off">
+      <h4>Dati del rilevamento: Insetti</h4>
+      <div className="input-row">
+        <label>
+          Data del rilevamento
+          <input
+            id="detectionTime"
+            name="detectionTime"
+            type="datetime-local"
+            placeholder="Data rilevamento"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.detectionTime}
+          />
+        </label>
+        {formik.touched.detectionTime && formik.errors.detectionTime ? (
+          <div className="error">{formik.errors.detectionTime}</div>
+        ) : null}
+      </div>
+      <div className="input-row">
+        <label>
+          Nota
+          <textarea
+            id="note"
+            name="note"
+            placeholder=""
+            rows={15}
+            cols={50}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.note}
+          ></textarea>
+        </label>
+        {formik.touched.note && formik.errors.note ? (
+          <div className="error">{formik.errors.note}</div>
+        ) : null}
+      </div>
+      <div className="input-row">
+        <div {...getRootProps()}>
+          <input {...getInputProps()} accept='.png, .jpeg, .jpg'/>
+            {
+              isDragActive ? <p>Trascina i file qui...</p> : <p>Trascina e rilascia alcuni file qui, oppure fai clic per selezionarli</p>
+            }
+        </div>
+        --------------------------------------------------------------------------
+        <div>
+          <ul>{filesPreview}</ul>
+        </div>
+      </div>
+      <hr />
+      <div className="buttons-wrapper">
+        <button className="secondary" onClick={onBackClick}>
+          Indietro
+        </button>
+        <input type="submit" className="primary" value={action} />
+      </div>
+    </form>
+  );
+}
+
+function DetectionFormStep1({ formData, action, onNextClick }: DetectionProps) {
   const formik = useFormik({
     initialValues: {
       latitude: formData.position.lat || 0,
@@ -94,6 +586,14 @@ function DetectionFormStep1({ formData, action, onBackClick, onNextClick }: Dete
       setSubmitting(false);
     },
   });
+
+  React.useEffect(() => {
+    formik.setValues({
+      latitude: formData.position.lat || 0,
+      longitude: formData.position.lng || 0,
+    });
+  }, [formData]);
+
 
   React.useEffect(() => {
     if (navigator.geolocation) {
@@ -145,16 +645,13 @@ function DetectionFormStep1({ formData, action, onBackClick, onNextClick }: Dete
       </div>
       <hr />
       <div className="buttons-wrapper">
-        <button className="secondary" onClick={onBackClick}>
-          Indietro
-        </button>
         <input type="submit" className="primary" value={action} />
       </div>
     </form>
   );
 }
 
-function DetectionFormStep2({ action, onNextClick }: DetectionProps) {
+function DetectionFormStep2({ formData, action, onBackClick, onNextClick }: DetectionProps) {
   const formik = useFormik({
     initialValues: {
       type: "Malattia",
@@ -165,6 +662,12 @@ function DetectionFormStep2({ action, onNextClick }: DetectionProps) {
       setSubmitting(false);
     },
   });
+
+  React.useEffect(() => {
+    formik.setValues({
+      type: formData.type || "Malattia",
+    });
+  }, [formData]);
 
   return (
     <form onSubmit={formik.handleSubmit} autoComplete="off">
@@ -179,15 +682,16 @@ function DetectionFormStep2({ action, onNextClick }: DetectionProps) {
             onBlur={formik.handleBlur}
             value={formik.values.type}
           >
-            <option value="Malattie">Malattie</option>
-            <option value="Insetti">Insetti</option>
-            <option value="Parassiti">Parassiti</option>
+            <option value="Malattia">Malattia</option>
+            <option value="Insetto">Insetto</option>
+            <option value="Parassita">Parassita</option>
             <option value="Altro">Altro</option>
           </select>
         </label>
       </div>
       <hr />
       <div className="buttons-wrapper">
+        <button className="secondary" onClick={onBackClick}>Indietro</button>
         <input type="submit" className="primary" value={action} />
       </div>
     </form>
@@ -235,16 +739,35 @@ export function DetectionForm() {
     }
   };
 
+  const uploadFiles = async (files: FileWithPath[]) => {
+    const apiConfig = await getCoreApiConfiguration();
+    const filesApi = new FilesApi(apiConfig);
+
+    if (files.length === 0 || companyId === undefined) {
+      return [];
+    }
+
+    try {
+      const results = await filesApi.uploadFilesForm(files, companyId, "data").then((response) => {
+        return response.data
+      });
+      return results;
+    } catch (error) {
+      console.error("Error uploading files:", error);
+      return [];
+    }
+  }
+
   const handleNextClick = async (data: any) => {
-    if (step === 1) {
+    if (step === 2) {
       const payload = {
         ...formData,
         type: data.type,
       };
       setFormData(payload);
-      setAction("Avanti");
+      setAction("Salva rilevamento");
       setStep(step + 1);
-    } else if (step === 2) {
+    } else if (step === 1) {
       const payload = {
         ...formData,
         position: {
@@ -253,16 +776,14 @@ export function DetectionForm() {
         },
       };
       setFormData(payload);
-      setAction("Salva rilevamento");
+      setAction("Avanti");
       setStep(step + 1);
     } else if (step === 3) {
       const payload = {
         ...formData,
-        details: {
-          desease: data.desease,
-          parasite: data.parasite,
-          insect: data.insect,
-        },
+        detectionTime: data.detectionTime,
+        details: data.details || {},
+        photos: await uploadFiles(data.files || []),
         note: data.note,
       };
       setFormData(payload);
@@ -285,7 +806,13 @@ export function DetectionForm() {
         <li className={step == 3 ? "active" : ""}>Dati</li>
       </ol>
       <div>
-        {step === 1 && <DetectionFormStep1 formData={formData} action={action} onNextClick={handleNextClick} />}
+        {step === 1 && (
+          <DetectionFormStep1 
+            formData={formData} 
+            action={action} 
+            onNextClick={handleNextClick} 
+          />
+        )}
         {step === 2 && (
           <DetectionFormStep2
             formData={formData}
@@ -294,8 +821,32 @@ export function DetectionForm() {
             onNextClick={handleNextClick}
           />
         )}
-        {step === 3 && (
-          <DetectionFormStep3
+        {step === 3 && formData.type === 'Malattia' && (
+          <DetectionFormMalattia
+            formData={formData}
+            action={action}
+            onBackClick={handleBackClick}
+            onNextClick={handleNextClick}
+          />
+        )}
+         {step === 3 && formData.type === 'Parassita' && (
+          <DetectionFormParassita
+            formData={formData}
+            action={action}
+            onBackClick={handleBackClick}
+            onNextClick={handleNextClick}
+          />
+        )}
+         {step === 3 && formData.type === 'Insetto' && (
+          <DetectionFormInsetto
+            formData={formData}
+            action={action}
+            onBackClick={handleBackClick}
+            onNextClick={handleNextClick}
+          />
+        )}
+         {step === 3 && formData.type === 'Altro' && (
+          <DetectionFormAltro
             formData={formData}
             action={action}
             onBackClick={handleBackClick}
