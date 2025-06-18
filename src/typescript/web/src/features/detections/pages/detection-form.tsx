@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { DetectionMutationPayload, FilesApi } from "@tornatura/coreapis";
@@ -799,11 +799,29 @@ export function DetectionForm() {
   };
 
   return (
-    <div className="form-wrapper">
-      <ol className="stepper">
-        <li className={step >= 1 ? "active" : ""}>Posizione</li>
-        <li className={step >= 2 ? "active" : ""}>Categoria</li>
-        <li className={step == 3 ? "active" : ""}>Dati</li>
+    <Fragment>
+      <ol className="stepper" data-steps={3}>
+        <li
+          data-step-num="1"
+          data-done={step > 1 ? "true" : "false"}
+          data-current={step == 1 ? "true" : "false"}
+        >
+          <span>Posizione</span>
+        </li>
+        <li
+          data-step-num="2"
+          data-done={step > 2 ? "true" : "false"}
+          data-current={step == 2 ? "true" : "false"}
+        >
+          <span>Categoria</span>
+        </li>
+        <li
+          data-step-num="3"
+          data-done={step > 3 ? "true" : "false"}
+          data-current={step == 3 ? "true" : "false"}
+        >
+          <span>Dati</span>
+        </li>
       </ol>
       <div>
         {step === 1 && (
@@ -854,6 +872,6 @@ export function DetectionForm() {
           />
         )}
       </div>
-    </div>
+    </Fragment>
   );
 }
