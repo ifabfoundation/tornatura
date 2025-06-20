@@ -35,8 +35,8 @@ export function CompaniesList() {
                   src={company.cover}
                 />
                 {<div className="llist-group">
-                  <div className="llist-group-item">{company.office.city}</div>
-                  <div className="llist-group-item">{company.office.state}</div>
+                  <div className="llist-group-item">{company.contacts.email}</div>
+                  <div className="llist-group-item">{company.contacts.phone}</div>
                 </div>}
               </Card>
             </Col>

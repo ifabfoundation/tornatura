@@ -194,6 +194,7 @@ const FieldFormStep2 = ({ action, onBackClick, onNextClick }: FieldProps) => {
     <>
       <h4>Disegna la mappa del campo</h4>
       <hr />
+      {/*@ts-ignore*/}
       {mapLoaded && <SearchBox
         options={{
           language: 'it',
@@ -207,7 +208,7 @@ const FieldFormStep2 = ({ action, onBackClick, onNextClick }: FieldProps) => {
           setInputValue(d);
         }}
         marker
-      ></SearchBox>}
+      />}
       <div ref={mapContainerRef} id="map" style={{ height: "500px" }}></div>
       <hr />
       <div className="buttons-wrapper mt-5">

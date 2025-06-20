@@ -81,6 +81,7 @@ export function FieldMap() {
   return (
     <Fragment>
       {mapLoaded && <div style={{maxWidth: "400px", margin: '20px', zIndex: 2}}>
+        {/*@ts-ignore*/}
         <SearchBox
           options={{
             language: 'it',
