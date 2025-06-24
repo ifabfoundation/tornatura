@@ -1,13 +1,16 @@
-import Modal from '../../../components/Modal';
-import { useFormik } from 'formik';
-import * as Yup from 'yup'
+import Modal from "../../../components/Modal";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 interface DetectionUpdateModalFormProps {
   handleModalCancel: () => void;
   handleFormSubmitted: (data: { detectionTime: number }) => Promise<void>;
 }
 
-export function DetectionUpdateModalForm({handleModalCancel, handleFormSubmitted}: DetectionUpdateModalFormProps) {
+export function DetectionUpdateModalForm({
+  handleModalCancel,
+  handleFormSubmitted,
+}: DetectionUpdateModalFormProps) {
   const formik = useFormik({
     initialValues: {
       detectionTime: "",
@@ -18,13 +21,13 @@ export function DetectionUpdateModalForm({handleModalCancel, handleFormSubmitted
     onSubmit: (values, { setSubmitting, resetForm }) => {
       const data = {
         detectionTime: new Date(values.detectionTime).getTime(),
-      }
+      };
       handleFormSubmitted(data);
       resetForm({});
       setSubmitting(false);
     },
   });
-  
+
   return (
     <Modal closeModal={handleModalCancel} title="Modifica Data Rilevamento">
       <section>
@@ -49,7 +52,9 @@ export function DetectionUpdateModalForm({handleModalCancel, handleFormSubmitted
           </div>
           <hr />
           <div className="buttons-wrapper">
-            <button className="secondary" onClick={handleModalCancel}>Cancel</button>
+            <button className="trnt_btn secondary" onClick={handleModalCancel}>
+              Cancel
+            </button>
             <input type="submit" className="primary" value="Salva" disabled={formik.isSubmitting} />
           </div>
         </form>
@@ -57,4 +62,3 @@ export function DetectionUpdateModalForm({handleModalCancel, handleFormSubmitted
     </Modal>
   );
 }
-  

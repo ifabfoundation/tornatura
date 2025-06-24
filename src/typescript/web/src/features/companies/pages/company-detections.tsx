@@ -6,21 +6,20 @@ import { DetectionTableComponent } from "../../detections/components/detections-
 import { detectionsSelectors } from "../../detections/state/detections-slice";
 import _ from "lodash";
 
-
 export function CompanyDetections() {
   const dispatch = useAppDispatch();
   const detections = useAppSelector(detectionsSelectors.selectDetections);
 
   React.useEffect(() => {
-    dispatch(headerbarActions.setTitle({title: "Tutti i rilevamenti", subtitle: "Subtitle"}));
-  }, []); 
-  
+    dispatch(headerbarActions.setTitle({ title: "Tutti i rilevamenti", subtitle: "Subtitle" }));
+  }, []);
+
   return (
     <Fragment>
       <Container>
         <Row className="mt-4">
-          <Col md={1} xl={12}>
-            <DetectionTableComponent detections={detections}/>
+          <Col>
+            <DetectionTableComponent detections={detections} />
           </Col>
         </Row>
       </Container>

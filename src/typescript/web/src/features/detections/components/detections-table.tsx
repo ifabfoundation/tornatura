@@ -7,9 +7,8 @@ import { useParams } from "react-router-dom";
 import { detectionsActions } from "../state/detections-slice";
 import { useAppDispatch } from "../../../hooks";
 
-
 interface IDetection {
-  detections: Detection[]
+  detections: Detection[];
 }
 
 export function DetectionTableComponent({ detections }: IDetection) {
@@ -20,7 +19,7 @@ export function DetectionTableComponent({ detections }: IDetection) {
 
   const options: TableOptions = {
     defaultSortCol: "detectionTime",
-    defaultSortDir: 'desc'
+    defaultSortDir: "desc",
   };
 
   const columns: TableColumn[] = [
@@ -30,7 +29,7 @@ export function DetectionTableComponent({ detections }: IDetection) {
       sortable: true,
       style: "normal",
       type: "text",
-    }, 
+    },
     {
       headerText: "Tipologia",
       id: "type",
@@ -44,7 +43,7 @@ export function DetectionTableComponent({ detections }: IDetection) {
       sortable: false,
       style: "small-grey",
       type: "text",
-    }, 
+    },
     {
       headerText: "Dettaglio",
       id: "summary",
@@ -57,45 +56,51 @@ export function DetectionTableComponent({ detections }: IDetection) {
       id: "button_update",
       buttonText: "Modifica data",
       type: "button",
+      style: "secondary",
       onButtonClick: (data) => {
         console.log("Button clicked for row:", data);
         const d = detections.find((det) => det.id === data.id);
-        setModal({component: DetectionUpdateModalForm, componentProps: {
-          handleModalCancel: () => setModalOpen(false),
-          handleFormSubmitted: (data: any) => {
-            if (companyId && d) {
-              const payload: DetectionMutationPayload = {
-                type: d.type,
-                note: d.note,
-                details: d.details,
-                detectionTime: data.detectionTime,
-                photos: d.photos.map((p) => {
-                  const parts = p.split("?")[0];
-                  return {
-                    category: "data",
-                    name: parts.split("/").pop() ?? "",
-                  };
-                }),
-                position: d.position,
+        setModal({
+          component: DetectionUpdateModalForm,
+          componentProps: {
+            handleModalCancel: () => setModalOpen(false),
+            handleFormSubmitted: (data: any) => {
+              if (companyId && d) {
+                const payload: DetectionMutationPayload = {
+                  type: d.type,
+                  note: d.note,
+                  details: d.details,
+                  detectionTime: data.detectionTime,
+                  photos: d.photos.map((p) => {
+                    const parts = p.split("?")[0];
+                    return {
+                      category: "data",
+                      name: parts.split("/").pop() ?? "",
+                    };
+                  }),
+                  position: d.position,
+                };
+                dispatch(
+                  detectionsActions.updateDetectionAction({
+                    orgId: companyId,
+                    fieldId: d.agrifieldId,
+                    detectionId: d.id,
+                    body: payload,
+                  })
+                );
               }
-              dispatch(detectionsActions.updateDetectionAction({
-                orgId: companyId,
-                fieldId: d.agrifieldId,
-                detectionId: d.id,
-                body: payload
-              }))
-            }
-            setModalOpen(false);
-          }
-        }});
+              setModalOpen(false);
+            },
+          },
+        });
         setModalOpen(true);
-      }
+      },
     },
-  ]
+  ];
 
   const tableOptions = options;
   const tableColumns = columns;
-  const data = detections.map((d) => { 
+  const data = detections.map((d) => {
     const c = new Date(d.detectionTime);
     let summary = "";
     if (d.details.desease) {
@@ -107,22 +112,18 @@ export function DetectionTableComponent({ detections }: IDetection) {
     }
 
     return {
-      "detectionTime": c.toLocaleString('it-IT'),
-      "note": d.note,
-      "type": d.type,
-      "summary": summary,
-      "id": d.id
-    }
+      detectionTime: c.toLocaleString("it-IT"),
+      note: d.note,
+      type: d.type,
+      summary: summary,
+      id: d.id,
+    };
   });
 
   return (
-   <Fragment>
-      {modalOpen && <modal.component  {...modal.componentProps} />}
-      <TableCozy
-        columns={tableColumns}
-        data={data}
-        options={tableOptions}
-      />
-   </Fragment>
+    <Fragment>
+      {modalOpen && <modal.component {...modal.componentProps} />}
+      <TableCozy columns={tableColumns} data={data} options={tableOptions} />
+    </Fragment>
   );
 }

@@ -63,7 +63,7 @@ export function FieldDashboard() {
               <div className="cardlet-header">
                 <span className="title">Mappa del campo</span>
                 <button
-                  className="slim-y narrow-x primary"
+                  className="trnt_btn slim-y narrow-x primary"
                   onClick={() => navigate(`/companies/${companyId}/fields/${fieldId}/map`)}
                 >
                   Espandi<span className="d-none d-sm-inline"> la mappa</span>
@@ -82,7 +82,7 @@ export function FieldDashboard() {
               <div className="cardlet-header">
                 <span className="title">Rilevamenti</span>
                 <button
-                  className="slim-y narrow-x primary"
+                  className="trnt_btn slim-y narrow-x primary"
                   onClick={() => navigate(`/companies/${companyId}/fields/${fieldId}/detections`)}
                 >
                   <span className="d-sm-none">Espandi</span>

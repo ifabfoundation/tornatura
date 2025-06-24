@@ -122,7 +122,7 @@ function SignupStep3({ action, onBackClick, onNextClick }: SignupProps) {
       </div>
       <hr />
       <div className="buttons-wrapper">
-        <button className="secondary" onClick={onBackClick}>
+        <button className="trnt_btn secondary" onClick={onBackClick}>
           Indietro
         </button>
         <input type="submit" className="primary" value={action} />
@@ -290,7 +290,7 @@ function SignupStep2({ formData, action, onBackClick, onNextClick }: SignupProps
       </div>
       <hr />
       <div className="buttons-wrapper">
-        <button className="secondary" type="button" onClick={onBackClick}>
+        <button className="trnt_btn secondary" type="button" onClick={onBackClick}>
           Indietro
         </button>
         <input type="submit" className="primary" value={action} />
@@ -330,7 +330,7 @@ function SignupStep1({ onBackClick, action, onNextClick }: SignupProps) {
       </div>
       <hr />
       <div className="buttons-wrapper">
-        <button className="secondary" type="button" onClick={onBackClick}>
+        <button className="trnt_btn secondary" type="button" onClick={onBackClick}>
           Indietro
         </button>
         <input type="submit" className="primary" value={action} />
@@ -475,7 +475,7 @@ export function Signup() {
                           Registrazione Avvenuta con successo. Riceverai una email di conferma
                           dell'avvenuta registrazione
                         </p>
-                        <Button className="accent wide" onClick={handleLoginClick}>
+                        <Button className="trnt_btn accent wide" onClick={handleLoginClick}>
                           Vai al Login
                         </Button>
                       </div>

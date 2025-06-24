@@ -80,23 +80,25 @@ export function FieldMap() {
 
   return (
     <Fragment>
-      {mapLoaded && <div style={{maxWidth: "400px", margin: '20px', zIndex: 2}}>
-        {/*@ts-ignore*/}
-        <SearchBox
-          options={{
-            language: 'it',
-            country: 'IT'
-          }}
-          accessToken={process.env.REACT_APP_MAPBOX_API_TOKEN ?? ""}
-          map={mapRef.current}
-          mapboxgl={mapboxgl}
-          value={inputValue}
-          onChange={(d) => {
-            setInputValue(d);
-          }}
-          marker
-        />
-      </div>}
+      {mapLoaded && (
+        <div className="mapbox-searchbox-wrapper field-map-mapbox-searchbox-wrapper">
+          {/*@ts-ignore*/}
+          <SearchBox
+            options={{
+              language: "it",
+              country: "IT",
+            }}
+            accessToken={process.env.REACT_APP_MAPBOX_API_TOKEN ?? ""}
+            map={mapRef.current}
+            mapboxgl={mapboxgl}
+            value={inputValue}
+            onChange={(d) => {
+              setInputValue(d);
+            }}
+            marker
+          />
+        </div>
+      )}
       <div ref={mapContainerRef} id="map"></div>
     </Fragment>
   );

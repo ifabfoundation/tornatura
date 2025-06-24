@@ -17,8 +17,7 @@ interface DetectionProps {
   onNextClick: (data: any) => Promise<void>;
 }
 
-
-function DetectionFormMalattia({action, onBackClick, onNextClick }: DetectionProps) {
+function DetectionFormMalattia({ action, onBackClick, onNextClick }: DetectionProps) {
   const [files, setFiles] = React.useState<FileWithPath[]>([]);
 
   const formik = useFormik({
@@ -27,12 +26,14 @@ function DetectionFormMalattia({action, onBackClick, onNextClick }: DetectionPro
       note: "",
       desease: "",
       infectedPlants: 0,
-      uprootedPlants: 0
+      uprootedPlants: 0,
     },
     validationSchema: Yup.object({
       detectionTime: Yup.string().required("Specifica la data del rilevamento"),
       desease: Yup.string().required("Specifica il nome della malattia"),
-      infectedPlants: Yup.number().min(0, "La percentuale di piante contagiate deve essere possitiva").max(100),
+      infectedPlants: Yup.number()
+        .min(0, "La percentuale di piante contagiate deve essere possitiva")
+        .max(100),
       uprootedPlants: Yup.number().required("Specifica il numero di piante estirpate"),
     }),
     onSubmit: (values, { setSubmitting, resetForm }) => {
@@ -44,8 +45,8 @@ function DetectionFormMalattia({action, onBackClick, onNextClick }: DetectionPro
           infectedPlants: values.infectedPlants,
           uprootedPlants: values.uprootedPlants,
         },
-        files: files
-      }
+        files: files,
+      };
       onNextClick(data);
       resetForm({});
       setSubmitting(false);
@@ -56,9 +57,9 @@ function DetectionFormMalattia({action, onBackClick, onNextClick }: DetectionPro
     setFiles(acceptedFiles);
   }, []);
 
-  const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop, multiple: false});
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, multiple: false });
 
-  const filesPreview = files.map((file: FileWithPath)  => (
+  const filesPreview = files.map((file: FileWithPath) => (
     <li key={file.name}>
       <span className="mr-2">{file.name}</span>
     </li>
@@ -155,10 +156,12 @@ function DetectionFormMalattia({action, onBackClick, onNextClick }: DetectionPro
       </div>
       <div className="input-row">
         <div {...getRootProps()}>
-          <input {...getInputProps()} accept='.png, .jpeg, .jpg'/>
-            {
-              isDragActive ? <p>Trascina i file qui...</p> : <p>Trascina e rilascia alcuni file qui, oppure fai clic per selezionarli</p>
-            }
+          <input {...getInputProps()} accept=".png, .jpeg, .jpg" />
+          {isDragActive ? (
+            <p>Trascina i file qui...</p>
+          ) : (
+            <p>Trascina e rilascia alcuni file qui, oppure fai clic per selezionarli</p>
+          )}
         </div>
         --------------------------------------------------------------------------
         <div>
@@ -167,7 +170,7 @@ function DetectionFormMalattia({action, onBackClick, onNextClick }: DetectionPro
       </div>
       <hr />
       <div className="buttons-wrapper">
-        <button className="secondary" onClick={onBackClick}>
+        <button className="trnt_btn secondary" onClick={onBackClick}>
           Indietro
         </button>
         <input type="submit" className="primary" value={action} />
@@ -176,8 +179,7 @@ function DetectionFormMalattia({action, onBackClick, onNextClick }: DetectionPro
   );
 }
 
-
-function DetectionFormParassita({action, onBackClick, onNextClick }: DetectionProps) {
+function DetectionFormParassita({ action, onBackClick, onNextClick }: DetectionProps) {
   const [files, setFiles] = React.useState<FileWithPath[]>([]);
 
   const formik = useFormik({
@@ -186,12 +188,14 @@ function DetectionFormParassita({action, onBackClick, onNextClick }: DetectionPr
       note: "",
       parasite: "",
       infectedPlants: 0,
-      uprootedPlants: 0
+      uprootedPlants: 0,
     },
     validationSchema: Yup.object({
       detectionTime: Yup.string().required("Specifica la data del rilevamento"),
       parasite: Yup.string().required("Specifica il nome del parassita"),
-      infectedPlants: Yup.number().min(0, "La percentuale di piante contagiate deve essere possitiva").max(100),
+      infectedPlants: Yup.number()
+        .min(0, "La percentuale di piante contagiate deve essere possitiva")
+        .max(100),
       uprootedPlants: Yup.number().required("Specifica il numero di piante estirpate"),
     }),
     onSubmit: (values, { setSubmitting, resetForm }) => {
@@ -203,8 +207,8 @@ function DetectionFormParassita({action, onBackClick, onNextClick }: DetectionPr
           infectedPlants: values.infectedPlants,
           uprootedPlants: values.uprootedPlants,
         },
-        files: files
-      }
+        files: files,
+      };
       onNextClick(data);
       resetForm({});
       setSubmitting(false);
@@ -215,9 +219,9 @@ function DetectionFormParassita({action, onBackClick, onNextClick }: DetectionPr
     setFiles(acceptedFiles);
   }, []);
 
-  const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop, multiple: false});
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, multiple: false });
 
-  const filesPreview = files.map((file: FileWithPath)  => (
+  const filesPreview = files.map((file: FileWithPath) => (
     <li key={file.name}>
       <span className="mr-2">{file.name}</span>
     </li>
@@ -314,10 +318,12 @@ function DetectionFormParassita({action, onBackClick, onNextClick }: DetectionPr
       </div>
       <div className="input-row">
         <div {...getRootProps()}>
-          <input {...getInputProps()} accept='.png, .jpeg, .jpg'/>
-            {
-              isDragActive ? <p>Trascina i file qui...</p> : <p>Trascina e rilascia alcuni file qui, oppure fai clic per selezionarli</p>
-            }
+          <input {...getInputProps()} accept=".png, .jpeg, .jpg" />
+          {isDragActive ? (
+            <p>Trascina i file qui...</p>
+          ) : (
+            <p>Trascina e rilascia alcuni file qui, oppure fai clic per selezionarli</p>
+          )}
         </div>
         --------------------------------------------------------------------------
         <div>
@@ -326,7 +332,7 @@ function DetectionFormParassita({action, onBackClick, onNextClick }: DetectionPr
       </div>
       <hr />
       <div className="buttons-wrapper">
-        <button className="secondary" onClick={onBackClick}>
+        <button className="trnt_btn secondary" onClick={onBackClick}>
           Indietro
         </button>
         <input type="submit" className="primary" value={action} />
@@ -335,7 +341,7 @@ function DetectionFormParassita({action, onBackClick, onNextClick }: DetectionPr
   );
 }
 
-function DetectionFormInsetto({action, onBackClick, onNextClick }: DetectionProps) {
+function DetectionFormInsetto({ action, onBackClick, onNextClick }: DetectionProps) {
   const [files, setFiles] = React.useState<FileWithPath[]>([]);
 
   const formik = useFormik({
@@ -348,7 +354,7 @@ function DetectionFormInsetto({action, onBackClick, onNextClick }: DetectionProp
     validationSchema: Yup.object({
       detectionTime: Yup.string().required("Specifica la data del rilevamento"),
       insect: Yup.string().required("Specifica il nome dell'insetto"),
-      trapsNumber: Yup.number()
+      trapsNumber: Yup.number(),
     }),
     onSubmit: (values, { setSubmitting, resetForm }) => {
       const data = {
@@ -358,8 +364,8 @@ function DetectionFormInsetto({action, onBackClick, onNextClick }: DetectionProp
           insect: values.insect,
           trapsNumber: values.trapsNumber,
         },
-        files: files
-      }
+        files: files,
+      };
       onNextClick(data);
       resetForm({});
       setSubmitting(false);
@@ -370,9 +376,9 @@ function DetectionFormInsetto({action, onBackClick, onNextClick }: DetectionProp
     setFiles(acceptedFiles);
   }, []);
 
-  const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop, multiple: false});
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, multiple: false });
 
-  const filesPreview = files.map((file: FileWithPath)  => (
+  const filesPreview = files.map((file: FileWithPath) => (
     <li key={file.name}>
       <span className="mr-2">{file.name}</span>
     </li>
@@ -452,10 +458,12 @@ function DetectionFormInsetto({action, onBackClick, onNextClick }: DetectionProp
       </div>
       <div className="input-row">
         <div {...getRootProps()}>
-          <input {...getInputProps()} accept='.png, .jpeg, .jpg'/>
-            {
-              isDragActive ? <p>Trascina i file qui...</p> : <p>Trascina e rilascia alcuni file qui, oppure fai clic per selezionarli</p>
-            }
+          <input {...getInputProps()} accept=".png, .jpeg, .jpg" />
+          {isDragActive ? (
+            <p>Trascina i file qui...</p>
+          ) : (
+            <p>Trascina e rilascia alcuni file qui, oppure fai clic per selezionarli</p>
+          )}
         </div>
         --------------------------------------------------------------------------
         <div>
@@ -464,7 +472,7 @@ function DetectionFormInsetto({action, onBackClick, onNextClick }: DetectionProp
       </div>
       <hr />
       <div className="buttons-wrapper">
-        <button className="secondary" onClick={onBackClick}>
+        <button className="trnt_btn secondary" onClick={onBackClick}>
           Indietro
         </button>
         <input type="submit" className="primary" value={action} />
@@ -473,13 +481,13 @@ function DetectionFormInsetto({action, onBackClick, onNextClick }: DetectionProp
   );
 }
 
-function DetectionFormAltro({action, onBackClick, onNextClick }: DetectionProps) {
+function DetectionFormAltro({ action, onBackClick, onNextClick }: DetectionProps) {
   const [files, setFiles] = React.useState<FileWithPath[]>([]);
 
   const formik = useFormik({
     initialValues: {
       detectionTime: "",
-      note: ""
+      note: "",
     },
     validationSchema: Yup.object({
       detectionTime: Yup.string().required("Specifica la data del rilevamento"),
@@ -488,10 +496,9 @@ function DetectionFormAltro({action, onBackClick, onNextClick }: DetectionProps)
       const data = {
         detectionTime: new Date(values.detectionTime).getTime(),
         note: values.note,
-        details: {
-        },
-        files: files
-      }
+        details: {},
+        files: files,
+      };
       onNextClick(data);
       resetForm({});
       setSubmitting(false);
@@ -502,8 +509,8 @@ function DetectionFormAltro({action, onBackClick, onNextClick }: DetectionProps)
     setFiles(acceptedFiles);
   }, []);
 
-  const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop, multiple: false});
-  const filesPreview = files.map((file: FileWithPath)  => (
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, multiple: false });
+  const filesPreview = files.map((file: FileWithPath) => (
     <li key={file.name}>
       <span className="mr-2">{file.name}</span>
     </li>
@@ -549,10 +556,12 @@ function DetectionFormAltro({action, onBackClick, onNextClick }: DetectionProps)
       </div>
       <div className="input-row">
         <div {...getRootProps()}>
-          <input {...getInputProps()} accept='.png, .jpeg, .jpg'/>
-            {
-              isDragActive ? <p>Trascina i file qui...</p> : <p>Trascina e rilascia alcuni file qui, oppure fai clic per selezionarli</p>
-            }
+          <input {...getInputProps()} accept=".png, .jpeg, .jpg" />
+          {isDragActive ? (
+            <p>Trascina i file qui...</p>
+          ) : (
+            <p>Trascina e rilascia alcuni file qui, oppure fai clic per selezionarli</p>
+          )}
         </div>
         --------------------------------------------------------------------------
         <div>
@@ -561,7 +570,7 @@ function DetectionFormAltro({action, onBackClick, onNextClick }: DetectionProps)
       </div>
       <hr />
       <div className="buttons-wrapper">
-        <button className="secondary" onClick={onBackClick}>
+        <button className="trnt_btn secondary" onClick={onBackClick}>
           Indietro
         </button>
         <input type="submit" className="primary" value={action} />
@@ -593,7 +602,6 @@ function DetectionFormStep1({ formData, action, onNextClick }: DetectionProps) {
       longitude: formData.position.lng || 0,
     });
   }, [formData]);
-
 
   React.useEffect(() => {
     if (navigator.geolocation) {
@@ -691,7 +699,9 @@ function DetectionFormStep2({ formData, action, onBackClick, onNextClick }: Dete
       </div>
       <hr />
       <div className="buttons-wrapper">
-        <button className="secondary" onClick={onBackClick}>Indietro</button>
+        <button className="trnt_btn secondary" onClick={onBackClick}>
+          Indietro
+        </button>
         <input type="submit" className="primary" value={action} />
       </div>
     </form>
@@ -749,14 +759,14 @@ export function DetectionForm() {
 
     try {
       const results = await filesApi.uploadFilesForm(files, companyId, "data").then((response) => {
-        return response.data
+        return response.data;
       });
       return results;
     } catch (error) {
       console.error("Error uploading files:", error);
       return [];
     }
-  }
+  };
 
   const handleNextClick = async (data: any) => {
     if (step === 2) {
@@ -825,11 +835,7 @@ export function DetectionForm() {
       </ol>
       <div>
         {step === 1 && (
-          <DetectionFormStep1 
-            formData={formData} 
-            action={action} 
-            onNextClick={handleNextClick} 
-          />
+          <DetectionFormStep1 formData={formData} action={action} onNextClick={handleNextClick} />
         )}
         {step === 2 && (
           <DetectionFormStep2
@@ -839,7 +845,7 @@ export function DetectionForm() {
             onNextClick={handleNextClick}
           />
         )}
-        {step === 3 && formData.type === 'Malattia' && (
+        {step === 3 && formData.type === "Malattia" && (
           <DetectionFormMalattia
             formData={formData}
             action={action}
@@ -847,7 +853,7 @@ export function DetectionForm() {
             onNextClick={handleNextClick}
           />
         )}
-         {step === 3 && formData.type === 'Parassita' && (
+        {step === 3 && formData.type === "Parassita" && (
           <DetectionFormParassita
             formData={formData}
             action={action}
@@ -855,7 +861,7 @@ export function DetectionForm() {
             onNextClick={handleNextClick}
           />
         )}
-         {step === 3 && formData.type === 'Insetto' && (
+        {step === 3 && formData.type === "Insetto" && (
           <DetectionFormInsetto
             formData={formData}
             action={action}
@@ -863,7 +869,7 @@ export function DetectionForm() {
             onNextClick={handleNextClick}
           />
         )}
-         {step === 3 && formData.type === 'Altro' && (
+        {step === 3 && formData.type === "Altro" && (
           <DetectionFormAltro
             formData={formData}
             action={action}

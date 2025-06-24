@@ -12990,7 +12990,7 @@ body {
 
 #app a.button,
 #app input[type="submit"],
-#app button {
+#app button.trnt_btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -13016,7 +13016,7 @@ body {
 @media (min-width: 576px) {
   #app a.button,
   #app input[type="submit"],
-  #app button {
+  #app button.trnt_btn {
     font-size: 15px;
   }
 }
@@ -13024,7 +13024,7 @@ body {
 @media (min-width: 768px) {
   #app a.button,
   #app input[type="submit"],
-  #app button {
+  #app button.trnt_btn {
     font-size: 15px;
   }
 }
@@ -13032,7 +13032,7 @@ body {
 @media (min-width: 992px) {
   #app a.button,
   #app input[type="submit"],
-  #app button {
+  #app button.trnt_btn {
     font-size: 15px;
   }
 }
@@ -13040,20 +13040,20 @@ body {
 @media (min-width: 1200px) {
   #app a.button,
   #app input[type="submit"],
-  #app button {
+  #app button.trnt_btn {
     font-size: 15px;
   }
 }
 
 #app a.button:hover,
 #app input[type="submit"]:hover,
-#app button:hover {
+#app button.trnt_btn:hover {
   text-decoration: none;
 }
 
 #app a.button[data-type="round"],
 #app input[type="submit"][data-type="round"],
-#app button[data-type="round"] {
+#app button.trnt_btn[data-type="round"] {
   border-radius: 20px;
   width: 40px;
   min-width: 40px;
@@ -13061,7 +13061,7 @@ body {
 
 #app a.button[data-type="table"],
 #app input[type="submit"][data-type="table"],
-#app button[data-type="table"] {
+#app button.trnt_btn[data-type="table"] {
   min-width: auto;
   height: auto;
   padding: 5px 10px;
@@ -13069,7 +13069,7 @@ body {
 
 #app a.button.accent,
 #app input[type="submit"].accent,
-#app button.accent {
+#app button.trnt_btn.accent {
   background-color: #3d401a;
   color: #eaff00;
   text-decoration: none;
@@ -13077,7 +13077,7 @@ body {
 
 #app a.button.accent:hover,
 #app input[type="submit"].accent:hover,
-#app button.accent:hover {
+#app button.trnt_btn.accent:hover {
   background-color: #333516;
 }
 
@@ -13085,14 +13085,14 @@ body {
 #app a.button.accent .active,
 #app input[type="submit"].accent:active,
 #app input[type="submit"].accent .active,
-#app button.accent:active,
-#app button.accent .active {
+#app button.trnt_btn.accent:active,
+#app button.trnt_btn.accent .active {
   background-color: #282a11;
 }
 
 #app a.button.primary,
 #app input[type="submit"].primary,
-#app button.primary {
+#app button.trnt_btn.primary {
   background-color: #1f1f1f;
   color: white;
   text-decoration: none;
@@ -13100,7 +13100,7 @@ body {
 
 #app a.button.primary:hover,
 #app input[type="submit"].primary:hover,
-#app button.primary:hover {
+#app button.trnt_btn.primary:hover {
   background-color: #545454;
 }
 
@@ -13108,14 +13108,14 @@ body {
 #app a.button.primary .active,
 #app input[type="submit"].primary:active,
 #app input[type="submit"].primary .active,
-#app button.primary:active,
-#app button.primary .active {
+#app button.trnt_btn.primary:active,
+#app button.trnt_btn.primary .active {
   background-color: black;
 }
 
 #app a.button.secondary,
 #app input[type="submit"].secondary,
-#app button.secondary {
+#app button.trnt_btn.secondary {
   background-color: transparent;
   border: 1px solid #1f1f1f;
   color: #1f1f1f;
@@ -13124,7 +13124,7 @@ body {
 
 #app a.button.secondary:hover,
 #app input[type="submit"].secondary:hover,
-#app button.secondary:hover {
+#app button.trnt_btn.secondary:hover {
   background-color: #bbbbbb;
   border-color: #bbbbbb;
 }
@@ -13133,33 +13133,33 @@ body {
 #app a.button.secondary .active,
 #app input[type="submit"].secondary:active,
 #app input[type="submit"].secondary .active,
-#app button.secondary:active,
-#app button.secondary .active {
+#app button.trnt_btn.secondary:active,
+#app button.trnt_btn.secondary .active {
   background-color: #8b8b8b;
   border-color: #8b8b8b;
 }
 
 #app a.button.wider,
 #app input[type="submit"].wider,
-#app button.wider {
+#app button.trnt_btn.wider {
   min-width: 200px;
 }
 
 #app a.button.wide,
 #app input[type="submit"].wide,
-#app button.wide {
+#app button.trnt_btn.wide {
   width: 100%;
 }
 
 #app a.button.slim-y,
 #app input[type="submit"].slim-y,
-#app button.slim-y {
+#app button.trnt_btn.slim-y {
   height: 30px;
 }
 
 #app a.button.narrow-x,
 #app input[type="submit"].narrow-x,
-#app button.narrow-x {
+#app button.trnt_btn.narrow-x {
   width: auto;
   min-width: auto;
 }
@@ -14547,7 +14547,6 @@ body {
 #app #map {
   height: 350px;
   height: calc(100vh - 60px);
-  margin: -20px -10px;
 }
 
 #app.ws-app {

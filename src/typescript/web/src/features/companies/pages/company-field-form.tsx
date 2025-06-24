@@ -12,7 +12,6 @@ import { headerbarActions } from "../../headerbar/state/headerbar-slice";
 import { fieldsActions } from "../../fields/state/fields-slice";
 import { unwrapResult } from "@reduxjs/toolkit";
 
-
 interface FieldProps {
   action: string;
   onBackClick?: () => Promise<void>;
@@ -194,29 +193,33 @@ const FieldFormStep2 = ({ action, onBackClick, onNextClick }: FieldProps) => {
     <>
       <h4>Disegna la mappa del campo</h4>
       <hr />
-      {/*@ts-ignore*/}
-      {mapLoaded && <SearchBox
-        options={{
-          language: 'it',
-          country: 'IT'
-        }}
-        accessToken={process.env.REACT_APP_MAPBOX_API_TOKEN ?? ""}
-        map={mapRef.current}
-        mapboxgl={mapboxgl}
-        value={inputValue}
-        onChange={(d) => {
-          setInputValue(d);
-        }}
-        marker
-      />}
+      {mapLoaded && (
+        <div className="mapbox-searchbox-wrapper">
+          {/*@ts-ignore*/}
+          <SearchBox
+            options={{
+              language: "it",
+              country: "IT",
+            }}
+            accessToken={process.env.REACT_APP_MAPBOX_API_TOKEN ?? ""}
+            map={mapRef.current}
+            mapboxgl={mapboxgl}
+            value={inputValue}
+            onChange={(d) => {
+              setInputValue(d);
+            }}
+            marker
+          />
+        </div>
+      )}
       <div ref={mapContainerRef} id="map" style={{ height: "500px" }}></div>
       <hr />
       <div className="buttons-wrapper mt-5">
-        <button className="secondary" onClick={onBackClick}>
+        <button className="trnt_btn secondary" onClick={onBackClick}>
           Indietro
         </button>
         <button
-          className="primary"
+          className="trnt_btn primary"
           onClick={() => {
             onNextClick(map);
           }}

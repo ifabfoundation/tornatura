@@ -203,7 +203,7 @@ body {
 
   a.button,
   input[type="submit"],
-  button {
+  button.trnt_btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -1021,7 +1021,11 @@ body {
     height: 350px;
     height: calc(100vh - #{$header-h});
     // implement better way to remove padding from content in some cases like the map
-    margin: -20px -10px;
+    // margin: -20px -10px;
+  }
+
+  .field-map-mapbox-searchbox-wrapper {
+    // opacity: 0.3;
   }
 
   // --------------------------------------------------------------------------------------------------

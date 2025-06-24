@@ -40,7 +40,7 @@ export function FieldDetections() {
           </Col>
         </Row>
         <Row className="mt-4">
-          <Col md={1} xl={12}>
+          <Col>
             <DetectionTableComponent detections={detections} />
           </Col>
         </Row>

@@ -34,7 +34,7 @@ function CompanySelector() {
 
   return (
     <li className="context-selector">
-      <button onClick={handeleBackClick}>
+      <button className="trnt_btn" onClick={handeleBackClick}>
         <Icon iconName={"ifab_x"} state={"normal"} />
       </button>
       <div className="main-area">
@@ -75,7 +75,7 @@ function FieldSelector() {
 
   return (
     <li className="context-selector">
-      <button onClick={handeleBackClick}>
+      <button className="trnt_btn" onClick={handeleBackClick}>
         <Icon iconName={"ifab_x"} state={"normal"} />
       </button>
       <div className="main-area">
@@ -102,6 +102,7 @@ function FieldSelector() {
 }
 
 export default function SideBar() {
+  const navigate = useNavigate();
   let location = useLocation();
   let params = useParams();
   const dispatch = useAppDispatch();
@@ -131,7 +132,6 @@ export default function SideBar() {
     if (mobileOpen) {
       dispatch(SidebarActions.setMenuMobileOpen(false));
     }
-
   }, [location, menuEntries, menuBottomEntries]);
 
   return (
@@ -139,7 +139,13 @@ export default function SideBar() {
       <div className={"sidebar" + (mobileOpen ? " open" : "")}>
         <header style={{ zIndex: 5 }}>
           <div className="flex-grow-1 mt-1">
-            <img src={logo} className="logo" alt="logo" width="135px" />
+            <img
+              src={logo}
+              className="logo"
+              alt="logo"
+              width="135px"
+              onClick={() => navigate("/")}
+            />
           </div>
           <div className="line-colors" data-loading="false" />
         </header>
