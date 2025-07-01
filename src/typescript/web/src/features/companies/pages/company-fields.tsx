@@ -37,6 +37,17 @@ export function CompanyFields() {
   const fields = useAppSelector((state) =>
     fieldsSelectors.selectFieldsByOrgId(state, currentCompany.orgId)
   );
+  // sort by name
+  fields
+    .sort((a, b) => {
+      const nameA = a.name.toUpperCase(); // ignore upper and lowercase
+      const nameB = b.name.toUpperCase(); // ignore upper and lowercase
+      return nameA < nameB ? -1 : nameA > nameB ? 1 : 0;
+    })
+    .forEach((f) => {
+      console.log("--- F --", f.name);
+    });
+
   const detections = useAppSelector(detectionsSelectors.selectDetections);
 
   React.useEffect(() => {
