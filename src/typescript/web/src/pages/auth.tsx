@@ -30,11 +30,8 @@ function SignupStep3({ action, onBackClick, onNextClick }: SignupProps) {
     validationSchema: Yup.object({
       name: Yup.string().required("Campo obbligatorio"),
       piva: Yup.string().required("Campo obbligatorio"),
-      state: Yup.string().required("Campo obbligatorio"),
-      city: Yup.string().required("Campo obbligatorio"),
-      legalForm: Yup.string().required("Campo obbligatorio"),
-      rappresentative: Yup.string().required("Campo obbligatorio"),
-      rappresentativeContact: Yup.string().required("Campo obbligatorio"),
+      email: Yup.string().required("Campo obbligatorio"),
+      phone: Yup.string().required("Campo obbligatorio"),
     }),
     onSubmit: (values, { setSubmitting, resetForm }) => {
       onNextClick(values)
@@ -399,7 +396,7 @@ export function Signup() {
         organization: {
           name: data.name,
           piva: data.piva,
-          legalForm: data.legalForm,
+          legalForm: "",
           office: {
             state: data.state,
             city: data.city,
