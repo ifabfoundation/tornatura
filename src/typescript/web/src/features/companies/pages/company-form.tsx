@@ -7,6 +7,8 @@ import { OrganizationCreatePayload } from "@tornatura/coreapis";
 import { companiesActions } from "../state/companies-slice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useNavigate } from "react-router-dom";
+import { MenuItemEntry } from "../../../components/Sidebar";
+import { SidebarActions } from "../../sidebar/state/sidebar-slice";
 
 export function CompanyForm() {
   const dispatch = useAppDispatch();
@@ -14,6 +16,33 @@ export function CompanyForm() {
 
   React.useEffect(() => {
     dispatch(headerbarActions.setTitle({ title: "Nuova Azienda", subtitle: "Subtitle" }));
+  }, []);
+
+  React.useEffect(() => {
+    let menuEntries: MenuItemEntry[] = [];
+    let menuBottomEntries: MenuItemEntry[] = [];
+
+    menuEntries = [
+      {
+        id: "companies",
+        icon: "ifab_grid",
+        text: "Aziende gestite",
+        path: "/companies",
+      },
+    ];
+
+    menuBottomEntries = [
+      {
+        id: "feedback",
+        icon: "ifab_baloon",
+        text: "Invia Feedback",
+        path: "/new-feedback",
+      },
+    ];
+    
+    dispatch(SidebarActions.setMenuEntriesAction(menuEntries));
+    dispatch(SidebarActions.setMenuBottomEntriesAction(menuBottomEntries));
+    
   }, []);
 
   const formik = useFormik({

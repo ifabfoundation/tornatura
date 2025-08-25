@@ -21,6 +21,7 @@ import { AgriField } from '../models';
 import { AgriFieldMutationPayload } from '../models';
 import { ErrorResponse } from '../models';
 import { PaginatedResponse } from '../models';
+import { StatusResponse } from '../models';
 /**
  * AgriFieldsApi - axios parameter creator
  * @export
@@ -145,6 +146,116 @@ export const AgriFieldsApiAxiosParamCreator = function (configuration?: Configur
         },
         /**
          * 
+         * @summary Detetion of Agriculture Field
+         * @param {string} orgId Organization ID
+         * @param {string} agrifieldId Agrifield ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteAgrifield: async (orgId: string, agrifieldId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgId' is not null or undefined
+            if (orgId === null || orgId === undefined) {
+                throw new RequiredError('orgId','Required parameter orgId was null or undefined when calling deleteAgrifield.');
+            }
+            // verify required parameter 'agrifieldId' is not null or undefined
+            if (agrifieldId === null || agrifieldId === undefined) {
+                throw new RequiredError('agrifieldId','Required parameter agrifieldId was null or undefined when calling deleteAgrifield.');
+            }
+            const localVarPath = `/v1/organizations/{org_id}/agrifields/{agrifield_id}`
+                .replace(`{${"org_id"}}`, encodeURIComponent(String(orgId)))
+                .replace(`{${"agrifield_id"}}`, encodeURIComponent(String(agrifieldId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, 'https://example.com');
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions :AxiosRequestConfig = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication SecurityChecker required
+            // http bearer authentication required
+            if (configuration && configuration.accessToken) {
+                const accessToken = typeof configuration.accessToken === 'function'
+                    ? await configuration.accessToken()
+                    : await configuration.accessToken;
+                localVarHeaderParameter["Authorization"] = "Bearer " + accessToken;
+            }
+
+            const query = new URLSearchParams(localVarUrlObj.search);
+            for (const key in localVarQueryParameter) {
+                query.set(key, localVarQueryParameter[key]);
+            }
+            for (const key in options.params) {
+                query.set(key, options.params[key]);
+            }
+            localVarUrlObj.search = (new URLSearchParams(query)).toString();
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: localVarUrlObj.pathname + localVarUrlObj.search + localVarUrlObj.hash,
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Detetion of Agriculture Field
+         * @param {string} orgId Organization ID
+         * @param {string} agrifieldId Agrifield ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteAgrifield_2: async (orgId: string, agrifieldId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgId' is not null or undefined
+            if (orgId === null || orgId === undefined) {
+                throw new RequiredError('orgId','Required parameter orgId was null or undefined when calling deleteAgrifield_2.');
+            }
+            // verify required parameter 'agrifieldId' is not null or undefined
+            if (agrifieldId === null || agrifieldId === undefined) {
+                throw new RequiredError('agrifieldId','Required parameter agrifieldId was null or undefined when calling deleteAgrifield_2.');
+            }
+            const localVarPath = `/v1/organizations/{org_id}/agrifields/{agrifield_id}`
+                .replace(`{${"org_id"}}`, encodeURIComponent(String(orgId)))
+                .replace(`{${"agrifield_id"}}`, encodeURIComponent(String(agrifieldId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, 'https://example.com');
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions :AxiosRequestConfig = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication SecurityChecker required
+            // http bearer authentication required
+            if (configuration && configuration.accessToken) {
+                const accessToken = typeof configuration.accessToken === 'function'
+                    ? await configuration.accessToken()
+                    : await configuration.accessToken;
+                localVarHeaderParameter["Authorization"] = "Bearer " + accessToken;
+            }
+
+            const query = new URLSearchParams(localVarUrlObj.search);
+            for (const key in localVarQueryParameter) {
+                query.set(key, localVarQueryParameter[key]);
+            }
+            for (const key in options.params) {
+                query.set(key, options.params[key]);
+            }
+            localVarUrlObj.search = (new URLSearchParams(query)).toString();
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: localVarUrlObj.pathname + localVarUrlObj.search + localVarUrlObj.hash,
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Get Agriculture Field details
          * @param {string} orgId Organization ID
          * @param {string} agrifieldId Agrifield ID
@@ -206,14 +317,14 @@ export const AgriFieldsApiAxiosParamCreator = function (configuration?: Configur
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getAgrifield_2: async (orgId: string, agrifieldId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getAgrifield_3: async (orgId: string, agrifieldId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'orgId' is not null or undefined
             if (orgId === null || orgId === undefined) {
-                throw new RequiredError('orgId','Required parameter orgId was null or undefined when calling getAgrifield_2.');
+                throw new RequiredError('orgId','Required parameter orgId was null or undefined when calling getAgrifield_3.');
             }
             // verify required parameter 'agrifieldId' is not null or undefined
             if (agrifieldId === null || agrifieldId === undefined) {
-                throw new RequiredError('agrifieldId','Required parameter agrifieldId was null or undefined when calling getAgrifield_2.');
+                throw new RequiredError('agrifieldId','Required parameter agrifieldId was null or undefined when calling getAgrifield_3.');
             }
             const localVarPath = `/v1/organizations/{org_id}/agrifields/{agrifield_id}`
                 .replace(`{${"org_id"}}`, encodeURIComponent(String(orgId)))
@@ -321,10 +432,10 @@ export const AgriFieldsApiAxiosParamCreator = function (configuration?: Configur
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        listAgrifields_3: async (orgId: string, page?: number, limit?: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        listAgrifields_4: async (orgId: string, page?: number, limit?: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'orgId' is not null or undefined
             if (orgId === null || orgId === undefined) {
-                throw new RequiredError('orgId','Required parameter orgId was null or undefined when calling listAgrifields_3.');
+                throw new RequiredError('orgId','Required parameter orgId was null or undefined when calling listAgrifields_4.');
             }
             const localVarPath = `/v1/organizations/{org_id}/agrifields`
                 .replace(`{${"org_id"}}`, encodeURIComponent(String(orgId)));
@@ -365,6 +476,134 @@ export const AgriFieldsApiAxiosParamCreator = function (configuration?: Configur
             localVarUrlObj.search = (new URLSearchParams(query)).toString();
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: localVarUrlObj.pathname + localVarUrlObj.search + localVarUrlObj.hash,
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Update of Agriculture Field
+         * @param {AgriFieldMutationPayload} body 
+         * @param {string} orgId Organization ID
+         * @param {string} agrifieldId Agrifield ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateAgrifield: async (body: AgriFieldMutationPayload, orgId: string, agrifieldId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            if (body === null || body === undefined) {
+                throw new RequiredError('body','Required parameter body was null or undefined when calling updateAgrifield.');
+            }
+            // verify required parameter 'orgId' is not null or undefined
+            if (orgId === null || orgId === undefined) {
+                throw new RequiredError('orgId','Required parameter orgId was null or undefined when calling updateAgrifield.');
+            }
+            // verify required parameter 'agrifieldId' is not null or undefined
+            if (agrifieldId === null || agrifieldId === undefined) {
+                throw new RequiredError('agrifieldId','Required parameter agrifieldId was null or undefined when calling updateAgrifield.');
+            }
+            const localVarPath = `/v1/organizations/{org_id}/agrifields/{agrifield_id}`
+                .replace(`{${"org_id"}}`, encodeURIComponent(String(orgId)))
+                .replace(`{${"agrifield_id"}}`, encodeURIComponent(String(agrifieldId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, 'https://example.com');
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions :AxiosRequestConfig = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication SecurityChecker required
+            // http bearer authentication required
+            if (configuration && configuration.accessToken) {
+                const accessToken = typeof configuration.accessToken === 'function'
+                    ? await configuration.accessToken()
+                    : await configuration.accessToken;
+                localVarHeaderParameter["Authorization"] = "Bearer " + accessToken;
+            }
+
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            const query = new URLSearchParams(localVarUrlObj.search);
+            for (const key in localVarQueryParameter) {
+                query.set(key, localVarQueryParameter[key]);
+            }
+            for (const key in options.params) {
+                query.set(key, options.params[key]);
+            }
+            localVarUrlObj.search = (new URLSearchParams(query)).toString();
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            const needsSerialization = (typeof body !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
+            localVarRequestOptions.data =  needsSerialization ? JSON.stringify(body !== undefined ? body : {}) : (body || "");
+
+            return {
+                url: localVarUrlObj.pathname + localVarUrlObj.search + localVarUrlObj.hash,
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Update of Agriculture Field
+         * @param {AgriFieldMutationPayload} body 
+         * @param {string} orgId Organization ID
+         * @param {string} agrifieldId Agrifield ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateAgrifield_5: async (body: AgriFieldMutationPayload, orgId: string, agrifieldId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            if (body === null || body === undefined) {
+                throw new RequiredError('body','Required parameter body was null or undefined when calling updateAgrifield_5.');
+            }
+            // verify required parameter 'orgId' is not null or undefined
+            if (orgId === null || orgId === undefined) {
+                throw new RequiredError('orgId','Required parameter orgId was null or undefined when calling updateAgrifield_5.');
+            }
+            // verify required parameter 'agrifieldId' is not null or undefined
+            if (agrifieldId === null || agrifieldId === undefined) {
+                throw new RequiredError('agrifieldId','Required parameter agrifieldId was null or undefined when calling updateAgrifield_5.');
+            }
+            const localVarPath = `/v1/organizations/{org_id}/agrifields/{agrifield_id}`
+                .replace(`{${"org_id"}}`, encodeURIComponent(String(orgId)))
+                .replace(`{${"agrifield_id"}}`, encodeURIComponent(String(agrifieldId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, 'https://example.com');
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions :AxiosRequestConfig = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication SecurityChecker required
+            // http bearer authentication required
+            if (configuration && configuration.accessToken) {
+                const accessToken = typeof configuration.accessToken === 'function'
+                    ? await configuration.accessToken()
+                    : await configuration.accessToken;
+                localVarHeaderParameter["Authorization"] = "Bearer " + accessToken;
+            }
+
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            const query = new URLSearchParams(localVarUrlObj.search);
+            for (const key in localVarQueryParameter) {
+                query.set(key, localVarQueryParameter[key]);
+            }
+            for (const key in options.params) {
+                query.set(key, options.params[key]);
+            }
+            localVarUrlObj.search = (new URLSearchParams(query)).toString();
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            const needsSerialization = (typeof body !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
+            localVarRequestOptions.data =  needsSerialization ? JSON.stringify(body !== undefined ? body : {}) : (body || "");
 
             return {
                 url: localVarUrlObj.pathname + localVarUrlObj.search + localVarUrlObj.hash,
@@ -412,6 +651,36 @@ export const AgriFieldsApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Detetion of Agriculture Field
+         * @param {string} orgId Organization ID
+         * @param {string} agrifieldId Agrifield ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteAgrifield(orgId: string, agrifieldId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => Promise<AxiosResponse<StatusResponse>>> {
+            const localVarAxiosArgs = await AgriFieldsApiAxiosParamCreator(configuration).deleteAgrifield(orgId, agrifieldId, options);
+            return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
+                const axiosRequestArgs :AxiosRequestConfig = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
+                return axios.request(axiosRequestArgs);
+            };
+        },
+        /**
+         * 
+         * @summary Detetion of Agriculture Field
+         * @param {string} orgId Organization ID
+         * @param {string} agrifieldId Agrifield ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteAgrifield_2(orgId: string, agrifieldId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => Promise<AxiosResponse<StatusResponse>>> {
+            const localVarAxiosArgs = await AgriFieldsApiAxiosParamCreator(configuration).deleteAgrifield_2(orgId, agrifieldId, options);
+            return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
+                const axiosRequestArgs :AxiosRequestConfig = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
+                return axios.request(axiosRequestArgs);
+            };
+        },
+        /**
+         * 
          * @summary Get Agriculture Field details
          * @param {string} orgId Organization ID
          * @param {string} agrifieldId Agrifield ID
@@ -433,8 +702,8 @@ export const AgriFieldsApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getAgrifield_2(orgId: string, agrifieldId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => Promise<AxiosResponse<AgriField>>> {
-            const localVarAxiosArgs = await AgriFieldsApiAxiosParamCreator(configuration).getAgrifield_2(orgId, agrifieldId, options);
+        async getAgrifield_3(orgId: string, agrifieldId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => Promise<AxiosResponse<AgriField>>> {
+            const localVarAxiosArgs = await AgriFieldsApiAxiosParamCreator(configuration).getAgrifield_3(orgId, agrifieldId, options);
             return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
                 const axiosRequestArgs :AxiosRequestConfig = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
                 return axios.request(axiosRequestArgs);
@@ -465,8 +734,40 @@ export const AgriFieldsApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async listAgrifields_3(orgId: string, page?: number, limit?: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => Promise<AxiosResponse<PaginatedResponse>>> {
-            const localVarAxiosArgs = await AgriFieldsApiAxiosParamCreator(configuration).listAgrifields_3(orgId, page, limit, options);
+        async listAgrifields_4(orgId: string, page?: number, limit?: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => Promise<AxiosResponse<PaginatedResponse>>> {
+            const localVarAxiosArgs = await AgriFieldsApiAxiosParamCreator(configuration).listAgrifields_4(orgId, page, limit, options);
+            return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
+                const axiosRequestArgs :AxiosRequestConfig = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
+                return axios.request(axiosRequestArgs);
+            };
+        },
+        /**
+         * 
+         * @summary Update of Agriculture Field
+         * @param {AgriFieldMutationPayload} body 
+         * @param {string} orgId Organization ID
+         * @param {string} agrifieldId Agrifield ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateAgrifield(body: AgriFieldMutationPayload, orgId: string, agrifieldId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => Promise<AxiosResponse<AgriField>>> {
+            const localVarAxiosArgs = await AgriFieldsApiAxiosParamCreator(configuration).updateAgrifield(body, orgId, agrifieldId, options);
+            return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
+                const axiosRequestArgs :AxiosRequestConfig = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
+                return axios.request(axiosRequestArgs);
+            };
+        },
+        /**
+         * 
+         * @summary Update of Agriculture Field
+         * @param {AgriFieldMutationPayload} body 
+         * @param {string} orgId Organization ID
+         * @param {string} agrifieldId Agrifield ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateAgrifield_5(body: AgriFieldMutationPayload, orgId: string, agrifieldId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => Promise<AxiosResponse<AgriField>>> {
+            const localVarAxiosArgs = await AgriFieldsApiAxiosParamCreator(configuration).updateAgrifield_5(body, orgId, agrifieldId, options);
             return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
                 const axiosRequestArgs :AxiosRequestConfig = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
                 return axios.request(axiosRequestArgs);
@@ -505,6 +806,28 @@ export const AgriFieldsApiFactory = function (configuration?: Configuration, bas
         },
         /**
          * 
+         * @summary Detetion of Agriculture Field
+         * @param {string} orgId Organization ID
+         * @param {string} agrifieldId Agrifield ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteAgrifield(orgId: string, agrifieldId: string, options?: AxiosRequestConfig): Promise<AxiosResponse<StatusResponse>> {
+            return AgriFieldsApiFp(configuration).deleteAgrifield(orgId, agrifieldId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Detetion of Agriculture Field
+         * @param {string} orgId Organization ID
+         * @param {string} agrifieldId Agrifield ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteAgrifield_2(orgId: string, agrifieldId: string, options?: AxiosRequestConfig): Promise<AxiosResponse<StatusResponse>> {
+            return AgriFieldsApiFp(configuration).deleteAgrifield_2(orgId, agrifieldId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary Get Agriculture Field details
          * @param {string} orgId Organization ID
          * @param {string} agrifieldId Agrifield ID
@@ -522,8 +845,8 @@ export const AgriFieldsApiFactory = function (configuration?: Configuration, bas
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getAgrifield_2(orgId: string, agrifieldId: string, options?: AxiosRequestConfig): Promise<AxiosResponse<AgriField>> {
-            return AgriFieldsApiFp(configuration).getAgrifield_2(orgId, agrifieldId, options).then((request) => request(axios, basePath));
+        async getAgrifield_3(orgId: string, agrifieldId: string, options?: AxiosRequestConfig): Promise<AxiosResponse<AgriField>> {
+            return AgriFieldsApiFp(configuration).getAgrifield_3(orgId, agrifieldId, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -546,8 +869,32 @@ export const AgriFieldsApiFactory = function (configuration?: Configuration, bas
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async listAgrifields_3(orgId: string, page?: number, limit?: number, options?: AxiosRequestConfig): Promise<AxiosResponse<PaginatedResponse>> {
-            return AgriFieldsApiFp(configuration).listAgrifields_3(orgId, page, limit, options).then((request) => request(axios, basePath));
+        async listAgrifields_4(orgId: string, page?: number, limit?: number, options?: AxiosRequestConfig): Promise<AxiosResponse<PaginatedResponse>> {
+            return AgriFieldsApiFp(configuration).listAgrifields_4(orgId, page, limit, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Update of Agriculture Field
+         * @param {AgriFieldMutationPayload} body 
+         * @param {string} orgId Organization ID
+         * @param {string} agrifieldId Agrifield ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateAgrifield(body: AgriFieldMutationPayload, orgId: string, agrifieldId: string, options?: AxiosRequestConfig): Promise<AxiosResponse<AgriField>> {
+            return AgriFieldsApiFp(configuration).updateAgrifield(body, orgId, agrifieldId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Update of Agriculture Field
+         * @param {AgriFieldMutationPayload} body 
+         * @param {string} orgId Organization ID
+         * @param {string} agrifieldId Agrifield ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateAgrifield_5(body: AgriFieldMutationPayload, orgId: string, agrifieldId: string, options?: AxiosRequestConfig): Promise<AxiosResponse<AgriField>> {
+            return AgriFieldsApiFp(configuration).updateAgrifield_5(body, orgId, agrifieldId, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -585,6 +932,30 @@ export class AgriFieldsApi extends BaseAPI {
     }
     /**
      * 
+     * @summary Detetion of Agriculture Field
+     * @param {string} orgId Organization ID
+     * @param {string} agrifieldId Agrifield ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AgriFieldsApi
+     */
+    public async deleteAgrifield(orgId: string, agrifieldId: string, options?: AxiosRequestConfig) : Promise<AxiosResponse<StatusResponse>> {
+        return AgriFieldsApiFp(this.configuration).deleteAgrifield(orgId, agrifieldId, options).then((request) => request(this.axios, this.basePath));
+    }
+    /**
+     * 
+     * @summary Detetion of Agriculture Field
+     * @param {string} orgId Organization ID
+     * @param {string} agrifieldId Agrifield ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AgriFieldsApi
+     */
+    public async deleteAgrifield_2(orgId: string, agrifieldId: string, options?: AxiosRequestConfig) : Promise<AxiosResponse<StatusResponse>> {
+        return AgriFieldsApiFp(this.configuration).deleteAgrifield_2(orgId, agrifieldId, options).then((request) => request(this.axios, this.basePath));
+    }
+    /**
+     * 
      * @summary Get Agriculture Field details
      * @param {string} orgId Organization ID
      * @param {string} agrifieldId Agrifield ID
@@ -604,8 +975,8 @@ export class AgriFieldsApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof AgriFieldsApi
      */
-    public async getAgrifield_2(orgId: string, agrifieldId: string, options?: AxiosRequestConfig) : Promise<AxiosResponse<AgriField>> {
-        return AgriFieldsApiFp(this.configuration).getAgrifield_2(orgId, agrifieldId, options).then((request) => request(this.axios, this.basePath));
+    public async getAgrifield_3(orgId: string, agrifieldId: string, options?: AxiosRequestConfig) : Promise<AxiosResponse<AgriField>> {
+        return AgriFieldsApiFp(this.configuration).getAgrifield_3(orgId, agrifieldId, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      * 
@@ -630,7 +1001,33 @@ export class AgriFieldsApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof AgriFieldsApi
      */
-    public async listAgrifields_3(orgId: string, page?: number, limit?: number, options?: AxiosRequestConfig) : Promise<AxiosResponse<PaginatedResponse>> {
-        return AgriFieldsApiFp(this.configuration).listAgrifields_3(orgId, page, limit, options).then((request) => request(this.axios, this.basePath));
+    public async listAgrifields_4(orgId: string, page?: number, limit?: number, options?: AxiosRequestConfig) : Promise<AxiosResponse<PaginatedResponse>> {
+        return AgriFieldsApiFp(this.configuration).listAgrifields_4(orgId, page, limit, options).then((request) => request(this.axios, this.basePath));
+    }
+    /**
+     * 
+     * @summary Update of Agriculture Field
+     * @param {AgriFieldMutationPayload} body 
+     * @param {string} orgId Organization ID
+     * @param {string} agrifieldId Agrifield ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AgriFieldsApi
+     */
+    public async updateAgrifield(body: AgriFieldMutationPayload, orgId: string, agrifieldId: string, options?: AxiosRequestConfig) : Promise<AxiosResponse<AgriField>> {
+        return AgriFieldsApiFp(this.configuration).updateAgrifield(body, orgId, agrifieldId, options).then((request) => request(this.axios, this.basePath));
+    }
+    /**
+     * 
+     * @summary Update of Agriculture Field
+     * @param {AgriFieldMutationPayload} body 
+     * @param {string} orgId Organization ID
+     * @param {string} agrifieldId Agrifield ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AgriFieldsApi
+     */
+    public async updateAgrifield_5(body: AgriFieldMutationPayload, orgId: string, agrifieldId: string, options?: AxiosRequestConfig) : Promise<AxiosResponse<AgriField>> {
+        return AgriFieldsApiFp(this.configuration).updateAgrifield_5(body, orgId, agrifieldId, options).then((request) => request(this.axios, this.basePath));
     }
 }

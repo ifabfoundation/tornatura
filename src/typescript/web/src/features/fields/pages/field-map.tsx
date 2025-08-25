@@ -19,6 +19,8 @@ export function FieldMap() {
   const mapRef = React.useRef<any>(null);
   const [mapLoaded, setMapLoaded] = React.useState(false);
   const [inputValue, setInputValue] = React.useState("");
+  // const markerRef = React.useRef<Marker | null>(null);
+
 
   React.useEffect(() => {
     dispatch(headerbarActions.setTitle({ title: "Mappa", subtitle: "Subtitle" }));
@@ -73,8 +75,23 @@ export function FieldMap() {
           },
         });
 
+        /*mapRef.current.on('click', function (e: any) {
+          const { lng, lat } = e.lngLat;
+          if (markerRef.current) {
+            markerRef.current.setLngLat([lng, lat]);
+          } else {
+            markerRef.current = new mapboxgl.Marker()
+              .setLngLat([lng, lat])
+              .addTo(mapRef.current!);
+          }
+        });*/
+
         setMapLoaded(true);
       });
+
+      return () => {
+        mapRef.current.remove();
+      };
     }
   }, [mapContainerRef, currentField]);
 

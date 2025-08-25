@@ -35,13 +35,19 @@ export function FieldDetail() {
         text: "Mappa",
         path: `/companies/${companyId}/fields/${fieldId}/map`,
       },
+      {
+        id: "impostazioni",
+        icon: "gear",
+        text: "Impostazioni",
+        path: `/companies/${companyId}/fields/${fieldId}/settings`,
+      },
     ];
     menuBottomEntries = [
       {
         id: "feedback",
         icon: "ifab_baloon",
         text: "Invia Feedback",
-        path: "/new-feedback",
+        path: `/companies/${companyId}/fields/${fieldId}/new-feedback`,
       },
     ];
     dispatch(SidebarActions.setMenuEntriesAction(menuEntries));

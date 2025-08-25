@@ -98,7 +98,7 @@ export function CompanyFields() {
           <Card
             className="add-item with-hover-effect"
             data-text="Aggiungi un campo"
-            onClick={() => navigate(`/companies/${companyId}/fields/new-field`)}
+            onClick={() => navigate(`/companies/${companyId}/new-field`)}
           ></Card>
         </Col>
       </Row>

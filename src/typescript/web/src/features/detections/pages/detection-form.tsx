@@ -3,12 +3,18 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { DetectionMutationPayload, FilesApi } from "@tornatura/coreapis";
 import { useNavigate, useParams } from "react-router-dom";
-import { useAppDispatch } from "../../../hooks";
+import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { headerbarActions } from "../../headerbar/state/headerbar-slice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { detectionsActions } from "../state/detections-slice";
 import { FileWithPath, useDropzone } from "react-dropzone";
 import { getCoreApiConfiguration } from "../../../services/utils";
+import { fieldsSelectors } from "../../fields/state/fields-slice";
+import { SearchBox } from "@mapbox/search-js-react";
+import mapboxgl, { LngLatLike, Marker } from "mapbox-gl";
+import { Point } from "@tornatura/coreapis";
+import * as turf from "@turf/turf";
+import { ModalConfirm } from "../../../components/ModalConfirm";
 
 interface DetectionProps {
   formData: DetectionMutationPayload;
@@ -67,7 +73,7 @@ function DetectionFormMalattia({ action, onBackClick, onNextClick }: DetectionPr
 
   return (
     <form onSubmit={formik.handleSubmit} autoComplete="off">
-      <h4>Dati del rilevamento: Malattia</h4>
+      <h4 className="mt-4 mb-4">Dati del rilevamento: Malattia</h4>
       <div className="input-row">
         <label>
           Data del rilevamento
@@ -155,12 +161,12 @@ function DetectionFormMalattia({ action, onBackClick, onNextClick }: DetectionPr
         ) : null}
       </div>
       <div className="input-row">
-        <div {...getRootProps()}>
+        <div {...getRootProps()} style={{backgroundColor: "white", height: "60px", textAlign: "center",  margin: "auto"}}>
           <input {...getInputProps()} accept=".png, .jpeg, .jpg" />
           {isDragActive ? (
-            <p>Trascina i file qui...</p>
+            <p className="mt-4">Trascina i file qui...</p>
           ) : (
-            <p>Trascina e rilascia alcuni file qui, oppure fai clic per selezionarli</p>
+            <p className="mt-4">Trascina e rilascia alcuni file qui, oppure fai clic per selezionarli</p>
           )}
         </div>
         --------------------------------------------------------------------------
@@ -229,7 +235,7 @@ function DetectionFormParassita({ action, onBackClick, onNextClick }: DetectionP
 
   return (
     <form onSubmit={formik.handleSubmit} autoComplete="off">
-      <h4>Dati del rilevamento: Parassita</h4>
+      <h4 className="mt-4 mb-4">Dati del rilevamento: Parassita</h4>
       <div className="input-row">
         <label>
           Data del rilevamento
@@ -386,7 +392,7 @@ function DetectionFormInsetto({ action, onBackClick, onNextClick }: DetectionPro
 
   return (
     <form onSubmit={formik.handleSubmit} autoComplete="off">
-      <h4>Dati del rilevamento: Insetti</h4>
+      <h4 className="mt-4 mb-4">Dati del rilevamento: Insetti</h4>
       <div className="input-row">
         <label>
           Data del rilevamento
@@ -518,7 +524,7 @@ function DetectionFormAltro({ action, onBackClick, onNextClick }: DetectionProps
 
   return (
     <form onSubmit={formik.handleSubmit} autoComplete="off">
-      <h4>Dati del rilevamento: Insetti</h4>
+      <h4 className="mt-4 mb-4">Dati del rilevamento: Insetti</h4>
       <div className="input-row">
         <label>
           Data del rilevamento
@@ -579,83 +585,215 @@ function DetectionFormAltro({ action, onBackClick, onNextClick }: DetectionProps
   );
 }
 
-function DetectionFormStep1({ formData, action, onNextClick }: DetectionProps) {
-  const formik = useFormik({
-    initialValues: {
-      latitude: formData.position.lat || 0,
-      longitude: formData.position.lng || 0,
-    },
-    validationSchema: Yup.object({
-      latitude: Yup.number().required("posizione richiesta"),
-      longitude: Yup.number().required("posizione richiesta"),
-    }),
-    onSubmit: (values, { setSubmitting, resetForm }) => {
-      onNextClick(values);
-      resetForm({});
-      setSubmitting(false);
-    },
-  });
+
+interface DetectionFormMapProps {
+  onMarkerChange: (p: Point) => Promise<void>;
+}
+
+function DetectionFormMapPosition({ onMarkerChange }: DetectionFormMapProps) {
+  const { fieldId } = useParams();
+  const currentField = useAppSelector((state) =>
+    fieldsSelectors.selectFieldbyId(state, fieldId ?? "default")
+  );
+  const mapContainerRef = React.useRef<HTMLDivElement>(null);
+  const mapRef = React.useRef<any>(null);
+  const [mapLoaded, setMapLoaded] = React.useState(false);
+  const [inputValue, setInputValue] = React.useState("");
+  const markerRef = React.useRef<Marker | null>(null);
 
   React.useEffect(() => {
-    formik.setValues({
-      latitude: formData.position.lat || 0,
-      longitude: formData.position.lng || 0,
-    });
-  }, [formData]);
+    if (mapContainerRef.current && currentField) {
+      mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_API_TOKEN;
 
+      let data: number[][] = [];
+      currentField.map.forEach((point: Point) => {
+        data.push([point.lng, point.lat]);
+      });
+
+      let centroid: LngLatLike = [12.5736108, 41.29246];
+      if (data.length > 2) {
+        const polygon = turf.polygon([data]);
+        const result = turf.centroid(polygon);
+        centroid = [result.geometry.coordinates[0], result.geometry.coordinates[1]];
+      }
+
+      mapRef.current = new mapboxgl.Map({
+        container: mapContainerRef.current,
+        style: "mapbox://styles/mapbox/satellite-streets-v12",
+        center: centroid,
+        zoom: 14,
+      });
+
+      mapRef.current.on("load", () => {
+        const source = mapRef.current.getSource("maine");
+        if (!source) {
+          mapRef.current.addSource("maine", {
+            type: "geojson",
+            data: {
+              type: "Feature",
+              geometry: {
+                type: "Polygon",
+                coordinates: [data],
+              },
+            },
+          });
+        }
+
+        mapRef.current.addLayer({
+          id: "maine",
+          type: "fill",
+          source: "maine",
+          layout: {},
+          paint: {
+            "fill-color": "#c4c920",
+            "fill-opacity": 0.7,
+          },
+        });
+
+        mapRef.current.on('click', function (e: any) {
+          const { lng, lat } = e.lngLat;
+          if (markerRef.current) {
+            markerRef.current.setLngLat([lng, lat]);
+          } else {
+            markerRef.current = new mapboxgl.Marker()
+              .setLngLat([lng, lat])
+              .addTo(mapRef.current!);
+          }
+          const point: Point = {
+            lat: lat,
+            lng: lng,
+          };
+          onMarkerChange(point);
+        });
+
+        setMapLoaded(true);
+      });
+
+      return () => {
+        mapRef.current.remove();
+      };
+    }
+  }, [mapContainerRef, currentField]);
+
+
+  return (
+    <div>
+      {mapLoaded && (
+        <div className="mapbox-searchbox-wrapper field-map-mapbox-searchbox-wrapper">
+          {/*@ts-ignore*/}
+          <SearchBox
+            options={{
+              language: "it",
+              country: "IT",
+            }}
+            accessToken={process.env.REACT_APP_MAPBOX_API_TOKEN ?? ""}
+            map={mapRef.current}
+            mapboxgl={mapboxgl}
+            value={inputValue}
+            onChange={(d) => {
+              setInputValue(d);
+            }}
+            marker
+          />
+        </div>
+      )}
+      <div ref={mapContainerRef} id="map"></div>
+    </div>
+  )
+}
+
+function DetectionFormStep1({ action, onNextClick }: DetectionProps) {
+  const [source, setSource] = React.useState<string>("current");
+  const [modalOpen, setModalOpen] = React.useState(false);
+  const [modal, setModal] = React.useState<any>({});
+
+  const [geolocation, setGeolocation] = React.useState<GeolocationPosition>();
+  const [hasGeolocation, setHasGeolocation] = React.useState<boolean>(false);
+  const [markerPosition, setMarkerPosition] = React.useState<Point>();
+  
   React.useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
-        formik.setValues({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-        });
+        setGeolocation(position);
+        setHasGeolocation(true);
       });
     }
   }, []);
 
+  const handleSourceChange = (value: string) => {
+    setSource(value);
+  }
+
+  const handleMarkerChange = async (point: Point) => {
+    setMarkerPosition(point);
+  };
+
+  const handleNextClick = async () => {
+    if (source === "current" && !hasGeolocation) {
+      setModal({
+        component: ModalConfirm,
+        componentProps: {
+          title: "Rilevamento",
+          content: "Non è possibile utilizzare la posizione corrente perché il browser non supporta la geolocalizzazione.",
+          action: "Ok",
+          handleCancel: () => setModalOpen(false),
+          handleConfirm: () => {
+            setModalOpen(false);
+          },
+        },
+      });
+      setModalOpen(true);
+      return;
+    }
+
+    if (source === "map" && !markerPosition) {
+      setModal({
+        component: ModalConfirm,
+        componentProps: {
+          title: "Rilevamento",
+          content: "Devi selezionare un punto sulla mappa.",
+          action: "Ok",
+          handleCancel: () => setModalOpen(false),
+          handleConfirm: () => {
+            setModalOpen(false);
+          },
+        },
+      });
+      setModalOpen(true);
+      return;
+    }
+
+    const data = {
+      latitude: source === "current" ? geolocation?.coords.latitude : markerPosition?.lat,
+      longitude: source === "current" ? geolocation?.coords.longitude : markerPosition?.lng,
+    };
+
+    onNextClick(data);    
+  }
+
+
   return (
-    <form onSubmit={formik.handleSubmit} autoComplete="off">
-      <h4>La tua posizione</h4>
+    <Fragment>
+      {modalOpen && <modal.component {...modal.componentProps} />}
+      <h4 className="mt-4">La tua posizione</h4>
       <div className="input-row">
         <label>
-          Latitudine
-          <input
-            id="latitude"
-            name="latitude"
-            type="number"
-            placeholder="Latitudine"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.latitude}
-          />
+          <select
+            name="source"
+            onChange={(e) => handleSourceChange(e.target.value)}
+            value={source}
+          >
+            <option value="current">Usa posizione corrente</option>
+            <option value="map">Selezione un punto sulla mappa</option>
+          </select>
         </label>
-        {formik.touched.latitude && formik.errors.latitude ? (
-          <div className="error">{formik.errors.latitude}</div>
-        ) : null}
       </div>
-      <div className="input-row">
-        <label>
-          Longitudine
-          <input
-            id="longitude"
-            name="longitude"
-            type="number"
-            placeholder="longitudine"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.longitude}
-          />
-        </label>
-        {formik.touched.longitude && formik.errors.longitude ? (
-          <div className="error">{formik.errors.longitude}</div>
-        ) : null}
-      </div>
+      {source === "map" && <DetectionFormMapPosition onMarkerChange={handleMarkerChange}/>}
       <hr />
       <div className="buttons-wrapper">
-        <input type="submit" className="primary" value={action} />
+        <button className="trnt_btn primary" onClick={handleNextClick}>{action}</button>
       </div>
-    </form>
+    </Fragment>
   );
 }
 
@@ -679,10 +817,9 @@ function DetectionFormStep2({ formData, action, onBackClick, onNextClick }: Dete
 
   return (
     <form onSubmit={formik.handleSubmit} autoComplete="off">
-      <h4>Cosa vuoi segnalare?</h4>
+      <h4 className="mt-4">Cosa vuoi segnalare?</h4>
       <div className="input-row">
         <label>
-          Tipologia
           <select
             id="type"
             name="type"

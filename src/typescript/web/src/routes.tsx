@@ -17,6 +17,7 @@ import { CompanyDetections } from "./features/companies/pages/company-detections
 import { FieldDetections } from "./features/fields/pages/field-detections";
 import { FieldMap } from "./features/fields/pages/field-map";
 import { DetectionForm } from "./features/detections/pages/detection-form";
+import { FieldSettings } from "./features/fields/pages/field-settings";
 
 
 
@@ -62,16 +63,20 @@ const routesInitials: RouteObject[] = [
             element: <Navigate to="fields" />
           },
           {
-            path: "/companies/:companyId/fields",
+            path: "fields",
             element: <CompanyFields />
           },
           {
-            path: "/companies/:companyId/detections",
+            path: "detections",
             element: <CompanyDetections />
           },
           {
-            path: "/companies/:companyId/fields/new-field",
+            path: "new-field",
             element: <CompanyFieldForm />
+          },
+          {
+            path: "new-feedback",
+            element: <FeedbackForm />
           },
           {
             path: "/companies/:companyId/fields/:fieldId",
@@ -92,6 +97,14 @@ const routesInitials: RouteObject[] = [
               {
                 path: "new-detection",
                 element: <DetectionForm />
+              },
+              {
+                path: "settings",
+                element: <FieldSettings />
+              },
+              {
+                path: "new-feedback",
+                element: <FeedbackForm />
               },
             ]
           }

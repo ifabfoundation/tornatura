@@ -58,7 +58,6 @@ export function DetectionTableComponent({ detections }: IDetection) {
       type: "button",
       style: "secondary",
       onButtonClick: (data) => {
-        console.log("Button clicked for row:", data);
         const d = detections.find((det) => det.id === data.id);
         setModal({
           component: DetectionUpdateModalForm,

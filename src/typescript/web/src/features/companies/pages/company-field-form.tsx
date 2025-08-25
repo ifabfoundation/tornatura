@@ -13,12 +13,14 @@ import { fieldsActions } from "../../fields/state/fields-slice";
 import { unwrapResult } from "@reduxjs/toolkit";
 
 interface FieldProps {
+  formData: AgriFieldMutationPayload;
   action: string;
   onBackClick?: () => Promise<void>;
   onNextClick: (data: any) => Promise<void>;
 }
 
-function FieldFormStep1({ action, onNextClick }: FieldProps) {
+function FieldFormStep1({ formData, action, onNextClick }: FieldProps) {
+
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -28,7 +30,6 @@ function FieldFormStep1({ action, onNextClick }: FieldProps) {
     },
     validationSchema: Yup.object({
       name: Yup.string().required("Campo necessario"),
-      description: Yup.string().required("Campo necessario"),
       harvest: Yup.string().required("Campo necessario"),
       area: Yup.number().required("Campo necessario"),
     }),
@@ -37,6 +38,15 @@ function FieldFormStep1({ action, onNextClick }: FieldProps) {
       setSubmitting(false);
     },
   });
+
+  React.useEffect(() => {
+    formik.setValues({
+      name: formData.name,
+      description: formData.description,
+      harvest: formData.harvest,
+      area: formData.area,
+    });
+  }, [formData]);
 
   return (
     <form onSubmit={formik.handleSubmit} autoComplete="off">
@@ -80,7 +90,8 @@ function FieldFormStep1({ action, onNextClick }: FieldProps) {
           <input
             id="area"
             name="area"
-            type="text"
+            type="number"
+            min={1}
             placeholder="Area del campo in ettari"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
@@ -97,7 +108,7 @@ function FieldFormStep1({ action, onNextClick }: FieldProps) {
           <textarea
             id="description"
             name="description"
-            placeholder=""
+            placeholder="Descrizione del campo"
             rows={15}
             cols={50}
             onChange={formik.handleChange}
@@ -163,7 +174,6 @@ const FieldFormStep2 = ({ action, onBackClick, onNextClick }: FieldProps) => {
       });
 
       mapRef.current.addControl(draw);
-
       mapRef.current.on("draw.create", updateArea);
       mapRef.current.on("draw.delete", updateArea);
       mapRef.current.on("draw.update", updateArea);
@@ -172,7 +182,6 @@ const FieldFormStep2 = ({ action, onBackClick, onNextClick }: FieldProps) => {
         const data = draw.getAll();
         const points: Point[] = [];
         if (data.features.length > 0) {
-          console.log("Data: ", data);
           // @ts-ignore
           data.features[0].geometry.coordinates[0].forEach((point: number[]) => {
             points.push({
@@ -180,10 +189,15 @@ const FieldFormStep2 = ({ action, onBackClick, onNextClick }: FieldProps) => {
               lat: point[1],
             });
           });
-          console.log("Points: ", points);
           setMap(points);
         } else {
           setMap(points);
+        }
+      }
+
+      return () => {
+        if (mapRef.current) {
+          mapRef.current.remove();
         }
       }
     }
@@ -295,9 +309,10 @@ export function CompanyFieldForm() {
 
   return (
     <div className="form-wrapper">
-      {step === 1 && <FieldFormStep1 action={action} onNextClick={handleNextClick} />}
+      {step === 1 && <FieldFormStep1 formData={formData} action={action} onNextClick={handleNextClick} />}
       {step === 2 && (
         <FieldFormStep2
+          formData={formData}
           action={action}
           onBackClick={handleBackClick}
           onNextClick={handleNextClick}

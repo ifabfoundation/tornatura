@@ -3,7 +3,7 @@
 import datetime
 from fastapi import HTTPException, status
 from core.decorators import catch_api_exception
-from core.models import AgriFieldModel
+from core.models import AgriFieldModel, Point
 from core.serializers import AgriField, AgriFieldMutationPayload
 
 
@@ -56,8 +56,6 @@ class AgriFieldServices:
         data = payload.model_dump()
         current_time = int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp() * 1000)
 
-        print(data)
-
         data.update({
             "orgId": org_id,
             "creationTime": current_time,
@@ -79,3 +77,55 @@ class AgriFieldServices:
                 detail="AgriField not found"
             )
         return self._serialize(agrifield)
+    
+    @catch_api_exception
+    def delete(self, agrifield_id: str):
+        """Soft delete agrifield
+        
+        Args:
+            agrifield_id: ID of the agrifield to delete
+            
+        Returns:
+            None
+        """
+        agrifield = self.model.objects(id=agrifield_id, deleted=False).first()
+        if not agrifield:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Agrifield not found"
+            )
+        
+        agrifield.deleted = True
+        agrifield.save()
+        
+        return None
+    
+    @catch_api_exception
+    def update(self, agrifield_id: str, payload: AgriFieldMutationPayload):
+        """Update agrifield
+        
+        Args:
+            agrifield_id: ID of the agrifield to delete
+            payload: Payload containing updated agrifield data
+            
+        Returns:
+            AgriField: Updated agrifield data
+        """
+        agrifield = self.model.objects(id=agrifield_id, deleted=False).first()
+        if not agrifield:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Agrifield not found"
+            )
+        
+        
+        agrifield.name = payload.name
+        agrifield.description = payload.description
+        agrifield.harvest = payload.harvest
+        agrifield.area = payload.area
+        agrifield.map = [Point(lng=point.lng, lat=point.lat) for point in payload.map]
+        agrifield.lastUpdateTime = int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp() * 1000)
+        agrifield.save()
+
+        return self._serialize(agrifield)
+    

@@ -5,14 +5,13 @@ import { authStore } from "./providers/auth-providers";
 import { useAppDispatch, useAppSelector } from "./hooks";
 import { getUserInfo } from "./features/users/utils";
 import { userActions, userSelectors } from "./features/users/state/user-slice";
-import { Navigate, Outlet, useParams } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import TopBar from "./components/Topbar";
-import SideBar, { MenuItemEntry } from "./components/Sidebar";
+import SideBar from "./components/Sidebar";
 import MobileHeaderBar from "./components/MobileHeaderBar";
 import { companiesActions } from "./features/companies/state/companies-slice";
 import logo from "./assets/images/logo.png";
 import { AccountTypeEnum, AgriField } from "@tornatura/coreapis";
-import { SidebarActions } from "./features/sidebar/state/sidebar-slice";
 import { feedbacksActions } from "./features/feedbacks/state/feedbacks-slice";
 import { fieldsActions } from "./features/fields/state/fields-slice";
 import { unwrapResult } from "@reduxjs/toolkit";
@@ -45,11 +44,11 @@ export function RouteApp() {
 }
 
 function MainApp() {
-  const dispatch = useAppDispatch();
-  const { companyId, fieldId } = useParams();
-  const currentUser = useAppSelector(userSelectors.selectCurrentUser);
+  // const dispatch = useAppDispatch();
+  // const { companyId, fieldId } = useParams();
+  // const currentUser = useAppSelector(userSelectors.selectCurrentUser);
 
-  React.useEffect(() => {
+  /*React.useEffect(() => {
     if (!companyId && !fieldId) {
       let menuEntries: MenuItemEntry[] = [];
       let menuBottomEntries: MenuItemEntry[] = [];
@@ -96,7 +95,7 @@ function MainApp() {
       dispatch(SidebarActions.setMenuEntriesAction(menuEntries));
       dispatch(SidebarActions.setMenuBottomEntriesAction(menuBottomEntries));
     }
-  }, [currentUser, companyId, fieldId]);
+  }, [currentUser, companyId, fieldId]);*/
 
   return (
     <div id="app" className="main-app">

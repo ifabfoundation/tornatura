@@ -4,6 +4,8 @@ import { companiesSelectors } from "../state/companies-slice";
 import React from "react";
 import { headerbarActions } from "../../headerbar/state/headerbar-slice";
 import { useNavigate } from "react-router-dom";
+import { MenuItemEntry } from "../../../components/Sidebar";
+import { SidebarActions } from "../../sidebar/state/sidebar-slice";
 
 export function CompaniesList() {
   const dispatch = useAppDispatch();
@@ -12,6 +14,33 @@ export function CompaniesList() {
 
   React.useEffect(() => {
     dispatch(headerbarActions.setTitle({ title: "Aziende gestite", subtitle: "Subtitle" }));
+  }, []);
+
+  React.useEffect(() => {
+    let menuEntries: MenuItemEntry[] = [];
+    let menuBottomEntries: MenuItemEntry[] = [];
+
+    menuEntries = [
+      {
+        id: "companies",
+        icon: "ifab_grid",
+        text: "Aziende gestite",
+        path: "/companies",
+      },
+    ];
+
+    menuBottomEntries = [
+      {
+        id: "feedback",
+        icon: "ifab_baloon",
+        text: "Invia Feedback",
+        path: "/new-feedback",
+      },
+    ];
+    
+    dispatch(SidebarActions.setMenuEntriesAction(menuEntries));
+    dispatch(SidebarActions.setMenuBottomEntriesAction(menuBottomEntries));
+    
   }, []);
 
   const handleCompanyClick = (companyId: string) => {

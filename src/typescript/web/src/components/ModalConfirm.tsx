@@ -23,7 +23,7 @@ export function ModalConfirm({
         <hr />
         <div className="buttons-wrapper">
           <button className="trnt_btn secondary" onClick={handleCancel}>
-            Cancel
+            Annulla
           </button>
           <button className="trnt_btn primary" onClick={handleConfirm}>
             {action}

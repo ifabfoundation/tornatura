@@ -31,7 +31,7 @@ export function CompanyDetail() {
           id: "feedback",
           icon: "ifab_baloon",
           text: "Invia Feedback",
-          path: "/new-feedback",
+          path: `/companies/${companyId}/new-feedback`,
         },
       ];
       dispatch(SidebarActions.setMenuEntriesAction(menuEntries));
