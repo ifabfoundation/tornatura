@@ -65,6 +65,15 @@ import icon_ifab_uarr_y from "../assets/images/icons/icon-ifab-uarr-y.svg";
 import icon_ifab_home_b from "../assets/images/icons/icon-ifab-home-b.svg";
 import icon_ifab_home_w from "../assets/images/icons/icon-ifab-home-w.svg";
 import icon_ifab_home_y from "../assets/images/icons/icon-ifab-home-y.svg";
+import icon_ifab_cog_b from "../assets/images/icons/icon-ifab-cog-b.svg";
+import icon_ifab_cog_w from "../assets/images/icons/icon-ifab-cog-w.svg";
+import icon_ifab_cog_y from "../assets/images/icons/icon-ifab-cog-y.svg";
+import icon_ifab_bug_b from "../assets/images/icons/icon-ifab-bug-b.svg";
+import icon_ifab_bug_w from "../assets/images/icons/icon-ifab-bug-w.svg";
+import icon_ifab_bug_y from "../assets/images/icons/icon-ifab-bug-y.svg";
+import icon_ifab_spots_b from "../assets/images/icons/icon-ifab-spots-b.svg";
+import icon_ifab_spots_w from "../assets/images/icons/icon-ifab-spots-w.svg";
+import icon_ifab_spots_y from "../assets/images/icons/icon-ifab-spots-y.svg";
 
 // Legacy icons
 import icon_archive_n from "../assets/images/icons/icon-archive-n.svg";
@@ -181,6 +190,18 @@ const icons = {
   ifab_home: {
     normal: { light: icon_ifab_home_w, dark: icon_ifab_home_b },
     selected: { light: icon_ifab_home_y, dark: icon_ifab_home_b },
+  },
+  ifab_cog: {
+    normal: { light: icon_ifab_cog_w, dark: icon_ifab_cog_b },
+    selected: { light: icon_ifab_cog_y, dark: icon_ifab_cog_b },
+  },
+  ifab_bug: {
+    normal: { light: icon_ifab_bug_w, dark: icon_ifab_bug_b },
+    selected: { light: icon_ifab_bug_y, dark: icon_ifab_bug_b },
+  },
+  ifab_spots: {
+    normal: { light: icon_ifab_spots_w, dark: icon_ifab_spots_b },
+    selected: { light: icon_ifab_spots_y, dark: icon_ifab_spots_b },
   },
   // these are swapped for usage on white bg, needs fix
   ifab_size: {
