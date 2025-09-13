@@ -14549,6 +14549,10 @@ body {
   height: calc(100vh - 60px);
 }
 
+#app #map.map-detection-form {
+  height: calc(100vh - 360px);
+}
+
 #app.ws-app {
   /* max-width: 1280px; */
 }

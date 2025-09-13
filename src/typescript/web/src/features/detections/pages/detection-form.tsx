@@ -161,12 +161,17 @@ function DetectionFormMalattia({ action, onBackClick, onNextClick }: DetectionPr
         ) : null}
       </div>
       <div className="input-row">
-        <div {...getRootProps()} style={{backgroundColor: "white", height: "60px", textAlign: "center",  margin: "auto"}}>
+        <div
+          {...getRootProps()}
+          style={{ backgroundColor: "white", height: "60px", textAlign: "center", margin: "auto" }}
+        >
           <input {...getInputProps()} accept=".png, .jpeg, .jpg" />
           {isDragActive ? (
             <p className="mt-4">Trascina i file qui...</p>
           ) : (
-            <p className="mt-4">Trascina e rilascia alcuni file qui, oppure fai clic per selezionarli</p>
+            <p className="mt-4">
+              Trascina e rilascia alcuni file qui, oppure fai clic per selezionarli
+            </p>
           )}
         </div>
         --------------------------------------------------------------------------
@@ -585,7 +590,6 @@ function DetectionFormAltro({ action, onBackClick, onNextClick }: DetectionProps
   );
 }
 
-
 interface DetectionFormMapProps {
   onMarkerChange: (p: Point) => Promise<void>;
 }
@@ -609,12 +613,19 @@ function DetectionFormMapPosition({ onMarkerChange }: DetectionFormMapProps) {
       currentField.map.forEach((point: Point) => {
         data.push([point.lng, point.lat]);
       });
+      if (data.length <= 2) {
+        console.log("••• not enough points to draw the field shape", data);
+        return;
+      }
 
       let centroid: LngLatLike = [12.5736108, 41.29246];
+      let fieldShapeBbox: any;
       if (data.length > 2) {
         const polygon = turf.polygon([data]);
         const result = turf.centroid(polygon);
         centroid = [result.geometry.coordinates[0], result.geometry.coordinates[1]];
+        fieldShapeBbox = turf.bbox(polygon);
+        console.log("••• bbox", fieldShapeBbox);
       }
 
       mapRef.current = new mapboxgl.Map({
@@ -625,9 +636,11 @@ function DetectionFormMapPosition({ onMarkerChange }: DetectionFormMapProps) {
       });
 
       mapRef.current.on("load", () => {
-        const source = mapRef.current.getSource("maine");
+        console.log("map loaded", mapRef);
+
+        const source = mapRef.current.getSource("fieldShape");
         if (!source) {
-          mapRef.current.addSource("maine", {
+          mapRef.current.addSource("fieldShape", {
             type: "geojson",
             data: {
               type: "Feature",
@@ -640,9 +653,9 @@ function DetectionFormMapPosition({ onMarkerChange }: DetectionFormMapProps) {
         }
 
         mapRef.current.addLayer({
-          id: "maine",
+          id: "fieldShape",
           type: "fill",
-          source: "maine",
+          source: "fieldShape",
           layout: {},
           paint: {
             "fill-color": "#c4c920",
@@ -650,14 +663,16 @@ function DetectionFormMapPosition({ onMarkerChange }: DetectionFormMapProps) {
           },
         });
 
-        mapRef.current.on('click', function (e: any) {
+        mapRef.current.fitBounds(fieldShapeBbox, {
+          padding: { top: 10, bottom: 10, left: 10, right: 10 },
+        });
+
+        mapRef.current.on("click", function (e: any) {
           const { lng, lat } = e.lngLat;
           if (markerRef.current) {
             markerRef.current.setLngLat([lng, lat]);
           } else {
-            markerRef.current = new mapboxgl.Marker()
-              .setLngLat([lng, lat])
-              .addTo(mapRef.current!);
+            markerRef.current = new mapboxgl.Marker().setLngLat([lng, lat]).addTo(mapRef.current!);
           }
           const point: Point = {
             lat: lat,
@@ -674,7 +689,6 @@ function DetectionFormMapPosition({ onMarkerChange }: DetectionFormMapProps) {
       };
     }
   }, [mapContainerRef, currentField]);
-
 
   return (
     <div>
@@ -697,20 +711,24 @@ function DetectionFormMapPosition({ onMarkerChange }: DetectionFormMapProps) {
           />
         </div>
       )}
-      <div ref={mapContainerRef} id="map"></div>
+      <div ref={mapContainerRef} id="map" className="map-detection-form"></div>
     </div>
-  )
+  );
 }
 
 function DetectionFormStep1({ action, onNextClick }: DetectionProps) {
   const [source, setSource] = React.useState<string>("current");
   const [modalOpen, setModalOpen] = React.useState(false);
   const [modal, setModal] = React.useState<any>({});
+  const { fieldId } = useParams();
+  const currentField = useAppSelector((state) =>
+    fieldsSelectors.selectFieldbyId(state, fieldId ?? "default")
+  );
 
   const [geolocation, setGeolocation] = React.useState<GeolocationPosition>();
   const [hasGeolocation, setHasGeolocation] = React.useState<boolean>(false);
   const [markerPosition, setMarkerPosition] = React.useState<Point>();
-  
+
   React.useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
@@ -722,7 +740,7 @@ function DetectionFormStep1({ action, onNextClick }: DetectionProps) {
 
   const handleSourceChange = (value: string) => {
     setSource(value);
-  }
+  };
 
   const handleMarkerChange = async (point: Point) => {
     setMarkerPosition(point);
@@ -734,7 +752,8 @@ function DetectionFormStep1({ action, onNextClick }: DetectionProps) {
         component: ModalConfirm,
         componentProps: {
           title: "Rilevamento",
-          content: "Non è possibile utilizzare la posizione corrente perché il browser non supporta la geolocalizzazione.",
+          content:
+            "Non è possibile utilizzare la posizione corrente perché il browser non supporta la geolocalizzazione.",
           action: "Ok",
           handleCancel: () => setModalOpen(false),
           handleConfirm: () => {
@@ -763,14 +782,48 @@ function DetectionFormStep1({ action, onNextClick }: DetectionProps) {
       return;
     }
 
+    if (source === "current" && hasGeolocation) {
+      let data: number[][] = [];
+      currentField.map.forEach((point: Point) => {
+        data.push([point.lng, point.lat]);
+      });
+      if (data.length > 2) {
+        const polygon = turf.polygon([data]);
+        console.log("Using current position: ", geolocation);
+        if (!geolocation.hasOwnProperty("coords")) {
+          console.log("Geolocation coords not found");
+          return;
+        }
+        const point = turf.point([geolocation.coords.longitude, geolocation.coords.latitude]);
+        const geolocationValid = turf.booleanContains(polygon, point);
+        console.log("Geolocation valid?", geolocationValid);
+
+        setModal({
+          component: ModalConfirm,
+          componentProps: {
+            title: "Rilevamento",
+            content:
+              "La tua posizione corrente risulta fuori dall'area del campo. Scegli un altro punto cliccando sulla mappa.",
+            action: "Ok",
+            handleCancel: () => setModalOpen(false),
+            handleConfirm: () => {
+              setSource("map");
+              setModalOpen(false);
+            },
+          },
+        });
+        setModalOpen(true);
+        return;
+      }
+    }
+
     const data = {
       latitude: source === "current" ? geolocation?.coords.latitude : markerPosition?.lat,
       longitude: source === "current" ? geolocation?.coords.longitude : markerPosition?.lng,
     };
 
-    onNextClick(data);    
-  }
-
+    onNextClick(data);
+  };
 
   return (
     <Fragment>
@@ -778,20 +831,18 @@ function DetectionFormStep1({ action, onNextClick }: DetectionProps) {
       <h4 className="mt-4">La tua posizione</h4>
       <div className="input-row">
         <label>
-          <select
-            name="source"
-            onChange={(e) => handleSourceChange(e.target.value)}
-            value={source}
-          >
+          <select name="source" onChange={(e) => handleSourceChange(e.target.value)} value={source}>
             <option value="current">Usa posizione corrente</option>
-            <option value="map">Selezione un punto sulla mappa</option>
+            <option value="map">Seleziona un punto sulla mappa</option>
           </select>
         </label>
       </div>
-      {source === "map" && <DetectionFormMapPosition onMarkerChange={handleMarkerChange}/>}
+      <DetectionFormMapPosition onMarkerChange={handleMarkerChange} />
       <hr />
       <div className="buttons-wrapper">
-        <button className="trnt_btn primary" onClick={handleNextClick}>{action}</button>
+        <button className="trnt_btn primary" onClick={handleNextClick}>
+          {action}
+        </button>
       </div>
     </Fragment>
   );
