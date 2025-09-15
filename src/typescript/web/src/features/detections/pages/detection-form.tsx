@@ -790,30 +790,31 @@ function DetectionFormStep1({ action, onNextClick }: DetectionProps) {
       if (data.length > 2) {
         const polygon = turf.polygon([data]);
         console.log("Using current position: ", geolocation);
-        if (!geolocation.hasOwnProperty("coords")) {
+        if (geolocation === undefined || !geolocation.hasOwnProperty("coords")) {
           console.log("Geolocation coords not found");
           return;
-        }
-        const point = turf.point([geolocation.coords.longitude, geolocation.coords.latitude]);
-        const geolocationValid = turf.booleanContains(polygon, point);
-        console.log("Geolocation valid?", geolocationValid);
+        } else {
+          const point = turf.point([geolocation.coords.longitude, geolocation.coords.latitude]);
+          const geolocationValid = turf.booleanContains(polygon, point);
+          console.log("Geolocation valid?", geolocationValid);
 
-        setModal({
-          component: ModalConfirm,
-          componentProps: {
-            title: "Rilevamento",
-            content:
-              "La tua posizione corrente risulta fuori dall'area del campo. Scegli un altro punto cliccando sulla mappa.",
-            action: "Ok",
-            handleCancel: () => setModalOpen(false),
-            handleConfirm: () => {
-              setSource("map");
-              setModalOpen(false);
+          setModal({
+            component: ModalConfirm,
+            componentProps: {
+              title: "Rilevamento",
+              content:
+                "La tua posizione corrente risulta fuori dall'area del campo. Scegli un altro punto cliccando sulla mappa.",
+              action: "Ok",
+              handleCancel: () => setModalOpen(false),
+              handleConfirm: () => {
+                setSource("map");
+                setModalOpen(false);
+              },
             },
-          },
-        });
-        setModalOpen(true);
-        return;
+          });
+          setModalOpen(true);
+          return;
+        }
       }
     }
 
