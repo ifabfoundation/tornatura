@@ -1009,6 +1009,9 @@ body {
           padding-left: $space;
           padding-right: $space;
         }
+        @include media-breakpoint-down(sm) {
+          padding: 10px 0px;
+        }
         &.full-bleed {
           padding: 0 !important;
         }

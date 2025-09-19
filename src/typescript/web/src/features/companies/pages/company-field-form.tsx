@@ -11,6 +11,7 @@ import { companiesSelectors } from "../state/companies-slice";
 import { headerbarActions } from "../../headerbar/state/headerbar-slice";
 import { fieldsActions } from "../../fields/state/fields-slice";
 import { unwrapResult } from "@reduxjs/toolkit";
+import * as turf from "@turf/turf";
 
 interface FieldProps {
   formData: AgriFieldMutationPayload;
@@ -20,7 +21,6 @@ interface FieldProps {
 }
 
 function FieldFormStep1({ formData, action, onNextClick }: FieldProps) {
-
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -136,6 +136,18 @@ const FieldFormStep2 = ({ action, onBackClick, onNextClick }: FieldProps) => {
   const [map, setMap] = React.useState<Point[]>([]);
   const [currentPosition, setCurrentPosition] = React.useState<Point>();
 
+  const calcArea = (points: Point[]) => {
+    const coords: number[][] = [];
+    points.forEach((p) => coords.push([p.lng, p.lat]));
+    console.log("coords", coords);
+    var polygon = turf.polygon([coords]);
+    var areaSqm = turf.area(polygon);
+    var areaHe = areaSqm / 10000; // Convert to hectares
+    console.log("points", points);
+    console.log("area in sqm", areaSqm);
+    console.log("area in hectares", areaHe);
+  };
+
   React.useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
@@ -189,6 +201,7 @@ const FieldFormStep2 = ({ action, onBackClick, onNextClick }: FieldProps) => {
               lat: point[1],
             });
           });
+          calcArea(points);
           setMap(points);
         } else {
           setMap(points);
@@ -199,7 +212,7 @@ const FieldFormStep2 = ({ action, onBackClick, onNextClick }: FieldProps) => {
         if (mapRef.current) {
           mapRef.current.remove();
         }
-      }
+      };
     }
   }, [mapContainerRef, currentPosition]);
 
@@ -309,7 +322,9 @@ export function CompanyFieldForm() {
 
   return (
     <div className="form-wrapper">
-      {step === 1 && <FieldFormStep1 formData={formData} action={action} onNextClick={handleNextClick} />}
+      {step === 1 && (
+        <FieldFormStep1 formData={formData} action={action} onNextClick={handleNextClick} />
+      )}
       {step === 2 && (
         <FieldFormStep2
           formData={formData}
