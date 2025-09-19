@@ -1,23 +1,20 @@
-import { useAppSelector } from "../hooks";
+import { useAppDispatch, useAppSelector } from "../hooks";
 import { userSelectors } from "../features/users/state/user-slice";
-import keycloakInstance from "../providers/keycloak";
+import { userMenuActions } from "../features/userMenu/state/userMenu-slice";
 import { headerbarSelectors } from "../features/headerbar/state/headerbar-slice";
 import larr from "../assets/images/larr.svg";
 import { useNavigate } from "react-router-dom";
+import { fallbacks } from "../assets/images/fallback";
 
 interface TopBarProps {
   showBackButton?: boolean;
 }
 
 export default function TopBar({ showBackButton }: TopBarProps) {
-  // const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const currentUser = useAppSelector(userSelectors.selectCurrentUser);
   const title = useAppSelector(headerbarSelectors.selectTitle);
-
-  const handleSignOut = () => {
-    keycloakInstance.logout();
-  };
 
   return (
     <div className="headerbar">
@@ -31,15 +28,17 @@ export default function TopBar({ showBackButton }: TopBarProps) {
           <h2>{title}</h2>
           <div className="title-comment"></div>
         </div>
-        <div className="font-s-label">
+        <div className="font-s-label pointer" onClick={() => dispatch(userMenuActions.toggle())}>
           {currentUser?.firstName} {currentUser?.lastName}
         </div>
       </div>
-      {/* <div className="user-icon"></div> */}
+      <div
+        className="user-avatar pointer"
+        onClick={() => dispatch(userMenuActions.toggle())}
+        // style={{ backgroundImage: `url(${currentUser?.avatar || fallbacks.avatar})` }}
+        style={{ backgroundImage: `url(${fallbacks.avatar})` }}
+      ></div>
       <span>{" "}</span>
-      <a className="font-s-label no-u color-gray pointer" onClick={handleSignOut}>
-        Logout
-      </a>
       {/* 
       <a className="button secondary" data-type="round" onClick={handleSignOut}>
         <Icon iconName="logout" state="normal" />

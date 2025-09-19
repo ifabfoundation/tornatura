@@ -1,8 +1,9 @@
 import { RootState } from "../../../store";
 import { createAsyncThunk, createEntityAdapter, createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { AccountTypeEnum, UsersApi, User as UserState} from "@tornatura/coreapis";
+import { AccountTypeEnum, UsersApi, User as UserState } from "@tornatura/coreapis";
 import { getCoreApiConfiguration } from "../../../services/utils";
+import { fallbacks } from "../../../assets/images/fallback";
 
 interface AuxState {
   currentUser: UserState;
@@ -18,14 +19,15 @@ const initialState = usersAdapter.getInitialState<AuxState>({
     firstName: "Tornatura",
     lastName: "User",
     email: "user@example.com",
-    piva: '',
+    piva: "",
     emailVerified: false,
     enabled: true,
     accountType: AccountTypeEnum.Admin,
     phone: "",
     organizations: [],
-    creationTime: 1
-  }
+    creationTime: 1,
+    // avatar: fallbacks.avatar,
+  },
 });
 
 export const fetchUsers = createAsyncThunk("users/fetchUsers", async () => {
@@ -52,11 +54,11 @@ const usersSlice = createSlice({
       state.currentUser.phone = action.payload.phone;
       state.currentUser.organizations = action.payload.organizations;
       state.currentUser.id = action.payload.id;
-      
+      // state.currentUser.avatar = action.payload.avatar;
     },
     resetCurrentUser(state) {
-      state.currentUser.firstName = initialState.currentUser.firstName,
-      state.currentUser.lastName = initialState.currentUser.lastName,
+      state.currentUser.firstName = initialState.currentUser.firstName;
+      state.currentUser.lastName = initialState.currentUser.lastName;
       state.currentUser.email = initialState.currentUser.email;
       state.currentUser.emailVerified = initialState.currentUser.emailVerified;
       state.currentUser.enabled = initialState.currentUser.enabled;
@@ -65,6 +67,7 @@ const usersSlice = createSlice({
       state.currentUser.organizations = initialState.currentUser.organizations;
       state.currentUser.phone = initialState.currentUser.phone;
       state.currentUser.id = initialState.currentUser.id;
+      // state.currentUser.avatar = initialState.currentUser.avatar;
     },
   },
   extraReducers: (builder) => {

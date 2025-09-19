@@ -5,8 +5,10 @@ import { authStore } from "./providers/auth-providers";
 import { useAppDispatch, useAppSelector } from "./hooks";
 import { getUserInfo } from "./features/users/utils";
 import { userActions, userSelectors } from "./features/users/state/user-slice";
+import { userMenuSelectors } from "./features/userMenu/state/userMenu-slice";
 import { Navigate, Outlet } from "react-router-dom";
 import TopBar from "./components/Topbar";
+import UserMenu from "./components/UserMenu";
 import SideBar from "./components/Sidebar";
 import MobileHeaderBar from "./components/MobileHeaderBar";
 import { companiesActions } from "./features/companies/state/companies-slice";
@@ -44,6 +46,7 @@ export function RouteApp() {
 }
 
 function MainApp() {
+  const userMenuOpen = useAppSelector(userMenuSelectors.selectIsOpen);
   // const dispatch = useAppDispatch();
   // const { companyId, fieldId } = useParams();
   // const currentUser = useAppSelector(userSelectors.selectCurrentUser);
@@ -101,6 +104,7 @@ function MainApp() {
     <div id="app" className="main-app">
       <SideBar />
       <MobileHeaderBar />
+      <UserMenu open={userMenuOpen} />
       <div className="ui-right">
         <TopBar /* showBackButton */ />
         <div className="content-area">
