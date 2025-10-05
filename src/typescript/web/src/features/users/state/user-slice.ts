@@ -1,7 +1,7 @@
 import { RootState } from "../../../store";
 import { createAsyncThunk, createEntityAdapter, createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { AccountTypeEnum, UsersApi, User as UserState } from "@tornatura/coreapis";
+import { AccountTypeEnum, UsersApi, User as UserState, UserUpdatePayload } from "@tornatura/coreapis";
 import { getCoreApiConfiguration } from "../../../services/utils";
 import { fallbacks } from "../../../assets/images/fallback";
 
@@ -26,7 +26,7 @@ const initialState = usersAdapter.getInitialState<AuxState>({
     phone: "",
     organizations: [],
     creationTime: 1,
-    // avatar: fallbacks.avatar,
+    avatar: fallbacks.avatar,
   },
 });
 
@@ -38,6 +38,14 @@ export const fetchUsers = createAsyncThunk("users/fetchUsers", async () => {
   });
   return users;
 });
+
+export const updateUser = createAsyncThunk("users/updateUser", async (body: UserUpdatePayload) => {
+  const apiConfig = await getCoreApiConfiguration();
+  const usersApi = new UsersApi(apiConfig);
+  const response = await usersApi.updateUser(body);
+  return response.data;
+});
+
 
 const usersSlice = createSlice({
   name: "users",
@@ -52,9 +60,10 @@ const usersSlice = createSlice({
       state.currentUser.creationTime = action.payload.creationTime;
       state.currentUser.accountType = action.payload.accountType;
       state.currentUser.phone = action.payload.phone;
+      state.currentUser.piva = action.payload.piva;
       state.currentUser.organizations = action.payload.organizations;
       state.currentUser.id = action.payload.id;
-      // state.currentUser.avatar = action.payload.avatar;
+      state.currentUser.avatar = action.payload.avatar ? action.payload.avatar : fallbacks.avatar;
     },
     resetCurrentUser(state) {
       state.currentUser.firstName = initialState.currentUser.firstName;
@@ -67,12 +76,20 @@ const usersSlice = createSlice({
       state.currentUser.organizations = initialState.currentUser.organizations;
       state.currentUser.phone = initialState.currentUser.phone;
       state.currentUser.id = initialState.currentUser.id;
-      // state.currentUser.avatar = initialState.currentUser.avatar;
+      state.currentUser.avatar = initialState.currentUser.avatar;
+      state.currentUser.piva = initialState.currentUser.piva;
     },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchUsers.fulfilled, (state, action) => {
       usersAdapter.upsertMany(state, action.payload.data as UserState[]);
+    });
+    builder.addCase(updateUser.fulfilled, (state, action) => {
+      usersAdapter.upsertOne(state, action.payload as UserState);
+      if (state.currentUser.id === action.payload.id) {
+        state.currentUser = action.payload;
+        state.currentUser.avatar = action.payload.avatar ? action.payload.avatar : fallbacks.avatar;
+      }
     });
   },
 });
@@ -89,6 +106,7 @@ export const userActions = {
   fetchUsersAction: fetchUsers,
   setCurrentUserAction: usersSlice.actions.setCurrentUser,
   resetCurrentUserAction: usersSlice.actions.resetCurrentUser,
+  updateUserAction: updateUser,
 };
 
 export const usersReducer = usersSlice.reducer;

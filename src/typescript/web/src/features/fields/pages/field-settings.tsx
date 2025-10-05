@@ -32,6 +32,7 @@ function FieldFormStep1({ formData }: FieldFormProps) {
       description: "",
       harvest: "",
       area: 0,
+      plants: 0,
     },
     validationSchema: Yup.object({
       name: Yup.string().required("Campo necessario"),
@@ -45,6 +46,7 @@ function FieldFormStep1({ formData }: FieldFormProps) {
         harvest: values.harvest,
         area: values.area,
         map: formData.map,
+        plants: values.plants,
       };
       dispatch(fieldsActions.updateFieldAction({ orgId: formData.orgId, fieldId: formData.id, body: payload }));
       setSubmitting(false);
@@ -57,6 +59,7 @@ function FieldFormStep1({ formData }: FieldFormProps) {
       description: formData.description,
       harvest: formData.harvest,
       area: formData.area,
+      plants: formData.plants,
     });
   }, [formData]);
 
@@ -133,6 +136,24 @@ function FieldFormStep1({ formData }: FieldFormProps) {
           </label>
           {formik.touched.area && formik.errors.area ? (
             <div className="error">{formik.errors.area}</div>
+          ) : null}
+        </div>
+        <div className="input-row">
+          <label>
+            Numero di piante
+            <input
+              id="plants"
+              name="plants"
+              type="number"
+              min={0}
+              placeholder="Numero di piante"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.plants}
+            />
+          </label>
+          {formik.touched.plants && formik.errors.plants ? (
+            <div className="error">{formik.errors.plants}</div>
           ) : null}
         </div>
         <div className="input-row">
@@ -274,6 +295,7 @@ const FieldFormStep2 = ({ formData }: FieldFormProps) => {
         description: formData.description,
         harvest: formData.harvest,
         area: formData.area,
+        plants: formData.plants,
         map: map,
       };
       await dispatch(fieldsActions.updateFieldAction({ orgId: formData.orgId, fieldId: formData.id, body: payload }));

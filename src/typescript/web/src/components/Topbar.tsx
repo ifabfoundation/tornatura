@@ -35,8 +35,8 @@ export default function TopBar({ showBackButton }: TopBarProps) {
       <div
         className="user-avatar pointer"
         onClick={() => dispatch(userMenuActions.toggle())}
-        // style={{ backgroundImage: `url(${currentUser?.avatar || fallbacks.avatar})` }}
-        style={{ backgroundImage: `url(${fallbacks.avatar})` }}
+        style={{ backgroundImage: `url(${currentUser?.avatar || fallbacks.avatar})` }}
+        // style={{ backgroundImage: `url(${fallbacks.avatar})` }}
       ></div>
       <span>{" "}</span>
       {/* 

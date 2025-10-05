@@ -9,6 +9,7 @@ import { Detection, DetectionMutationPayload, DetectionsApi } from "@tornatura/c
 import { getCoreApiConfiguration } from "../../../services/utils";
 import { AuxState } from "../../../hooks";
 import { RootState } from "../../../store";
+import { fieldsSelectors } from "../../fields/state/fields-slice";
 
 
 const detectionsAdapter = createEntityAdapter<Detection, string>({
@@ -126,6 +127,13 @@ export const detectionsSelectors = {
       (_, fieldId) => fieldId
     ],
     (detections, fieldId) => detections.filter((item: Detection) => item.agrifieldId === fieldId)
+  ),
+  selectDetectionbyOrgId: createSelector(
+    [
+      selectors.selectAll,
+      (state, orgId) => fieldsSelectors.selectFieldsByOrgId(state, orgId)
+    ],
+    (detections, fields) => detections.filter((item: Detection) => fields.map(f => f.id).includes(item.agrifieldId))
   )
 };
 

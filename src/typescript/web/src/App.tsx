@@ -9,7 +9,7 @@ import { userMenuSelectors } from "./features/userMenu/state/userMenu-slice";
 import { Navigate, Outlet } from "react-router-dom";
 import TopBar from "./components/Topbar";
 import UserMenu from "./components/UserMenu";
-import SideBar from "./components/Sidebar";
+import SideBar, { MenuItemEntry } from "./components/Sidebar";
 import MobileHeaderBar from "./components/MobileHeaderBar";
 import { companiesActions } from "./features/companies/state/companies-slice";
 import logo from "./assets/images/logo.png";
@@ -18,6 +18,7 @@ import { feedbacksActions } from "./features/feedbacks/state/feedbacks-slice";
 import { fieldsActions } from "./features/fields/state/fields-slice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { detectionsActions } from "./features/detections/state/detections-slice";
+import { SidebarActions } from "./features/sidebar/state/sidebar-slice";
 
 export function Loading() {
   return (
@@ -31,6 +32,7 @@ export function Loading() {
     </>
   );
 }
+
 
 export function RouteApp() {
   const currentUser = useAppSelector(userSelectors.selectCurrentUser);
@@ -47,14 +49,14 @@ export function RouteApp() {
 
 function MainApp() {
   const userMenuOpen = useAppSelector(userMenuSelectors.selectIsOpen);
-  // const dispatch = useAppDispatch();
-  // const { companyId, fieldId } = useParams();
-  // const currentUser = useAppSelector(userSelectors.selectCurrentUser);
+  const dispatch = useAppDispatch();
+  const currentUser = useAppSelector(userSelectors.selectCurrentUser);
 
-  /*React.useEffect(() => {
-    if (!companyId && !fieldId) {
+  React.useEffect(() => {
+    if (currentUser) {
       let menuEntries: MenuItemEntry[] = [];
       let menuBottomEntries: MenuItemEntry[] = [];
+
       if (currentUser.accountType === AccountTypeEnum.Admin) {
         menuEntries = [
           {
@@ -76,29 +78,21 @@ function MainApp() {
             path: "/admin/feedbacks",
           },
         ];
-      } else if (currentUser.accountType === AccountTypeEnum.Agronomist) {
-        menuEntries = [
-          {
-            id: "companies",
-            icon: "ifab_grid",
-            text: "Aziende gestite",
-            path: "/companies",
-          },
-        ];
 
         menuBottomEntries = [
           {
-            id: "feedback",
-            icon: "ifab_baloon",
-            text: "Invia Feedback",
-            path: "/new-feedback",
+            id: "user",
+            icon: "ifab_users",
+            text: "Profilo Utente",
+            path: "/profile",
           },
-        ];
+        ]
+        dispatch(SidebarActions.setMenuEntriesAction(menuEntries));
+        dispatch(SidebarActions.setMenuBottomEntriesAction(menuBottomEntries));
       }
-      dispatch(SidebarActions.setMenuEntriesAction(menuEntries));
-      dispatch(SidebarActions.setMenuBottomEntriesAction(menuBottomEntries));
+      
     }
-  }, [currentUser, companyId, fieldId]);*/
+  }, [currentUser]);
 
   return (
     <div id="app" className="main-app">

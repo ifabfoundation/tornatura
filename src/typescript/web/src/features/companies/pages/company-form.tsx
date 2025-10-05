@@ -10,6 +10,10 @@ import { useNavigate } from "react-router-dom";
 import { MenuItemEntry } from "../../../components/Sidebar";
 import { SidebarActions } from "../../sidebar/state/sidebar-slice";
 
+
+const PhoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
+const PivaRegExp = /^[1-7]\d{6}\d{3,4}[0-9]$/
+
 export function CompanyForm() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -59,9 +63,9 @@ export function CompanyForm() {
     },
     validationSchema: Yup.object({
       name: Yup.string().required("Campo obbligatorio"),
-      piva: Yup.string().required("Campo obbligatorio"),
-      email: Yup.string().required("Campo obbligatorio"),
-      phone: Yup.string().required("Campo obbligatorio"),
+      piva: Yup.string().matches(PivaRegExp, "Partita IVA non valida").required("Campo obbligatorio"),
+      email: Yup.string().email("Email non valida").required("Campo obbligatorio"),
+      phone: Yup.string().matches(PhoneRegExp, "Telefono non valido").required("Campo obbligatorio"),
       // legalForm: Yup.string().required("Campo obbligatorio"),
       // rappresentative: Yup.string().required("Campo obbligatorio"),
       // rappresentativeContact: Yup.string().required("Campo obbligatorio"),

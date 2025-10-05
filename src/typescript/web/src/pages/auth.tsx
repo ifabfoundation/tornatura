@@ -7,6 +7,10 @@ import { Button, Col, Container, Row } from "react-bootstrap";
 import keycloakInstance from "../providers/keycloak";
 import TopHeader from "../components/TopHeader";
 
+
+const PhoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
+const PivaRegExp = /^[1-7]\d{6}\d{3,4}[0-9]$/
+
 interface SignupProps {
   formData: UserCreatePayload;
   action: string;
@@ -14,7 +18,76 @@ interface SignupProps {
   onNextClick: (data: any) => Promise<void>;
 }
 
-function SignupStep3({ action, onBackClick, onNextClick }: SignupProps) {
+function SignupStep4({ formData, action, onBackClick, onNextClick }: SignupProps) {
+  const formik = useFormik({
+    initialValues: {
+      privacy: false,
+      privacy2: false,
+    },
+    validationSchema: Yup.object({
+      privacy: Yup.boolean().oneOf([true], "È necessaria l'accettazione"),
+      privacy2: Yup.boolean().oneOf([true], "È necessaria l'accettazione"),
+    }),
+    onSubmit: (values, { setSubmitting, setErrors }) => {
+      onNextClick(values);
+      setSubmitting(false);
+    },
+  });
+
+  return (
+    <form onSubmit={formik.handleSubmit} autoComplete="off">
+      <div className="input-row">
+        <label className="d-flex align-items-start">
+          <input
+            id="privacy"
+            name="privacy"
+            type="checkbox"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            checked={formik.values.privacy}
+            className="d-inline"
+          />
+          <span className="my-2">
+            Ho preso visione della&nbsp; <a href="informativa_privacy.pdf">privacy policy</a>
+          </span>
+        </label>
+        {formik.touched.privacy && formik.errors.privacy ? (
+          <div className="error">{formik.errors.privacy}</div>
+        ) : null}
+      </div>
+      <div className="input-row">
+        <label className="d-flex align-items-start">
+          <input
+            id="privacy2"
+            name="privacy2"
+            type="checkbox"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            checked={formik.values.privacy2}
+            className="d-inline"
+          />
+          <span className="my-2">
+            {
+              "Le informazioni e i dati conferiti nell’ambito del progetto Tornatura, tramite l’utilizzo dell'applicazione, devono essere veritieri, accurati e nella piena disponibilità di chi li fornisce. Tali dati saranno utilizzati per contribuire al progetto e saranno comunicati anche per scopi rendicontativi all’ente finanziatore. Pertanto, il dichiarante si assume la piena responsabilità di ogni informazione inserita sull'applicazione"
+            }
+          </span>
+        </label>
+        {formik.touched.privacy2 && formik.errors.privacy2 ? (
+          <div className="error">{formik.errors.privacy2}</div>
+        ) : null}
+      </div>
+      <hr />
+      <div className="buttons-wrapper">
+        <button className="trnt_btn secondary" type="button" onClick={onBackClick}>
+          Indietro
+        </button>
+        <input type="submit" className="primary" value={action} />
+      </div>
+    </form>
+  );
+}
+
+function SignupStep3({ formData, action, onBackClick, onNextClick }: SignupProps) {
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -29,9 +102,9 @@ function SignupStep3({ action, onBackClick, onNextClick }: SignupProps) {
     },
     validationSchema: Yup.object({
       name: Yup.string().required("Campo obbligatorio"),
-      piva: Yup.string().required("Campo obbligatorio"),
-      email: Yup.string().required("Campo obbligatorio"),
-      phone: Yup.string().required("Campo obbligatorio"),
+      piva: Yup.string().matches(PivaRegExp, "Partita IVA non valida").required("Campo obbligatorio"),
+      email: Yup.string().email("Email non valida").required("Campo obbligatorio"),
+      phone: Yup.string().matches(PhoneRegExp, "Telefono non valido").required("Campo obbligatorio"),
     }),
     onSubmit: (values, { setSubmitting, resetForm }) => {
       onNextClick(values)
@@ -46,6 +119,20 @@ function SignupStep3({ action, onBackClick, onNextClick }: SignupProps) {
         });
     },
   });
+
+  React.useEffect(() => { 
+    formik.setValues({
+      name: formData.organization?.name || "",
+      piva: formData.organization?.piva || "",
+      state: "",
+      city: "",
+      legalForm: "",
+      rappresentative: "",
+      rappresentativeContact: "",
+      email: formData.organization?.contacts.email || "",
+      phone: formData.organization?.contacts.phone || "",
+    });
+  }, [formData]);
 
   return (
     <form onSubmit={formik.handleSubmit} autoComplete="off">
@@ -135,17 +222,14 @@ function SignupStep2({ formData, action, onBackClick, onNextClick }: SignupProps
       lastName: "",
       email: "",
       piva: "",
-      phone: "",
-      privacy: false,
-      privacy2: false,
+      phone: ""
     },
     validationSchema: Yup.object({
       firstName: Yup.string().required("Campo obbligatorio"),
       lastName: Yup.string().required("Campo obbligatorio"),
       email: Yup.string().email("Email non valida").required("Campo obbligatorio"),
-      phone: Yup.string().required("Campo obbligatorio"),
-      privacy: Yup.boolean().oneOf([true], "È necessaria l'accettazione"),
-      privacy2: Yup.boolean().oneOf([true], "È necessaria l'accettazione"),
+      phone: Yup.string().matches(PhoneRegExp, "Telefono non valido").required("Campo obbligatorio"),
+      piva: Yup.string().matches(PivaRegExp, "Partita IVA non valida")
     }),
     onSubmit: (values, { setSubmitting, setErrors }) => {
       if (!values.piva && formData.accountType === AccountTypeEnum.Agronomist) {
@@ -156,6 +240,17 @@ function SignupStep2({ formData, action, onBackClick, onNextClick }: SignupProps
       setSubmitting(false);
     },
   });
+
+  React.useEffect(() => {
+    formik.setValues({
+      firstName: formData.firstName || "",
+      lastName: formData.lastName || "",
+      email: formData.email || "",
+      piva: formData.piva || "",
+      phone: formData.phone || ""
+    });
+  }, [formData]);
+
   return (
     <form onSubmit={formik.handleSubmit} autoComplete="off">
       <div className="input-row">
@@ -245,46 +340,6 @@ function SignupStep2({ formData, action, onBackClick, onNextClick }: SignupProps
           <div className="error">{formik.errors.phone}</div>
         ) : null}
       </div>
-      <div className="input-row">
-        <label className="d-flex align-items-start">
-          <input
-            id="privacy"
-            name="privacy"
-            type="checkbox"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            checked={formik.values.privacy}
-            className="d-inline"
-          />
-          <span className="my-2">
-            Ho preso visione della&nbsp; <a href="informativa_privacy.pdf">privacy policy</a>
-          </span>
-        </label>
-        {formik.touched.privacy && formik.errors.privacy ? (
-          <div className="error">{formik.errors.privacy}</div>
-        ) : null}
-      </div>
-      <div className="input-row">
-        <label className="d-flex align-items-start">
-          <input
-            id="privacy2"
-            name="privacy2"
-            type="checkbox"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            checked={formik.values.privacy2}
-            className="d-inline"
-          />
-          <span className="my-2">
-            {
-              "Le informazioni e i dati conferiti nell’ambito del progetto Tornatura, tramite l’utilizzo dell'applicazione, devono essere veritieri, accurati e nella piena disponibilità di chi li fornisce. Tali dati saranno utilizzati per contribuire al progetto e saranno comunicati anche per scopi rendicontativi all’ente finanziatore. Pertanto, il dichiarante si assume la piena responsabilità di ogni informazione inserita sull'applicazione"
-            }
-          </span>
-        </label>
-        {formik.touched.privacy2 && formik.errors.privacy2 ? (
-          <div className="error">{formik.errors.privacy2}</div>
-        ) : null}
-      </div>
       <hr />
       <div className="buttons-wrapper">
         <button className="trnt_btn secondary" type="button" onClick={onBackClick}>
@@ -296,7 +351,7 @@ function SignupStep2({ formData, action, onBackClick, onNextClick }: SignupProps
   );
 }
 
-function SignupStep1({ onBackClick, action, onNextClick }: SignupProps) {
+function SignupStep1({ formData, action, onBackClick, onNextClick }: SignupProps) {
   const formik = useFormik({
     initialValues: {
       accountType: "Agronomist",
@@ -307,6 +362,12 @@ function SignupStep1({ onBackClick, action, onNextClick }: SignupProps) {
       setSubmitting(false);
     },
   });
+
+  React.useEffect(() => {
+    formik.setValues({
+      accountType: formData.accountType || "Agronomist",
+    });
+  }, [formData]);
 
   return (
     <form onSubmit={formik.handleSubmit} autoComplete="off">
@@ -341,7 +402,6 @@ const COREAPIS_BASE_PATH = process.env.REACT_APP_COREAPIS_SERVER_URL;
 export function Signup() {
   const navigate = useNavigate();
   const [step, setStep] = React.useState(1);
-  const [action, setAction] = React.useState("Avanti");
   const [formData, setFormData] = React.useState<UserCreatePayload>({
     firstName: "",
     lastName: "",
@@ -355,8 +415,9 @@ export function Signup() {
     const apiConfig = new Configuration({ basePath: `${COREAPIS_BASE_PATH}` });
     const usersApi = new UsersApi(apiConfig);
     const response = await usersApi.registerUser(payload);
+    
     if (response.status === 201) {
-      setStep(4);
+      setStep(5);
     } else {
       console.error("Error creating account", response);
     }
@@ -365,14 +426,9 @@ export function Signup() {
   const handleNextClick = async (data: any) => {
     if (step === 1) {
       setFormData({
-        ...data,
+        ...formData,
         accountType: data.accountType,
       });
-      if (data.accountType === AccountTypeEnum.Agronomist) {
-        setAction("Iscriviti");
-      } else {
-        setAction("Avanti");
-      }
       setStep(step + 1);
     } else if (step === 2) {
       const payload = {
@@ -383,12 +439,11 @@ export function Signup() {
         piva: data.piva,
         phone: data.phone,
       };
+      setFormData(payload);
       if (formData.accountType === AccountTypeEnum.Standard) {
-        setFormData(payload);
-        setAction("Iscriviti");
         setStep(step + 1);
       } else {
-        createAccountAction(payload);
+        setStep(step + 2);
       }
     } else if (step === 3) {
       const payload = {
@@ -409,13 +464,20 @@ export function Signup() {
           },
         },
       };
-      createAccountAction(payload);
+      setFormData(payload);
+      setStep(step + 1);
+    } else if (step === 4) {
+      await createAccountAction(formData);
     }
   };
 
   const handleBackClick = async () => {
     if (step > 1) {
-      setStep(step - 1);
+      if (step === 4 && formData.accountType === AccountTypeEnum.Agronomist) {
+        setStep(step - 2);
+      } else {
+        setStep(step - 1);
+      }
     } else {
       navigate(-1);
     }
@@ -435,11 +497,48 @@ export function Signup() {
               <Row>
                 <Col></Col>
                 <Col md={auto}> */}
+            <ol className="stepper" data-steps={5}>
+              <li
+                data-step-num="1"
+                data-done={step > 1 ? "true" : "false"}
+                data-current={step == 1 ? "true" : "false"}
+              >
+                <span>Profilo</span>
+              </li>
+              <li
+                data-step-num="2"
+                data-done={step > 2 ? "true" : "false"}
+                data-current={step == 2 ? "true" : "false"}
+              >
+                <span>Dati Personali</span>
+              </li>
+              <li
+                data-step-num="3"
+                data-done={step > 3 ? "true" : "false"}
+                data-current={step == 3 ? "true" : "false"}
+              >
+                <span>Dati Aziendali</span>
+              </li>
+              <li
+                data-step-num="4"
+                data-done={step > 4 ? "true" : "false"}
+                data-current={step == 4 ? "true" : "false"}
+              >
+                <span>Consensi</span>
+              </li>
+              <li
+                data-step-num="5"
+                data-done={step > 5 ? "true" : "false"}
+                data-current={step == 5 ? "true" : "false"}
+              >
+                <span>Esito</span>
+              </li>
+            </ol>
             <div className="form-wrapper">
               {step === 1 && (
                 <SignupStep1
                   formData={formData}
-                  action={action}
+                  action="Avanti"
                   onNextClick={handleNextClick}
                   onBackClick={handleBackClick}
                 />
@@ -447,7 +546,7 @@ export function Signup() {
               {step === 2 && (
                 <SignupStep2
                   formData={formData}
-                  action={action}
+                  action="Avanti"
                   onBackClick={handleBackClick}
                   onNextClick={handleNextClick}
                 />
@@ -455,12 +554,20 @@ export function Signup() {
               {step === 3 && (
                 <SignupStep3
                   formData={formData}
-                  action={action}
+                  action="Avanti"
                   onBackClick={handleBackClick}
                   onNextClick={handleNextClick}
                 />
               )}
               {step === 4 && (
+                <SignupStep4
+                  formData={formData}
+                  action="Iscriviti"
+                  onBackClick={handleBackClick}
+                  onNextClick={handleNextClick}
+                />
+              )}
+              {step === 5 && (
                 <Container>
                   <Row>
                     <Col></Col>

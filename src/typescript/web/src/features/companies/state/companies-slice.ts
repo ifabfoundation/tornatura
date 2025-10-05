@@ -4,7 +4,7 @@ import {
   createAsyncThunk,
   createEntityAdapter,
 } from "@reduxjs/toolkit";
-import { Organization, OrganizationCreatePayload, OrganizationsApi } from "@tornatura/coreapis";
+import { Organization, OrganizationCreatePayload, OrganizationsApi, OrganizationUpdatePayload } from "@tornatura/coreapis";
 import { getCoreApiConfiguration } from "../../../services/utils";
 import { AuxState } from "../../../hooks";
 import { RootState } from "../../../store";
@@ -59,6 +59,24 @@ export const addNewCompany = createAsyncThunk(
   }
 );
 
+interface UpdateCompanyParams { 
+  orgId: string;
+  body: OrganizationUpdatePayload;
+}
+export const updateCompany = createAsyncThunk(
+  "companies/updateCompany",
+  async (payload: UpdateCompanyParams, { rejectWithValue }) => {
+    const apiConfig = await getCoreApiConfiguration();
+    const organizationsApi = new OrganizationsApi(apiConfig);
+    try {
+      const response = await organizationsApi.updateOrganization(payload.body, payload.orgId);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
 const companiesSlice = createSlice({
   name: "companies",
   initialState,
@@ -88,6 +106,10 @@ const companiesSlice = createSlice({
       state.status = "succeeded";
       companiesAdapter.addOne(state, action.payload as Organization);
     });
+    builder.addCase(updateCompany.fulfilled, (state, action) => {
+      state.status = "succeeded";
+      companiesAdapter.upsertOne(state, action.payload as Organization);
+    });
   },
 });
 
@@ -105,6 +127,7 @@ export const companiesActions = {
   fetchCompaniesAction: fetchCompanies,
   getCompanyAction: getCompany,
   addNewCompanyAction: addNewCompany,
+  updateCompanyAction: updateCompany,
 };
 
 

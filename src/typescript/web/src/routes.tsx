@@ -18,6 +18,8 @@ import { FieldDetections } from "./features/fields/pages/field-detections";
 import { FieldMap } from "./features/fields/pages/field-map";
 import { DetectionForm } from "./features/detections/pages/detection-form";
 import { FieldSettings } from "./features/fields/pages/field-settings";
+import { CompanySettings } from "./features/companies/pages/company-settings";
+import { UserProfile } from "./features/users/pages/user-profile";
 
 
 
@@ -47,6 +49,10 @@ const routesInitials: RouteObject[] = [
         element: <FeedbackForm />
       },
       {
+        path: "/profile",
+        element: <UserProfile />
+      },
+      {
         path: "/companies",
         element: <CompaniesList />
       },
@@ -71,12 +77,20 @@ const routesInitials: RouteObject[] = [
             element: <CompanyDetections />
           },
           {
+            path: "settings",
+            element: <CompanySettings />
+          },
+          {
             path: "new-field",
             element: <CompanyFieldForm />
           },
           {
             path: "new-feedback",
             element: <FeedbackForm />
+          },
+          {
+            path: "profile",
+            element: <UserProfile />
           },
           {
             path: "/companies/:companyId/fields/:fieldId",
@@ -105,6 +119,10 @@ const routesInitials: RouteObject[] = [
               {
                 path: "new-feedback",
                 element: <FeedbackForm />
+              },
+              {
+                path: "profile",
+                element: <UserProfile />
               },
             ]
           }

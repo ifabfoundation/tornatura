@@ -36,6 +36,12 @@ export function CompaniesList() {
         text: "Invia Feedback",
         path: "/new-feedback",
       },
+      {
+        id: "user",
+        icon: "ifab_users",
+        text: "Profilo Utente",
+        path: "/profile",
+      },
     ];
     
     dispatch(SidebarActions.setMenuEntriesAction(menuEntries));
@@ -55,8 +61,8 @@ export function CompaniesList() {
             <Col md={6} xl={4} key={index} style={{ display: "flex", alignItems: "stretch" }}>
               <Card className="with-hover-effect" onClick={() => handleCompanyClick(company.orgId)}>
                 <Card.Header>
-                  {/* <Image src={company.cover} roundedCircle width="30px" className="me-3" /> */}
-                  <div className="round-thumb" style={{ backgroundImage: company.logo }}></div>
+                  {company.logo ? <img src={company.logo}  width="30px"  height="30px"/> :
+                  <div className="round-thumb" style={{ backgroundImage: company.logo }}></div>}
                   <span style={{ marginLeft: 10 }}>{company.name}</span>
                 </Card.Header>
                 <Card.Img

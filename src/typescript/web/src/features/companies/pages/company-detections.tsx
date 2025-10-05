@@ -5,10 +5,12 @@ import { Col, Container, Row } from "react-bootstrap";
 import { DetectionTableComponent } from "../../detections/components/detections-table";
 import { detectionsSelectors } from "../../detections/state/detections-slice";
 import _ from "lodash";
+import { useParams } from "react-router-dom";
 
 export function CompanyDetections() {
   const dispatch = useAppDispatch();
-  const detections = useAppSelector(detectionsSelectors.selectDetections);
+  const { companyId } = useParams();
+  const detections = useAppSelector(state => detectionsSelectors.selectDetectionbyOrgId(state, companyId ?? "default"));
 
   React.useEffect(() => {
     dispatch(headerbarActions.setTitle({ title: "Tutti i rilevamenti", subtitle: "Subtitle" }));

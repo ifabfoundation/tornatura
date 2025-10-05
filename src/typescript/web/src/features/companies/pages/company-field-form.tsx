@@ -12,6 +12,7 @@ import { headerbarActions } from "../../headerbar/state/headerbar-slice";
 import { fieldsActions } from "../../fields/state/fields-slice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import * as turf from "@turf/turf";
+import { Col, Row } from "react-bootstrap";
 
 interface FieldProps {
   formData: AgriFieldMutationPayload;
@@ -20,20 +21,35 @@ interface FieldProps {
   onNextClick: (data: any) => Promise<void>;
 }
 
-function FieldFormStep1({ formData, action, onNextClick }: FieldProps) {
+
+const calcArea = (points: Point[]) => {
+  const coords: number[][] = [];
+  points.forEach((p) => coords.push([p.lng, p.lat]));
+  var polygon = turf.polygon([coords]);
+  var areaSqm = turf.area(polygon);
+  var areaHe = areaSqm / 10000; // Convert to hectares
+  return parseFloat(areaHe.toFixed(2));
+};
+
+function FieldFormStep2({ formData, action, onNextClick, onBackClick }: FieldProps) {
   const formik = useFormik({
     initialValues: {
       name: "",
       description: "",
       harvest: "",
-      area: 0,
+      area: 0.0,
+      areafrom: "mappa",
+      plants: 0,
     },
     validationSchema: Yup.object({
       name: Yup.string().required("Campo necessario"),
       harvest: Yup.string().required("Campo necessario"),
-      area: Yup.number().required("Campo necessario"),
+      area: Yup.number().typeError("Il valore inserito non è positivo").min(0, "Il valore deve essere positivo").required("Campo necessario"),
     }),
     onSubmit: (values, { setSubmitting }) => {
+      if (values.areafrom === "mappa") {
+        values.area = calcArea(formData.map);
+      }
       onNextClick(values);
       setSubmitting(false);
     },
@@ -45,8 +61,12 @@ function FieldFormStep1({ formData, action, onNextClick }: FieldProps) {
       description: formData.description,
       harvest: formData.harvest,
       area: formData.area,
+      areafrom: "mappa",
+      plants: formData.plants || 0,
     });
   }, [formData]);
+
+
 
   return (
     <form onSubmit={formik.handleSubmit} autoComplete="off">
@@ -85,21 +105,53 @@ function FieldFormStep1({ formData, action, onNextClick }: FieldProps) {
         ) : null}
       </div>
       <div className="input-row">
-        <label>
-          Area in ettari
-          <input
-            id="area"
-            name="area"
-            type="number"
-            min={1}
-            placeholder="Area del campo in ettari"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.area}
-          />
-        </label>
+        Dimensione del campo 
+        <Row>
+          <Col>
+            <input type="radio" name="areafrom" value="mappa" onChange={formik.handleChange} checked={formik.values.areafrom === "mappa"}/>
+            Calcola dalla mappa
+          </Col>
+          <Col>
+            <input type="radio" name="areafrom" value="manuale" onChange={formik.handleChange} checked={formik.values.areafrom === "manuale"}/>
+            manuale
+          </Col>
+          <Col>
+            <label>
+              Dimensione in ettari
+              <input
+                id="area"
+                name="area"
+                /*type="number"
+                step={0.01}*/
+                min={0}
+                placeholder="Area del campo in ettari"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.areafrom === "manuale" ? formik.values.area : calcArea(formData.map)}
+              />
+            </label>
+          </Col>
+        </Row>
         {formik.touched.area && formik.errors.area ? (
           <div className="error">{formik.errors.area}</div>
+        ) : null}
+      </div>
+      <div className="input-row">
+        <label>
+          Numero di piante
+          <input
+            id="plants"
+            name="plants"
+            type="number"
+            min={0}
+            placeholder="Numero di piante"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.plants}
+          />
+        </label>
+        {formik.touched.plants && formik.errors.plants ? (
+          <div className="error">{formik.errors.plants}</div>
         ) : null}
       </div>
       <div className="input-row">
@@ -122,13 +174,16 @@ function FieldFormStep1({ formData, action, onNextClick }: FieldProps) {
       </div>
       <hr />
       <div className="buttons-wrapper">
+        <button className="trnt_btn secondary" onClick={onBackClick}>
+          Indietro
+        </button>
         <input type="submit" className="primary" value={action} />
       </div>
     </form>
   );
 }
 
-const FieldFormStep2 = ({ action, onBackClick, onNextClick }: FieldProps) => {
+const FieldFormStep1 = ({ action, onNextClick }: FieldProps) => {
   const mapContainerRef = React.useRef<HTMLDivElement>(null);
   const mapRef = React.useRef<any>(null);
   const [mapLoaded, setMapLoaded] = React.useState(false);
@@ -242,14 +297,12 @@ const FieldFormStep2 = ({ action, onBackClick, onNextClick }: FieldProps) => {
       <div ref={mapContainerRef} id="map" style={{ height: "500px" }}></div>
       <hr />
       <div className="buttons-wrapper mt-5">
-        <button className="trnt_btn secondary" onClick={onBackClick}>
-          Indietro
-        </button>
         <button
           className="trnt_btn primary"
           onClick={() => {
             onNextClick(map);
           }}
+          disabled={map.length === 0}
         >
           {action}
         </button>
@@ -293,23 +346,25 @@ export function CompanyFieldForm() {
   };
 
   const handleNextClick = async (data: any) => {
-    if (step === 1) {
+    if (step === 2) {
       const payload = {
         ...formData,
         name: data.name,
         description: data.description,
         area: data.area,
         harvest: data.harvest,
+        plants: data.plants,
       };
       setFormData(payload);
-      setAction("Aggiungi");
-      setStep(step + 1);
-    } else if (step === 2) {
+      createFieldAction(payload);
+    } else if (step === 1) {
       const payload = {
         ...formData,
         map: data,
       };
-      createFieldAction(payload);
+      setFormData(payload);
+      setAction("Aggiungi campo");
+      setStep(step + 1);
     }
   };
 

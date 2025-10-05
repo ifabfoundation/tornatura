@@ -4,10 +4,11 @@ import { headerbarActions } from "../../headerbar/state/headerbar-slice";
 import _ from "lodash";
 import { fieldsSelectors } from "../state/fields-slice";
 import { SearchBox } from "@mapbox/search-js-react";
-import mapboxgl, { LngLatLike } from "mapbox-gl";
+import mapboxgl, { LngLatLike, Marker } from "mapbox-gl";
 import { useParams } from "react-router-dom";
 import { Point } from "@tornatura/coreapis";
 import * as turf from "@turf/turf";
+import { detectionsSelectors } from "../../detections/state/detections-slice";
 
 export function FieldMap() {
   const dispatch = useAppDispatch();
@@ -15,6 +16,7 @@ export function FieldMap() {
   const currentField = useAppSelector((state) =>
     fieldsSelectors.selectFieldbyId(state, fieldId ?? "default")
   );
+  const detections = useAppSelector(state => detectionsSelectors.selectDetectionbyFieldId(state, fieldId ?? "default"));
   const mapContainerRef = React.useRef<HTMLDivElement>(null);
   const mapRef = React.useRef<any>(null);
   const [mapLoaded, setMapLoaded] = React.useState(false);
@@ -86,6 +88,12 @@ export function FieldMap() {
           }
         });*/
 
+        for (let detection of detections) {
+          new mapboxgl.Marker()
+            .setLngLat([detection.position.lng, detection.position.lat])
+            .addTo(mapRef.current!);
+        }
+
         setMapLoaded(true);
       });
 
@@ -93,7 +101,7 @@ export function FieldMap() {
         mapRef.current.remove();
       };
     }
-  }, [mapContainerRef, currentField]);
+  }, [mapContainerRef, currentField, detections]);
 
   return (
     <Fragment>

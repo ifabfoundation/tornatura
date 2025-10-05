@@ -25,6 +25,12 @@ export function CompanyDetail() {
           text: "Lista dei rilevamenti",
           path: `/companies/${companyId}/detections`,
         },
+        {
+          id: "settings",
+          icon: "ifab_cog",
+          text: "Impostazioni azienda",
+          path: `/companies/${companyId}/settings`,
+        },
       ];
       menuBottomEntries = [
         {
@@ -32,6 +38,12 @@ export function CompanyDetail() {
           icon: "ifab_baloon",
           text: "Invia Feedback",
           path: `/companies/${companyId}/new-feedback`,
+        },
+        {
+          id: "user",
+          icon: "ifab_users",
+          text: "Profilo Utente",
+          path: `/companies/${companyId}/profile`,
         },
       ];
       dispatch(SidebarActions.setMenuEntriesAction(menuEntries));

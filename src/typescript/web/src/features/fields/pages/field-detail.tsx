@@ -49,6 +49,12 @@ export function FieldDetail() {
         text: "Invia Feedback",
         path: `/companies/${companyId}/fields/${fieldId}/new-feedback`,
       },
+      {
+        id: "user",
+        icon: "ifab_users",
+        text: "Profilo Utente",
+        path: `/companies/${companyId}/fields/${fieldId}/profile`,
+      },
     ];
     dispatch(SidebarActions.setMenuEntriesAction(menuEntries));
     dispatch(SidebarActions.setMenuBottomEntriesAction(menuBottomEntries));

@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from "../hooks";
 import keycloakInstance from "../providers/keycloak";
 import { userSelectors } from "../features/users/state/user-slice";
 import { fallbacks } from "../assets/images/fallback";
+import { useNavigate, useParams } from "react-router-dom";
 
 interface UserMenuProps {
   open: boolean;
@@ -11,11 +12,24 @@ interface UserMenuProps {
 
 export default function UserMenu({ open }: UserMenuProps) {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const { fieldId, companyId } = useParams();
   const currentUser = useAppSelector(userSelectors.selectCurrentUser);
 
   const handleSignOut = () => {
     keycloakInstance.logout();
   };
+
+  const handleProfile = () => {
+    dispatch(userMenuActions.toggle());
+    if (fieldId && companyId) {
+      navigate(`/companies/${companyId}/fields/${fieldId}/profile`);
+    } else if (companyId) {
+      navigate(`/companies/${companyId}/profile`);
+    } else {
+      navigate("/profile");
+    }
+  }
 
   return (
     <Fragment>
@@ -27,8 +41,8 @@ export default function UserMenu({ open }: UserMenuProps) {
           <div className="d-flex flex-column justify-content-start align-items-center pt-2 mt-4 mb-4">
             <div
               className="large-user-avatar"
-              // style={{ backgroundImage: `url(${currentUser?.avatar || fallbacks.avatar})` }}
-              style={{ backgroundImage: `url(${fallbacks.avatar})` }}
+              style={{ backgroundImage: `url(${currentUser?.avatar || fallbacks.avatar})` }}
+              // style={{ backgroundImage: `url(${fallbacks.avatar})` }}
             ></div>
             <div className="user-info">
               <h4 className="mt-3 mb-1">
@@ -39,7 +53,7 @@ export default function UserMenu({ open }: UserMenuProps) {
           </div>
 
           <div className="user-menu-items">
-            <div className="user-menu-item">Modifica profilo</div>
+            <div className="user-menu-item" onClick={handleProfile}>Modifica profilo</div>
             {/* <hr className="my-1" /> */}
             <div className="user-menu-item" onClick={handleSignOut}>
               Logout
