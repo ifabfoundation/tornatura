@@ -77,6 +77,12 @@ export interface User {
     piva: string;
 
     /**
+     * @type {string}
+     * @memberof User
+     */
+    avatar: string;
+
+    /**
      * @type {Array<UserOrgananizationMembership>}
      * @memberof User
      */

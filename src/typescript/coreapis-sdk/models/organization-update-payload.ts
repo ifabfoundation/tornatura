@@ -27,41 +27,41 @@ export interface OrganizationUpdatePayload {
      * @type {string}
      * @memberof OrganizationUpdatePayload
      */
-    rapresentative: string;
+    rapresentative?: string | null;
 
     /**
      * @type {string}
      * @memberof OrganizationUpdatePayload
      */
-    rapresentativeContact: string;
+    rapresentativeContact?: string | null;
 
     /**
      * @type {string}
      * @memberof OrganizationUpdatePayload
      */
-    legalForm: string;
+    legalForm?: string | null;
 
     /**
      * @type {Office}
      * @memberof OrganizationUpdatePayload
      */
-    office: Office;
+    office?: Office | null;
 
     /**
      * @type {FileInfo}
      * @memberof OrganizationUpdatePayload
      */
-    logo: FileInfo;
+    logo?: FileInfo | null;
 
     /**
      * @type {FileInfo}
      * @memberof OrganizationUpdatePayload
      */
-    cover: FileInfo;
+    cover?: FileInfo | null;
 
     /**
      * @type {Contacts}
      * @memberof OrganizationUpdatePayload
      */
-    contacts: Contacts;
+    contacts?: Contacts | null;
 }

@@ -87,4 +87,52 @@ class FileServices:
         )
 
         return file_name
+    
+
+    def upload_avatar(self, user_id: str, file: UploadFile):
+        """Upload avatar to MinIO bucket
+        :param user_id: ID of the user
+        :param file: File to upload
+        :return: URL of the uploaded file
+        """
+        minio_client = self._get_minio_client()
+        prefix = f"{user_id.split('-')[0]}"
+        # Ensure the bucket exists
+        bucket_name = "media"
+        if not minio_client.bucket_exists(bucket_name):
+            minio_client.make_bucket(bucket_name)
+
+        # Upload the file
+        file_name = secure_filename(file.filename)
+        object_name = f"avatars/{prefix}/{file_name}"
+        file_size = file.file.seek(0, 2)  # Get the file size
+        file.file.seek(0)
+        minio_client.put_object(
+            bucket_name,
+            object_name,
+            file.file,
+            file_size
+        )
+
+        return file_name
+
+
+    def get_avatar_url(self, user_id: str, file_name: str):
+        """Get the URL of a file in MinIO bucket
+        :param user_id: ID of the user
+        :param file_name: Name of the file
+        :return: URL of the file
+        """
+        minio_client = self._get_minio_client()
+        prefix = f"{user_id.split('-')[0]}"
+        bucket_name = "media"
         
+        # Generate a presigned URL for the file
+        object_name = f"avatars/{prefix}/{file_name}"
+        url = minio_client.presigned_get_object(
+            bucket_name,
+            object_name,
+            expires=timedelta(days=7),
+        )
+        
+        return url

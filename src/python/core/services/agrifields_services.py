@@ -29,6 +29,7 @@ class AgriFieldServices:
                 description=item.description,
                 harvest=item.harvest,
                 area=item.area,
+                plants=item.plants,
                 map=[{"lng": point.lng, "lat": point.lat} for point in item.map],
                 orgId=item.orgId,
                 creationTime=item.creationTime,
@@ -123,6 +124,7 @@ class AgriFieldServices:
         agrifield.description = payload.description
         agrifield.harvest = payload.harvest
         agrifield.area = payload.area
+        agrifield.plants = payload.plants
         agrifield.map = [Point(lng=point.lng, lat=point.lat) for point in payload.map]
         agrifield.lastUpdateTime = int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp() * 1000)
         agrifield.save()

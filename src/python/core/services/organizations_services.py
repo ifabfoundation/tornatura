@@ -261,12 +261,32 @@ class OrganizationServices:
         
         current_time = int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp() * 1000)
 
-        # TODO Update this implementation
-        # organization.description = payload.description
-        # organization.logo = payload.logo
-        # organization.cover = payload.cover
-        # organization.contacts = payload.contacts
-        # organization.lastUpdateTime = current_time
+        if payload.rapresentative is not None:
+            organization.rapresentative = payload.rapresentative
+        
+        if payload.rapresentativeContact is not None:
+            organization.rapresentativeContact = payload.rapresentativeContact
+       
+        if payload.legalForm is not None:
+            organization.legalForm = payload.legalForm
+        
+        if payload.office is not None:
+            organization.office.state = payload.office.state
+            organization.office.city = payload.office.city
+        
+        if payload.contacts is not None:
+            organization.contacts.email = payload.contacts.email
+            organization.contacts.phone = payload.contacts.phone
+        
+        if payload.cover is not None:
+            organization.cover.category = payload.cover.category
+            organization.cover.name = payload.cover.name
+        
+        if payload.logo is not None:
+            organization.logo.category = payload.logo.category
+            organization.logo.name = payload.logo.name
+        
+        organization.lastUpdateTime = current_time
         organization.save()
     
         return self._serialize(organization)

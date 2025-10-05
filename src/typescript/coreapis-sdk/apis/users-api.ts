@@ -18,10 +18,12 @@ import { Configuration } from '../configuration';
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS, RequestArgs, BaseAPI, RequiredError } from '../base';
 import { ErrorResponse } from '../models';
+import { FileInfo } from '../models';
 import { PaginatedResponse } from '../models';
 import { StatusResponse } from '../models';
 import { User } from '../models';
 import { UserCreatePayload } from '../models';
+import { UserUpdatePayload } from '../models';
 /**
  * UsersApi - axios parameter creator
  * @export
@@ -126,6 +128,114 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
         },
         /**
          * 
+         * @summary Update current user
+         * @param {UserUpdatePayload} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateUser: async (body: UserUpdatePayload, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            if (body === null || body === undefined) {
+                throw new RequiredError('body','Required parameter body was null or undefined when calling updateUser.');
+            }
+            const localVarPath = `/v1/users/me/update`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, 'https://example.com');
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions :AxiosRequestConfig = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication SecurityChecker required
+            // http bearer authentication required
+            if (configuration && configuration.accessToken) {
+                const accessToken = typeof configuration.accessToken === 'function'
+                    ? await configuration.accessToken()
+                    : await configuration.accessToken;
+                localVarHeaderParameter["Authorization"] = "Bearer " + accessToken;
+            }
+
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            const query = new URLSearchParams(localVarUrlObj.search);
+            for (const key in localVarQueryParameter) {
+                query.set(key, localVarQueryParameter[key]);
+            }
+            for (const key in options.params) {
+                query.set(key, options.params[key]);
+            }
+            localVarUrlObj.search = (new URLSearchParams(query)).toString();
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            const needsSerialization = (typeof body !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
+            localVarRequestOptions.data =  needsSerialization ? JSON.stringify(body !== undefined ? body : {}) : (body || "");
+
+            return {
+                url: localVarUrlObj.pathname + localVarUrlObj.search + localVarUrlObj.hash,
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary User Avatar Upload
+         * @param {Blob} avatar 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        userAvatarUploadForm: async (avatar: Blob, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'avatar' is not null or undefined
+            if (avatar === null || avatar === undefined) {
+                throw new RequiredError('avatar','Required parameter avatar was null or undefined when calling userAvatarUploadForm.');
+            }
+            const localVarPath = `/v1/users/me/avatar`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, 'https://example.com');
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions :AxiosRequestConfig = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+            const localVarFormParams = new FormData();
+
+            // authentication SecurityChecker required
+            // http bearer authentication required
+            if (configuration && configuration.accessToken) {
+                const accessToken = typeof configuration.accessToken === 'function'
+                    ? await configuration.accessToken()
+                    : await configuration.accessToken;
+                localVarHeaderParameter["Authorization"] = "Bearer " + accessToken;
+            }
+
+
+            if (avatar !== undefined) { 
+                localVarFormParams.append('avatar', avatar as any);
+            }
+
+            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
+            const query = new URLSearchParams(localVarUrlObj.search);
+            for (const key in localVarQueryParameter) {
+                query.set(key, localVarQueryParameter[key]);
+            }
+            for (const key in options.params) {
+                query.set(key, options.params[key]);
+            }
+            localVarUrlObj.search = (new URLSearchParams(query)).toString();
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = localVarFormParams;
+
+            return {
+                url: localVarUrlObj.pathname + localVarUrlObj.search + localVarUrlObj.hash,
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Current User Info
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -207,6 +317,34 @@ export const UsersApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Update current user
+         * @param {UserUpdatePayload} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateUser(body: UserUpdatePayload, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => Promise<AxiosResponse<User>>> {
+            const localVarAxiosArgs = await UsersApiAxiosParamCreator(configuration).updateUser(body, options);
+            return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
+                const axiosRequestArgs :AxiosRequestConfig = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
+                return axios.request(axiosRequestArgs);
+            };
+        },
+        /**
+         * 
+         * @summary User Avatar Upload
+         * @param {Blob} avatar 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async userAvatarUploadForm(avatar: Blob, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => Promise<AxiosResponse<FileInfo>>> {
+            const localVarAxiosArgs = await UsersApiAxiosParamCreator(configuration).userAvatarUploadForm(avatar, options);
+            return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
+                const axiosRequestArgs :AxiosRequestConfig = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
+                return axios.request(axiosRequestArgs);
+            };
+        },
+        /**
+         * 
          * @summary Current User Info
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -250,6 +388,26 @@ export const UsersApiFactory = function (configuration?: Configuration, basePath
         },
         /**
          * 
+         * @summary Update current user
+         * @param {UserUpdatePayload} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateUser(body: UserUpdatePayload, options?: AxiosRequestConfig): Promise<AxiosResponse<User>> {
+            return UsersApiFp(configuration).updateUser(body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary User Avatar Upload
+         * @param {Blob} avatar 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async userAvatarUploadForm(avatar: Blob, options?: AxiosRequestConfig): Promise<AxiosResponse<FileInfo>> {
+            return UsersApiFp(configuration).userAvatarUploadForm(avatar, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary Current User Info
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -289,6 +447,28 @@ export class UsersApi extends BaseAPI {
      */
     public async registerUser(body: UserCreatePayload, options?: AxiosRequestConfig) : Promise<AxiosResponse<StatusResponse>> {
         return UsersApiFp(this.configuration).registerUser(body, options).then((request) => request(this.axios, this.basePath));
+    }
+    /**
+     * 
+     * @summary Update current user
+     * @param {UserUpdatePayload} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UsersApi
+     */
+    public async updateUser(body: UserUpdatePayload, options?: AxiosRequestConfig) : Promise<AxiosResponse<User>> {
+        return UsersApiFp(this.configuration).updateUser(body, options).then((request) => request(this.axios, this.basePath));
+    }
+    /**
+     * 
+     * @summary User Avatar Upload
+     * @param {Blob} avatar 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UsersApi
+     */
+    public async userAvatarUploadForm(avatar: Blob, options?: AxiosRequestConfig) : Promise<AxiosResponse<FileInfo>> {
+        return UsersApiFp(this.configuration).userAvatarUploadForm(avatar, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      * 

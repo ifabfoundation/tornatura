@@ -42,6 +42,7 @@ class User(BaseModel):
     accountType: AccountTypeEnum
     phone: str
     piva: str
+    avatar: str
     organizations: List[UserOrgananizationMembership] = []
     creationTime: int
 
@@ -55,6 +56,7 @@ class AgriField(BaseModel):
     description: str
     harvest: str
     area: float
+    plants: int
     map: List[Point]
     orgId: str
     creationTime: int
@@ -118,13 +120,13 @@ class OrganizationCreatePayload(BaseModel):
     contacts: Contacts
 
 class OrganizationUpdatePayload(BaseModel):
-    rapresentative: str
-    rapresentativeContact: str
-    legalForm: str
-    office: Office
-    logo: FileInfo
-    cover: FileInfo
-    contacts: Contacts
+    rapresentative: Optional[str] = None
+    rapresentativeContact: Optional[str] = None
+    legalForm: Optional[str] = None
+    office: Optional[Office] = None
+    logo:  Optional[FileInfo] = None
+    cover: Optional[FileInfo] = None
+    contacts: Optional[Contacts] = None
     
 class AgriFieldMutationPayload(BaseModel):
     name: str
@@ -132,6 +134,7 @@ class AgriFieldMutationPayload(BaseModel):
     map : List[Point]
     harvest: str
     area: float
+    plants: int
 
 class DetectionMutationPayload(BaseModel):
     detectionTime: int
@@ -149,6 +152,11 @@ class UserCreatePayload(BaseModel):
     phone: str
     piva: Optional[str] = None
     organization: Optional[OrganizationCreatePayload] = None
+
+class UserUpdatePayload(BaseModel):
+    firstName: Optional[str] = None
+    lastName: Optional[str] = None
+    phone: Optional[str] = None
 
 class FeedbackCreatePayload(BaseModel):
     category: FeedbackCategoryEnum

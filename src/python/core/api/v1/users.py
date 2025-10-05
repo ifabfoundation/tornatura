@@ -1,9 +1,10 @@
 import os
 from typing import Annotated, List
-from fastapi import APIRouter, Depends, HTTPException, Path, Query, Request, status
+from fastapi import APIRouter, Depends, File, HTTPException, Path, Query, Request, UploadFile, status
 from core.permissions import IsAdmin, IsAuthenticated
 from core.security import SecurityChecker
-from core.serializers import AccountTypeEnum, ErrorResponse, PaginatedResponse, StatusResponse, User, UserCreatePayload
+from core.serializers import AccountTypeEnum, ErrorResponse, FileInfo, PaginatedResponse, StatusResponse, User, UserCreatePayload, UserUpdatePayload
+from core.services.files_services import FileServices
 from core.services.organizations_services import OrganizationCustomRole, OrganizationDefaultRole, OrganizationServices
 from core.services.users_services import ClientRole, UserServices
 from core.utils import paginate
@@ -43,6 +44,7 @@ async def user_info(
     user_services = UserServices()
     user = user_services.get(token_info)
     return user
+
 
 @router.post(
     "/registration",
@@ -104,3 +106,58 @@ async def user_registration(
     
     return StatusResponse(status=201, message="User created successfully")
 
+
+@router.put(
+    "/me/update",
+    operation_id="update_user",
+    summary="Update current user",
+    response_description="User Info",
+    status_code=status.HTTP_200_OK,
+    responses={
+        422: {
+            "description": "Validation error",
+            "model": ErrorResponse,
+        },
+        400: {
+            "description": "Bad Request",
+            "model": ErrorResponse,
+        },
+    }
+)
+async def update_user(
+    payload: UserUpdatePayload,
+    request: Request,
+    token_info: Annotated[dict, Depends(SecurityChecker(IsAuthenticated))]
+    ) -> User:
+    user_services = UserServices()
+    user = user_services.update(token_info, payload)
+    print("User updated successfully")
+
+    return user
+
+
+@router.post(
+    "/me/avatar",
+    operation_id="user_avatar_upload",
+    summary="User Avatar Upload",
+    response_description="User Avatar Url",
+)
+async def upload_user_avatar(
+    token_info: Annotated[dict, Depends(SecurityChecker(IsAuthenticated))],
+    avatar:  Annotated[
+        UploadFile, File(description="avatar as UploadFile")
+    ],
+    ) -> FileInfo:
+
+    # Upload the file and get the file name
+    file_services = FileServices()
+    file_name = file_services.upload_avatar(token_info["sub"], avatar)
+
+    # Update user's avatar in Keycloak
+    user_services = UserServices()
+    user_services.update_avatar(token_info, file_name)
+
+    # Create a FileInfo object with the uploaded file name
+    file_info = FileInfo(name=file_name, category="media")
+
+    return file_info

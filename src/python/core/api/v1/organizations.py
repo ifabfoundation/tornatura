@@ -94,6 +94,7 @@ async def update_organization(
     org_id: str = Path(..., description="Organization ID"), 
     ) -> Organization:
     organization_services = OrganizationServices()
+    organization = organization_services.get(org_id)
 
     # Check object-level permissions
     checker = SecurityChecker(CanManageOrganization)

@@ -52,6 +52,12 @@ export interface AgriField {
     area: number;
 
     /**
+     * @type {number}
+     * @memberof AgriField
+     */
+    plants: number;
+
+    /**
      * @type {Array<Point>}
      * @memberof AgriField
      */

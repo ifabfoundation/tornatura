@@ -11,7 +11,8 @@ from phasetwo.model.organization_representation import OrganizationRepresentatio
 from phasetwo.model.organization_role_representation import OrganizationRoleRepresentation
 from core import config
 from core.decorators import catch_api_exception
-from core.serializers import AccountTypeEnum, User, UserCreatePayload
+from core.serializers import AccountTypeEnum, User, UserCreatePayload, UserUpdatePayload, FileInfo
+from core.services.files_services import FileServices
 from core.utils import send_email
 
 env = Environment(loader=FileSystemLoader(os.path.join(config.APIConfig.BASE_DIR, 'templates/')))
@@ -48,7 +49,7 @@ class UserServices:
             Serializer instance or list of serializer instances
         """
         def _create_instance(item: dict) -> User:
-            return self.serializer(
+            obj =  self.serializer(
                 id=item.get("id"),
                 firstName=item.get("firstName"),
                 lastName=item.get("lastName"),
@@ -57,10 +58,17 @@ class UserServices:
                 emailVerified=item.get("emailVerified"),
                 phone=item.get("attributes", {}).pop("phone", [''])[0],
                 piva=item.get("attributes", {}).pop("piva", [''])[0],
+                avatar=item.get("attributes", {}).pop("avatar", [''])[0],
                 accountType=item.get("accountType"),
                 organizations=item.get("organizations", []),
                 creationTime=item.get("createdTimestamp")
             )
+
+            if obj.avatar:
+                file_services = FileServices()
+                obj.avatar = file_services.get_avatar_url(obj.id, obj.avatar)
+        
+            return obj
             
         if many:
             return [_create_instance(item) for item in obj]
@@ -202,6 +210,7 @@ class UserServices:
             "attributes": {
                 "phone": [payload.phone],
                 "piva": [piva],
+                "avatar": [""]
             }
         })
         user_id = keycloak_admin.create_user(data, True)
@@ -228,4 +237,40 @@ class UserServices:
         
         return self._serialize(user)
     
+
+    @catch_api_exception
+    def update(self, token_info, payload: UserUpdatePayload):
+        """update User
+        :rtype: User
+        """
+        keycloak_admin = get_keycloak_admin()
+        user = keycloak_admin.get_user(token_info["sub"])
+        
+        if payload.firstName is not None:
+            user["firstName"] = payload.firstName
+        
+        if payload.lastName is not None:
+            user["lastName"] = payload.lastName
+        
+        if payload.phone is not None:
+            user["attributes"]["phone"] = [payload.phone]
+        
+        keycloak_admin.update_user(user_id=token_info["sub"], payload=user)
+
+        return self.get(token_info)
+    
+
+    @catch_api_exception
+    def update_avatar(self, token_info: dict, avatar: str | None):
+        """update User Avatar
+        :rtype: User
+        """
+        keycloak_admin = get_keycloak_admin()
+        user = keycloak_admin.get_user(token_info["sub"])
+        
+        if avatar is not None:
+            user["attributes"]["avatar"] = [avatar]
+        
+        keycloak_admin.update_user(user_id=token_info["sub"], payload=user)
+        return self.get(token_info)
     

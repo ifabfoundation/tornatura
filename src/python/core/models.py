@@ -28,6 +28,7 @@ class AgriFieldModel(Document):
     description = StringField(required=True, max_length=100)
     harvest = StringField(required=True, default="barbabietola")
     area = DecimalField(required=True, default=150.0)
+    plants = IntField(required=True, default=0)
     map = ListField(EmbeddedDocumentField(Point), default=[])
     orgId = StringField(required=True)
     deleted = BooleanField(default=False)
