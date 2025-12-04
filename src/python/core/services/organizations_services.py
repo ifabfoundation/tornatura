@@ -21,6 +21,8 @@ class OrganizationDefaultRole(Enum):
     ManageOrganization = "manage-organization"
     ViewMembers = "view-members"
     ManageMembers = "manage-members"
+    ViewInvitions = "view-invitations"
+    ManageInvitations = "manage-invitations"
 
 class OrganizationCustomRole(Enum):
     ManageAgrifields = "manage-agrifields"

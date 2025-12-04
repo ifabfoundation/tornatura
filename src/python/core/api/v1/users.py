@@ -77,13 +77,6 @@ async def user_registration(
         )
     
     if (payload.accountType == AccountTypeEnum.standard 
-        and payload.organization is None):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="User with standard account type must have organization",
-        )
-
-    if (payload.accountType == AccountTypeEnum.standard 
         and payload.organization is not None 
         and organization_services.is_organization_exists(payload.organization.name)):
         raise HTTPException(
@@ -92,9 +85,7 @@ async def user_registration(
         )
     
     user = user_services.create(payload)
-    print("User created successfully")
-
-    if payload.accountType == AccountTypeEnum.standard:
+    if payload.accountType == AccountTypeEnum.standard and payload.organization is not None:
         user_services.assign_role(user.id, ClientRole.CompanyOwner)
         organization = organization_services.create(payload.organization)
         # assign organization roles to the user
@@ -103,6 +94,8 @@ async def user_registration(
         organization_services.assign_role(user_id=user.id, org_id=organization.orgId, role=OrganizationDefaultRole.ManageMembers)
         organization_services.assign_role(user_id=user.id, org_id=organization.orgId, role=OrganizationCustomRole.ManageAgrifields)
         organization_services.assign_role(user_id=user.id, org_id=organization.orgId, role=OrganizationCustomRole.ManageDataFiles)
+        organization_services.assign_role(user_id=user.id, org_id=organization.orgId, role=OrganizationDefaultRole.ManageInvitations)
+    
     
     return StatusResponse(status=201, message="User created successfully")
 

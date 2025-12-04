@@ -1,0 +1,45 @@
+<html>
+<head>
+  <!-- Embed web font with fallback -->
+  <style type="text/css">
+    /* For supported email clients */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+    *, body, table, td, a {
+      font-family: 'Inter', Arial, sans-serif;
+    }
+  </style>
+</head>
+<body style="font-family: 'Inter', Arial, sans-serif; line-height: 1.6; color: #333;">
+    <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+        <img style="width: 150px;" width="150" src="https://tornatura.it/tmp-storage/assets/images/logo-color-black.png" />
+
+        <div style="margin-top: 30px;">
+            <h2 style="color: #3D401A;">Sei stato invitato!</h2>
+
+            <p>Ciao,</p>
+
+            <p><strong>{{ inviterName }}</strong> ti ha invitato a unirti a <strong>{{ organizationName }}</strong> come <strong>{{ role }}</strong>.</p>
+
+            <p>Fai clic sul pulsante qui sotto per accettare l'invito:</p>
+
+            <div style="text-align: center; margin: 30px 0;">
+                <a style="padding: 12px 30px; border-radius: 5px; text-decoration: none; display: inline-block; background-color: #3D401A; color: #EAFF00; font-weight: bold;"
+                   href="{{ invitationLink }}">Accetta Invito</a>
+            </div>
+
+            <p>Oppure copia e incolla questo link nel tuo browser:</p>
+            <p style="word-break: break-all; color: #3D401A; background-color: #f5f5f5; padding: 10px; border-radius: 3px;">{{ invitationLink }}</p>
+
+            <p style="color: #e74c3c; font-weight: bold; margin-top: 20px;">⚠️ Questo invito scadrà il {{ expiresDate }}.</p>
+
+            <p>Se non hai ancora un account, potrai crearne uno quando accetti l'invito.</p>
+
+            <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
+
+            <p style="color: #777; font-size: 12px;">Cordiali saluti,<br>Il Team Tornatura</p>
+
+            <p style="color: #999; font-size: 11px;">Questa è un'email automatica. Si prega di non rispondere.</p>
+        </div>
+    </div>
+</body>
+</html>
