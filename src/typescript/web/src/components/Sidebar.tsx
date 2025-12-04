@@ -152,9 +152,7 @@ export default function SideBar() {
         <div className="hamburger-col"></div>
         <div className="level-1">
           <div>
-            {params?.companyId && currentUser.accountType === AccountTypeEnum.Agronomist && (
-              <CompanySelector />
-            )}
+            {params?.companyId && <CompanySelector />}
             {params?.fieldId && <FieldSelector />}
             <ul className="menu-items">
               {menuEntries.map((item, i) => {

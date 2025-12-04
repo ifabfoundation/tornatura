@@ -50,6 +50,12 @@ export function FieldDetail() {
         path: `/companies/${companyId}/fields/${fieldId}/new-feedback`,
       },
       {
+        id: "my-invitations",
+        icon: "ifab_grid",
+        text: "I miei inviti",
+        path: `/companies/${companyId}/fields/${fieldId}/invitations/me`,
+      },
+      {
         id: "user",
         icon: "ifab_users",
         text: "Profilo Utente",

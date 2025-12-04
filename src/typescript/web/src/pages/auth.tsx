@@ -1,15 +1,18 @@
 import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { AccountTypeEnum, Configuration, UserCreatePayload, UsersApi } from "@tornatura/coreapis";
+import { AccountTypeEnum, Configuration, InvitationPublic, InvitationValidateResponse, UserCreatePayload, UsersApi } from "@tornatura/coreapis";
 import { useNavigate } from "react-router-dom";
 import { Button, Col, Container, Row } from "react-bootstrap";
 import keycloakInstance from "../providers/keycloak";
 import TopHeader from "../components/TopHeader";
+import { invitationsActions } from "../features/invitations/state/invitations-slice";
+import { unwrapResult } from "@reduxjs/toolkit";
+import { useAppDispatch } from "../hooks";
 
 
 const PhoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
-const PivaRegExp = /^[1-7]\d{6}\d{3,4}[0-9]$/
+const PivaRegExp = /^\d{11}$/;
 
 interface SignupProps {
   formData: UserCreatePayload;
@@ -18,7 +21,7 @@ interface SignupProps {
   onNextClick: (data: any) => Promise<void>;
 }
 
-function SignupStep4({ formData, action, onBackClick, onNextClick }: SignupProps) {
+function SignupStep4({ action, onBackClick, onNextClick }: SignupProps) {
   const formik = useFormik({
     initialValues: {
       privacy: false,
@@ -28,7 +31,7 @@ function SignupStep4({ formData, action, onBackClick, onNextClick }: SignupProps
       privacy: Yup.boolean().oneOf([true], "È necessaria l'accettazione"),
       privacy2: Yup.boolean().oneOf([true], "È necessaria l'accettazione"),
     }),
-    onSubmit: (values, { setSubmitting, setErrors }) => {
+    onSubmit: (values, { setSubmitting }) => {
       onNextClick(values);
       setSubmitting(false);
     },
@@ -400,8 +403,12 @@ function SignupStep1({ formData, action, onBackClick, onNextClick }: SignupProps
 const COREAPIS_BASE_PATH = process.env.REACT_APP_COREAPIS_SERVER_URL;
 
 export function Signup() {
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [step, setStep] = React.useState(1);
+  const [flow, setFlow] = React.useState<string>("Standard")
+  const [invitation, setInvitation] = React.useState<InvitationPublic>();
+  const [invitationToken, setInvitationToken] = React.useState<string>();
   const [formData, setFormData] = React.useState<UserCreatePayload>({
     firstName: "",
     lastName: "",
@@ -411,191 +418,356 @@ export function Signup() {
     phone: "",
   });
 
+
+  React.useEffect(() => {
+    const session = sessionStorage.getItem("pending_invitation_token");
+    let token = undefined;
+    if (session) {
+      const invitation_token = JSON.parse(session);
+      if (invitation_token.has_pending_invitation) {
+        token = invitation_token.pending_invitation_token;
+        console.log(token, invitation_token)
+        setInvitationToken(token)
+        dispatch(invitationsActions.validateInvitationTokenAction(token))
+        .then(unwrapResult)
+        .then((response: InvitationValidateResponse) => {
+          if (response.valid) {
+            setInvitation(response.invitation);
+            if (response.invitation) {
+              setFormData(v => {
+                let r = v;
+                if (response.invitation?.email) {
+                  r = {...v, email: response.invitation?.email}
+                }
+                if (response.invitation?.role === "agronomist-access") {
+                  r = {...r, accountType: AccountTypeEnum.Agronomist}
+                } else {
+                  r = {...r, accountType: AccountTypeEnum.Standard}
+                }
+                return r;
+              });
+            } 
+          } else {
+            sessionStorage.removeItem("pending_invitation_token");
+          }
+        })
+      }
+    }
+  }, []);
+
+  React.useEffect(() => {
+    if (invitation) {  
+      if (invitation.role === "company-standard-access" || invitation.role === "company-manager-access") {
+        setFlow("Simple");
+      }
+    }
+  }, [invitation]);
+
   const createAccountAction = async (payload: UserCreatePayload) => {
     const apiConfig = new Configuration({ basePath: `${COREAPIS_BASE_PATH}` });
     const usersApi = new UsersApi(apiConfig);
     const response = await usersApi.registerUser(payload);
     
     if (response.status === 201) {
-      setStep(5);
+      if (flow === "Standard") {
+        setStep(5);
+      } else {
+        setStep(3);
+      }
     } else {
       console.error("Error creating account", response);
     }
   };
 
   const handleNextClick = async (data: any) => {
-    if (step === 1) {
-      setFormData({
-        ...formData,
-        accountType: data.accountType,
-      });
-      setStep(step + 1);
-    } else if (step === 2) {
-      const payload = {
-        ...formData,
-        firstName: data.firstName,
-        lastName: data.lastName,
-        email: data.email,
-        piva: data.piva,
-        phone: data.phone,
-      };
-      setFormData(payload);
-      if (formData.accountType === AccountTypeEnum.Standard) {
+    if (flow === "Standard") {
+      if (step === 1) {
+        setFormData({
+          ...formData,
+          accountType: data.accountType,
+        });
         setStep(step + 1);
-      } else {
-        setStep(step + 2);
-      }
-    } else if (step === 3) {
-      const payload = {
-        ...formData,
-        organization: {
-          name: data.name,
+      } else if (step === 2) {
+        const payload = {
+          ...formData,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          email: data.email,
           piva: data.piva,
-          legalForm: "",
-          office: {
-            state: data.state,
-            city: data.city,
+          phone: data.phone,
+        };
+        setFormData(payload);
+        if (formData.accountType === AccountTypeEnum.Standard) {
+          setStep(step + 1);
+        } else {
+          setStep(step + 2);
+        }
+      } else if (step === 3) {
+        const payload = {
+          ...formData,
+          organization: {
+            name: data.name,
+            piva: data.piva,
+            legalForm: "",
+            office: {
+              state: data.state,
+              city: data.city,
+            },
+            rapresentative: data.rappresentative,
+            rapresentativeContact: data.rappresentativeContact,
+            contacts: {
+              email: data.email,
+              phone: data.phone,
+            },
           },
-          rapresentative: data.rappresentative,
-          rapresentativeContact: data.rappresentativeContact,
-          contacts: {
-            email: data.email,
-            phone: data.phone,
-          },
-        },
-      };
-      setFormData(payload);
-      setStep(step + 1);
-    } else if (step === 4) {
-      await createAccountAction(formData);
+        };
+        setFormData(payload);
+        setStep(step + 1);
+      } else if (step === 4) {
+        await createAccountAction(formData);
+      }
+    } else {
+      if (step === 1) {
+        const payload = {
+          ...formData,
+          accountType: AccountTypeEnum.Standard,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          email: data.email,
+          piva: data.piva,
+          phone: data.phone,
+        };
+        setFormData(payload);
+        setStep(step + 1);
+      }  else if (step === 2) {
+        await createAccountAction(formData);
+      }
     }
   };
 
   const handleBackClick = async () => {
-    if (step > 1) {
-      if (step === 4 && formData.accountType === AccountTypeEnum.Agronomist) {
-        setStep(step - 2);
+    if (flow === "Standard") {
+      if (step > 1) {
+        if (step === 4 && formData.accountType === AccountTypeEnum.Agronomist) {
+          setStep(step - 2);
+        } else {
+          setStep(step - 1);
+        }
       } else {
-        setStep(step - 1);
+        navigate(-1);
       }
     } else {
-      navigate(-1);
+      if (step > 1) {
+        setStep(step - 1);
+      } else {
+        navigate(-1);
+      }
     }
   };
 
   const handleLoginClick = async () => {
-    await keycloakInstance.login({ redirectUri: window.location.origin });
+    // If there's an invitation token, redirect to accept page after login
+    if (invitationToken) {
+      const redirectUri = `${window.location.origin}/invitations/accept?token=${invitationToken}`;
+      await keycloakInstance.login({ redirectUri: redirectUri});
+    } else {
+      await keycloakInstance.login({ redirectUri: window.location.origin });
+    }
   };
 
-  return (
-    <div id="app" className="main-app">
-      <div className="ui-right">
-        <TopHeader />
-        <div className="content-area">
-          <div className="content">
-            {/* <Container>
-              <Row>
-                <Col></Col>
-                <Col md={auto}> */}
-            <ol className="stepper" data-steps={5}>
-              <li
-                data-step-num="1"
-                data-done={step > 1 ? "true" : "false"}
-                data-current={step == 1 ? "true" : "false"}
-              >
-                <span>Profilo</span>
-              </li>
-              <li
-                data-step-num="2"
-                data-done={step > 2 ? "true" : "false"}
-                data-current={step == 2 ? "true" : "false"}
-              >
-                <span>Dati Personali</span>
-              </li>
-              <li
-                data-step-num="3"
-                data-done={step > 3 ? "true" : "false"}
-                data-current={step == 3 ? "true" : "false"}
-              >
-                <span>Dati Aziendali</span>
-              </li>
-              <li
-                data-step-num="4"
-                data-done={step > 4 ? "true" : "false"}
-                data-current={step == 4 ? "true" : "false"}
-              >
-                <span>Consensi</span>
-              </li>
-              <li
-                data-step-num="5"
-                data-done={step > 5 ? "true" : "false"}
-                data-current={step == 5 ? "true" : "false"}
-              >
-                <span>Esito</span>
-              </li>
-            </ol>
-            <div className="form-wrapper">
-              {step === 1 && (
-                <SignupStep1
-                  formData={formData}
-                  action="Avanti"
-                  onNextClick={handleNextClick}
-                  onBackClick={handleBackClick}
-                />
-              )}
-              {step === 2 && (
-                <SignupStep2
-                  formData={formData}
-                  action="Avanti"
-                  onBackClick={handleBackClick}
-                  onNextClick={handleNextClick}
-                />
-              )}
-              {step === 3 && (
-                <SignupStep3
-                  formData={formData}
-                  action="Avanti"
-                  onBackClick={handleBackClick}
-                  onNextClick={handleNextClick}
-                />
-              )}
-              {step === 4 && (
-                <SignupStep4
-                  formData={formData}
-                  action="Iscriviti"
-                  onBackClick={handleBackClick}
-                  onNextClick={handleNextClick}
-                />
-              )}
-              {step === 5 && (
-                <Container>
-                  <Row>
-                    <Col></Col>
-                    <Col md="auto" className="text-center">
-                      <h1 className="mb-3">Registrazione</h1>
-                      <div className="bg-white p-4 rounded">
-                        <div className="spacer d-none d-md-block" style={{ width: "320px" }}></div>
-                        <p className="my-3">
-                          Registrazione Avvenuta con successo. Riceverai una email di conferma
-                          dell'avvenuta registrazione
-                        </p>
-                        <Button className="trnt_btn accent wide" onClick={handleLoginClick}>
-                          Vai al Login
-                        </Button>
-                      </div>
-                    </Col>
-                    <Col></Col>
-                  </Row>
-                </Container>
-              )}
+  if (flow === "Standard") {
+    return (
+      <div id="app" className="main-app">
+        <div className="ui-right">
+          <TopHeader />
+          <div className="content-area">
+            <div className="content">
+              {/* <Container>
+                <Row>
+                  <Col></Col>
+                  <Col md={auto}> */}
+              <ol className="stepper" data-steps={5}>
+                <li
+                  data-step-num="1"
+                  data-done={step > 1 ? "true" : "false"}
+                  data-current={step == 1 ? "true" : "false"}
+                >
+                  <span>Profilo</span>
+                </li>
+                <li
+                  data-step-num="2"
+                  data-done={step > 2 ? "true" : "false"}
+                  data-current={step == 2 ? "true" : "false"}
+                >
+                  <span>Dati Personali</span>
+                </li>
+                <li
+                  data-step-num="3"
+                  data-done={step > 3 ? "true" : "false"}
+                  data-current={step == 3 ? "true" : "false"}
+                >
+                  <span>Dati Aziendali</span>
+                </li>
+                <li
+                  data-step-num="4"
+                  data-done={step > 4 ? "true" : "false"}
+                  data-current={step == 4 ? "true" : "false"}
+                >
+                  <span>Consensi</span>
+                </li>
+                <li
+                  data-step-num="5"
+                  data-done={step > 5 ? "true" : "false"}
+                  data-current={step == 5 ? "true" : "false"}
+                >
+                  <span>Esito</span>
+                </li>
+              </ol>
+              <div className="form-wrapper">
+                {step === 1 && (
+                  <SignupStep1
+                    formData={formData}
+                    action="Avanti"
+                    onNextClick={handleNextClick}
+                    onBackClick={handleBackClick}
+                  />
+                )}
+                {step === 2 && (
+                  <SignupStep2
+                    formData={formData}
+                    action="Avanti"
+                    onBackClick={handleBackClick}
+                    onNextClick={handleNextClick}
+                  />
+                )}
+                {step === 3 && (
+                  <SignupStep3
+                    formData={formData}
+                    action="Avanti"
+                    onBackClick={handleBackClick}
+                    onNextClick={handleNextClick}
+                  />
+                )}
+                {step === 4 && (
+                  <SignupStep4
+                    formData={formData}
+                    action="Iscriviti"
+                    onBackClick={handleBackClick}
+                    onNextClick={handleNextClick}
+                  />
+                )}
+                {step === 5 && (
+                  <Container>
+                    <Row>
+                      <Col></Col>
+                      <Col md="auto" className="text-center">
+                        <h1 className="mb-3">Registrazione</h1>
+                        <div className="bg-white p-4 rounded">
+                          <div className="spacer d-none d-md-block" style={{ width: "320px" }}></div>
+                          <p className="my-3">
+                            Registrazione Avvenuta con successo. Riceverai una email di conferma
+                            dell'avvenuta registrazione
+                          </p>
+                          <Button className="trnt_btn accent wide" onClick={handleLoginClick}>
+                            Vai al Login
+                          </Button>
+                        </div>
+                      </Col>
+                      <Col></Col>
+                    </Row>
+                  </Container>
+                )}
+              </div>
+              {/*                 </Col>
+                  <Col></Col>
+                </Row>
+              </Container> */}
             </div>
-            {/*                 </Col>
-                <Col></Col>
-              </Row>
-            </Container> */}
           </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  } else {
+    return (
+      <div id="app" className="main-app">
+        <div className="ui-right">
+          <TopHeader />
+          <div className="content-area">
+            <div className="content">
+              {/* <Container>
+                <Row>
+                  <Col></Col>
+                  <Col md={auto}> */}
+              <ol className="stepper" data-steps={3}>
+                <li
+                  data-step-num="1"
+                  data-done={step > 1 ? "true" : "false"}
+                  data-current={step == 1 ? "true" : "false"}
+                >
+                  <span>Dati Personali</span>
+                </li>
+                <li
+                  data-step-num="2"
+                  data-done={step > 2 ? "true" : "false"}
+                  data-current={step == 2 ? "true" : "false"}
+                >
+                  <span>Consensi</span>
+                </li>
+                <li
+                  data-step-num="3"
+                  data-done={step > 3 ? "true" : "false"}
+                  data-current={step == 3 ? "true" : "false"}
+                >
+                  <span>Esito</span>
+                </li>
+              </ol>
+              <div className="form-wrapper">
+                {step === 1 && (
+                  <SignupStep2
+                    formData={formData}
+                    action="Avanti"
+                    onBackClick={handleBackClick}
+                    onNextClick={handleNextClick}
+                  />
+                )}
+                {step === 2 && (
+                  <SignupStep4
+                    formData={formData}
+                    action="Iscriviti"
+                    onBackClick={handleBackClick}
+                    onNextClick={handleNextClick}
+                  />
+                )}
+                {step === 3 && (
+                  <Container>
+                    <Row>
+                      <Col></Col>
+                      <Col md="auto" className="text-center">
+                        <h1 className="mb-3">Registrazione</h1>
+                        <div className="bg-white p-4 rounded">
+                          <div className="spacer d-none d-md-block" style={{ width: "320px" }}></div>
+                          <p className="my-3">
+                            Registrazione Avvenuta con successo. Riceverai una email di conferma
+                            dell'avvenuta registrazione
+                          </p>
+                          <Button className="trnt_btn accent wide" onClick={handleLoginClick}>
+                            Vai al Login
+                          </Button>
+                        </div>
+                      </Col>
+                      <Col></Col>
+                    </Row>
+                  </Container>
+                )}
+              </div>
+              {/*                 </Col>
+                  <Col></Col>
+                </Row>
+              </Container> */}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 }

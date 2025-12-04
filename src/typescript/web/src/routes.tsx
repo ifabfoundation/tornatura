@@ -6,7 +6,6 @@ import { FeedbackTable } from "./features/feedbacks/pages/feedbacks-table";
 import { CompaniesList } from "./features/companies/pages/companies-list";
 import { Welcome } from "./pages/welcome";
 import { Signup } from "./pages/auth";
-import { CompanyForm } from "./features/companies/pages/company-form";
 import { FeedbackForm } from "./features/feedbacks/pages/feedback-form";
 import { CompanyDetail } from "./features/companies/pages/company-detail";
 import { CompanyFields } from "./features/companies/pages/company-fields";
@@ -20,6 +19,11 @@ import { DetectionForm } from "./features/detections/pages/detection-form";
 import { FieldSettings } from "./features/fields/pages/field-settings";
 import { CompanySettings } from "./features/companies/pages/company-settings";
 import { UserProfile } from "./features/users/pages/user-profile";
+import { InvitationsList } from "./features/invitations/pages/invitations-list";
+import { SendInvitation } from "./features/invitations/pages/send-invitation";
+import { InvitationAccept } from "./features/invitations/pages/invitation-accept";
+import { MyInvitations } from "./features/invitations/pages/my-invitations";
+import { InviteCompanyOwner } from "./features/invitations/pages/invite-company-owner";
 
 
 
@@ -53,12 +57,16 @@ const routesInitials: RouteObject[] = [
         element: <UserProfile />
       },
       {
-        path: "/companies",
-        element: <CompaniesList />
+        path: "/invitations/me",
+        element: <MyInvitations />
       },
       {
-        path: "/companies/new-company",
-        element: <CompanyForm />
+        path: "/invitations/invite-company-owner",
+        element: <InviteCompanyOwner />
+      },
+      {
+        path: "/companies",
+        element: <CompaniesList />
       },
       {
         path: "/companies/:companyId",
@@ -81,12 +89,24 @@ const routesInitials: RouteObject[] = [
             element: <CompanySettings />
           },
           {
+            path: "invitations",
+            element: <InvitationsList />
+          },
+          {
+            path: "send-invitation",
+            element: <SendInvitation />
+          },
+          {
             path: "new-field",
             element: <CompanyFieldForm />
           },
           {
             path: "new-feedback",
             element: <FeedbackForm />
+          },
+          {
+            path: "invitations/me",
+            element: <MyInvitations />
           },
           {
             path: "profile",
@@ -124,6 +144,10 @@ const routesInitials: RouteObject[] = [
                 path: "profile",
                 element: <UserProfile />
               },
+              {
+                path: "invitations/me",
+                element: <MyInvitations />
+              },
             ]
           }
         ]
@@ -137,7 +161,11 @@ const routesInitials: RouteObject[] = [
   {
     path: "/signup",
     element: <Signup />
-  }
+  },
+  {
+    path: "/invitations/accept",
+    element: <InvitationAccept />
+  },
 ]
 
 
