@@ -325,6 +325,7 @@ export function CompanyFieldForm() {
     description: "",
     area: 0,
     harvest: "",
+    plants: 0,
     map: [],
   });
 

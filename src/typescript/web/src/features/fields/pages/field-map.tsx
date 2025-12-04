@@ -4,7 +4,7 @@ import { headerbarActions } from "../../headerbar/state/headerbar-slice";
 import _ from "lodash";
 import { fieldsSelectors } from "../state/fields-slice";
 import { SearchBox } from "@mapbox/search-js-react";
-import mapboxgl, { LngLatLike, Marker } from "mapbox-gl";
+import mapboxgl, { LngLatLike} from "mapbox-gl";
 import { useParams } from "react-router-dom";
 import { Point } from "@tornatura/coreapis";
 import * as turf from "@turf/turf";

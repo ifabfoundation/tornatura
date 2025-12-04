@@ -19,7 +19,6 @@ import { fieldsActions } from "./features/fields/state/fields-slice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { detectionsActions } from "./features/detections/state/detections-slice";
 import { SidebarActions } from "./features/sidebar/state/sidebar-slice";
-import keycloakInstance from "./providers/keycloak";
 
 
 export function Loading() {
