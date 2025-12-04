@@ -55,5 +55,5 @@ export interface AgriFieldMutationPayload {
      * @type {number}
      * @memberof AgriFieldMutationPayload
      */
-    plants?: number;
+    plants: number;
 }

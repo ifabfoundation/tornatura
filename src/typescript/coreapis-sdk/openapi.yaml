@@ -1,0 +1,2313 @@
+openapi: 3.0.1
+info:
+  title: FastAPI
+  version: 0.1.0
+paths:
+  /v1/organizations/{org_id}/agrifields:
+    get:
+      tags:
+      - AgriFields
+      - AgriFields
+      summary: List Agriculture Fields
+      operationId: list_agrifields
+      security:
+      - SecurityChecker: []
+      - SecurityChecker: []
+      parameters:
+      - name: org_id
+        in: path
+        required: true
+        schema:
+          type: string
+          description: Organization ID
+          title: Org Id
+        description: Organization ID
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          description: Page number
+          default: 1
+          title: Page
+        description: Page number
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 1000
+          minimum: 25
+          description: Items per page
+          default: 25
+          title: Limit
+        description: Items per page
+      responses:
+        '200':
+          description: List of Agriculture Fields
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedResponse'
+        '401':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    post:
+      tags:
+      - AgriFields
+      - AgriFields
+      summary: Create Agriculture Field
+      operationId: create_agrifield
+      security:
+      - SecurityChecker: []
+      parameters:
+      - name: org_id
+        in: path
+        required: true
+        schema:
+          type: string
+          description: Organization ID
+          title: Org Id
+        description: Organization ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AgriFieldMutationPayload'
+      responses:
+        '200':
+          description: Agriculture Field detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgriField'
+        '401':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v1/organizations/{org_id}/agrifields/{agrifield_id}:
+    get:
+      tags:
+      - AgriFields
+      - AgriFields
+      summary: Get Agriculture Field details
+      operationId: get_agrifield
+      security:
+      - SecurityChecker: []
+      parameters:
+      - name: org_id
+        in: path
+        required: true
+        schema:
+          type: string
+          description: Organization ID
+          title: Org Id
+        description: Organization ID
+      - name: agrifield_id
+        in: path
+        required: true
+        schema:
+          type: string
+          description: Agrifield ID
+          title: Agrifield Id
+        description: Agrifield ID
+      responses:
+        '200':
+          description: Agriculture Field detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgriField'
+        '401':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      tags:
+      - AgriFields
+      - AgriFields
+      summary: Detetion of Agriculture Field
+      operationId: delete_agrifield
+      security:
+      - SecurityChecker: []
+      parameters:
+      - name: org_id
+        in: path
+        required: true
+        schema:
+          type: string
+          description: Organization ID
+          title: Org Id
+        description: Organization ID
+      - name: agrifield_id
+        in: path
+        required: true
+        schema:
+          type: string
+          description: Agrifield ID
+          title: Agrifield Id
+        description: Agrifield ID
+      responses:
+        '200':
+          description: Deletion status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+        '401':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      tags:
+      - AgriFields
+      - AgriFields
+      summary: Update of Agriculture Field
+      operationId: update_agrifield
+      security:
+      - SecurityChecker: []
+      parameters:
+      - name: org_id
+        in: path
+        required: true
+        schema:
+          type: string
+          description: Organization ID
+          title: Org Id
+        description: Organization ID
+      - name: agrifield_id
+        in: path
+        required: true
+        schema:
+          type: string
+          description: Agrifield ID
+          title: Agrifield Id
+        description: Agrifield ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AgriFieldMutationPayload'
+      responses:
+        '200':
+          description: Updated Agriculture Field detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgriField'
+        '401':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v1/organizations/{org_id}/files/{category}/upload:
+    post:
+      tags:
+      - Files
+      summary: Upload files
+      operationId: upload_files
+      security:
+      - SecurityChecker: []
+      parameters:
+      - name: org_id
+        in: path
+        required: true
+        schema:
+          type: string
+          description: Organization ID
+          title: Org Id
+        description: Organization ID
+      - name: category
+        in: path
+        required: true
+        schema:
+          type: string
+          description: Category of the files
+          title: Category
+        description: Category of the files
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Body_upload_files'
+      responses:
+        '200':
+          description: File Info
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FileInfo'
+                title: Response Upload Files
+        '401':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v1/organizations:
+    get:
+      tags:
+      - Organizations
+      summary: List organizations
+      operationId: list_organization
+      security:
+      - SecurityChecker: []
+      parameters:
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          description: Page number
+          default: 1
+          title: Page
+        description: Page number
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 1000
+          minimum: 25
+          description: Items per page
+          default: 25
+          title: Limit
+        description: Items per page
+      responses:
+        '200':
+          description: List of organizations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedResponse'
+        '401':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    post:
+      tags:
+      - Organizations
+      summary: Create Organization
+      operationId: create_organization
+      security:
+      - SecurityChecker: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrganizationCreatePayload'
+      responses:
+        '200':
+          description: Organization Info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organization'
+        '401':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v1/organizations/{org_id}:
+    get:
+      tags:
+      - Organizations
+      summary: Current Organization Info
+      operationId: get_organization
+      security:
+      - SecurityChecker: []
+      parameters:
+      - name: org_id
+        in: path
+        required: true
+        schema:
+          type: string
+          description: Organization ID
+          title: Org Id
+        description: Organization ID
+      responses:
+        '200':
+          description: Organization Info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organization'
+        '401':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      tags:
+      - Organizations
+      summary: Update Organization Info
+      operationId: update_organization
+      security:
+      - SecurityChecker: []
+      parameters:
+      - name: org_id
+        in: path
+        required: true
+        schema:
+          type: string
+          description: Organization ID
+          title: Org Id
+        description: Organization ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrganizationUpdatePayload'
+      responses:
+        '200':
+          description: Organization Info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organization'
+        '401':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v1/organizations/{org_id}/agrifields/{agrifield_id}/detections:
+    get:
+      tags:
+      - Detections
+      summary: List Detections
+      operationId: list_detections
+      security:
+      - SecurityChecker: []
+      parameters:
+      - name: org_id
+        in: path
+        required: true
+        schema:
+          type: string
+          description: Organization ID
+          title: Org Id
+        description: Organization ID
+      - name: agrifield_id
+        in: path
+        required: true
+        schema:
+          type: string
+          description: Agriculture Field ID
+          title: Agrifield Id
+        description: Agriculture Field ID
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          description: Page number
+          default: 1
+          title: Page
+        description: Page number
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 1000
+          minimum: 1
+          description: Items per page
+          default: 25
+          title: Limit
+        description: Items per page
+      responses:
+        '200':
+          description: List detections for an agriculture field
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedResponse'
+        '401':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    post:
+      tags:
+      - Detections
+      summary: Create Detection
+      operationId: create_detection
+      security:
+      - SecurityChecker: []
+      parameters:
+      - name: org_id
+        in: path
+        required: true
+        schema:
+          type: string
+          description: Organization ID
+          title: Org Id
+        description: Organization ID
+      - name: agrifield_id
+        in: path
+        required: true
+        schema:
+          type: string
+          description: Agriculture Field ID
+          title: Agrifield Id
+        description: Agriculture Field ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DetectionMutationPayload'
+      responses:
+        '200':
+          description: Detection detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Detection'
+        '401':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v1/organizations/{org_id}/agrifields/{agrifield_id}/detections/{detection_id}:
+    put:
+      tags:
+      - Detections
+      summary: Update Detection
+      operationId: update_detection
+      security:
+      - SecurityChecker: []
+      parameters:
+      - name: org_id
+        in: path
+        required: true
+        schema:
+          type: string
+          description: Organization ID
+          title: Org Id
+        description: Organization ID
+      - name: agrifield_id
+        in: path
+        required: true
+        schema:
+          type: string
+          description: Agriculture Field ID
+          title: Agrifield Id
+        description: Agriculture Field ID
+      - name: detection_id
+        in: path
+        required: true
+        schema:
+          type: string
+          description: Detection Field ID
+          title: Detection Id
+        description: Detection Field ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DetectionMutationPayload'
+      responses:
+        '200':
+          description: New Detection detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Detection'
+        '401':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      tags:
+      - Detections
+      summary: Delete Detection
+      operationId: delete_detection
+      security:
+      - SecurityChecker: []
+      parameters:
+      - name: org_id
+        in: path
+        required: true
+        schema:
+          type: string
+          description: Organization ID
+          title: Org Id
+        description: Organization ID
+      - name: agrifield_id
+        in: path
+        required: true
+        schema:
+          type: string
+          description: Agriculture Field ID
+          title: Agrifield Id
+        description: Agriculture Field ID
+      - name: detection_id
+        in: path
+        required: true
+        schema:
+          type: string
+          description: Detection Field ID
+          title: Detection Id
+        description: Detection Field ID
+      responses:
+        '200':
+          description: Deletion status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+        '401':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v1/users:
+    get:
+      tags:
+      - Users
+      summary: List Users
+      operationId: list_users
+      security:
+      - SecurityChecker: []
+      parameters:
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          description: Page number
+          default: 1
+          title: Page
+        description: Page number
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 1000
+          minimum: 25
+          description: Items per page
+          default: 25
+          title: Limit
+        description: Items per page
+      responses:
+        '200':
+          description: List of users
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedResponse'
+        '401':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v1/users/me/info:
+    get:
+      tags:
+      - Users
+      summary: Current User Info
+      operationId: user_info
+      responses:
+        '200':
+          description: User Info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - SecurityChecker: []
+  /v1/users/registration:
+    post:
+      tags:
+      - Users
+      summary: User Registration
+      operationId: register_user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreatePayload'
+        required: true
+      responses:
+        '201':
+          description: Operation status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+        '401':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v1/users/me/update:
+    put:
+      tags:
+      - Users
+      summary: Update current user
+      operationId: update_user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdatePayload'
+        required: true
+      responses:
+        '200':
+          description: User Info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - SecurityChecker: []
+  /v1/users/me/avatar:
+    post:
+      tags:
+      - Users
+      summary: User Avatar Upload
+      operationId: user_avatar_upload
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Body_user_avatar_upload'
+        required: true
+      responses:
+        '200':
+          description: User Avatar Url
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileInfo'
+        '401':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - SecurityChecker: []
+  /v1/feedbacks:
+    get:
+      tags:
+      - Feedbacks
+      summary: List Feedbacks
+      operationId: list_feebacks
+      security:
+      - SecurityChecker: []
+      parameters:
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          description: Page number
+          default: 1
+          title: Page
+        description: Page number
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 1000
+          minimum: 25
+          description: Items per page
+          default: 25
+          title: Limit
+        description: Items per page
+      responses:
+        '200':
+          description: Feedback List
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedResponse'
+        '401':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    post:
+      tags:
+      - Feedbacks
+      summary: Add Feedback
+      operationId: add_feedback
+      security:
+      - SecurityChecker: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FeedbackCreatePayload'
+      responses:
+        '200':
+          description: Feedback Info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Feedback'
+        '401':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v1/invitations:
+    post:
+      tags:
+      - Invitations
+      summary: Create Invitation
+      description: 'Create a new invitation
+
+
+        Two scenarios:
+
+        1. Standard invitation: orgId provided in payload, invitee joins that org
+
+        2. Agronomist → New Company Owner: orgId is null in payload, company owner creates org later
+
+
+        Permissions:
+
+        - Company Owner can invite managers/standard/agronomists
+
+        - Agronomist can invite company owners
+
+        - Company Manager can invite standard users'
+      operationId: create_invitation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InvitationCreatePayload'
+        required: true
+      responses:
+        '200':
+          description: Invitation created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Invitation'
+        '401':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - SecurityChecker: []
+  /v1/invitations/validate:
+    get:
+      tags:
+      - Invitations
+      summary: Validate Invitation Token
+      description: 'Validate an invitation token (public endpoint, no auth required)
+
+        Returns invitation details if valid'
+      operationId: validate_invitation_token
+      parameters:
+      - name: token
+        in: query
+        required: true
+        schema:
+          type: string
+          description: Invitation token
+          title: Token
+        description: Invitation token
+      responses:
+        '200':
+          description: Invitation validation result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvitationValidateResponse'
+        '401':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v1/invitations/accept:
+    post:
+      tags:
+      - Invitations
+      summary: Accept Invitation
+      description: 'Accept an invitation (user must be authenticated)
+
+        Adds user to organization and assigns role
+
+
+        Special case: When a company owner accepts an invitation from an agronomist,
+
+        they may need to provide orgId if they already have an organization.
+
+        If they don''t have an organization yet, they need to create one first.'
+      operationId: accept_invitation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InvitationAcceptPayload'
+        required: true
+      responses:
+        '200':
+          description: Invitation accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+        '401':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - SecurityChecker: []
+  /v1/invitations/decline:
+    post:
+      tags:
+      - Invitations
+      summary: Decline Invitation
+      description: Decline an invitation (no auth required - uses token)
+      operationId: decline_invitation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InvitationAcceptPayload'
+        required: true
+      responses:
+        '200':
+          description: Invitation declined
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+        '401':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v1/invitations/byOrg:
+    get:
+      tags:
+      - Invitations
+      summary: List Organization Invitations
+      description: 'List all invitations for an organization
+
+        Filter by status: pending, accepted, declined, expired'
+      operationId: list_organization_invitations
+      security:
+      - SecurityChecker: []
+      parameters:
+      - name: org_id
+        in: query
+        required: true
+        schema:
+          type: string
+          description: Organization ID
+          title: Org Id
+        description: Organization ID
+      - name: status
+        in: query
+        required: false
+        schema:
+          description: Filter by status
+          default: pending
+          title: Status
+          type: string
+          nullable: true
+        description: Filter by status
+      responses:
+        '200':
+          description: List of invitations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Invitation'
+                title: Response List Organization Invitations
+        '401':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v1/invitations/me:
+    get:
+      tags:
+      - Invitations
+      summary: List My Invitations
+      description: 'List all pending invitations for the authenticated user
+
+        Matches by email from Keycloak profile'
+      operationId: list_my_invitations
+      responses:
+        '200':
+          description: List of pending invitations
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Invitation'
+                type: array
+                title: Response List My Invitations
+        '401':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - SecurityChecker: []
+  /v1/invitations/{invitation_id}:
+    delete:
+      tags:
+      - Invitations
+      summary: Revoke Invitation
+      description: Revoke (soft delete) a pending invitation
+      operationId: revoke_invitation
+      security:
+      - SecurityChecker: []
+      parameters:
+      - name: invitation_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Invitation Id
+      responses:
+        '200':
+          description: Invitation revoked
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+        '401':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v1/invitations/{invitation_id}/resend:
+    post:
+      tags:
+      - Invitations
+      summary: Resend Invitation
+      description: Resend invitation email (generates new token)
+      operationId: resend_invitation
+      security:
+      - SecurityChecker: []
+      parameters:
+      - name: invitation_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Invitation Id
+      responses:
+        '200':
+          description: Invitation resent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+        '401':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    AccountTypeEnum:
+      type: string
+      enum:
+      - Admin
+      - Agronomist
+      - Standard
+      title: AccountTypeEnum
+    AgriField:
+      properties:
+        id:
+          type: string
+          title: Id
+        name:
+          type: string
+          title: Name
+        description:
+          type: string
+          title: Description
+        harvest:
+          type: string
+          title: Harvest
+        area:
+          type: number
+          title: Area
+        plants:
+          type: integer
+          title: Plants
+        map:
+          items:
+            $ref: '#/components/schemas/Point'
+          type: array
+          title: Map
+        orgId:
+          type: string
+          title: Orgid
+        creationTime:
+          type: integer
+          title: Creationtime
+        lastUpdateTime:
+          type: integer
+          title: Lastupdatetime
+      type: object
+      required:
+      - id
+      - name
+      - description
+      - harvest
+      - area
+      - plants
+      - map
+      - orgId
+      - creationTime
+      - lastUpdateTime
+      title: AgriField
+    AgriFieldMutationPayload:
+      properties:
+        name:
+          type: string
+          title: Name
+        description:
+          type: string
+          title: Description
+        map:
+          items:
+            $ref: '#/components/schemas/Point'
+          type: array
+          title: Map
+        harvest:
+          type: string
+          title: Harvest
+        area:
+          type: number
+          title: Area
+        plants:
+          type: integer
+          title: Plants
+      type: object
+      required:
+      - name
+      - description
+      - map
+      - harvest
+      - area
+      - plants
+      title: AgriFieldMutationPayload
+    Body_upload_files:
+      properties:
+        files:
+          items:
+            type: string
+            format: binary
+          type: array
+          title: Files
+          description: Multiple files as UploadFile
+      type: object
+      required:
+      - files
+      title: Body_upload_files
+    Body_user_avatar_upload:
+      properties:
+        avatar:
+          type: string
+          format: binary
+          title: Avatar
+          description: avatar as UploadFile
+      type: object
+      required:
+      - avatar
+      title: Body_user_avatar_upload
+    Contacts:
+      properties:
+        email:
+          type: string
+          title: Email
+        phone:
+          type: string
+          title: Phone
+      type: object
+      required:
+      - email
+      - phone
+      title: Contacts
+    Detection:
+      properties:
+        id:
+          type: string
+          title: Id
+        agrifieldId:
+          type: string
+          title: Agrifieldid
+        detectionTime:
+          type: integer
+          title: Detectiontime
+        type:
+          type: string
+          title: Type
+        position:
+          $ref: '#/components/schemas/Point'
+        photos:
+          items:
+            type: string
+          type: array
+          title: Photos
+        note:
+          type: string
+          title: Note
+        details:
+          type: object
+          title: Details
+        creationTime:
+          type: integer
+          title: Creationtime
+        lastUpdateTime:
+          type: integer
+          title: Lastupdatetime
+      type: object
+      required:
+      - id
+      - agrifieldId
+      - detectionTime
+      - type
+      - position
+      - photos
+      - note
+      - details
+      - creationTime
+      - lastUpdateTime
+      title: Detection
+    DetectionMutationPayload:
+      properties:
+        detectionTime:
+          type: integer
+          title: Detectiontime
+        type:
+          type: string
+          title: Type
+        position:
+          $ref: '#/components/schemas/Point'
+        photos:
+          items:
+            $ref: '#/components/schemas/FileInfo'
+          type: array
+          title: Photos
+        note:
+          type: string
+          title: Note
+        details:
+          type: object
+          title: Details
+      type: object
+      required:
+      - detectionTime
+      - type
+      - position
+      - photos
+      - note
+      - details
+      title: DetectionMutationPayload
+    ErrorResponse:
+      properties:
+        status:
+          type: integer
+          title: Status
+        detail:
+          anyOf:
+          - type: string
+          - type: object
+          title: Detail
+      type: object
+      required:
+      - status
+      - detail
+      title: ErrorResponse
+    Feedback:
+      properties:
+        id:
+          type: string
+          title: Id
+        category:
+          $ref: '#/components/schemas/FeedbackCategoryEnum'
+        feedback:
+          type: string
+          title: Feedback
+        author:
+          type: string
+          title: Author
+        creationTime:
+          type: integer
+          title: Creationtime
+        lastUpdateTime:
+          type: integer
+          title: Lastupdatetime
+      type: object
+      required:
+      - id
+      - category
+      - feedback
+      - author
+      - creationTime
+      - lastUpdateTime
+      title: Feedback
+    FeedbackCategoryEnum:
+      type: string
+      enum:
+      - New Feature
+      - Bug Fixing
+      - Improvement
+      - Other
+      title: FeedbackCategoryEnum
+    FeedbackCreatePayload:
+      properties:
+        category:
+          $ref: '#/components/schemas/FeedbackCategoryEnum'
+        feedback:
+          type: string
+          title: Feedback
+        author:
+          type: string
+          title: Author
+      type: object
+      required:
+      - category
+      - feedback
+      - author
+      title: FeedbackCreatePayload
+    FileInfo:
+      properties:
+        category:
+          type: string
+          title: Category
+        name:
+          type: string
+          title: Name
+      type: object
+      required:
+      - category
+      - name
+      title: FileInfo
+    Invitation:
+      properties:
+        id:
+          type: string
+          title: Id
+        email:
+          type: string
+          title: Email
+        orgId:
+          title: Orgid
+          type: string
+          nullable: true
+        inviterId:
+          type: string
+          title: Inviterid
+        role:
+          type: string
+          title: Role
+        token:
+          type: string
+          title: Token
+        status:
+          type: string
+          title: Status
+        expiresAt:
+          type: integer
+          title: Expiresat
+        acceptedAt:
+          title: Acceptedat
+          type: integer
+          nullable: true
+        deleted:
+          type: boolean
+          title: Deleted
+        creationTime:
+          type: integer
+          title: Creationtime
+        lastUpdateTime:
+          type: integer
+          title: Lastupdatetime
+      type: object
+      required:
+      - id
+      - email
+      - inviterId
+      - role
+      - token
+      - status
+      - expiresAt
+      - deleted
+      - creationTime
+      - lastUpdateTime
+      title: Invitation
+      description: Complete invitation model with all fields
+    InvitationAcceptPayload:
+      properties:
+        token:
+          type: string
+          title: Token
+        orgId:
+          title: Orgid
+          type: string
+          nullable: true
+      type: object
+      required:
+      - token
+      title: InvitationAcceptPayload
+      description: Payload for accepting invitation
+    InvitationCreatePayload:
+      properties:
+        email:
+          type: string
+          format: email
+          title: Email
+        role:
+          type: string
+          title: Role
+        orgId:
+          title: Orgid
+          type: string
+          nullable: true
+      type: object
+      required:
+      - email
+      - role
+      title: InvitationCreatePayload
+      description: Payload for creating an invitation
+    InvitationPublic:
+      properties:
+        id:
+          type: string
+          title: Id
+        email:
+          type: string
+          title: Email
+        role:
+          type: string
+          title: Role
+        status:
+          type: string
+          title: Status
+        organization:
+          $ref: '#/components/schemas/Organization'
+          nullable: true
+        inviter:
+          $ref: '#/components/schemas/User'
+        expiresAt:
+          type: integer
+          title: Expiresat
+        creationTime:
+          type: integer
+          title: Creationtime
+      type: object
+      required:
+      - id
+      - email
+      - role
+      - status
+      - inviter
+      - expiresAt
+      - creationTime
+      title: InvitationPublic
+      description: Public invitation info (without sensitive data like full token in some contexts)
+    InvitationValidateResponse:
+      properties:
+        valid:
+          type: boolean
+          title: Valid
+        invitation:
+          $ref: '#/components/schemas/InvitationPublic'
+          nullable: true
+        error:
+          title: Error
+          type: string
+          nullable: true
+      type: object
+      required:
+      - valid
+      title: InvitationValidateResponse
+      description: Response for token validation
+    Office:
+      properties:
+        state:
+          type: string
+          title: State
+        city:
+          type: string
+          title: City
+      type: object
+      required:
+      - state
+      - city
+      title: Office
+    Organization:
+      properties:
+        orgId:
+          type: string
+          title: Orgid
+        name:
+          type: string
+          title: Name
+        piva:
+          type: string
+          title: Piva
+        rapresentative:
+          type: string
+          title: Rapresentative
+        rapresentativeContact:
+          type: string
+          title: Rapresentativecontact
+        legalForm:
+          type: string
+          title: Legalform
+        office:
+          $ref: '#/components/schemas/Office'
+        logo:
+          type: string
+          title: Logo
+        cover:
+          type: string
+          title: Cover
+        contacts:
+          $ref: '#/components/schemas/Contacts'
+        creationTime:
+          type: integer
+          title: Creationtime
+        lastUpdateTime:
+          type: integer
+          title: Lastupdatetime
+      type: object
+      required:
+      - orgId
+      - name
+      - piva
+      - rapresentative
+      - rapresentativeContact
+      - legalForm
+      - office
+      - logo
+      - cover
+      - contacts
+      - creationTime
+      - lastUpdateTime
+      title: Organization
+    OrganizationCreatePayload:
+      properties:
+        name:
+          type: string
+          title: Name
+        piva:
+          type: string
+          title: Piva
+        rapresentative:
+          type: string
+          title: Rapresentative
+        rapresentativeContact:
+          type: string
+          title: Rapresentativecontact
+        legalForm:
+          type: string
+          title: Legalform
+        office:
+          $ref: '#/components/schemas/Office'
+        contacts:
+          $ref: '#/components/schemas/Contacts'
+      type: object
+      required:
+      - name
+      - piva
+      - rapresentative
+      - rapresentativeContact
+      - legalForm
+      - office
+      - contacts
+      title: OrganizationCreatePayload
+    OrganizationUpdatePayload:
+      properties:
+        rapresentative:
+          title: Rapresentative
+          type: string
+          nullable: true
+        rapresentativeContact:
+          title: Rapresentativecontact
+          type: string
+          nullable: true
+        legalForm:
+          title: Legalform
+          type: string
+          nullable: true
+        office:
+          $ref: '#/components/schemas/Office'
+          nullable: true
+        logo:
+          $ref: '#/components/schemas/FileInfo'
+          nullable: true
+        cover:
+          $ref: '#/components/schemas/FileInfo'
+          nullable: true
+        contacts:
+          $ref: '#/components/schemas/Contacts'
+          nullable: true
+      type: object
+      title: OrganizationUpdatePayload
+    PaginatedResponse:
+      properties:
+        total:
+          type: integer
+          title: Total
+        page:
+          type: integer
+          title: Page
+        limit:
+          type: integer
+          title: Limit
+        data:
+          items: {}
+          type: array
+          title: Data
+      type: object
+      required:
+      - total
+      - page
+      - limit
+      - data
+      title: PaginatedResponse
+    Point:
+      properties:
+        lng:
+          type: number
+          title: Lng
+        lat:
+          type: number
+          title: Lat
+      type: object
+      required:
+      - lng
+      - lat
+      title: Point
+    StatusResponse:
+      properties:
+        status:
+          type: integer
+          title: Status
+        message:
+          type: string
+          title: Message
+      type: object
+      required:
+      - status
+      - message
+      title: StatusResponse
+    User:
+      properties:
+        id:
+          type: string
+          title: Id
+        firstName:
+          type: string
+          title: Firstname
+        lastName:
+          type: string
+          title: Lastname
+        email:
+          type: string
+          title: Email
+        emailVerified:
+          type: boolean
+          title: Emailverified
+        enabled:
+          type: boolean
+          title: Enabled
+        accountType:
+          $ref: '#/components/schemas/AccountTypeEnum'
+        phone:
+          type: string
+          title: Phone
+        piva:
+          type: string
+          title: Piva
+        avatar:
+          type: string
+          title: Avatar
+        organizations:
+          items:
+            $ref: '#/components/schemas/UserOrgananizationMembership'
+          type: array
+          title: Organizations
+          default: []
+        creationTime:
+          type: integer
+          title: Creationtime
+      type: object
+      required:
+      - id
+      - firstName
+      - lastName
+      - email
+      - emailVerified
+      - enabled
+      - accountType
+      - phone
+      - piva
+      - avatar
+      - creationTime
+      title: User
+    UserCreatePayload:
+      properties:
+        firstName:
+          type: string
+          title: Firstname
+        lastName:
+          type: string
+          title: Lastname
+        email:
+          type: string
+          title: Email
+        accountType:
+          $ref: '#/components/schemas/AccountTypeEnum'
+        phone:
+          type: string
+          title: Phone
+        piva:
+          title: Piva
+          type: string
+          nullable: true
+        organization:
+          $ref: '#/components/schemas/OrganizationCreatePayload'
+          nullable: true
+      type: object
+      required:
+      - firstName
+      - lastName
+      - email
+      - accountType
+      - phone
+      title: UserCreatePayload
+    UserOrgananizationMembership:
+      properties:
+        id:
+          type: string
+          title: Id
+        name:
+          type: string
+          title: Name
+        roles:
+          items:
+            type: string
+          type: array
+          title: Roles
+      type: object
+      required:
+      - id
+      - name
+      - roles
+      title: UserOrgananizationMembership
+    UserUpdatePayload:
+      properties:
+        firstName:
+          title: Firstname
+          type: string
+          nullable: true
+        lastName:
+          title: Lastname
+          type: string
+          nullable: true
+        phone:
+          title: Phone
+          type: string
+          nullable: true
+      type: object
+      title: UserUpdatePayload
+  securitySchemes:
+    SecurityChecker:
+      type: http
+      scheme: bearer
