@@ -15,13 +15,13 @@ export function CompanyDetail() {
       menuEntries = [
         {
           id: "fields",
-          icon: "ifab_grid",
+          icon: "grid",
           text: "Campi dell'azienda",
           path: `/companies/${companyId}/fields`,
         },
         {
           id: "detections",
-          icon: "ifab_checklist",
+          icon: "checklist",
           text: "Lista dei rilevamenti",
           path: `/companies/${companyId}/detections`,
         },
@@ -33,7 +33,7 @@ export function CompanyDetail() {
         },
         {
           id: "settings",
-          icon: "ifab_cog",
+          icon: "cog",
           text: "Impostazioni azienda",
           path: `/companies/${companyId}/settings`,
         },
@@ -41,7 +41,7 @@ export function CompanyDetail() {
       menuBottomEntries = [
         {
           id: "feedback",
-          icon: "ifab_baloon",
+          icon: "baloon",
           text: "Invia Feedback",
           path: `/companies/${companyId}/new-feedback`,
         },
@@ -53,7 +53,7 @@ export function CompanyDetail() {
         },
         {
           id: "user",
-          icon: "ifab_users",
+          icon: "users",
           text: "Profilo Utente",
           path: `/companies/${companyId}/profile`,
         },

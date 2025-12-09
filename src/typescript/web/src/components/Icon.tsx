@@ -1,327 +1,193 @@
-/*
-archive
-dbs
-diamond
-new
-pages
-ws
-list
-speed
-tool
-chart
-db
-up
-gear
-rocket
-dark
-*/
-
-// New icons
-import icon_ifab_dashboard_b from "../assets/images/icons/icon-ifab-dashboard-b.svg";
-import icon_ifab_dashboard_w from "../assets/images/icons/icon-ifab-dashboard-w.svg";
-import icon_ifab_dashboard_y from "../assets/images/icons/icon-ifab-dashboard-y.svg";
-import icon_ifab_checklist_b from "../assets/images/icons/icon-ifab-checklist-b.svg";
-import icon_ifab_checklist_w from "../assets/images/icons/icon-ifab-checklist-w.svg";
-import icon_ifab_checklist_y from "../assets/images/icons/icon-ifab-checklist-y.svg";
-import icon_ifab_alert_b from "../assets/images/icons/icon-ifab-alert-b.svg";
-import icon_ifab_alert_w from "../assets/images/icons/icon-ifab-alert-w.svg";
-import icon_ifab_alert_y from "../assets/images/icons/icon-ifab-alert-y.svg";
-import icon_ifab_enlarge_b from "../assets/images/icons/icon-ifab-enlarge-b.svg";
-import icon_ifab_enlarge_w from "../assets/images/icons/icon-ifab-enlarge-w.svg";
-import icon_ifab_enlarge_y from "../assets/images/icons/icon-ifab-enlarge-y.svg";
-import icon_ifab_user_b from "../assets/images/icons/icon-ifab-user-b.svg";
-import icon_ifab_user_w from "../assets/images/icons/icon-ifab-user-w.svg";
-import icon_ifab_user_y from "../assets/images/icons/icon-ifab-user-y.svg";
-import icon_ifab_users_b from "../assets/images/icons/icon-ifab-users-b.svg";
-import icon_ifab_users_w from "../assets/images/icons/icon-ifab-users-w.svg";
-import icon_ifab_users_y from "../assets/images/icons/icon-ifab-users-y.svg";
-import icon_ifab_pin_b from "../assets/images/icons/icon-ifab-pin-b.svg";
-import icon_ifab_pin_w from "../assets/images/icons/icon-ifab-pin-w.svg";
-import icon_ifab_pin_y from "../assets/images/icons/icon-ifab-pin-y.svg";
-import icon_ifab_baloon_b from "../assets/images/icons/icon-ifab-baloon-b.svg";
-import icon_ifab_baloon_w from "../assets/images/icons/icon-ifab-baloon-w.svg";
-import icon_ifab_baloon_y from "../assets/images/icons/icon-ifab-baloon-y.svg";
-import icon_ifab_grid_b from "../assets/images/icons/icon-ifab-grid-b.svg";
-import icon_ifab_grid_w from "../assets/images/icons/icon-ifab-grid-w.svg";
-import icon_ifab_grid_y from "../assets/images/icons/icon-ifab-grid-y.svg";
-import icon_ifab_wheat_b from "../assets/images/icons/icon-ifab-wheat-b.svg";
-import icon_ifab_wheat_w from "../assets/images/icons/icon-ifab-wheat-w.svg";
-import icon_ifab_wheat_y from "../assets/images/icons/icon-ifab-wheat-y.svg";
-import icon_ifab_size_b from "../assets/images/icons/icon-ifab-size-b.svg";
-import icon_ifab_size_w from "../assets/images/icons/icon-ifab-size-w.svg";
-import icon_ifab_size_y from "../assets/images/icons/icon-ifab-size-y.svg";
-import icon_ifab_asterisk_b from "../assets/images/icons/icon-ifab-asterisk-b.svg";
-import icon_ifab_asterisk_w from "../assets/images/icons/icon-ifab-asterisk-w.svg";
-import icon_ifab_asterisk_y from "../assets/images/icons/icon-ifab-asterisk-y.svg";
-import icon_ifab_larr_b from "../assets/images/icons/icon-ifab-larr-b.svg";
-import icon_ifab_larr_w from "../assets/images/icons/icon-ifab-larr-w.svg";
-import icon_ifab_larr_y from "../assets/images/icons/icon-ifab-larr-y.svg";
-import icon_ifab_x_b from "../assets/images/icons/icon-ifab-x-b.svg";
-import icon_ifab_x_w from "../assets/images/icons/icon-ifab-x-w.svg";
-import icon_ifab_x_y from "../assets/images/icons/icon-ifab-x-y.svg";
-import icon_ifab_uarr_b from "../assets/images/icons/icon-ifab-uarr-b.svg";
-import icon_ifab_uarr_w from "../assets/images/icons/icon-ifab-uarr-w.svg";
-import icon_ifab_uarr_y from "../assets/images/icons/icon-ifab-uarr-y.svg";
-import icon_ifab_home_b from "../assets/images/icons/icon-ifab-home-b.svg";
-import icon_ifab_home_w from "../assets/images/icons/icon-ifab-home-w.svg";
-import icon_ifab_home_y from "../assets/images/icons/icon-ifab-home-y.svg";
-import icon_ifab_cog_b from "../assets/images/icons/icon-ifab-cog-b.svg";
-import icon_ifab_cog_w from "../assets/images/icons/icon-ifab-cog-w.svg";
-import icon_ifab_cog_y from "../assets/images/icons/icon-ifab-cog-y.svg";
-import icon_ifab_bug_b from "../assets/images/icons/icon-ifab-bug-b.svg";
-import icon_ifab_bug_w from "../assets/images/icons/icon-ifab-bug-w.svg";
-import icon_ifab_bug_y from "../assets/images/icons/icon-ifab-bug-y.svg";
-import icon_ifab_spots_b from "../assets/images/icons/icon-ifab-spots-b.svg";
-import icon_ifab_spots_w from "../assets/images/icons/icon-ifab-spots-w.svg";
-import icon_ifab_spots_y from "../assets/images/icons/icon-ifab-spots-y.svg";
-
-// Legacy icons
-import icon_archive_n from "../assets/images/icons/icon-archive-n.svg";
-import icon_archive_s from "../assets/images/icons/icon-archive-s.svg";
-import icon_archive_i from "../assets/images/icons/icon-archive-i.svg";
-import icon_dbs_n from "../assets/images/icons/icon-dbs-n.svg";
-import icon_dbs_s from "../assets/images/icons/icon-dbs-s.svg";
-import icon_dbs_i from "../assets/images/icons/icon-dbs-i.svg";
-import icon_diamond_n from "../assets/images/icons/icon-diamond-n.svg";
-import icon_diamond_s from "../assets/images/icons/icon-diamond-s.svg";
-import icon_diamond_i from "../assets/images/icons/icon-diamond-i.svg";
-import icon_new_n from "../assets/images/icons/icon-new-n.svg";
-import icon_new_s from "../assets/images/icons/icon-new-s.svg";
-import icon_new_i from "../assets/images/icons/icon-new-i.svg";
-import icon_pages_n from "../assets/images/icons/icon-pages-n.svg";
-import icon_pages_s from "../assets/images/icons/icon-pages-s.svg";
-import icon_pages_i from "../assets/images/icons/icon-pages-i.svg";
-import icon_ws_n from "../assets/images/icons/icon-ws-n.svg";
-import icon_ws_s from "../assets/images/icons/icon-ws-s.svg";
-import icon_ws_i from "../assets/images/icons/icon-ws-i.svg";
-import icon_list_n from "../assets/images/icons/icon-list-n.svg";
-import icon_list_s from "../assets/images/icons/icon-list-s.svg";
-import icon_list_i from "../assets/images/icons/icon-list-i.svg";
-import icon_speed_n from "../assets/images/icons/icon-speed-n.svg";
-import icon_speed_s from "../assets/images/icons/icon-speed-s.svg";
-import icon_speed_i from "../assets/images/icons/icon-speed-i.svg";
-import icon_tool_n from "../assets/images/icons/icon-tool-n.svg";
-import icon_tool_s from "../assets/images/icons/icon-tool-s.svg";
-import icon_tool_i from "../assets/images/icons/icon-tool-i.svg";
-import icon_chart_n from "../assets/images/icons/icon-chart-n.svg";
-import icon_chart_s from "../assets/images/icons/icon-chart-s.svg";
-import icon_chart_i from "../assets/images/icons/icon-chart-i.svg";
-import icon_db_n from "../assets/images/icons/icon-db-n.svg";
-import icon_db_s from "../assets/images/icons/icon-db-s.svg";
-import icon_db_i from "../assets/images/icons/icon-db-i.svg";
-import icon_up_n from "../assets/images/icons/icon-up-n.svg";
-import icon_up_s from "../assets/images/icons/icon-up-s.svg";
-import icon_up_i from "../assets/images/icons/icon-up-i.svg";
-import icon_gear_n from "../assets/images/icons/icon-gear-n.svg";
-import icon_gear_s from "../assets/images/icons/icon-gear-s.svg";
-import icon_gear_i from "../assets/images/icons/icon-gear-i.svg";
-import icon_rocket_n from "../assets/images/icons/icon-rocket-n.svg";
-import icon_rocket_s from "../assets/images/icons/icon-rocket-s.svg";
-import icon_rocket_i from "../assets/images/icons/icon-rocket-i.svg";
-import icon_dark_s from "../assets/images/icons/icon-dark-s.svg";
-import icon_dark_i from "../assets/images/icons/icon-dark-i.svg";
-import icon_darkalt_s from "../assets/images/icons/icon-darkalt-s.svg";
-import icon_darkalt_i from "../assets/images/icons/icon-darkalt-i.svg";
-import icon_cube_n from "../assets/images/icons/icon-cube-n.svg";
-import icon_cube_s from "../assets/images/icons/icon-cube-s.svg";
-import icon_cube_i from "../assets/images/icons/icon-cube-i.svg";
-import icon_logout_s from "../assets/images/icons/icon-logout-s.svg";
-import icon_logout_i from "../assets/images/icons/icon-logout-i.svg";
-import icon_synch_s from "../assets/images/icons/icon-synch-s.svg";
-import icon_synch_i from "../assets/images/icons/icon-synch-i.svg";
-import icon_pull_s from "../assets/images/icons/icon-pull-s.svg";
-import icon_pull_i from "../assets/images/icons/icon-pull-i.svg";
-import icon_stop_s from "../assets/images/icons/icon-stop-s.svg";
-import icon_stop_i from "../assets/images/icons/icon-stop-i.svg";
-
-import icon_test_n from "../assets/images/icons/icon-test-n.svg";
-import icon_test_s from "../assets/images/icons/icon-test-s.svg";
-import icon_test_i from "../assets/images/icons/icon-test-i.svg";
+import alert_b from "../assets/images/icons/alert-b.svg";
+import alert_w from "../assets/images/icons/alert-w.svg";
+import alert_y from "../assets/images/icons/alert-y.svg";
+import asterisk_b from "../assets/images/icons/asterisk-b.svg";
+import asterisk_w from "../assets/images/icons/asterisk-w.svg";
+import asterisk_y from "../assets/images/icons/asterisk-y.svg";
+import bacteria_b from "../assets/images/icons/bacteria-b.svg";
+import bacteria_w from "../assets/images/icons/bacteria-w.svg";
+import bacteria_y from "../assets/images/icons/bacteria-y.svg";
+import baloon_b from "../assets/images/icons/baloon-b.svg";
+import baloon_w from "../assets/images/icons/baloon-w.svg";
+import baloon_y from "../assets/images/icons/baloon-y.svg";
+import barn_b from "../assets/images/icons/barn-b.svg";
+import barn_w from "../assets/images/icons/barn-w.svg";
+import barn_y from "../assets/images/icons/barn-y.svg";
+import bug_b from "../assets/images/icons/bug-b.svg";
+import bug_w from "../assets/images/icons/bug-w.svg";
+import bug_y from "../assets/images/icons/bug-y.svg";
+import checklist_b from "../assets/images/icons/checklist-b.svg";
+import checklist_w from "../assets/images/icons/checklist-w.svg";
+import checklist_y from "../assets/images/icons/checklist-y.svg";
+import cog_b from "../assets/images/icons/cog-b.svg";
+import cog_w from "../assets/images/icons/cog-w.svg";
+import cog_y from "../assets/images/icons/cog-y.svg";
+import dashboard_b from "../assets/images/icons/dashboard-b.svg";
+import dashboard_w from "../assets/images/icons/dashboard-w.svg";
+import dashboard_y from "../assets/images/icons/dashboard-y.svg";
+import enlarge_b from "../assets/images/icons/enlarge-b.svg";
+import enlarge_w from "../assets/images/icons/enlarge-w.svg";
+import enlarge_y from "../assets/images/icons/enlarge-y.svg";
+import grid_b from "../assets/images/icons/grid-b.svg";
+import grid_w from "../assets/images/icons/grid-w.svg";
+import grid_y from "../assets/images/icons/grid-y.svg";
+import home_b from "../assets/images/icons/home-b.svg";
+import home_w from "../assets/images/icons/home-w.svg";
+import home_y from "../assets/images/icons/home-y.svg";
+import larr_b from "../assets/images/icons/larr-b.svg";
+import larr_w from "../assets/images/icons/larr-w.svg";
+import larr_y from "../assets/images/icons/larr-y.svg";
+import pin_b from "../assets/images/icons/pin-b.svg";
+import pin_w from "../assets/images/icons/pin-w.svg";
+import pin_y from "../assets/images/icons/pin-y.svg";
+import size_b from "../assets/images/icons/size-b.svg";
+import size_w from "../assets/images/icons/size-w.svg";
+import size_y from "../assets/images/icons/size-y.svg";
+import spots_b from "../assets/images/icons/spots-b.svg";
+import spots_w from "../assets/images/icons/spots-w.svg";
+import spots_y from "../assets/images/icons/spots-y.svg";
+import sprout_b from "../assets/images/icons/sprout-b.svg";
+import sprout_w from "../assets/images/icons/sprout-w.svg";
+import sprout_y from "../assets/images/icons/sprout-y.svg";
+import uarr_b from "../assets/images/icons/uarr-b.svg";
+import uarr_w from "../assets/images/icons/uarr-w.svg";
+import uarr_y from "../assets/images/icons/uarr-y.svg";
+import user_b from "../assets/images/icons/user-b.svg";
+import user_w from "../assets/images/icons/user-w.svg";
+import user_y from "../assets/images/icons/user-y.svg";
+import users_b from "../assets/images/icons/users-b.svg";
+import users_w from "../assets/images/icons/users-w.svg";
+import users_y from "../assets/images/icons/users-y.svg";
+import wheat_b from "../assets/images/icons/wheat-b.svg";
+import wheat_w from "../assets/images/icons/wheat-w.svg";
+import wheat_y from "../assets/images/icons/wheat-y.svg";
+import x_b from "../assets/images/icons/x-b.svg";
+import x_w from "../assets/images/icons/x-w.svg";
+import x_y from "../assets/images/icons/x-y.svg";
 
 const icons = {
-  ifab_dashboard: {
-    normal: { light: icon_ifab_dashboard_w, dark: icon_ifab_dashboard_b },
-    selected: { light: icon_ifab_dashboard_y, dark: icon_ifab_dashboard_b },
+  alert: {
+    white: alert_w,
+    black: alert_b,
+    yellow: alert_y,
   },
-  ifab_checklist: {
-    normal: { light: icon_ifab_checklist_w, dark: icon_ifab_checklist_b },
-    selected: { light: icon_ifab_checklist_y, dark: icon_ifab_checklist_b },
+  asterisk: {
+    white: asterisk_w,
+    black: asterisk_b,
+    yellow: asterisk_y,
   },
-  ifab_alert: {
-    normal: { light: icon_ifab_alert_w, dark: icon_ifab_alert_b },
-    selected: { light: icon_ifab_alert_y, dark: icon_ifab_alert_b },
+  bacteria: {
+    white: bacteria_w,
+    black: bacteria_b,
+    yellow: bacteria_y,
   },
-  ifab_enlarge: {
-    normal: { light: icon_ifab_enlarge_w, dark: icon_ifab_enlarge_b },
-    selected: { light: icon_ifab_enlarge_y, dark: icon_ifab_enlarge_b },
+  baloon: {
+    white: baloon_w,
+    black: baloon_b,
+    yellow: baloon_y,
   },
-  ifab_user: {
-    normal: { light: icon_ifab_user_w, dark: icon_ifab_user_b },
-    selected: { light: icon_ifab_user_y, dark: icon_ifab_user_b },
+  barn: {
+    white: barn_w,
+    black: barn_b,
+    yellow: barn_y,
   },
-  ifab_users: {
-    normal: { light: icon_ifab_users_w, dark: icon_ifab_users_b },
-    selected: { light: icon_ifab_users_y, dark: icon_ifab_users_b },
+  bug: {
+    white: bug_w,
+    black: bug_b,
+    yellow: bug_y,
   },
-  ifab_pin: {
-    normal: { light: icon_ifab_pin_w, dark: icon_ifab_pin_b },
-    selected: { light: icon_ifab_pin_y, dark: icon_ifab_pin_b },
+  checklist: {
+    white: checklist_w,
+    black: checklist_b,
+    yellow: checklist_y,
   },
-  ifab_baloon: {
-    normal: { light: icon_ifab_baloon_w, dark: icon_ifab_baloon_b },
-    selected: { light: icon_ifab_baloon_y, dark: icon_ifab_baloon_b },
+  cog: {
+    white: cog_w,
+    black: cog_b,
+    yellow: cog_y,
   },
-  ifab_grid: {
-    normal: { light: icon_ifab_grid_w, dark: icon_ifab_grid_b },
-    selected: { light: icon_ifab_grid_y, dark: icon_ifab_grid_b },
+  dashboard: {
+    white: dashboard_w,
+    black: dashboard_b,
+    yellow: dashboard_y,
   },
-  ifab_larr: {
-    normal: { light: icon_ifab_larr_w, dark: icon_ifab_larr_b },
-    selected: { light: icon_ifab_larr_y, dark: icon_ifab_larr_b },
+  enlarge: {
+    white: enlarge_w,
+    black: enlarge_b,
+    yellow: enlarge_y,
   },
-  ifab_x: {
-    normal: { light: icon_ifab_x_w, dark: icon_ifab_x_b },
-    selected: { light: icon_ifab_x_y, dark: icon_ifab_x_b },
+  grid: {
+    white: grid_w,
+    black: grid_b,
+    yellow: grid_y,
   },
-  ifab_uarr: {
-    normal: { light: icon_ifab_uarr_w, dark: icon_ifab_uarr_b },
-    selected: { light: icon_ifab_uarr_y, dark: icon_ifab_uarr_b },
+  home: {
+    white: home_w,
+    black: home_b,
+    yellow: home_y,
   },
-  ifab_home: {
-    normal: { light: icon_ifab_home_w, dark: icon_ifab_home_b },
-    selected: { light: icon_ifab_home_y, dark: icon_ifab_home_b },
+  larr: {
+    white: larr_w,
+    black: larr_b,
+    yellow: larr_y,
   },
-  ifab_cog: {
-    normal: { light: icon_ifab_cog_w, dark: icon_ifab_cog_b },
-    selected: { light: icon_ifab_cog_y, dark: icon_ifab_cog_b },
+  pin: {
+    white: pin_w,
+    black: pin_b,
+    yellow: pin_y,
   },
-  ifab_bug: {
-    normal: { light: icon_ifab_bug_w, dark: icon_ifab_bug_b },
-    selected: { light: icon_ifab_bug_y, dark: icon_ifab_bug_b },
+  size: {
+    white: size_w,
+    black: size_b,
+    yellow: size_y,
   },
-  ifab_spots: {
-    normal: { light: icon_ifab_spots_w, dark: icon_ifab_spots_b },
-    selected: { light: icon_ifab_spots_y, dark: icon_ifab_spots_b },
+  spots: {
+    white: spots_w,
+    black: spots_b,
+    yellow: spots_y,
   },
-  // these are swapped for usage on white bg, needs fix
-  ifab_size: {
-    normal: { light: icon_ifab_size_b, dark: icon_ifab_size_w },
-    selected: { light: icon_ifab_size_y, dark: icon_ifab_size_b },
+  sprout: {
+    white: sprout_w,
+    black: sprout_b,
+    yellow: sprout_y,
   },
-  ifab_wheat: {
-    normal: { light: icon_ifab_wheat_b, dark: icon_ifab_wheat_w },
-    selected: { light: icon_ifab_wheat_y, dark: icon_ifab_wheat_b },
+  uarr: {
+    white: uarr_w,
+    black: uarr_b,
+    yellow: uarr_y,
   },
-  ifab_asterisk: {
-    normal: { light: icon_ifab_asterisk_b, dark: icon_ifab_asterisk_w },
-    selected: { light: icon_ifab_asterisk_y, dark: icon_ifab_asterisk_b },
+  user: {
+    white: user_w,
+    black: user_b,
+    yellow: user_y,
   },
-
-  // ---------------------------------
-  // Legacy
-  // ---------------------------------
-
-  archive: {
-    normal: { light: icon_archive_n, dark: icon_archive_i },
-    selected: { light: icon_archive_s, dark: icon_archive_s },
+  users: {
+    white: users_w,
+    black: users_b,
+    yellow: users_y,
   },
-  dbs: {
-    normal: { light: icon_dbs_n, dark: icon_dbs_i },
-    selected: { light: icon_dbs_s, dark: icon_dbs_s },
+  wheat: {
+    white: wheat_w,
+    black: wheat_b,
+    yellow: wheat_y,
   },
-  diamond: {
-    normal: { light: icon_diamond_n, dark: icon_diamond_i },
-    selected: { light: icon_diamond_s, dark: icon_diamond_s },
-  },
-  new: {
-    normal: { light: icon_new_n, dark: icon_new_i },
-    selected: { light: icon_new_s, dark: icon_new_s },
-  },
-  pages: {
-    normal: { light: icon_pages_n, dark: icon_pages_i },
-    selected: { light: icon_pages_s, dark: icon_pages_s },
-  },
-  ws: {
-    normal: { light: icon_ws_n, dark: icon_ws_i },
-    selected: { light: icon_ws_s, dark: icon_ws_s },
-  },
-  list: {
-    normal: { light: icon_list_n, dark: icon_list_i },
-    selected: { light: icon_list_s, dark: icon_list_s },
-  },
-  speed: {
-    normal: { light: icon_speed_n, dark: icon_speed_i },
-    selected: { light: icon_speed_s, dark: icon_speed_s },
-  },
-  tool: {
-    normal: { light: icon_tool_n, dark: icon_tool_i },
-    selected: { light: icon_tool_s, dark: icon_tool_s },
-  },
-  chart: {
-    normal: { light: icon_chart_n, dark: icon_chart_i },
-    selected: { light: icon_chart_s, dark: icon_chart_s },
-  },
-  db: {
-    normal: { light: icon_db_n, dark: icon_db_i },
-    selected: { light: icon_db_s, dark: icon_db_s },
-  },
-  up: {
-    normal: { light: icon_up_n, dark: icon_up_i },
-    selected: { light: icon_up_s, dark: icon_up_s },
-  },
-  gear: {
-    normal: { light: icon_gear_n, dark: icon_gear_i },
-    selected: { light: icon_gear_s, dark: icon_gear_s },
-  },
-  rocket: {
-    normal: { light: icon_rocket_n, dark: icon_rocket_i },
-    selected: { light: icon_rocket_s, dark: icon_rocket_s },
-  },
-  dark: {
-    normal: { light: icon_dark_i, dark: icon_dark_i },
-    selected: { light: icon_dark_s, dark: icon_dark_s },
-  },
-  darkalt: {
-    normal: { light: icon_darkalt_i, dark: icon_darkalt_i },
-    selected: { light: icon_darkalt_s, dark: icon_darkalt_s },
-  },
-  cube: {
-    normal: { light: icon_cube_n, dark: icon_cube_i },
-    selected: { light: icon_cube_s, dark: icon_cube_s },
-  },
-  logout: {
-    normal: { light: icon_logout_i, dark: icon_logout_i },
-    selected: { light: icon_logout_s, dark: icon_logout_s },
-  },
-  synch: {
-    normal: { light: icon_synch_i, dark: icon_synch_i },
-    selected: { light: icon_synch_s, dark: icon_synch_s },
-  },
-  pull: {
-    normal: { light: icon_pull_i, dark: icon_pull_i },
-    selected: { light: icon_pull_s, dark: icon_pull_s },
-  },
-  stop: {
-    normal: { light: icon_stop_i, dark: icon_stop_i },
-    selected: { light: icon_stop_s, dark: icon_stop_s },
-  },
-
-  test: {
-    normal: { light: icon_test_n, dark: icon_test_i },
-    selected: { light: icon_test_s, dark: icon_test_s },
+  x: {
+    white: x_w,
+    black: x_b,
+    yellow: x_y,
   },
 };
 
 export type IconName = keyof typeof icons;
-export type IconState = "normal" | "selected";
+export type IconColor = "white" | "black" | "yellow";
 
 interface IconProps {
   iconName: IconName;
-  state: IconState;
+  color: IconColor;
 }
 
-function Icon({ iconName, state }: IconProps) {
-  const icon = icons[iconName][state]["light"];
+function Icon({ iconName, color }: IconProps) {
+  const icon = icons[iconName][color];
   return <img className="icon" src={icon} alt={"icon " + iconName} />;
 }
 

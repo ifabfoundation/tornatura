@@ -10,9 +10,9 @@ import { useNavigate } from "react-router-dom";
 import { MenuItemEntry } from "../../../components/Sidebar";
 import { SidebarActions } from "../../sidebar/state/sidebar-slice";
 
-
-const PhoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
-const PivaRegExp = /^[1-7]\d{6}\d{3,4}[0-9]$/
+const PhoneRegExp =
+  /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
+const PivaRegExp = /^[1-7]\d{6}\d{3,4}[0-9]$/;
 
 export function CompanyForm() {
   const dispatch = useAppDispatch();
@@ -29,7 +29,7 @@ export function CompanyForm() {
     menuEntries = [
       {
         id: "companies",
-        icon: "ifab_grid",
+        icon: "grid",
         text: "Aziende gestite",
         path: "/companies",
       },
@@ -38,15 +38,14 @@ export function CompanyForm() {
     menuBottomEntries = [
       {
         id: "feedback",
-        icon: "ifab_baloon",
+        icon: "baloon",
         text: "Invia Feedback",
         path: "/new-feedback",
       },
     ];
-    
+
     dispatch(SidebarActions.setMenuEntriesAction(menuEntries));
     dispatch(SidebarActions.setMenuBottomEntriesAction(menuBottomEntries));
-    
   }, []);
 
   const formik = useFormik({
@@ -63,9 +62,13 @@ export function CompanyForm() {
     },
     validationSchema: Yup.object({
       name: Yup.string().required("Campo obbligatorio"),
-      piva: Yup.string().matches(PivaRegExp, "Partita IVA non valida").required("Campo obbligatorio"),
+      piva: Yup.string()
+        .matches(PivaRegExp, "Partita IVA non valida")
+        .required("Campo obbligatorio"),
       email: Yup.string().email("Email non valida").required("Campo obbligatorio"),
-      phone: Yup.string().matches(PhoneRegExp, "Telefono non valido").required("Campo obbligatorio"),
+      phone: Yup.string()
+        .matches(PhoneRegExp, "Telefono non valido")
+        .required("Campo obbligatorio"),
       // legalForm: Yup.string().required("Campo obbligatorio"),
       // rappresentative: Yup.string().required("Campo obbligatorio"),
       // rappresentativeContact: Yup.string().required("Campo obbligatorio"),
@@ -77,7 +80,7 @@ export function CompanyForm() {
         legalForm: values.legalForm,
         office: {
           state: values.state,
-          city: values.city
+          city: values.city,
         },
         rapresentative: values.rappresentative,
         rapresentativeContact: values.rappresentativeContact,

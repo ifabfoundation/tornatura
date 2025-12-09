@@ -26,7 +26,7 @@ export function CompaniesList() {
     menuEntries = [
       {
         id: "companies",
-        icon: "ifab_grid",
+        icon: "grid",
         text: "Aziende gestite",
         path: "/companies",
       },
@@ -35,7 +35,7 @@ export function CompaniesList() {
     menuBottomEntries = [
       {
         id: "feedback",
-        icon: "ifab_baloon",
+        icon: "baloon",
         text: "Invia Feedback",
         path: "/new-feedback",
       },
@@ -47,15 +47,14 @@ export function CompaniesList() {
       },
       {
         id: "user",
-        icon: "ifab_users",
+        icon: "users",
         text: "Profilo Utente",
         path: "/profile",
       },
     ];
-    
+
     dispatch(SidebarActions.setMenuEntriesAction(menuEntries));
     dispatch(SidebarActions.setMenuBottomEntriesAction(menuBottomEntries));
-    
   }, []);
 
   const handleCompanyClick = (companyId: string) => {
@@ -70,18 +69,20 @@ export function CompaniesList() {
             <Col md={6} xl={4} key={index} style={{ display: "flex", alignItems: "stretch" }}>
               <Card className="with-hover-effect" onClick={() => handleCompanyClick(company.orgId)}>
                 <Card.Header>
-                  {company.logo ? <img src={company.logo}  width="30px"  height="30px"/> :
-                  <div className="round-thumb" style={{ backgroundImage: company.logo }}></div>}
+                  {company.logo ? (
+                    <img src={company.logo} width="30px" height="30px" />
+                  ) : (
+                    <div className="round-thumb" style={{ backgroundImage: company.logo }}></div>
+                  )}
                   <span style={{ marginLeft: 10 }}>{company.name}</span>
                 </Card.Header>
-                <Card.Img
-                  variant="top"
-                  src={company.cover}
-                />
-                {<div className="llist-group">
-                  <div className="llist-group-item">{company.contacts.email}</div>
-                  <div className="llist-group-item">{company.contacts.phone}</div>
-                </div>}
+                <Card.Img variant="top" src={company.cover} />
+                {
+                  <div className="llist-group">
+                    <div className="llist-group-item">{company.contacts.email}</div>
+                    <div className="llist-group-item">{company.contacts.phone}</div>
+                  </div>
+                }
               </Card>
             </Col>
           );

@@ -19,33 +19,33 @@ export function FieldDetail() {
     menuEntries = [
       {
         id: "fields",
-        icon: "ifab_grid",
+        icon: "grid",
         text: "Dashboard campo",
         path: `/companies/${companyId}/fields/${fieldId}`,
       },
       {
         id: "detections",
-        icon: "ifab_checklist",
+        icon: "checklist",
         text: "Rilevamenti campo",
         path: `/companies/${companyId}/fields/${fieldId}/detections`,
       },
       {
         id: "mappa",
-        icon: "ifab_pin",
+        icon: "pin",
         text: "Mappa",
         path: `/companies/${companyId}/fields/${fieldId}/map`,
       },
       {
         id: "impostazioni",
-        icon: "ifab_cog",
-        text: "Impostazioni",
+        icon: "cog",
+        text: "Impostazioni campo",
         path: `/companies/${companyId}/fields/${fieldId}/settings`,
       },
     ];
     menuBottomEntries = [
       {
         id: "feedback",
-        icon: "ifab_baloon",
+        icon: "baloon",
         text: "Invia Feedback",
         path: `/companies/${companyId}/fields/${fieldId}/new-feedback`,
       },
@@ -57,7 +57,7 @@ export function FieldDetail() {
       },
       {
         id: "user",
-        icon: "ifab_users",
+        icon: "users",
         text: "Profilo Utente",
         path: `/companies/${companyId}/fields/${fieldId}/profile`,
       },

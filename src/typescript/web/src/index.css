@@ -12335,7 +12335,7 @@ fieldset:disabled .btn {
   font-style: normal;
   font-stretch: normal;
   font-optical-sizing: auto;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
 }
 
@@ -12639,6 +12639,14 @@ ul li {
   height: 240px;
 }
 
+.bg-yelo {
+  background-color: #eaff00;
+}
+
+.color-grey-3 {
+  color: #bbbbbb !important;
+}
+
 body {
   font-family: "Inter", sans-serif;
   font-size: 15px;
@@ -12893,7 +12901,7 @@ body {
   font-style: normal;
   font-stretch: normal;
   font-optical-sizing: auto;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
 }
 
@@ -13426,6 +13434,8 @@ body {
   font-style: normal;
   font-stretch: normal;
   font-optical-sizing: auto;
+  font-weight: 700;
+  text-transform: uppercase;
   display: block;
   color: #1f1f1f;
 }
@@ -13473,9 +13483,9 @@ body {
   background-color: #989898;
   background-color: white;
   outline: none;
-  border: 0;
   margin: 5px 0;
   border: 1px solid transparent;
+  border: 1px solid #bbbbbb;
   font-family: "Inter", sans-serif;
   font-size: 15px;
   letter-spacing: 0.02em;
@@ -13562,7 +13572,7 @@ body {
 #app .form-row select:active,
 #app .form-row textarea:hover,
 #app .form-row textarea:active {
-  border: 1px solid #bbbbbb;
+  border: 1px solid #8b8b8b;
 }
 
 #app .input-row input:focus,
@@ -13571,7 +13581,7 @@ body {
 #app .form-row input:focus,
 #app .form-row select:focus,
 #app .form-row textarea:focus {
-  border: 1px solid #8b8b8b;
+  border: 1px solid #545454;
 }
 
 #app .input-row input::placeholder,
@@ -13593,6 +13603,12 @@ body {
 #app .input-row select,
 #app .form-row select {
   width: 100%;
+}
+
+#app .input-row select option:disabled,
+#app .form-row select option:disabled {
+  color: #999;
+  /* works */
 }
 
 #app .input-row input[type="checkbox"],
@@ -13712,7 +13728,7 @@ body {
   font-style: normal;
   font-stretch: normal;
   font-optical-sizing: auto;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
 }
 
@@ -13790,6 +13806,148 @@ body {
   margin-top: 2px !important;
 }
 
+#app .accordion .accordion-section {
+  border-radius: 27px;
+  margin-bottom: 8px;
+}
+
+#app .accordion .accordion-section .accordion-header {
+  height: 54px;
+  border-radius: 27px;
+  overflow: hidden;
+  background-color: white;
+  border: 1px solid #c5c5c5;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+#app .accordion .accordion-section .accordion-header .accordion-header-left {
+  display: flex;
+  align-items: center;
+}
+
+#app .accordion .accordion-section .accordion-header .accordion-header-left .accordion-title {
+  font-family: "Inter", sans-serif;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+  line-height: 1.3em;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  font-optical-sizing: auto;
+  font-weight: 600;
+}
+
+@media (min-width: 576px) {
+  #app .accordion .accordion-section .accordion-header .accordion-header-left .accordion-title {
+    font-size: 15px;
+  }
+}
+
+@media (min-width: 768px) {
+  #app .accordion .accordion-section .accordion-header .accordion-header-left .accordion-title {
+    font-size: 15px;
+  }
+}
+
+@media (min-width: 992px) {
+  #app .accordion .accordion-section .accordion-header .accordion-header-left .accordion-title {
+    font-size: 15px;
+  }
+}
+
+@media (min-width: 1200px) {
+  #app .accordion .accordion-section .accordion-header .accordion-header-left .accordion-title {
+    font-size: 15px;
+  }
+}
+
+#app .accordion .accordion-section .accordion-header .accordion-arrow::after {
+  content: "▼";
+  content: "⊕";
+  content: "×";
+  font-family: "Inter", sans-serif;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+  line-height: 1.3em;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  display: inline-block;
+  transition: transform 0.3s;
+  transform: rotate(45deg);
+}
+
+@media (min-width: 576px) {
+  #app .accordion .accordion-section .accordion-header .accordion-arrow::after {
+    font-size: 15px;
+  }
+}
+
+@media (min-width: 768px) {
+  #app .accordion .accordion-section .accordion-header .accordion-arrow::after {
+    font-size: 15px;
+  }
+}
+
+@media (min-width: 992px) {
+  #app .accordion .accordion-section .accordion-header .accordion-arrow::after {
+    font-size: 15px;
+  }
+}
+
+@media (min-width: 1200px) {
+  #app .accordion .accordion-section .accordion-header .accordion-arrow::after {
+    font-size: 15px;
+  }
+}
+
+#app .accordion .accordion-section .accordion-header .accordion-arrow.open::after {
+  transform: rotate(0deg);
+}
+
+#app .accordion .accordion-section[data-open="true"] {
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+#app .accordion .accordion-section .accordion-content {
+  padding: 15px;
+}
+
+#app .cozy-button {
+  display: flex;
+  margin: 8px 0 0 0;
+  height: 65px;
+  border: 1px solid #c5c5c5;
+  position: relative;
+  background-color: white;
+  border-radius: 10px;
+  width: 100%;
+  box-shadow: 0 0px 8px rgba(0, 0, 0, 0.2);
+}
+
+#app .cozy-button .content {
+  display: flex;
+  align-items: center;
+  padding: 0 15px;
+  margin-right: 25px;
+}
+
+#app .cozy-button::after {
+  content: "›";
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
 #app ol.stepper {
   display: flex;
   height: 60px;
@@ -13860,7 +14018,7 @@ body {
   font-style: normal;
   font-stretch: normal;
   font-optical-sizing: auto;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
   display: inline-flex;
   align-items: center;
@@ -14661,7 +14819,7 @@ ul.list-group li.list-group-item:hover {
   font-style: normal;
   font-stretch: normal;
   font-optical-sizing: auto;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
   padding-bottom: 3px;
   color: #1f1f1f;
@@ -15087,7 +15245,7 @@ ul.list-group li.list-group-item:hover {
   font-style: normal;
   font-stretch: normal;
   font-optical-sizing: auto;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
 }
 
@@ -15333,7 +15491,7 @@ ul.list-group li.list-group-item:hover {
   font-style: normal;
   font-stretch: normal;
   font-optical-sizing: auto;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
 }
 
