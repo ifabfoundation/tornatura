@@ -27,7 +27,7 @@ export function CompanyDetail() {
         },
         {
           id: "invitations",
-          icon: "ifab_checklist",
+          icon: "checklist",
           text: "Inviti",
           path: `/companies/${companyId}/invitations`,
         },
@@ -47,7 +47,7 @@ export function CompanyDetail() {
         },
         {
           id: "my-invitations",
-          icon: "ifab_grid",
+          icon: "grid",
           text: "I miei inviti",
           path: `/companies/${companyId}/invitations/me`,
         },

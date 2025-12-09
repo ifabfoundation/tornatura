@@ -41,7 +41,7 @@ export function CompaniesList() {
       },
       {
         id: "my-invitations",
-        icon: "ifab_grid",
+        icon: "grid",
         text: "I miei inviti",
         path: "/invitations/me",
       },

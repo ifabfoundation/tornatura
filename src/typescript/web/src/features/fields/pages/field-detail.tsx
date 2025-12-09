@@ -51,7 +51,7 @@ export function FieldDetail() {
       },
       {
         id: "my-invitations",
-        icon: "ifab_grid",
+        icon: "grid",
         text: "I miei inviti",
         path: `/companies/${companyId}/fields/${fieldId}/invitations/me`,
       },
