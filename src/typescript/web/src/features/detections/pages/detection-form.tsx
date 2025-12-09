@@ -786,7 +786,7 @@ function AccordionTest() {
     },
   ];
   return (
-    <div style={{ margin: "auto", maxWidth: "600px" }}>
+    <div style={{ margin: "auto", maxWidth: "600px", marginTop: "80px", marginBottom: "80px" }}>
       <Accordion items={items} />
     </div>
   );
