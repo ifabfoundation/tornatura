@@ -14,7 +14,7 @@ function MenuItem({ icon, text, state, path }: MenuItemProps) {
 
   return (
     <li className={className}>
-      <Icon iconName={icon} state={color} />
+      <Icon iconName={icon} color={color} />
       <Link to={path}>
         <span className="text">{text}</span>
       </Link>

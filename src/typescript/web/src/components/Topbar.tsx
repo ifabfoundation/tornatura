@@ -41,7 +41,7 @@ export default function TopBar({ showBackButton }: TopBarProps) {
       <span>{" "}</span>
       {/* 
       <a className="button secondary" data-type="round" onClick={handleSignOut}>
-        <Icon iconName="logout" state="yellow" />
+        <Icon iconName="logout" color="yellow" />
       </a>
        */}
     </div>

@@ -179,15 +179,15 @@ const icons = {
 };
 
 export type IconName = keyof typeof icons;
-export type IconState = "white" | "black" | "yellow";
+export type IconColor = "white" | "black" | "yellow";
 
 interface IconProps {
   iconName: IconName;
-  state: IconState;
+  color: IconColor;
 }
 
-function Icon({ iconName, state }: IconProps) {
-  const icon = icons[iconName][state];
+function Icon({ iconName, color }: IconProps) {
+  const icon = icons[iconName][color];
   return <img className="icon" src={icon} alt={"icon " + iconName} />;
 }
 
