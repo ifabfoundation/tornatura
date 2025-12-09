@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="31px" height="31px" viewBox="0 0 31 31" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>icon-sprout-w</title>
+    <g id="icon-sprout-w" stroke="none" fill="none" transform="translate(0.5, 0.5)" fill-rule="evenodd" stroke-linecap="round" stroke-width="1">
+        <g id="Group" transform="translate(7.0065, 10.5249)" stroke="#FFFFFF">
+            <line x1="3.58857316" y1="8.95008402" x2="12.3983815" y2="8.95008402" id="Path" stroke-width="1.5"></line>
+            <path d="M7.99347733,8.95008402 C7.99347733,6.45699546 7.99347733,5.01895907 7.99347733,4.63597484 C7.99347733,0.416163904 14.1377276,-0.724808678 14.8474799,0.416163904 C15.5572322,1.55713649 13.5745979,5.08986768 8.52283279,5.08986768" id="Path" stroke-width="1.5"></path>
+            <path d="M1,8.95008402 C1,6.45699546 1,5.01895907 1,4.63597484 C1,0.416163904 7.14425026,-0.724808678 7.85400255,0.416163904 C8.56375483,1.55713649 6.58112053,5.08986768 1.52935547,5.08986768" id="Path-Copy-4" stroke-width="1.5" transform="translate(4.4967, 4.475) scale(-1, 1) translate(-4.4967, -4.475)"></path>
+        </g>
+    </g>
+</svg>

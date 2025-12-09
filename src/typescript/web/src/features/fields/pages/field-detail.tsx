@@ -38,7 +38,7 @@ export function FieldDetail() {
       {
         id: "impostazioni",
         icon: "ifab_cog",
-        text: "Impostazioni",
+        text: "Impostazioni campo",
         path: `/companies/${companyId}/fields/${fieldId}/settings`,
       },
     ];

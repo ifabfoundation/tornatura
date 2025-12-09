@@ -17,6 +17,12 @@ dark
 */
 
 // New icons
+import icon_ifab_sprout_b from "../assets/images/icons/icon-ifab-sprout-b.svg";
+import icon_ifab_sprout_w from "../assets/images/icons/icon-ifab-sprout-w.svg";
+import icon_ifab_sprout_y from "../assets/images/icons/icon-ifab-sprout-y.svg";
+import icon_ifab_barn_b from "../assets/images/icons/icon-ifab-barn-b.svg";
+import icon_ifab_barn_w from "../assets/images/icons/icon-ifab-barn-w.svg";
+import icon_ifab_barn_y from "../assets/images/icons/icon-ifab-barn-y.svg";
 import icon_ifab_dashboard_b from "../assets/images/icons/icon-ifab-dashboard-b.svg";
 import icon_ifab_dashboard_w from "../assets/images/icons/icon-ifab-dashboard-w.svg";
 import icon_ifab_dashboard_y from "../assets/images/icons/icon-ifab-dashboard-y.svg";
@@ -139,6 +145,15 @@ import icon_test_s from "../assets/images/icons/icon-test-s.svg";
 import icon_test_i from "../assets/images/icons/icon-test-i.svg";
 
 const icons = {
+  ifab_sprout: {
+    normal: { light: icon_ifab_sprout_w, dark: icon_ifab_sprout_b },
+    selected: { light: icon_ifab_sprout_y, dark: icon_ifab_sprout_b },
+  },
+  ifab_barn: {
+    normal: { light: icon_ifab_barn_w, dark: icon_ifab_barn_b },
+    selected: { light: icon_ifab_barn_y, dark: icon_ifab_barn_b },
+  },
+
   ifab_dashboard: {
     normal: { light: icon_ifab_dashboard_w, dark: icon_ifab_dashboard_b },
     selected: { light: icon_ifab_dashboard_y, dark: icon_ifab_dashboard_b },
