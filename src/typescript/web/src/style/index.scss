@@ -588,6 +588,7 @@ body {
     .accordion-section {
       border-radius: $acc-h/2;
       margin-bottom: 8px;
+      background-color: rgba(255, 255, 255, 0.5);
       .accordion-header {
         height: $acc-h;
         border-radius: $acc-h/2;
@@ -628,19 +629,24 @@ body {
           }
         }
       }
-      &[data-open="true"] {
-        background-color: rgba(255, 255, 255, 0.5);
-        .accordion-header {
-          background-color: transparent;
-          border: 1px solid transparent;
-        }
-      }
       .accordion-animated {
         overflow: hidden;
         transition: max-height 0.3s ease;
       }
       .accordion-content {
         padding: 0px 15px 15px 15px;
+        opacity: 0;
+        transition: all 0.3s;
+      }
+      &[data-open="true"] {
+        background-color: rgba(255, 255, 255, 0.5);
+        .accordion-header {
+          background-color: transparent;
+          border: 1px solid transparent;
+        }
+        .accordion-content {
+          opacity: 1;
+        }
       }
     }
   }
@@ -648,11 +654,11 @@ body {
   .cozy-button {
     display: flex;
     margin: 4px 0;
-    height: $acc-h;
+    height: $acc-h + 10px;
     border: 1px solid #c5c5c5;
     position: relative;
     background-color: white;
-    border-radius: 15px;
+    border-radius: 10px;
     width: 100%;
     box-shadow: 0 0px 8px rgba(0, 0, 0, 0.1);
     .icon-active {
