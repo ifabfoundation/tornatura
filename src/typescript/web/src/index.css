@@ -4,7 +4,6 @@
    * Copyright 2011-2025 The Bootstrap Authors
    * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
    */
-@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
 :root,
 [data-bs-theme="light"] {
   --bs-blue: #0d6efd;
@@ -12255,6 +12254,14 @@ fieldset:disabled .btn {
   }
 }
 
+@font-face {
+  font-family: "Inter";
+  src: url("../assets/fonts/Inter-4.1/web/InterVariable.woff2") format("woff2-variations");
+  font-weight: 100 900;
+  font-stretch: 75% 125%;
+  font-display: swap;
+}
+
 .font-s {
   font-family: "Inter", sans-serif;
   font-size: 11px;
@@ -13822,6 +13829,7 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 12px 16px;
+  transition: all 0.3s;
   cursor: pointer;
   font-size: 16px;
 }
@@ -13871,6 +13879,7 @@ body {
   content: "▼";
   content: "⊕";
   content: "×";
+  content: "✗";
   font-family: "Inter", sans-serif;
   font-size: 15px;
   letter-spacing: 0.02em;
@@ -13917,35 +13926,138 @@ body {
   background-color: rgba(255, 255, 255, 0.5);
 }
 
+#app .accordion .accordion-section[data-open="true"] .accordion-header {
+  background-color: transparent;
+  border: 1px solid transparent;
+}
+
+#app .accordion .accordion-section .accordion-animated {
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
 #app .accordion .accordion-section .accordion-content {
-  padding: 15px;
+  padding: 0px 15px 15px 15px;
 }
 
 #app .cozy-button {
   display: flex;
-  margin: 8px 0 0 0;
-  height: 65px;
+  margin: 4px 0;
+  height: 54px;
   border: 1px solid #c5c5c5;
   position: relative;
   background-color: white;
-  border-radius: 10px;
+  border-radius: 15px;
   width: 100%;
-  box-shadow: 0 0px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0px 8px rgba(0, 0, 0, 0.1);
 }
 
-#app .cozy-button .content {
+#app .cozy-button .icon-active {
+  display: none;
+}
+
+#app .cozy-button .btn-content {
   display: flex;
   align-items: center;
-  padding: 0 15px;
   margin-right: 25px;
 }
 
+#app .cozy-button .btn-content span {
+  margin-left: 8px;
+  font-family: "Inter", sans-serif;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+  line-height: 1.3em;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  font-optical-sizing: auto;
+  font-weight: 600;
+}
+
+@media (min-width: 576px) {
+  #app .cozy-button .btn-content span {
+    font-size: 15px;
+  }
+}
+
+@media (min-width: 768px) {
+  #app .cozy-button .btn-content span {
+    font-size: 15px;
+  }
+}
+
+@media (min-width: 992px) {
+  #app .cozy-button .btn-content span {
+    font-size: 15px;
+  }
+}
+
+@media (min-width: 1200px) {
+  #app .cozy-button .btn-content span {
+    font-size: 15px;
+  }
+}
+
+#app .cozy-button:hover {
+  box-shadow: 0 0px 8px rgba(0, 0, 0, 0.2);
+}
+
+#app .cozy-button:active {
+  background-color: #3d401a;
+  color: #eaff00;
+  box-shadow: 0 0px 8px rgba(0, 0, 0, 0.2);
+}
+
+#app .cozy-button:active .icon-active {
+  display: inline-block;
+}
+
+#app .cozy-button:active .icon-normal {
+  display: none;
+}
+
 #app .cozy-button::after {
+  font-family: "Inter", sans-serif;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+  line-height: 1.3em;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  font-optical-sizing: auto;
+  font-weight: 600;
   content: "›";
+  content: ">";
+  content: "→";
   position: absolute;
   right: 15px;
   top: 50%;
   transform: translateY(-50%);
+}
+
+@media (min-width: 576px) {
+  #app .cozy-button::after {
+    font-size: 15px;
+  }
+}
+
+@media (min-width: 768px) {
+  #app .cozy-button::after {
+    font-size: 15px;
+  }
+}
+
+@media (min-width: 992px) {
+  #app .cozy-button::after {
+    font-size: 15px;
+  }
+}
+
+@media (min-width: 1200px) {
+  #app .cozy-button::after {
+    font-size: 15px;
+  }
 }
 
 #app ol.stepper {

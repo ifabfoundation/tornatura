@@ -583,8 +583,8 @@ body {
   // Components
   // --------------------------------------------------------------------------------------------------
 
+  $acc-h: 54px;
   .accordion {
-    $acc-h: 54px;
     .accordion-section {
       border-radius: $acc-h/2;
       margin-bottom: 8px;
@@ -600,6 +600,7 @@ body {
         align-items: center;
         justify-content: space-between;
         padding: 12px 16px;
+        transition: all 0.3s;
         cursor: pointer;
         // background-color: transparent;
         font-size: 16px;
@@ -616,6 +617,7 @@ body {
             content: "▼";
             content: "⊕";
             content: "×";
+            content: "✗";
             @include font-m-600;
             display: inline-block;
             transition: transform 0.3s;
@@ -628,37 +630,63 @@ body {
       }
       &[data-open="true"] {
         background-color: rgba(255, 255, 255, 0.5);
-        // .accordion-header {
-        //   border-radius: $acc-h/2;
-        //   overflow: hidden;
-        //   background-color: white;
-        //   border: 1px solid #c5c5c5;
-        // }
+        .accordion-header {
+          background-color: transparent;
+          border: 1px solid transparent;
+        }
+      }
+      .accordion-animated {
+        overflow: hidden;
+        transition: max-height 0.3s ease;
       }
       .accordion-content {
-        padding: 15px;
+        padding: 0px 15px 15px 15px;
       }
     }
   }
 
   .cozy-button {
     display: flex;
-    margin: 8px 0 0 0;
-    height: 65px;
+    margin: 4px 0;
+    height: $acc-h;
     border: 1px solid #c5c5c5;
     position: relative;
     background-color: white;
-    border-radius: 10px;
+    border-radius: 15px;
     width: 100%;
-    box-shadow: 0 0px 8px rgba(0, 0, 0, 0.2);
-    .content {
+    box-shadow: 0 0px 8px rgba(0, 0, 0, 0.1);
+    .icon-active {
+      display: none;
+    }
+    .btn-content {
       display: flex;
       align-items: center;
-      padding: 0 15px;
+      // padding: 0 15px !important;
       margin-right: 25px;
+      span {
+        margin-left: 8px;
+        @include font-m-600;
+      }
+    }
+    &:hover {
+      box-shadow: 0 0px 8px rgba(0, 0, 0, 0.2);
+    }
+    &:active {
+      background-color: $c-yelo_dark;
+      color: $c-yelo;
+      box-shadow: 0 0px 8px rgba(0, 0, 0, 0.2);
+      .icon-active {
+        display: inline-block;
+      }
+      .icon-normal {
+        display: none;
+      }
     }
     &::after {
+      @include font-m-600;
       content: "›";
+      content: ">";
+      content: "→";
       position: absolute;
       right: 15px;
       top: 50%;
