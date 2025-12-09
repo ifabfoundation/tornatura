@@ -1,5 +1,5 @@
 import Icon, { IconName } from "./Icon";
-import React, { useState, ReactNode } from "react";
+import React, { useRef, useState, useEffect, ReactNode } from "react";
 
 export interface AccordionItem {
   id: string;
@@ -40,6 +40,21 @@ interface SectionProps {
 }
 
 const AccordionSection: React.FC<SectionProps> = ({ item, isOpen, onToggle }) => {
+  const contentRef = useRef<HTMLDivElement | null>(null);
+
+  /* ---------------------- PART 6: Height Animation Logic ---------------------- */
+  useEffect(() => {
+    if (contentRef.current) {
+      if (isOpen) {
+        // expand to content height
+        contentRef.current.style.maxHeight = contentRef.current.scrollHeight + "px";
+      } else {
+        // collapse to zero height
+        contentRef.current.style.maxHeight = "0px";
+      }
+    }
+  }, [isOpen]);
+
   return (
     <div className="accordion-section" data-open={isOpen === true ? "true" : "false"}>
       <button className="accordion-header" onClick={onToggle}>
@@ -51,7 +66,22 @@ const AccordionSection: React.FC<SectionProps> = ({ item, isOpen, onToggle }) =>
         <span className={`accordion-arrow ${isOpen ? "open" : ""}`}></span>
       </button>
 
+      {/* ---------------------- PART 8: Animated Container ---------------------- */}
+      <div
+        ref={contentRef}
+        className="accordion-animated"
+        style={{
+          overflow: "hidden",
+          maxHeight: "0px", // initial collapsed state
+          transition: "max-height 0.3s ease", // smooth animation
+        }}
+      >
+        <div className="accordion-content">{item.content}</div>
+
+        {/*  
       {isOpen && <div className="accordion-content">{item.content}</div>}
+        */}
+      </div>
     </div>
   );
 };

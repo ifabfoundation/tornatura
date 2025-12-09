@@ -16,7 +16,7 @@ import { Point } from "@tornatura/coreapis";
 import * as turf from "@turf/turf";
 import { ModalConfirm } from "../../../components/ModalConfirm";
 import { Accordion, AccordionItem } from "../../../components/Accordion";
-import Icon from "../../../components/Icon";
+import CozyButton from "../../../components/CozyButton";
 
 interface DetectionProps {
   formData: DetectionMutationPayload;
@@ -726,18 +726,8 @@ function AccordionTest() {
       title: "Fungo e peronospora",
       content: (
         <Fragment>
-          <button className="cozy-button">
-            <div className="content">
-              <Icon iconName={"spots"} color={"black"} />
-              <span>Peronospora</span>
-            </div>
-          </button>
-          <button className="cozy-button">
-            <div className="content">
-              <Icon iconName={"spots"} color={"black"} />
-              <span>Altro fungo</span>
-            </div>
-          </button>
+          <CozyButton iconName={"spots"} text={"Peronospora"} onClick={() => {}} />
+          <CozyButton iconName={"spots"} text={"Altro fungo"} onClick={() => {}} />
         </Fragment>
       ),
       icon: "spots",
@@ -747,18 +737,8 @@ function AccordionTest() {
       title: "Batterio",
       content: (
         <Fragment>
-          <button className="cozy-button">
-            <div className="content">
-              <Icon iconName={"bacteria"} color={"black"} />
-              <span>Nome della malattia</span>
-            </div>
-          </button>
-          <button className="cozy-button">
-            <div className="content">
-              <Icon iconName={"bacteria"} color={"black"} />
-              <span>Altro batterio</span>
-            </div>
-          </button>
+          <CozyButton iconName={"bacteria"} text={"Nome della malattia"} onClick={() => {}} />
+          <CozyButton iconName={"bacteria"} text={"Altro batterio"} onClick={() => {}} />
         </Fragment>
       ),
       icon: "bacteria",
@@ -768,18 +748,10 @@ function AccordionTest() {
       title: "Insetto",
       content: (
         <Fragment>
-          <button className="cozy-button">
-            <div className="content">
-              <Icon iconName={"bug"} color={"black"} />
-              <span>Nome della malattia</span>
-            </div>
-          </button>
-          <button className="cozy-button">
-            <div className="content">
-              <Icon iconName={"bug"} color={"black"} />
-              <span>Altro insetto</span>
-            </div>
-          </button>
+          <CozyButton iconName={"bug"} text={"Scafoideo"} onClick={() => {}} />
+          <CozyButton iconName={"bug"} text={"Cimice"} onClick={() => {}} />
+          <CozyButton iconName={"bug"} text={"Diabrotica"} onClick={() => {}} />
+          <CozyButton iconName={"bug"} text={"Altro insetto"} onClick={() => {}} />
         </Fragment>
       ),
       icon: "bug",
