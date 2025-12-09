@@ -584,41 +584,85 @@ body {
   // --------------------------------------------------------------------------------------------------
 
   .accordion {
+    $acc-h: 54px;
     .accordion-section {
-      border: 1px solid red;
+      border-radius: $acc-h/2;
+      margin-bottom: 8px;
       .accordion-header {
-        border: 1px solid pink;
-
+        height: $acc-h;
+        border-radius: $acc-h/2;
+        overflow: hidden;
+        background-color: white;
+        border: 1px solid #c5c5c5;
         width: 100%;
+        // border: 0;
         display: flex;
         align-items: center;
         justify-content: space-between;
         padding: 12px 16px;
-        background: #f4f4f4;
         cursor: pointer;
+        // background-color: transparent;
         font-size: 16px;
 
         .accordion-header-left {
           display: flex;
           align-items: center;
           .accordion-title {
-            border: 1px solid grey;
+            @include font-m-600;
           }
-          .accordion-arrow {
-            &::after {
-              content: "▼";
-              display: inline-block;
-              transition: transform 0.3s;
-            }
-            &.open::after {
-              transform: rotate(180deg);
-            }
+        }
+        .accordion-arrow {
+          &::after {
+            content: "▼";
+            content: "⊕";
+            content: "×";
+            @include font-m-600;
+            display: inline-block;
+            transition: transform 0.3s;
+            transform: rotate(45deg);
+          }
+          &.open::after {
+            transform: rotate(0deg);
           }
         }
       }
-      .accordion-content {
-        border: 1px solid purple;
+      &[data-open="true"] {
+        background-color: rgba(255, 255, 255, 0.5);
+        // .accordion-header {
+        //   border-radius: $acc-h/2;
+        //   overflow: hidden;
+        //   background-color: white;
+        //   border: 1px solid #c5c5c5;
+        // }
       }
+      .accordion-content {
+        padding: 15px;
+      }
+    }
+  }
+
+  .cozy-button {
+    display: flex;
+    margin: 8px 0 0 0;
+    height: 65px;
+    border: 1px solid #c5c5c5;
+    position: relative;
+    background-color: white;
+    border-radius: 10px;
+    width: 100%;
+    box-shadow: 0 0px 8px rgba(0, 0, 0, 0.2);
+    .content {
+      display: flex;
+      align-items: center;
+      padding: 0 15px;
+      margin-right: 25px;
+    }
+    &::after {
+      content: "›";
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
     }
   }
 

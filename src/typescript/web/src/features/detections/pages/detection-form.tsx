@@ -16,6 +16,7 @@ import { Point } from "@tornatura/coreapis";
 import * as turf from "@turf/turf";
 import { ModalConfirm } from "../../../components/ModalConfirm";
 import { Accordion, AccordionItem } from "../../../components/Accordion";
+import Icon from "../../../components/Icon";
 
 interface DetectionProps {
   formData: DetectionMutationPayload;
@@ -722,24 +723,73 @@ function AccordionTest() {
   items = [
     {
       id: "one",
-      title: "First section",
-      content: <p>This is the first section content.</p>,
-      icon: "bug",
+      title: "Fungo e peronospora",
+      content: (
+        <Fragment>
+          <button className="cozy-button">
+            <div className="content">
+              <Icon iconName={"spots"} color={"black"} />
+              <span>Peronospora</span>
+            </div>
+          </button>
+          <button className="cozy-button">
+            <div className="content">
+              <Icon iconName={"spots"} color={"black"} />
+              <span>Altro fungo</span>
+            </div>
+          </button>
+        </Fragment>
+      ),
+      icon: "spots",
     },
     {
       id: "two",
-      title: "Second section",
-      content: <p>This is the second section content.</p>,
+      title: "Batterio",
+      content: (
+        <Fragment>
+          <button className="cozy-button">
+            <div className="content">
+              <Icon iconName={"bacteria"} color={"black"} />
+              <span>Nome della malattia</span>
+            </div>
+          </button>
+          <button className="cozy-button">
+            <div className="content">
+              <Icon iconName={"bacteria"} color={"black"} />
+              <span>Altro batterio</span>
+            </div>
+          </button>
+        </Fragment>
+      ),
       icon: "bacteria",
     },
     {
       id: "three",
-      title: "Second section",
-      content: <p>This is the second section content.</p>,
-      icon: "spots",
+      title: "Insetto",
+      content: (
+        <Fragment>
+          <button className="cozy-button">
+            <div className="content">
+              <Icon iconName={"bug"} color={"black"} />
+              <span>Nome della malattia</span>
+            </div>
+          </button>
+          <button className="cozy-button">
+            <div className="content">
+              <Icon iconName={"bug"} color={"black"} />
+              <span>Altro insetto</span>
+            </div>
+          </button>
+        </Fragment>
+      ),
+      icon: "bug",
     },
   ];
-  return <Accordion items={items} />;
+  return (
+    <div style={{ margin: "auto", maxWidth: "600px" }}>
+      <Accordion items={items} />
+    </div>
+  );
 }
 
 function DetectionFormStep1({ action, onNextClick }: DetectionProps) {
