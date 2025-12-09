@@ -116,6 +116,13 @@ $ms-sidebar-transition: 100ms;
   height: #{$space * 8};
 }
 
+.bg-yelo {
+  background-color: $c-yelo;
+}
+.color-grey-3 {
+  color: $c-grey_3 !important;
+}
+
 // --------------------------------------------------------------------------------------------------
 // Outside App
 // --------------------------------------------------------------------------------------------------
@@ -317,6 +324,8 @@ body {
     @include font-s;
     display: block;
     color: $c-grey_6;
+    // font-weight: 600;
+    // text-transform: uppercase;
   }
 
   .border-block {
@@ -426,7 +435,7 @@ body {
   .input-row,
   .form-row {
     label {
-      @include font-s;
+      @include font-s-label;
       display: block;
       color: $c-grey_6;
     }
@@ -443,9 +452,9 @@ body {
       background-color: lighten($c-grey_4, 5%);
       background-color: white;
       outline: none;
-      border: 0;
       margin: 5px 0;
       border: 1px solid transparent;
+      border: 1px solid $c-grey_3;
       @include font-m;
       @include transition(background-color $ms-sidebar-transition);
       &[type="text"] {
@@ -453,11 +462,10 @@ body {
       }
       &:hover,
       &:active {
-        // background-color: $c-grey_1;
-        border: 1px solid $c-grey_3;
+        border: 1px solid $c-grey_4;
       }
       &:focus {
-        border: 1px solid $c-grey_4;
+        border: 1px solid $c-grey_5;
       }
       &::placeholder {
         color: rgba(black, 0.3);
@@ -472,6 +480,9 @@ body {
 
     select {
       width: 100%;
+      option:disabled {
+        color: #999; /* works */
+      }
     }
 
     input[type="checkbox"] {

@@ -59,7 +59,7 @@ $font-sans: "Inter", sans-serif;
 }
 @mixin font-s-label {
   @include font-s;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
 }
 .font-s-label {
