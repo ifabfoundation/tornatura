@@ -583,6 +583,50 @@ body {
   // Components
   // --------------------------------------------------------------------------------------------------
 
+  .accordion {
+    .accordion-section {
+      border: 1px solid red;
+      .accordion-header {
+        border: 1px solid pink;
+
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 16px;
+        background: #f4f4f4;
+        cursor: pointer;
+        font-size: 16px;
+
+        .accordion-header-left {
+          display: flex;
+          align-items: center;
+          .accordion-title {
+            border: 1px solid grey;
+          }
+          .accordion-arrow {
+            &::after {
+              content: "▼";
+              display: inline-block;
+              transition: transform 0.3s;
+            }
+            &.open::after {
+              transform: rotate(180deg);
+            }
+          }
+        }
+      }
+      .accordion-content {
+        border: 1px solid purple;
+      }
+    }
+  }
+
+  // .icon {
+  //   width: 16px;
+  //   height: 16px;
+  //   display: inline-block;
+  // }
   ol.stepper {
     display: flex;
     height: 60px;

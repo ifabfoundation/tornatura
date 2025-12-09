@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="31px" height="31px" viewBox="0 0 31 31" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>icon-alert-w</title>
+    <g id="icon-alert-w" stroke="none" fill="none" transform="translate(0.5, 0.5)" fill-rule="evenodd" stroke-width="1">
+        <g id="Group-6" transform="translate(8, 8.7324)">
+            <polygon id="Path-9" stroke="#FFFFFF" stroke-width="1.5" stroke-linejoin="round" points="-1.0666789e-12 12.5351285 7.153133 -2.29129888e-12 14.306266 12.5351285"></polygon>
+            <circle id="Oval" fill="#FFFFFF" cx="7.153133" cy="10.1770614" r="1"></circle>
+            <line x1="7.153133" y1="4.8861651" x2="7.153133" y2="7.75299676" id="Line-2" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></line>
+        </g>
+    </g>
+</svg>

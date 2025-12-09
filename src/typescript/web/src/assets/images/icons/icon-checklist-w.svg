@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="31px" height="31px" viewBox="0 0 31 31" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>icon-checklist-w</title>
+    <g id="icon-checklist-w" stroke="none" fill="none" transform="translate(0.5, 0.5)" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round" stroke-width="1">
+        <g id="Group-7" transform="translate(9, 9)" stroke="#FFFFFF">
+            <rect id="Rectangle" stroke-width="1.5" x="0" y="0.5" width="4.5" height="4.5"></rect>
+            <polyline id="Path-6" stroke-width="1.5" points="0 10.3681608 1.34278894 11.7109497 4.5 8.55373863"></polyline>
+            <line x1="7.51849335" y1="0.5" x2="12.0184934" y2="0.5" id="Path-8" stroke-width="1.5"></line>
+            <line x1="7.51849335" y1="5.5" x2="12.0184934" y2="5.5" id="Path-8-Copy" stroke-width="1.5"></line>
+            <line x1="7.51849335" y1="11" x2="12.0184934" y2="11" id="Path-8-Copy-2" stroke-width="1.5"></line>
+        </g>
+    </g>
+</svg>

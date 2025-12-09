@@ -77,15 +77,15 @@ export function CompanyFields() {
                 <div className="llist-group">
                   <div className="llist-group-item">
                     <span className="d-flex align-items-center">
-                      <Icon iconName={"ifab_wheat"} state={"normal"} /> {field.harvest}
+                      <Icon iconName={"wheat"} state={"black"} /> {field.harvest}
                     </span>
                     <span className="d-flex align-items-center">
-                      <Icon iconName={"ifab_size"} state={"normal"} /> {field.area} he
+                      <Icon iconName={"size"} state={"black"} /> {field.area} he
                     </span>
                   </div>
                   <div className="llist-group-item">
                     <span className="d-flex align-items-center">
-                      <Icon iconName={"ifab_asterisk"} state={"normal"} /> {numberOdDetections}{" "}
+                      <Icon iconName={"asterisk"} state={"black"} /> {numberOdDetections}{" "}
                       rilevamenti
                     </span>
                   </div>

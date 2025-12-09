@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="31px" height="31px" viewBox="0 0 31 31" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>icon-asterisk-y</title>
+    <g id="icon-asterisk-y" stroke="none" fill="none" transform="translate(0.5, 0.5)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
+        <line x1="14.9998854" y1="9" x2="14.9998854" y2="19" id="Line-3" stroke="#EAFF00"></line>
+        <line x1="18.5355339" y1="10.4644307" x2="11.4644661" y2="17.5354986" id="Line-3-Copy" stroke="#EAFF00"></line>
+        <line x1="18.5355339" y1="10.4643307" x2="11.4644661" y2="17.5353986" id="Line-3-Copy-2" stroke="#EAFF00" transform="translate(15, 13.9999) rotate(45) translate(-15, -13.9999)"></line>
+        <line x1="18.5355693" y1="17.5355132" x2="11.4645014" y2="10.4644454" id="Line-3-Copy-3" stroke="#EAFF00"></line>
+    </g>
+</svg>

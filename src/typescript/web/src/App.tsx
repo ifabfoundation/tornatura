@@ -33,7 +33,6 @@ export function Loading() {
   );
 }
 
-
 export function RouteApp() {
   const currentUser = useAppSelector(userSelectors.selectCurrentUser);
   if (currentUser.accountType === AccountTypeEnum.Admin) {
@@ -61,19 +60,19 @@ function MainApp() {
         menuEntries = [
           {
             id: "companies",
-            icon: "ifab_grid",
+            icon: "grid",
             text: "Aziende",
             path: "/admin/companies",
           },
           {
             id: "users",
-            icon: "ifab_users",
+            icon: "users",
             text: "Utenti",
             path: "/admin/users",
           },
           {
             id: "feedbacks",
-            icon: "ifab_baloon",
+            icon: "baloon",
             text: "Feedbacks",
             path: "/admin/feedbacks",
           },
@@ -82,15 +81,14 @@ function MainApp() {
         menuBottomEntries = [
           {
             id: "user",
-            icon: "ifab_users",
+            icon: "users",
             text: "Profilo Utente",
             path: "/profile",
           },
-        ]
+        ];
         dispatch(SidebarActions.setMenuEntriesAction(menuEntries));
         dispatch(SidebarActions.setMenuBottomEntriesAction(menuBottomEntries));
       }
-      
     }
   }, [currentUser]);
 

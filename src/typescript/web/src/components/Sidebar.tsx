@@ -35,7 +35,7 @@ function CompanySelector() {
   return (
     <li className="context-selector">
       <button className="trnt_btn" onClick={handeleBackClick}>
-        <Icon iconName={"ifab_x"} state={"normal"} />
+        <Icon iconName={"x"} state={"white"} />
       </button>
       <div className="main-area">
         <label data-name="AZIENDA">
@@ -76,7 +76,7 @@ function FieldSelector() {
   return (
     <li className="context-selector">
       <button className="trnt_btn" onClick={handeleBackClick}>
-        <Icon iconName={"ifab_x"} state={"normal"} />
+        <Icon iconName={"x"} state={"white"} />
       </button>
       <div className="main-area">
         <label data-name="CAMPO">

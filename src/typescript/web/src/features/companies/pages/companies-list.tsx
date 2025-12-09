@@ -23,7 +23,7 @@ export function CompaniesList() {
     menuEntries = [
       {
         id: "companies",
-        icon: "ifab_grid",
+        icon: "grid",
         text: "Aziende gestite",
         path: "/companies",
       },
@@ -32,13 +32,13 @@ export function CompaniesList() {
     menuBottomEntries = [
       {
         id: "feedback",
-        icon: "ifab_baloon",
+        icon: "baloon",
         text: "Invia Feedback",
         path: "/new-feedback",
       },
       {
         id: "user",
-        icon: "ifab_users",
+        icon: "users",
         text: "Profilo Utente",
         path: "/profile",
       },

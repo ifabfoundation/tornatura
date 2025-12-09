@@ -15,6 +15,7 @@ import mapboxgl, { LngLatLike, Marker } from "mapbox-gl";
 import { Point } from "@tornatura/coreapis";
 import * as turf from "@turf/turf";
 import { ModalConfirm } from "../../../components/ModalConfirm";
+import { Accordion, AccordionItem } from "../../../components/Accordion";
 
 interface DetectionProps {
   formData: DetectionMutationPayload;
@@ -716,6 +717,31 @@ function DetectionFormMapPosition({ onMarkerChange }: DetectionFormMapProps) {
   );
 }
 
+function AccordionTest() {
+  let items: AccordionItem[] = [];
+  items = [
+    {
+      id: "one",
+      title: "First section",
+      content: <p>This is the first section content.</p>,
+      icon: "bug",
+    },
+    {
+      id: "two",
+      title: "Second section",
+      content: <p>This is the second section content.</p>,
+      icon: "bacteria",
+    },
+    {
+      id: "three",
+      title: "Second section",
+      content: <p>This is the second section content.</p>,
+      icon: "spots",
+    },
+  ];
+  return <Accordion items={items} />;
+}
+
 function DetectionFormStep1({ action, onNextClick }: DetectionProps) {
   const [source, setSource] = React.useState<string>("current");
   const [modalOpen, setModalOpen] = React.useState(false);
@@ -868,32 +894,36 @@ function DetectionFormStep2({ formData, action, onBackClick, onNextClick }: Dete
   }, [formData]);
 
   return (
-    <form onSubmit={formik.handleSubmit} autoComplete="off">
-      <h4 className="mt-4">Cosa vuoi segnalare?</h4>
-      <div className="input-row">
-        <label>
-          <select
-            id="type"
-            name="type"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.type}
-          >
-            <option value="Malattia">Malattia</option>
-            <option value="Insetto">Insetto</option>
-            <option value="Parassita">Parassita</option>
-            <option value="Altro">Altro</option>
-          </select>
-        </label>
-      </div>
-      <hr />
-      <div className="buttons-wrapper">
-        <button className="trnt_btn secondary" onClick={onBackClick}>
-          Indietro
-        </button>
-        <input type="submit" className="primary" value={action} />
-      </div>
-    </form>
+    <Fragment>
+      <AccordionTest />
+
+      <form onSubmit={formik.handleSubmit} autoComplete="off">
+        <h4 className="mt-4">Cosa vuoi segnalare?</h4>
+        <div className="input-row">
+          <label>
+            <select
+              id="type"
+              name="type"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.type}
+            >
+              <option value="Malattia">Malattia</option>
+              <option value="Insetto">Insetto</option>
+              <option value="Parassita">Parassita</option>
+              <option value="Altro">Altro</option>
+            </select>
+          </label>
+        </div>
+        <hr />
+        <div className="buttons-wrapper">
+          <button className="trnt_btn secondary" onClick={onBackClick}>
+            Indietro
+          </button>
+          <input type="submit" className="primary" value={action} />
+        </div>
+      </form>
+    </Fragment>
   );
 }
 
