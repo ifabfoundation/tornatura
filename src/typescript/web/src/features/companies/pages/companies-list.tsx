@@ -6,11 +6,14 @@ import { headerbarActions } from "../../headerbar/state/headerbar-slice";
 import { useNavigate } from "react-router-dom";
 import { MenuItemEntry } from "../../../components/Sidebar";
 import { SidebarActions } from "../../sidebar/state/sidebar-slice";
+import { userSelectors } from "../../users/state/user-slice";
+import { AccountTypeEnum } from "@tornatura/coreapis";
 
 export function CompaniesList() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const companies = useAppSelector(companiesSelectors.selectAllCompanies);
+  const currentUser = useAppSelector(userSelectors.selectCurrentUser);
 
   React.useEffect(() => {
     dispatch(headerbarActions.setTitle({ title: "Aziende gestite", subtitle: "Subtitle" }));
@@ -35,6 +38,12 @@ export function CompaniesList() {
         icon: "baloon",
         text: "Invia Feedback",
         path: "/new-feedback",
+      },
+      {
+        id: "my-invitations",
+        icon: "grid",
+        text: "I miei inviti",
+        path: "/invitations/me",
       },
       {
         id: "user",
@@ -78,13 +87,13 @@ export function CompaniesList() {
             </Col>
           );
         })}
-        <Col md={6} xl={4}>
+        {currentUser.accountType === AccountTypeEnum.Agronomist && <Col md={6} xl={4}>
           <Card
             className="add-item with-hover-effect"
             data-text="Invita un'azienda"
-            onClick={() => navigate("/companies/new-company")}
+            onClick={() => navigate("/invitations/invite-company-owner")}
           ></Card>
-        </Col>
+        </Col>}
       </Row>
     </Container>
   );

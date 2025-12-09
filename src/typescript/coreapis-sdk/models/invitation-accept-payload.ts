@@ -11,11 +11,24 @@
  * https://github.com/swagger-api/swagger-codegen.git
  * Do not edit the class manually.
  */
-export * from './apis/agri-fields-api';
-export * from './apis/detections-api';
-export * from './apis/feedbacks-api';
-export * from './apis/files-api';
-export * from './apis/invitations-api';
-export * from './apis/organizations-api';
-export * from './apis/users-api';
 
+ /**
+ * Payload for accepting invitation
+ *
+ * @export
+ * @interface InvitationAcceptPayload
+ */
+export interface InvitationAcceptPayload {
+
+    /**
+     * @type {string}
+     * @memberof InvitationAcceptPayload
+     */
+    token: string;
+
+    /**
+     * @type {string}
+     * @memberof InvitationAcceptPayload
+     */
+    orgId?: string | null;
+}

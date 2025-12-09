@@ -9,8 +9,7 @@ import "./Sidebar.css";
 import { companiesSelectors } from "../features/companies/state/companies-slice";
 import { fieldsSelectors } from "../features/fields/state/fields-slice";
 import Icon from "../components/Icon";
-import { userSelectors } from "../features/users/state/user-slice";
-import { AccountTypeEnum } from "@tornatura/coreapis";
+
 
 export interface MenuItemEntry {
   id: string;
@@ -106,7 +105,6 @@ export default function SideBar() {
   let location = useLocation();
   let params = useParams();
   const dispatch = useAppDispatch();
-  const currentUser = useAppSelector(userSelectors.selectCurrentUser);
   const { menuEntries, menuBottomEntries } = useAppSelector(SidebarSelectors.selectMenuEntries);
   const [currentEntry, setCurrentEntry] = React.useState<string>("companies");
   const mobileOpen = useAppSelector((state) => state.sidebar.mobileOpen);
@@ -152,9 +150,7 @@ export default function SideBar() {
         <div className="hamburger-col"></div>
         <div className="level-1">
           <div>
-            {params?.companyId && currentUser.accountType === AccountTypeEnum.Agronomist && (
-              <CompanySelector />
-            )}
+            {params?.companyId && <CompanySelector />}
             {params?.fieldId && <FieldSelector />}
             <ul className="menu-items">
               {menuEntries.map((item, i) => {

@@ -38,7 +38,7 @@ async def list_organizations(
     response_description="Organization Info",
 )
 async def create_organization(
-    token_info: Annotated[dict, Depends(SecurityChecker(IsAgronomist, IsAdmin, mutually_exclusive=True))],
+    token_info: Annotated[dict, Depends(SecurityChecker(IsAdmin, mutually_exclusive=True))],
     payload: OrganizationCreatePayload, 
     ) -> Organization:
     organization_services = OrganizationServices()
@@ -48,17 +48,8 @@ async def create_organization(
             status_code=status.HTTP_400_BAD_REQUEST, 
             detail="Organization with the same name already exists"
         )
+    
     organization = organization_services.create(payload)
-    # assign organization roles to the user if agronomist
-    user_services = UserServices()
-    user = user_services.get(token_info)
-    if user.accountType == AccountTypeEnum.agronomist:
-        organization_services.add_member(user_id=user.id, org_id=organization.orgId)
-        organization_services.assign_role(user_id=user.id, org_id=organization.orgId, role=OrganizationDefaultRole.ManageOrganization)
-        organization_services.assign_role(user_id=user.id, org_id=organization.orgId, role=OrganizationDefaultRole.ManageMembers)
-        organization_services.assign_role(user_id=user.id, org_id=organization.orgId, role=OrganizationCustomRole.ManageAgrifields)
-        organization_services.assign_role(user_id=user.id, org_id=organization.orgId, role=OrganizationCustomRole.ManageDataFiles)
-
     return organization
 
 

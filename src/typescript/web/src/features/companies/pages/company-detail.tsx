@@ -26,6 +26,12 @@ export function CompanyDetail() {
           path: `/companies/${companyId}/detections`,
         },
         {
+          id: "invitations",
+          icon: "checklist",
+          text: "Inviti",
+          path: `/companies/${companyId}/invitations`,
+        },
+        {
           id: "settings",
           icon: "cog",
           text: "Impostazioni azienda",
@@ -38,6 +44,12 @@ export function CompanyDetail() {
           icon: "baloon",
           text: "Invia Feedback",
           path: `/companies/${companyId}/new-feedback`,
+        },
+        {
+          id: "my-invitations",
+          icon: "grid",
+          text: "I miei inviti",
+          path: `/companies/${companyId}/invitations/me`,
         },
         {
           id: "user",

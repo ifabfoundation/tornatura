@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from "./hooks";
 import { getUserInfo } from "./features/users/utils";
 import { userActions, userSelectors } from "./features/users/state/user-slice";
 import { userMenuSelectors } from "./features/userMenu/state/userMenu-slice";
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useNavigate } from "react-router-dom";
 import TopBar from "./components/Topbar";
 import UserMenu from "./components/UserMenu";
 import SideBar, { MenuItemEntry } from "./components/Sidebar";
@@ -19,6 +19,7 @@ import { fieldsActions } from "./features/fields/state/fields-slice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { detectionsActions } from "./features/detections/state/detections-slice";
 import { SidebarActions } from "./features/sidebar/state/sidebar-slice";
+
 
 export function Loading() {
   return (
@@ -41,8 +42,9 @@ export function RouteApp() {
     return <Navigate to="/companies" />;
   } else {
     // @ts-ignore
-    const url = `/companies/${currentUser.organizations[0].id}`;
-    return <Navigate to={url} />;
+    // const url = `/companies/${currentUser.organizations[0].id}`;
+    // return <Navigate to={url} />;
+    return <Navigate to="/companies" />;
   }
 }
 
@@ -110,6 +112,7 @@ function MainApp() {
 }
 
 function App() {
+  const navigate = useNavigate();
   const { initialized, authenticated } = React.useContext(authStore);
   const [loaded, setLoaded] = React.useState(false);
   const dispatch = useAppDispatch();
@@ -118,6 +121,22 @@ function App() {
     const profile = await getUserInfo();
     if (profile) {
       await dispatch(userActions.setCurrentUserAction(profile));
+
+      const session = sessionStorage.getItem("pending_invitation_token");
+      let invitationToken = undefined;
+      if (session) {
+        const invitation = JSON.parse(session);
+        if (invitation.has_pending_invitation) {
+          invitationToken = invitation.pending_invitation_token;
+        }
+        sessionStorage.removeItem("pending_invitation_token")
+      } 
+
+      if (invitationToken) {
+        // const redirectUri = `${window.location.origin}/invitations/accept?token=${invitationToken}`;
+        navigate(`/invitations/accept?token=${invitationToken}`)
+      } 
+
       if (profile.accountType === AccountTypeEnum.Admin) {
         await dispatch(userActions.fetchUsersAction());
         await dispatch(companiesActions.fetchCompaniesAction());

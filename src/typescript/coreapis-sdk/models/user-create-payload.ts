@@ -62,5 +62,5 @@ export interface UserCreatePayload {
      * @type {OrganizationCreatePayload}
      * @memberof UserCreatePayload
      */
-    organization?: OrganizationCreatePayload | null;
+    organization?: OrganizationCreatePayload;
 }

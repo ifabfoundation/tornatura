@@ -107,4 +107,32 @@ class FeedbackModel(Document):
 
     def __str__(self):
         return str(self.id)
-    
+
+class InvitationModel(Document):
+    """The object Invitation stored in the Database"""
+    email = StringField(required=True)
+    orgId = StringField()  # Optional - null when agronomist invites non-existent company owner
+    inviterId = StringField(required=True)
+    role = StringField(required=True)
+    token = StringField(required=True, unique=True)
+    status = StringField(default="pending")  # pending, accepted, declined, expired, revoked
+    expiresAt = IntField(required=True)
+    acceptedAt = IntField()
+    deleted = BooleanField(default=False)
+    creationTime = IntField(required=True)
+    lastUpdateTime = IntField(required=True)
+
+    meta = {
+        'collection': 'invitations',
+        'indexes': [
+            'token',
+            'email',
+            'orgId',
+            'status',
+            {'fields': ['email', 'orgId', 'status']},
+        ],
+        'ordering': ['-creationTime']
+    }
+
+    def __str__(self):
+        return str(self.id)     

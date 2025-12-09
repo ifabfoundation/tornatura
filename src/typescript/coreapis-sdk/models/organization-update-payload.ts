@@ -45,23 +45,23 @@ export interface OrganizationUpdatePayload {
      * @type {Office}
      * @memberof OrganizationUpdatePayload
      */
-    office?: Office | null;
+    office?: Office;
 
     /**
      * @type {FileInfo}
      * @memberof OrganizationUpdatePayload
      */
-    logo?: FileInfo | null;
+    logo?: FileInfo;
 
     /**
      * @type {FileInfo}
      * @memberof OrganizationUpdatePayload
      */
-    cover?: FileInfo | null;
+    cover?: FileInfo;
 
     /**
      * @type {Contacts}
      * @memberof OrganizationUpdatePayload
      */
-    contacts?: Contacts | null;
+    contacts?: Contacts;
 }

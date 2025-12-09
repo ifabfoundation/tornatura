@@ -7,6 +7,7 @@ import { feedbackReducer } from "./features/feedbacks/state/feedbacks-slice";
 import { fieldsReducer } from "./features/fields/state/fields-slice";
 import { detectionsReducer } from "./features/detections/state/detections-slice";
 import { userMenuReducer } from "./features/userMenu/state/userMenu-slice";
+import { invitationsReducer } from "./features/invitations/state/invitations-slice";
 
 const store = configureStore({
   reducer: {
@@ -18,6 +19,7 @@ const store = configureStore({
     fields: fieldsReducer,
     detections: detectionsReducer,
     userMenu: userMenuReducer,
+    invitations: invitationsReducer,
   },
 });
 

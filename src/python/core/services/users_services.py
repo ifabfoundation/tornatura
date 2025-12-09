@@ -189,6 +189,20 @@ class UserServices:
         })
 
         return self._serialize(user)
+
+    def get_by_id(self, user_id: str):
+        """Get User by ID
+        :param user_id: Keycloak user ID
+        :rtype: User
+        """
+        keycloak_admin = get_keycloak_admin()
+        user = keycloak_admin.get_user(user_id)
+        user.update({
+            "accountType": self._get_user_account_type(user_id),
+            "organizations": self._list_user_organizations(user_id)
+        })
+
+        return self._serialize(user)
     
     @catch_api_exception
     def create(self, payload: UserCreatePayload):

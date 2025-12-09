@@ -17,6 +17,7 @@ import * as turf from "@turf/turf";
 import { ModalConfirm } from "../../../components/ModalConfirm";
 import { Accordion, AccordionItem } from "../../../components/Accordion";
 import CozyButton from "../../../components/CozyButton";
+import Icon from "../../../components/Icon";
 
 interface DetectionProps {
   formData: DetectionMutationPayload;
@@ -718,6 +719,60 @@ function DetectionFormMapPosition({ onMarkerChange }: DetectionFormMapProps) {
   );
 }
 
+const categorie: any = {
+  fungi: {
+    name: "Fungo e peronospora",
+    items: {
+      peronospora: {
+        name: "Peronospora",
+      },
+      oter_fungi: {
+        name: null,
+      },
+    },
+  },
+  bacteria: {
+    name: "Batterio",
+    items: {
+      flavescenza: {
+        name: "Flavescenza",
+      },
+      oter_bacteria: {
+        name: null,
+      },
+    },
+  },
+  insect: {
+    name: "Insetto",
+    items: {
+      scafoideo: {
+        name: "Scafoideo",
+      },
+      cimice: {
+        name: "Cimice",
+      },
+      diabrotica: {
+        name: "Diabrotica",
+      },
+      oter_insect: {
+        name: null,
+      },
+    },
+  },
+};
+
+const methods: any = {
+  peronospora: ["Foglia", "Frutto", "Tutta la pianta"],
+  oter_fungi: ["Foglia", "Frutto", "Tutta la pianta"],
+  flavescenza: ["Foglia", "Frutto", "Tutta la pianta"],
+  oter_bacteria: ["Foglia", "Frutto", "Tutta la pianta"],
+  cimice: ["Trappola", "Campo (Frappage – Visivo)"],
+  scafoideo: ["Foglie basali/polloni", "Chioma"],
+  diabrotica: [],
+  oter_insect: ["Trappola", "Altro"],
+}
+
+
 function AccordionTest() {
   let items: AccordionItem[] = [];
   items = [
@@ -764,7 +819,34 @@ function AccordionTest() {
   );
 }
 
-function DetectionFormStep1({ action, onNextClick }: DetectionProps) {
+interface AccordionTipologiaProps {
+  onSelect: (selection: string) => void
+}
+
+function AccordionTipologia({onSelect}: AccordionTipologiaProps) {
+  let items: AccordionItem[] = [];
+  items = Object.keys(categorie).map((key: string, index: number) => {
+    return {
+      id: index.toString(),
+      title: categorie[key].name,
+      content: (
+        <Fragment>
+          {Object.keys(categorie[key].items).map((itemKey: string, itemIndex) => (
+            <CozyButton key={itemIndex} iconName={"bug"} text={categorie[key].items[itemKey].name || "Altro"} onClick={() => onSelect(itemKey)} />
+          ))}
+        </Fragment>
+      ),
+      icon: "spots",
+    }
+  })
+  return (
+    <div style={{ margin: "auto", maxWidth: "600px", marginTop: "80px", marginBottom: "80px" }}>
+      <Accordion items={items} />
+    </div>
+  );
+}
+
+function DetectionStepPosizione({ action, onNextClick }: DetectionProps) {
   const [source, setSource] = React.useState<string>("current");
   const [modalOpen, setModalOpen] = React.useState(false);
   const [modal, setModal] = React.useState<any>({});
@@ -897,54 +979,32 @@ function DetectionFormStep1({ action, onNextClick }: DetectionProps) {
   );
 }
 
-function DetectionFormStep2({ formData, action, onBackClick, onNextClick }: DetectionProps) {
-  const formik = useFormik({
-    initialValues: {
-      type: "Malattia",
-    },
-    onSubmit: (values, { setSubmitting, resetForm }) => {
-      onNextClick(values);
-      resetForm({});
-      setSubmitting(false);
-    },
-  });
-
-  React.useEffect(() => {
-    formik.setValues({
-      type: formData.type || "Malattia",
-    });
-  }, [formData]);
+function DetectionStepTipologia({ onNextClick }: DetectionProps) {
+  const handleOnSelectClick = (value: string) => {
+    onNextClick({
+      type: value
+    })
+  }
 
   return (
     <Fragment>
-      <AccordionTest />
+      <AccordionTipologia onSelect={handleOnSelectClick}/>
+    </Fragment>
+  );
+}
 
-      <form onSubmit={formik.handleSubmit} autoComplete="off">
-        <h4 className="mt-4">Cosa vuoi segnalare?</h4>
-        <div className="input-row">
-          <label>
-            <select
-              id="type"
-              name="type"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.type}
-            >
-              <option value="Malattia">Malattia</option>
-              <option value="Insetto">Insetto</option>
-              <option value="Parassita">Parassita</option>
-              <option value="Altro">Altro</option>
-            </select>
-          </label>
-        </div>
-        <hr />
-        <div className="buttons-wrapper">
-          <button className="trnt_btn secondary" onClick={onBackClick}>
-            Indietro
-          </button>
-          <input type="submit" className="primary" value={action} />
-        </div>
-      </form>
+function DetectionStepMetodo({ formData, onNextClick }: DetectionProps) {
+  const handleOnSelectClick = (value: string) => {
+    onNextClick({
+      method: value
+    })
+  }
+
+  return (
+    <Fragment>
+      {methods[formData.type].map((itemKey: string, itemIndex: number) => (
+        <CozyButton key={itemIndex} iconName={"bug"} text={itemKey} onClick={() => handleOnSelectClick(itemKey)} />
+      ))}
     </Fragment>
   );
 }
@@ -955,9 +1015,10 @@ export function DetectionForm() {
   const { companyId, fieldId } = useParams();
   const [step, setStep] = React.useState(1);
   const [action, setAction] = React.useState("Avanti");
-  const [formData, setFormData] = React.useState<DetectionMutationPayload>({
+  const [formData, setFormData] = React.useState<DetectionMutationPayload | any>({
     detectionTime: new Date().getTime(),
     type: "",
+    method: "",
     note: "",
     position: {
       lat: 0,
@@ -1010,15 +1071,15 @@ export function DetectionForm() {
   };
 
   const handleNextClick = async (data: any) => {
-    if (step === 2) {
+    if (step === 1) {
       const payload = {
         ...formData,
         type: data.type,
       };
       setFormData(payload);
-      setAction("Salva rilevamento");
+      setAction("Avanti");
       setStep(step + 1);
-    } else if (step === 1) {
+    } else if (step === 3) {
       const payload = {
         ...formData,
         position: {
@@ -1029,16 +1090,14 @@ export function DetectionForm() {
       setFormData(payload);
       setAction("Avanti");
       setStep(step + 1);
-    } else if (step === 3) {
+    } else if (step === 2) {
       const payload = {
         ...formData,
-        detectionTime: data.detectionTime,
-        details: data.details || {},
-        photos: await uploadFiles(data.files || []),
-        note: data.note,
+        method: data.method
       };
       setFormData(payload);
-      createDetectionAction(payload);
+      setStep(step + 1);
+      setAction("Avanti");
     }
   };
 
@@ -1057,61 +1116,41 @@ export function DetectionForm() {
           data-done={step > 1 ? "true" : "false"}
           data-current={step == 1 ? "true" : "false"}
         >
-          <span>Posizione</span>
+          <span>Tipologia</span>
         </li>
         <li
           data-step-num="2"
           data-done={step > 2 ? "true" : "false"}
           data-current={step == 2 ? "true" : "false"}
         >
-          <span>Categoria</span>
+          <span>Metodo</span>
         </li>
         <li
           data-step-num="3"
           data-done={step > 3 ? "true" : "false"}
           data-current={step == 3 ? "true" : "false"}
         >
-          <span>Dati</span>
+          <span>Posizione</span>
         </li>
       </ol>
       <div>
         {step === 1 && (
-          <DetectionFormStep1 formData={formData} action={action} onNextClick={handleNextClick} />
+          <DetectionStepTipologia 
+            formData={formData} 
+            action={action} 
+            onNextClick={handleNextClick} 
+          />
         )}
         {step === 2 && (
-          <DetectionFormStep2
+          <DetectionStepMetodo
             formData={formData}
             action={action}
             onBackClick={handleBackClick}
             onNextClick={handleNextClick}
           />
         )}
-        {step === 3 && formData.type === "Malattia" && (
-          <DetectionFormMalattia
-            formData={formData}
-            action={action}
-            onBackClick={handleBackClick}
-            onNextClick={handleNextClick}
-          />
-        )}
-        {step === 3 && formData.type === "Parassita" && (
-          <DetectionFormParassita
-            formData={formData}
-            action={action}
-            onBackClick={handleBackClick}
-            onNextClick={handleNextClick}
-          />
-        )}
-        {step === 3 && formData.type === "Insetto" && (
-          <DetectionFormInsetto
-            formData={formData}
-            action={action}
-            onBackClick={handleBackClick}
-            onNextClick={handleNextClick}
-          />
-        )}
-        {step === 3 && formData.type === "Altro" && (
-          <DetectionFormAltro
+        {step === 3 && (
+          <DetectionStepPosizione
             formData={formData}
             action={action}
             onBackClick={handleBackClick}

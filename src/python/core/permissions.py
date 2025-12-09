@@ -174,18 +174,62 @@ class CanManageOrganizationDataFiles(BasePermission):
         try:
             if IsAdmin.has_permission(token_info):
                 return True
-             
+
             org_id = organization.orgId if hasattr(organization, 'orgId') else organization
-            
+
             if "organizations" not in token_info:
                 return False
-            
+
             if org_id not in token_info["organizations"]:
                 return False
-                
+
             roles = token_info["organizations"][org_id]["roles"]
             return OrganizationCustomRole.ManageDataFiles.value in roles
-            
+
         except Exception as ex:
             logger.logger.error(f"Error checking manage organization's datafiles permission: {ex}")
+            return False
+
+
+class CanManageOrganizationInvitations(BasePermission):
+    """
+    Permission to view an organization's invitations
+    """
+    @classmethod
+    def has_object_permission(cls, token_info, organization):
+        try:
+
+            org_id = organization.orgId if hasattr(organization, 'orgId') else organization
+
+            if "organizations" not in token_info:
+                return False
+
+            if org_id not in token_info["organizations"]:
+                return False
+
+            roles = token_info["organizations"][org_id]["roles"]
+            return OrganizationDefaultRole.ManageInvitations.value in roles
+
+        except Exception as ex:
+            logger.logger.error(f"Error checking manage organization's invitations permission: {ex}")
+            return False
+
+
+class CanManageInvitations(BasePermission):
+    """
+    Permission to send invitations
+    Company owners, company managers, and agronomists can send invitations
+    """
+    @classmethod
+    def has_permission(cls, token_info):
+        try:
+            if ClientRole.Agronomist.value in token_info["resource_access"][config.APIConfig.KEYCLOAK_CLIENT_ID]["roles"]:
+                return True
+            elif ClientRole.CompanyManager.value in token_info["resource_access"][config.APIConfig.KEYCLOAK_CLIENT_ID]["roles"]:
+                return True
+            elif ClientRole.CompanyOwner.value in token_info["resource_access"][config.APIConfig.KEYCLOAK_CLIENT_ID]["roles"]:
+                return True
+            else:
+                return False
+        except Exception as ex:
             return False
