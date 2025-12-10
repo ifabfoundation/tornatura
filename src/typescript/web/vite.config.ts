@@ -1,7 +1,7 @@
 import react from "@vitejs/plugin-react";
 import { defineConfig, loadEnv } from 'vite'
 import commonjs from 'vite-plugin-commonjs';
-
+import mkcert from 'vite-plugin-mkcert'
 
 // https://vitejs.dev/config/
 export default defineConfig(({mode}) => {
@@ -14,6 +14,6 @@ export default defineConfig(({mode}) => {
       'process.env.REACT_APP_COREAPIS_SERVER_URL': JSON.stringify(env.REACT_APP_COREAPIS_SERVER_URL),
       'process.env.REACT_APP_MAPBOX_API_TOKEN': JSON.stringify(env.REACT_APP_MAPBOX_API_TOKEN),
     },
-    plugins: [react(), commonjs()]
+    plugins: [react(), commonjs(), mkcert()]
   }
 });
