@@ -13602,6 +13602,18 @@ body {
   color: rgba(0, 0, 0, 0.3);
 }
 
+#app .input-row input:disabled,
+#app .input-row select:disabled,
+#app .input-row textarea:disabled,
+#app .form-row input:disabled,
+#app .form-row select:disabled,
+#app .form-row textarea:disabled {
+  background-color: #d8d8d8;
+  pointer-events: none;
+  color: rgba(255, 255, 255, 0.3);
+  opacity: 0.5;
+}
+
 #app .input-row textarea,
 #app .form-row textarea {
   width: 100%;
@@ -13667,6 +13679,12 @@ body {
   #app .input-row .error,
   #app .form-row .error {
     font-size: 11px;
+  }
+}
+
+@media (max-width: 767.98px) {
+  #app .input-row .col-md-6.input-row-margin-fix + .col-md-6.input-row-margin-fix {
+    margin-top: 20px;
   }
 }
 
@@ -13813,6 +13831,104 @@ body {
 
 #app .context-selector + .context-selector {
   margin-top: 2px !important;
+}
+
+#app .details-grid {
+  display: grid;
+  gap: 2rem;
+}
+
+@media (min-width: 768px) {
+  #app .details-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+#app .details-table {
+  display: grid;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+#app .details-table .row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+#app .details-table .row .label {
+  text-align: left;
+  font-family: "Inter", sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  line-height: 1.3em;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+@media (min-width: 576px) {
+  #app .details-table .row .label {
+    font-size: 11px;
+  }
+}
+
+@media (min-width: 768px) {
+  #app .details-table .row .label {
+    font-size: 11px;
+  }
+}
+
+@media (min-width: 992px) {
+  #app .details-table .row .label {
+    font-size: 11px;
+  }
+}
+
+@media (min-width: 1200px) {
+  #app .details-table .row .label {
+    font-size: 11px;
+  }
+}
+
+#app .details-table .row .value {
+  text-align: right;
+  font-family: "Inter", sans-serif;
+  font-size: 20px;
+  letter-spacing: 0.02em;
+  line-height: 1.3em;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  font-optical-sizing: auto;
+  font-weight: 600;
+}
+
+@media (min-width: 576px) {
+  #app .details-table .row .value {
+    font-size: 20px;
+  }
+}
+
+@media (min-width: 768px) {
+  #app .details-table .row .value {
+    font-size: 20px;
+  }
+}
+
+@media (min-width: 992px) {
+  #app .details-table .row .value {
+    font-size: 20px;
+  }
+}
+
+@media (min-width: 1200px) {
+  #app .details-table .row .value {
+    font-size: 20px;
+  }
 }
 
 #app .accordion .accordion-section {
