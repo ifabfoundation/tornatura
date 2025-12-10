@@ -473,6 +473,12 @@ body {
       &::placeholder {
         color: rgba(black, 0.3);
       }
+      &:disabled {
+        background-color: $c-grey_2;
+        pointer-events: none;
+        color: rgba(white, 0.3);
+        opacity: 0.5;
+      }
     }
 
     textarea {
@@ -499,6 +505,14 @@ body {
     .error {
       @include font-s;
       color: $red;
+    }
+  }
+
+  .input-row {
+    .col-md-6.input-row-margin-fix + .col-md-6.input-row-margin-fix {
+      @include media-breakpoint-down(md) {
+        margin-top: 20px;
+      }
     }
   }
 
@@ -585,6 +599,34 @@ body {
   // --------------------------------------------------------------------------------------------------
   // Components
   // --------------------------------------------------------------------------------------------------
+
+  .details-grid {
+    display: grid;
+    gap: 2rem;
+
+    // On large screens: 2 columns side-by-side
+    @include media-breakpoint-up(md) {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .details-table {
+    display: grid;
+    border-top: 1px solid rgba(black, 0.1);
+    .row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid rgba(black, 0.1);
+      .label {
+        text-align: left;
+        @include font-s-label;
+      }
+      .value {
+        text-align: right;
+        @include font-l-600;
+      }
+    }
+  }
 
   $acc-h: 54px;
   .accordion {

@@ -115,13 +115,13 @@ function FieldFormStep2({ formData, action, onNextClick, onBackClick }: FieldPro
                 placeholder="Nome del campo"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={""}
+                // value={""}
               />
             </label>
           </div>
         </div>
         <div className="row input-row">
-          <div className="col-md-6">
+          <div className="col-md-6 input-row-margin-fix">
             <label>
               Coltura
               <select
@@ -129,7 +129,7 @@ function FieldFormStep2({ formData, action, onNextClick, onBackClick }: FieldPro
                 name="FIELD_2"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={""}
+                // value={""}
               >
                 <option value="" disabled>
                   Scegli la coltura
@@ -142,7 +142,7 @@ function FieldFormStep2({ formData, action, onNextClick, onBackClick }: FieldPro
               </select>
             </label>
           </div>
-          <div className="col-md-6">
+          <div className="col-md-6 input-row-margin-fix">
             <label>
               Varietà/Cultivar
               <input
@@ -152,13 +152,13 @@ function FieldFormStep2({ formData, action, onNextClick, onBackClick }: FieldPro
                 placeholder="Indica la varietà o cultivar"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={""}
+                // value={""}
               />
             </label>
           </div>
         </div>
         <div className="row input-row">
-          <div className="col-md-6">
+          <div className="col-md-6 input-row-margin-fix">
             <label>
               Rotazione
               <select
@@ -166,7 +166,7 @@ function FieldFormStep2({ formData, action, onNextClick, onBackClick }: FieldPro
                 name="FIELD_4"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={""}
+                // value={""}
               >
                 <option value="" disabled>
                   Scegli...
@@ -179,23 +179,25 @@ function FieldFormStep2({ formData, action, onNextClick, onBackClick }: FieldPro
               </select>
             </label>
           </div>
-          <div className="col-md-6">
+          <div className="col-md-6 input-row-margin-fix">
             <label>
               Anno di impianto
               <input
                 id="FIELD_5"
                 name="FIELD_5"
                 type="text"
-                placeholder="[SOLO SE ROTAZIONE = NO]"
+                // placeholder="[SOLO SE ROTAZIONE = NO]"
+                placeholder="Anno"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={""}
+                disabled={true}
+                // value={""}
               />
             </label>
           </div>
         </div>
         <div className="row input-row">
-          <div className="col-md-6">
+          <div className="col-md-6 input-row-margin-fix">
             <label>
               Dimensione del campo
               <select
@@ -203,7 +205,7 @@ function FieldFormStep2({ formData, action, onNextClick, onBackClick }: FieldPro
                 name="FIELD_6"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={""}
+                // value={""}
               >
                 <option value="" disabled>
                   Scegli il metodo di inserimento
@@ -216,23 +218,25 @@ function FieldFormStep2({ formData, action, onNextClick, onBackClick }: FieldPro
               </select>
             </label>
           </div>
-          <div className="col-md-6">
+          <div className="col-md-6 input-row-margin-fix">
             <label>
               Dimensione in ettari
               <input
                 id="FIELD_7"
                 name="FIELD_7"
                 type="text"
-                placeholder="[NON MODIFICABILE SE CALCOLO AUTOMATICO]"
+                // placeholder="[NON MODIFICABILE SE CALCOLO AUTOMATICO]"
+                placeholder="He"
+                disabled={true}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={""}
+                // value={""}
               />
             </label>
           </div>
         </div>
         <div className="row input-row">
-          <div className="col-md-6">
+          <div className="col-md-6 input-row-margin-fix">
             <label>
               Numero di piante
               <input
@@ -242,11 +246,11 @@ function FieldFormStep2({ formData, action, onNextClick, onBackClick }: FieldPro
                 placeholder="Numero di piante"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={""}
+                // value={""}
               />
             </label>
           </div>
-          <div className="col-md-6">
+          <div className="col-md-6 input-row-margin-fix">
             <label>
               Irrigazione
               <select
@@ -254,7 +258,7 @@ function FieldFormStep2({ formData, action, onNextClick, onBackClick }: FieldPro
                 name="FIELD_9"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={""}
+                // value={""}
               >
                 <option value="" disabled>
                   Scegli il tipo di irrigazione
@@ -269,7 +273,7 @@ function FieldFormStep2({ formData, action, onNextClick, onBackClick }: FieldPro
           </div>
         </div>
         <div className="row input-row">
-          <div className="col-md-6">
+          <div className="col-md-6 input-row-margin-fix">
             <label>
               Inerbimento
               <select
@@ -277,7 +281,7 @@ function FieldFormStep2({ formData, action, onNextClick, onBackClick }: FieldPro
                 name="FIELD_10"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={""}
+                // value={""}
               >
                 <option value="" disabled>
                   Scegli il tipo di inerbimento
@@ -290,7 +294,7 @@ function FieldFormStep2({ formData, action, onNextClick, onBackClick }: FieldPro
               </select>
             </label>
           </div>
-          <div className="col-md-6">
+          <div className="col-md-6 input-row-margin-fix">
             <label>
               Tessitura
               <select
@@ -298,7 +302,7 @@ function FieldFormStep2({ formData, action, onNextClick, onBackClick }: FieldPro
                 name="FIELD_11"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={""}
+                // value={""}
               >
                 <option value="" disabled>
                   Scegli la tessitura del suolo
@@ -316,19 +320,21 @@ function FieldFormStep2({ formData, action, onNextClick, onBackClick }: FieldPro
           <div className="col">
             <label>
               Descrizione
-              <input
+              <textarea
                 id="FIELD_12"
                 name="FIELD_12"
-                type="text"
+                rows={15}
+                cols={50}
                 placeholder="Descrizione del campo"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={""}
+                // value={""}
               />
             </label>
           </div>
         </div>
 
+        {/*  
         <div className="spacer" style={{ height: "200px" }}></div>
 
         <div className="input-row">
@@ -394,8 +400,8 @@ function FieldFormStep2({ formData, action, onNextClick, onBackClick }: FieldPro
                 <input
                   id="area"
                   name="area"
-                  /*type="number"
-                step={0.01}*/
+                  // type="number"
+                  // step={0.01}
                   min={0}
                   placeholder="Area del campo in ettari"
                   onChange={formik.handleChange}
@@ -449,13 +455,19 @@ function FieldFormStep2({ formData, action, onNextClick, onBackClick }: FieldPro
             <div className="error">{formik.errors.description}</div>
           ) : null}
         </div>
+
+        */}
+
         <hr />
+
         <div className="buttons-wrapper">
           <button className="trnt_btn secondary" onClick={onBackClick}>
             Indietro
           </button>
           <input type="submit" className="primary" value={action} />
         </div>
+
+        <div className="spacer" style={{ height: "200px" }}></div>
       </form>
     </div>
   );

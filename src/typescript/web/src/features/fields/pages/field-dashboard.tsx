@@ -26,6 +26,63 @@ export function FieldDashboard() {
 
   return (
     <Fragment>
+      {/* TABLE TEST */}
+      <div className="container">
+        <div className="row">
+          <div className="col-xl-9">
+            <div className="details-grid">
+              <div className="details-table">
+                <div className="row">
+                  <div className="label">Coltura</div>
+                  <div className="value">Vite</div>
+                </div>
+                <div className="row">
+                  <div className="label">Cultivar</div>
+                  <div className="value">Garganega</div>
+                </div>
+                <div className="row">
+                  <div className="label">Anno di impianto</div>
+                  <div className="value">2011</div>
+                </div>
+                <div className="row">
+                  <div className="label">Tessitura</div>
+                  <div className="value">Argilla</div>
+                </div>
+              </div>
+
+              <div className="details-table">
+                <div className="row">
+                  <div className="label">Num. rilevamenti</div>
+                  <div className="value">9</div>
+                </div>
+                <div className="row">
+                  <div className="label">Dimensione</div>
+                  <div className="value">2,44 he</div>
+                </div>
+                <div className="row">
+                  <div className="label">Num. piante</div>
+                  <div className="value">11.500</div>
+                </div>
+                <div className="row">
+                  <div className="label">Inerbimento</div>
+                  <div className="value">Misto/spoglio</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="col-xl-3">
+            <div className="mt-5 mt-xl-0"></div>
+            <a
+              className="cardlet-button"
+              onClick={() => navigate(`/companies/${companyId}/fields/${fieldId}/new-detection`)}
+            >
+              + Nuovo Rilevamento
+            </a>
+          </div>
+        </div>
+      </div>
+
+      {/* 
       <Container>
         <Row>
           <Col md={6} xl={3}>
@@ -57,6 +114,10 @@ export function FieldDashboard() {
             </a>
           </Col>
         </Row>
+      </Container>
+       */}
+
+      <Container>
         <Row className="mt-4">
           <Col xl={6}>
             <Card>
@@ -66,7 +127,7 @@ export function FieldDashboard() {
                   className="trnt_btn slim-y narrow-x primary"
                   onClick={() => navigate(`/companies/${companyId}/fields/${fieldId}/map`)}
                 >
-                  Espandi<span className="d-none d-sm-inline"> la mappa</span>
+                  Espandi&nbsp;<span className="d-none d-sm-inline"> la mappa</span>
                 </button>
               </div>
               <Card.Img
