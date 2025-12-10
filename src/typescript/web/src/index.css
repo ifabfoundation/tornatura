@@ -12829,37 +12829,36 @@ body {
 
 #app h3, #app .h3 {
   font-family: "Inter", sans-serif;
-  font-size: 15px;
+  font-size: 20px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
   font-style: normal;
   font-stretch: normal;
   font-optical-sizing: auto;
-  font-weight: 600;
 }
 
 @media (min-width: 576px) {
   #app h3, #app .h3 {
-    font-size: 15px;
+    font-size: 20px;
   }
 }
 
 @media (min-width: 768px) {
   #app h3, #app .h3 {
-    font-size: 15px;
+    font-size: 20px;
   }
 }
 
 @media (min-width: 992px) {
   #app h3, #app .h3 {
-    font-size: 15px;
+    font-size: 20px;
   }
 }
 
 @media (min-width: 1200px) {
   #app h3, #app .h3 {
-    font-size: 15px;
+    font-size: 20px;
   }
 }
 
@@ -12872,7 +12871,6 @@ body {
   font-style: normal;
   font-stretch: normal;
   font-optical-sizing: auto;
-  font-weight: 600;
 }
 
 @media (min-width: 576px) {
@@ -13005,6 +13003,10 @@ body {
   #app p {
     font-size: 15px;
   }
+}
+
+#app strong {
+  font-weight: 600;
 }
 
 #app a.button,
@@ -13959,6 +13961,10 @@ body {
   box-shadow: 0 0px 8px rgba(0, 0, 0, 0.1);
 }
 
+#app .cozy-button[data-size="small"] {
+  height: 34px;
+}
+
 #app .cozy-button .icon-active {
   display: none;
 }
@@ -14067,13 +14073,102 @@ body {
   }
 }
 
-#app ol.stepper {
+#app .detection-ui {
+  display: flex;
+  flex-flow: column nowrap;
+  min-height: 80vh;
+  gap: 5px;
+}
+
+#app .detection-ui .detection-scores {
+  flex: 1 1 auto;
+  /* grows to fill leftover vertical space */
+  background-color: #1f1f1f;
+  border-radius: 5px;
+}
+
+#app .detection-ui .detection-inputs {
+  flex: 0 0 auto;
+  /* takes only the height it needs */
+  background-color: #ddd;
+  border-radius: 5px;
+}
+
+#app .stepper-wrapper {
+  position: relative;
+}
+
+@media (max-width: 575.98px) {
+  #app .stepper-wrapper {
+    margin-top: -11px;
+  }
+}
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+  #app .stepper-wrapper {
+    margin: -21px -10px 0px -10px;
+  }
+}
+
+#app .stepper-wrapper button.stepper-back-button {
+  z-index: 1;
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: "Inter", sans-serif;
+  font-size: 20px;
+  letter-spacing: 0.02em;
+  line-height: 1.3em;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  font-optical-sizing: auto;
+  border: none;
+  border-radius: 16px;
+  height: 32px;
+  width: 32px;
+  color: #eaff00;
+  background-color: transparent;
+}
+
+@media (min-width: 768px) {
+  #app .stepper-wrapper button.stepper-back-button {
+    display: none;
+  }
+}
+
+@media (min-width: 576px) {
+  #app .stepper-wrapper button.stepper-back-button {
+    font-size: 20px;
+  }
+}
+
+@media (min-width: 768px) {
+  #app .stepper-wrapper button.stepper-back-button {
+    font-size: 20px;
+  }
+}
+
+@media (min-width: 992px) {
+  #app .stepper-wrapper button.stepper-back-button {
+    font-size: 20px;
+  }
+}
+
+@media (min-width: 1200px) {
+  #app .stepper-wrapper button.stepper-back-button {
+    font-size: 20px;
+  }
+}
+
+#app .stepper-wrapper ol.stepper {
   display: flex;
   height: 60px;
   width: 100%;
 }
 
-#app ol.stepper li {
+#app .stepper-wrapper ol.stepper li {
   height: 100%;
   display: flex;
   align-items: center;
@@ -14096,39 +14191,39 @@ body {
   font-weight: 600;
 }
 
-#app ol.stepper li:first-child {
+#app .stepper-wrapper ol.stepper li:first-child {
   clip-path: polygon(0% 0%, calc(100% - 15px) 0%, 100% 50%, calc(100% - 15px) 100%, 0% 100%);
 }
 
-#app ol.stepper li:last-child {
+#app .stepper-wrapper ol.stepper li:last-child {
   clip-path: polygon(15px 50%, 0% 0%, 100% 0%, 100% 100%, 0% 100%);
 }
 
 @media (min-width: 576px) {
-  #app ol.stepper li {
+  #app .stepper-wrapper ol.stepper li {
     font-size: 15px;
   }
 }
 
 @media (min-width: 768px) {
-  #app ol.stepper li {
+  #app .stepper-wrapper ol.stepper li {
     font-size: 15px;
   }
 }
 
 @media (min-width: 992px) {
-  #app ol.stepper li {
+  #app .stepper-wrapper ol.stepper li {
     font-size: 15px;
   }
 }
 
 @media (min-width: 1200px) {
-  #app ol.stepper li {
+  #app .stepper-wrapper ol.stepper li {
     font-size: 15px;
   }
 }
 
-#app ol.stepper li::before {
+#app .stepper-wrapper ol.stepper li::before {
   font-family: "Inter", sans-serif;
   font-size: 11px;
   letter-spacing: 0.02em;
@@ -14149,60 +14244,60 @@ body {
 }
 
 @media (min-width: 576px) {
-  #app ol.stepper li::before {
+  #app .stepper-wrapper ol.stepper li::before {
     font-size: 11px;
   }
 }
 
 @media (min-width: 768px) {
-  #app ol.stepper li::before {
+  #app .stepper-wrapper ol.stepper li::before {
     font-size: 11px;
   }
 }
 
 @media (min-width: 992px) {
-  #app ol.stepper li::before {
+  #app .stepper-wrapper ol.stepper li::before {
     font-size: 11px;
   }
 }
 
 @media (min-width: 1200px) {
-  #app ol.stepper li::before {
+  #app .stepper-wrapper ol.stepper li::before {
     font-size: 11px;
   }
 }
 
-#app ol.stepper li[data-done="true"] {
+#app .stepper-wrapper ol.stepper li[data-done="true"] {
   background-color: #1f1f1f;
   color: white;
 }
 
-#app ol.stepper li[data-done="true"]::before {
+#app .stepper-wrapper ol.stepper li[data-done="true"]::before {
   content: "✓";
   background-color: white;
   color: #1f1f1f;
 }
 
-#app ol.stepper li[data-current="true"] {
+#app .stepper-wrapper ol.stepper li[data-current="true"] {
   background-color: #3d401a;
   color: #eaff00;
 }
 
-#app ol.stepper li[data-current="true"]::before {
+#app .stepper-wrapper ol.stepper li[data-current="true"]::before {
   content: attr(data-step-num);
   background-color: #eaff00;
   color: #1f1f1f;
 }
 
 @media (max-width: 767.98px) {
-  #app ol.stepper li[data-current="false"] {
-    width: 90px;
+  #app .stepper-wrapper ol.stepper li[data-current="false"] {
+    width: 0px;
     flex-grow: 0;
   }
-  #app ol.stepper li[data-current="false"]:first-child, #app ol.stepper li[data-current="false"]:last-child {
-    width: 80px;
+  #app .stepper-wrapper ol.stepper li[data-current="false"]:first-child, #app .stepper-wrapper ol.stepper li[data-current="false"]:last-child {
+    width: 0px;
   }
-  #app ol.stepper li[data-current="false"] span {
+  #app .stepper-wrapper ol.stepper li[data-current="false"] span {
     display: none;
   }
 }
@@ -15941,6 +16036,13 @@ ul.list-group li.list-group-item:hover {
   background-color: #1f1f1f;
   color: white;
   border-color: #1f1f1f;
+}
+
+.narrow-container {
+  max-width: 600px;
+  padding: 0 10px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .CodeMirror .CodeMirror-scroll {

@@ -17,7 +17,6 @@ import * as turf from "@turf/turf";
 import { ModalConfirm } from "../../../components/ModalConfirm";
 import { Accordion, AccordionItem } from "../../../components/Accordion";
 import CozyButton from "../../../components/CozyButton";
-import Icon from "../../../components/Icon";
 
 interface DetectionProps {
   formData: DetectionMutationPayload;
@@ -698,6 +697,7 @@ function DetectionFormMapPosition({ onMarkerChange }: DetectionFormMapProps) {
       {mapLoaded && (
         <div className="mapbox-searchbox-wrapper field-map-mapbox-searchbox-wrapper">
           {/*@ts-ignore*/}
+          {/*  
           <SearchBox
             options={{
               language: "it",
@@ -712,6 +712,7 @@ function DetectionFormMapPosition({ onMarkerChange }: DetectionFormMapProps) {
             }}
             marker
           />
+          */}
         </div>
       )}
       <div ref={mapContainerRef} id="map" className="map-detection-form"></div>
@@ -726,8 +727,8 @@ const categorie: any = {
       peronospora: {
         name: "Peronospora",
       },
-      oter_fungi: {
-        name: null,
+      other_fungi: {
+        name: "Altro fungo",
       },
     },
   },
@@ -737,8 +738,8 @@ const categorie: any = {
       flavescenza: {
         name: "Flavescenza",
       },
-      oter_bacteria: {
-        name: null,
+      other_bacteria: {
+        name: "Altro batterio",
       },
     },
   },
@@ -754,24 +755,79 @@ const categorie: any = {
       diabrotica: {
         name: "Diabrotica",
       },
-      oter_insect: {
-        name: null,
+      other_insect: {
+        name: "Altro insetto",
       },
     },
   },
 };
 
 const methods: any = {
-  peronospora: ["Foglia", "Frutto", "Tutta la pianta"],
-  oter_fungi: ["Foglia", "Frutto", "Tutta la pianta"],
-  flavescenza: ["Foglia", "Frutto", "Tutta la pianta"],
-  oter_bacteria: ["Foglia", "Frutto", "Tutta la pianta"],
-  cimice: ["Trappola", "Campo (Frappage – Visivo)"],
-  scafoideo: ["Foglie basali/polloni", "Chioma"],
-  diabrotica: [],
-  oter_insect: ["Trappola", "Altro"],
-}
-
+  peronospora: {
+    title: (
+      <span>
+        Rilevamento di <strong>peronospora</strong> su…
+      </span>
+    ),
+    items: ["Foglia", "Frutto", "Tutta la pianta"],
+  },
+  other_fungi: {
+    title: (
+      <span>
+        Rilevamento di <strong>altro fungo</strong> su…
+      </span>
+    ),
+    items: ["Foglia", "Frutto", "Tutta la pianta"],
+  },
+  flavescenza: {
+    title: (
+      <span>
+        Rilevamento di <strong>flavescenza</strong> su…
+      </span>
+    ),
+    items: ["Foglia", "Frutto", "Tutta la pianta"],
+  },
+  other_bacteria: {
+    title: (
+      <span>
+        Rilevamento di <strong>altro batterio</strong> su…
+      </span>
+    ),
+    items: ["Foglia", "Frutto", "Tutta la pianta"],
+  },
+  cimice: {
+    title: (
+      <span>
+        Scegli un metodo di rilevamento della <strong>cimice</strong>
+      </span>
+    ),
+    items: ["Trappola", "Campo (Frappage – Visivo)"],
+  },
+  scafoideo: {
+    title: (
+      <span>
+        Scegli un focus di rilevamento dello <strong>scafoideo</strong>
+      </span>
+    ),
+    items: ["Foglie basali/polloni", "Chioma"],
+  },
+  diabrotica: {
+    title: (
+      <span>
+        Scegli un metodo di rilevamento della <strong>diabrotica</strong>
+      </span>
+    ),
+    items: [],
+  },
+  other_insect: {
+    title: (
+      <span>
+        Scegli un metodo di rilevamento di <strong>altro insetto</strong>
+      </span>
+    ),
+    items: ["Trappola", "Altro"],
+  },
+};
 
 function AccordionTest() {
   let items: AccordionItem[] = [];
@@ -820,10 +876,10 @@ function AccordionTest() {
 }
 
 interface AccordionTipologiaProps {
-  onSelect: (selection: string) => void
+  onSelect: (selection: string) => void;
 }
 
-function AccordionTipologia({onSelect}: AccordionTipologiaProps) {
+function AccordionTipologia({ onSelect }: AccordionTipologiaProps) {
   let items: AccordionItem[] = [];
   items = Object.keys(categorie).map((key: string, index: number) => {
     return {
@@ -832,15 +888,21 @@ function AccordionTipologia({onSelect}: AccordionTipologiaProps) {
       content: (
         <Fragment>
           {Object.keys(categorie[key].items).map((itemKey: string, itemIndex) => (
-            <CozyButton key={itemIndex} iconName={"bug"} text={categorie[key].items[itemKey].name || "Altro"} onClick={() => onSelect(itemKey)} />
+            <CozyButton
+              key={itemIndex}
+              iconName={"bug"}
+              text={categorie[key].items[itemKey].name || "Altro"}
+              onClick={() => onSelect(itemKey)}
+            />
           ))}
         </Fragment>
       ),
       icon: "spots",
-    }
-  })
+    };
+  });
   return (
-    <div style={{ margin: "auto", maxWidth: "600px", marginTop: "80px", marginBottom: "80px" }}>
+    <div className="narrow-container my-5">
+      <h3 className="mb-4 text-center">Seleziona la tipologia di rilevamento</h3>
       <Accordion items={items} />
     </div>
   );
@@ -959,7 +1021,7 @@ function DetectionStepPosizione({ action, onNextClick }: DetectionProps) {
   return (
     <Fragment>
       {modalOpen && <modal.component {...modal.componentProps} />}
-      <h4 className="mt-4">La tua posizione</h4>
+      {/* <h4 className="mt-4">La tua posizione</h4> */}
       <div className="input-row">
         <label>
           <select name="source" onChange={(e) => handleSourceChange(e.target.value)} value={source}>
@@ -982,13 +1044,13 @@ function DetectionStepPosizione({ action, onNextClick }: DetectionProps) {
 function DetectionStepTipologia({ onNextClick }: DetectionProps) {
   const handleOnSelectClick = (value: string) => {
     onNextClick({
-      type: value
-    })
-  }
+      type: value,
+    });
+  };
 
   return (
     <Fragment>
-      <AccordionTipologia onSelect={handleOnSelectClick}/>
+      <AccordionTipologia onSelect={handleOnSelectClick} />
     </Fragment>
   );
 }
@@ -996,16 +1058,45 @@ function DetectionStepTipologia({ onNextClick }: DetectionProps) {
 function DetectionStepMetodo({ formData, onNextClick }: DetectionProps) {
   const handleOnSelectClick = (value: string) => {
     onNextClick({
-      method: value
-    })
-  }
+      method: value,
+    });
+  };
 
   return (
-    <Fragment>
-      {methods[formData.type].map((itemKey: string, itemIndex: number) => (
-        <CozyButton key={itemIndex} iconName={"bug"} text={itemKey} onClick={() => handleOnSelectClick(itemKey)} />
+    <div className="narrow-container my-5">
+      <h3 className="mb-4 text-center">{methods[formData.type].title}</h3>
+      {methods[formData.type].items.map((itemKey: string, itemIndex: number) => (
+        <CozyButton
+          key={itemIndex}
+          iconName={"bug"}
+          text={itemKey}
+          onClick={() => handleOnSelectClick(itemKey)}
+        />
       ))}
-    </Fragment>
+    </div>
+  );
+}
+
+function DetectionUI({ formData, onNextClick }: DetectionProps) {
+  const handleOnSelectClick = (value: string) => {
+    onNextClick({
+      method: value,
+    });
+  };
+
+  return (
+    <div className="narrow-container my-lg-5">
+      <div className="detection-ui">
+        <div className="detection-scores"></div>
+        <div className="detection-inputs">
+          <CozyButton btnSize="small" text={"●○○○○   Assente o Basso"} onClick={() => {}} />
+          <CozyButton btnSize="small" text={"●●○○○   Limitato"} onClick={() => {}} />
+          <CozyButton btnSize="small" text={"●●●○○   Cospicuo"} onClick={() => {}} />
+          <CozyButton btnSize="small" text={"●●●●○   Alto"} onClick={() => {}} />
+          <CozyButton btnSize="small" text={"●●●●●   Molto Alto"} onClick={() => {}} />
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -1093,7 +1184,7 @@ export function DetectionForm() {
     } else if (step === 2) {
       const payload = {
         ...formData,
-        method: data.method
+        method: data.method,
       };
       setFormData(payload);
       setStep(step + 1);
@@ -1110,35 +1201,57 @@ export function DetectionForm() {
 
   return (
     <Fragment>
-      <ol className="stepper" data-steps={3}>
-        <li
-          data-step-num="1"
-          data-done={step > 1 ? "true" : "false"}
-          data-current={step == 1 ? "true" : "false"}
-        >
-          <span>Tipologia</span>
-        </li>
-        <li
-          data-step-num="2"
-          data-done={step > 2 ? "true" : "false"}
-          data-current={step == 2 ? "true" : "false"}
-        >
-          <span>Metodo</span>
-        </li>
-        <li
-          data-step-num="3"
-          data-done={step > 3 ? "true" : "false"}
-          data-current={step == 3 ? "true" : "false"}
-        >
-          <span>Posizione</span>
-        </li>
-      </ol>
+      {step <= 3 && (
+        <div className="stepper-wrapper">
+          <button
+            className="stepper-back-button"
+            onClick={() => {
+              if (step > 1) setStep(step - 1);
+              else navigate(-1);
+            }}
+          >
+            &larr;
+          </button>
+          <ol className="stepper" data-steps={3}>
+            <li
+              data-step-num="1"
+              data-done={step > 1 ? "true" : "false"}
+              data-current={step == 1 ? "true" : "false"}
+              onClick={() => {
+                if (step > 1) setStep(1);
+              }}
+            >
+              <span>Tipologia</span>
+            </li>
+            <li
+              data-step-num="2"
+              data-done={step > 2 ? "true" : "false"}
+              data-current={step == 2 ? "true" : "false"}
+              onClick={() => {
+                if (step > 2) setStep(2);
+              }}
+            >
+              <span>Metodo</span>
+            </li>
+            <li
+              data-step-num="3"
+              data-done={step > 3 ? "true" : "false"}
+              data-current={step == 3 ? "true" : "false"}
+              onClick={() => {
+                if (step > 3) setStep(3);
+              }}
+            >
+              <span>Posizione</span>
+            </li>
+          </ol>
+        </div>
+      )}
       <div>
         {step === 1 && (
-          <DetectionStepTipologia 
-            formData={formData} 
-            action={action} 
-            onNextClick={handleNextClick} 
+          <DetectionStepTipologia
+            formData={formData}
+            action={action}
+            onNextClick={handleNextClick}
           />
         )}
         {step === 2 && (
@@ -1151,6 +1264,14 @@ export function DetectionForm() {
         )}
         {step === 3 && (
           <DetectionStepPosizione
+            formData={formData}
+            action={action}
+            onBackClick={handleBackClick}
+            onNextClick={handleNextClick}
+          />
+        )}
+        {step === 4 && (
+          <DetectionUI
             formData={formData}
             action={action}
             onBackClick={handleBackClick}
