@@ -57,6 +57,12 @@ class AgriField(BaseModel):
     harvest: str
     area: float
     plants: int
+    variety: str
+    rotation: str
+    year: Optional[str] = None
+    irrigation: str
+    grassing: str
+    weaving: str
     map: List[Point]
     orgId: str
     creationTime: int
@@ -135,6 +141,12 @@ class AgriFieldMutationPayload(BaseModel):
     harvest: str
     area: float
     plants: int
+    variety: str
+    rotation: str
+    year: Optional[str] = None
+    irrigation: str
+    grassing: str
+    weaving: str
 
 class DetectionMutationPayload(BaseModel):
     detectionTime: int

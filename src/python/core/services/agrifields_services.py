@@ -30,6 +30,12 @@ class AgriFieldServices:
                 harvest=item.harvest,
                 area=item.area,
                 plants=item.plants,
+                variety=item.variety,
+                rotation=item.rotation,
+                year=item.year,
+                irrigation=item.irrigation,
+                grassing=item.grassing,
+                weaving=item.weaving,
                 map=[{"lng": point.lng, "lat": point.lat} for point in item.map],
                 orgId=item.orgId,
                 creationTime=item.creationTime,
@@ -54,9 +60,10 @@ class AgriFieldServices:
         """Create agriField
         :rtype: AgriField
         """
-        data = payload.model_dump()
+        data = payload.model_dump(exclude_none=True)
         current_time = int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp() * 1000)
 
+        data["map"] = [Point(lng=point.lng, lat=point.lat) for point in payload.map]
         data.update({
             "orgId": org_id,
             "creationTime": current_time,
@@ -125,6 +132,13 @@ class AgriFieldServices:
         agrifield.harvest = payload.harvest
         agrifield.area = payload.area
         agrifield.plants = payload.plants
+        agrifield.variety = payload.variety
+        agrifield.rotation = payload.rotation
+        agrifield.irrigation = payload.irrigation
+        agrifield.grassing = payload.grassing
+        agrifield.weaving = payload.weaving
+        if payload.year is not None:
+            agrifield.year = payload.year            
         agrifield.map = [Point(lng=point.lng, lat=point.lat) for point in payload.map]
         agrifield.lastUpdateTime = int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp() * 1000)
         agrifield.save()

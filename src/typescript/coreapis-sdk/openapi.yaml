@@ -1625,6 +1625,24 @@ components:
         plants:
           type: integer
           title: Plants
+        variety:
+          type: string
+          title: Variety
+        rotation:
+          type: string
+          title: Rotation
+        year:
+          type: string
+          title: Year
+        irrigation:
+          type: string
+          title: Irrigation
+        grassing:
+          type: string
+          title: Grassing
+        weaving:
+          type: string
+          title: Weaving
         map:
           items:
             $ref: '#/components/schemas/Point'
@@ -1647,6 +1665,11 @@ components:
       - harvest
       - area
       - plants
+      - variety
+      - rotation
+      - irrigation
+      - grassing
+      - weaving
       - map
       - orgId
       - creationTime
@@ -1674,6 +1697,24 @@ components:
         plants:
           type: integer
           title: Plants
+        variety:
+          type: string
+          title: Variety
+        rotation:
+          type: string
+          title: Rotation
+        year:
+          type: string
+          title: Year
+        irrigation:
+          type: string
+          title: Irrigation
+        grassing:
+          type: string
+          title: Grassing
+        weaving:
+          type: string
+          title: Weaving
       type: object
       required:
       - name
@@ -1682,6 +1723,11 @@ components:
       - harvest
       - area
       - plants
+      - variety
+      - rotation
+      - irrigation
+      - grassing
+      - weaving
       title: AgriFieldMutationPayload
     Body_upload_files:
       properties:
