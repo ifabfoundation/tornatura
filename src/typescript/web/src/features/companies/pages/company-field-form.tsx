@@ -37,8 +37,14 @@ function FieldFormStep2({ formData, action, onNextClick, onBackClick }: FieldPro
       description: "",
       harvest: "",
       area: 0.0,
-      areafrom: "mappa",
+      areafrom: "map",
       plants: 0,
+      variety: "",
+      irrigation: "",
+      weaving: "",
+      rotation: "",
+      grassing: "",
+      year: ""
     },
     validationSchema: Yup.object({
       name: Yup.string().required("Campo necessario"),
@@ -47,10 +53,22 @@ function FieldFormStep2({ formData, action, onNextClick, onBackClick }: FieldPro
         .typeError("Il valore inserito non è positivo")
         .min(0, "Il valore deve essere positivo")
         .required("Campo necessario"),
+      variety: Yup.string().required("Campo necessario"),
+      irrigation: Yup.string().required("Campo necessario"),
+      weaving: Yup.string().required("Campo necessario"),
+      rotation: Yup.string().required("Campo necessario"),
+      grassing: Yup.string().required("Campo necessario"),  
     }),
-    onSubmit: (values, { setSubmitting }) => {
-      if (values.areafrom === "mappa") {
+    onSubmit: (values, { setSubmitting, setErrors }) => {
+      if (values.areafrom === "map") {
         values.area = calcArea(formData.map);
+      }
+      if (values.rotation === 'no' && !values.year) {
+        setErrors({year: "Specificare l'anno di impianto"});
+        setSubmitting(false);
+        return;
+      } else if (values.rotation === 'si') {
+        values.year = '';
       }
       onNextClick(values);
       setSubmitting(false);
@@ -65,6 +83,12 @@ function FieldFormStep2({ formData, action, onNextClick, onBackClick }: FieldPro
       area: formData.area,
       areafrom: "mappa",
       plants: formData.plants || 0,
+      variety: formData.variety,
+      irrigation: formData.irrigation,
+      weaving: formData.weaving,
+      rotation: formData.rotation,
+      grassing: formData.grassing,
+      year: ""
     });
   }, [formData]);
 
@@ -110,12 +134,12 @@ function FieldFormStep2({ formData, action, onNextClick, onBackClick }: FieldPro
               Nome
               <input
                 id="FIELD_1"
-                name="FIELD_1"
+                name="name"
                 type="text"
                 placeholder="Nome del campo"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                // value={""}
+                value={formik.values.name}
               />
             </label>
           </div>
@@ -126,10 +150,10 @@ function FieldFormStep2({ formData, action, onNextClick, onBackClick }: FieldPro
               Coltura
               <select
                 id="FIELD_2"
-                name="FIELD_2"
+                name="harvest"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                // value={""}
+                value={formik.values.harvest}
               >
                 <option value="" disabled>
                   Scegli la coltura
@@ -147,12 +171,12 @@ function FieldFormStep2({ formData, action, onNextClick, onBackClick }: FieldPro
               Varietà/Cultivar
               <input
                 id="FIELD_3"
-                name="FIELD_3"
+                name="variety"
                 type="text"
                 placeholder="Indica la varietà o cultivar"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                // value={""}
+                value={formik.values.variety}
               />
             </label>
           </div>
@@ -163,10 +187,10 @@ function FieldFormStep2({ formData, action, onNextClick, onBackClick }: FieldPro
               Rotazione
               <select
                 id="FIELD_4"
-                name="FIELD_4"
+                name="rotation"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                // value={""}
+                value={formik.values.rotation}
               >
                 <option value="" disabled>
                   Scegli...
@@ -184,14 +208,14 @@ function FieldFormStep2({ formData, action, onNextClick, onBackClick }: FieldPro
               Anno di impianto
               <input
                 id="FIELD_5"
-                name="FIELD_5"
+                name="year"
                 type="text"
                 // placeholder="[SOLO SE ROTAZIONE = NO]"
                 placeholder="Anno"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                disabled={true}
-                // value={""}
+                disabled={formik.values.rotation === 'si'}
+                value={formik.values.rotation === 'no' ? formik.values.year : ''}
               />
             </label>
           </div>
@@ -202,10 +226,10 @@ function FieldFormStep2({ formData, action, onNextClick, onBackClick }: FieldPro
               Dimensione del campo
               <select
                 id="FIELD_6"
-                name="FIELD_6"
+                name="areafrom"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                // value={""}
+                value={formik.values.areafrom}
               >
                 <option value="" disabled>
                   Scegli il metodo di inserimento
@@ -223,14 +247,17 @@ function FieldFormStep2({ formData, action, onNextClick, onBackClick }: FieldPro
               Dimensione in ettari
               <input
                 id="FIELD_7"
-                name="FIELD_7"
+                name="area"
                 type="text"
+                min={0}
                 // placeholder="[NON MODIFICABILE SE CALCOLO AUTOMATICO]"
                 placeholder="He"
-                disabled={true}
+                disabled={formik.values.areafrom === "map"}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                // value={""}
+                value={formik.values.areafrom === "manual"
+                  ? formik.values.area
+                  : calcArea(formData.map)}
               />
             </label>
           </div>
@@ -241,12 +268,12 @@ function FieldFormStep2({ formData, action, onNextClick, onBackClick }: FieldPro
               Numero di piante
               <input
                 id="FIELD_8"
-                name="FIELD_8"
+                name="plants"
                 type="text"
                 placeholder="Numero di piante"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                // value={""}
+                value={formik.values.plants}
               />
             </label>
           </div>
@@ -255,10 +282,10 @@ function FieldFormStep2({ formData, action, onNextClick, onBackClick }: FieldPro
               Irrigazione
               <select
                 id="FIELD_9"
-                name="FIELD_9"
+                name="irrigation"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                // value={""}
+                value={formik.values.irrigation}
               >
                 <option value="" disabled>
                   Scegli il tipo di irrigazione
@@ -278,10 +305,10 @@ function FieldFormStep2({ formData, action, onNextClick, onBackClick }: FieldPro
               Inerbimento
               <select
                 id="FIELD_10"
-                name="FIELD_10"
+                name="grassing"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                // value={""}
+                value={formik.values.grassing}
               >
                 <option value="" disabled>
                   Scegli il tipo di inerbimento
@@ -299,10 +326,10 @@ function FieldFormStep2({ formData, action, onNextClick, onBackClick }: FieldPro
               Tessitura
               <select
                 id="FIELD_11"
-                name="FIELD_11"
+                name="weaving"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                // value={""}
+                value={formik.values.weaving}
               >
                 <option value="" disabled>
                   Scegli la tessitura del suolo
@@ -322,13 +349,13 @@ function FieldFormStep2({ formData, action, onNextClick, onBackClick }: FieldPro
               Descrizione
               <textarea
                 id="FIELD_12"
-                name="FIELD_12"
+                name="description"
                 rows={15}
                 cols={50}
                 placeholder="Descrizione del campo"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                // value={""}
+                value={formik.values.description}
               />
             </label>
           </div>
@@ -612,11 +639,17 @@ export function CompanyFieldForm() {
   const [action, setAction] = React.useState("Avanti");
   const [formData, setFormData] = React.useState<AgriFieldMutationPayload>({
     name: "",
+    variety: "",
     description: "",
     area: 0,
     harvest: "",
     plants: 0,
     map: [],
+    irrigation: "",
+    weaving: "",
+    rotation: "",
+    grassing: "",
+    year: ""
   });
 
   React.useEffect(() => {
@@ -645,6 +678,12 @@ export function CompanyFieldForm() {
         area: data.area,
         harvest: data.harvest,
         plants: data.plants,
+        variety: data.variety,
+        irrigation: data.irrigation,
+        weaving: data.weaving,
+        rotation: data.rotation,
+        grassing: data.rotation,
+        year: data.year
       };
       setFormData(payload);
       createFieldAction(payload);
