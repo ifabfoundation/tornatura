@@ -8,7 +8,7 @@ function Hamburger() {
   const mobileOpen = useAppSelector((state) => state.sidebar.mobileOpen);
   return (
     <nav id="hamburger" className={mobileOpen ? "open" : ""}>
-      <input type="checkbox" checked={mobileOpen} />
+      <input type="checkbox" checked={mobileOpen} readOnly />
       <span></span>
       <span></span>
       <span></span>

@@ -44,7 +44,7 @@ function FieldFormStep2({ formData, action, onNextClick, onBackClick }: FieldPro
       weaving: "",
       rotation: "",
       grassing: "",
-      year: ""
+      year: "",
     },
     validationSchema: Yup.object({
       name: Yup.string().required("Campo necessario"),
@@ -57,18 +57,18 @@ function FieldFormStep2({ formData, action, onNextClick, onBackClick }: FieldPro
       irrigation: Yup.string().required("Campo necessario"),
       weaving: Yup.string().required("Campo necessario"),
       rotation: Yup.string().required("Campo necessario"),
-      grassing: Yup.string().required("Campo necessario"),  
+      grassing: Yup.string().required("Campo necessario"),
     }),
     onSubmit: (values, { setSubmitting, setErrors }) => {
       if (values.areafrom === "map") {
         values.area = calcArea(formData.map);
       }
-      if (values.rotation === 'no' && !values.year) {
-        setErrors({year: "Specificare l'anno di impianto"});
+      if (values.rotation === "no" && !values.year) {
+        setErrors({ year: "Specificare l'anno di impianto" });
         setSubmitting(false);
         return;
-      } else if (values.rotation === 'si') {
-        values.year = '';
+      } else if (values.rotation === "si") {
+        values.year = "";
       }
       onNextClick(values);
       setSubmitting(false);
@@ -88,7 +88,7 @@ function FieldFormStep2({ formData, action, onNextClick, onBackClick }: FieldPro
       weaving: formData.weaving,
       rotation: formData.rotation,
       grassing: formData.grassing,
-      year: ""
+      year: "",
     });
   }, [formData]);
 
@@ -214,8 +214,8 @@ function FieldFormStep2({ formData, action, onNextClick, onBackClick }: FieldPro
                 placeholder="Anno"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                disabled={formik.values.rotation === 'si'}
-                value={formik.values.rotation === 'no' ? formik.values.year : ''}
+                disabled={formik.values.rotation === "si"}
+                value={formik.values.rotation === "no" ? formik.values.year : ""}
               />
             </label>
           </div>
@@ -255,9 +255,9 @@ function FieldFormStep2({ formData, action, onNextClick, onBackClick }: FieldPro
                 disabled={formik.values.areafrom === "map"}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.areafrom === "manual"
-                  ? formik.values.area
-                  : calcArea(formData.map)}
+                value={
+                  formik.values.areafrom === "manual" ? formik.values.area : calcArea(formData.map)
+                }
               />
             </label>
           </div>
@@ -277,6 +277,9 @@ function FieldFormStep2({ formData, action, onNextClick, onBackClick }: FieldPro
               />
             </label>
           </div>
+          {formik.touched.plants && formik.errors.plants ? (
+            <div className="error">{formik.errors.plants}</div>
+          ) : null}
           <div className="col-md-6 input-row-margin-fix">
             <label>
               Irrigazione
@@ -613,7 +616,7 @@ const FieldFormStep1 = ({ action, onNextClick }: FieldProps) => {
       )}
       <div ref={mapContainerRef} id="map" style={{ height: "500px" }}></div>
       <hr />
-      <div className="buttons-wrapper mt-5">
+      <div className="buttons-wrapper my-5">
         <button
           className="trnt_btn primary"
           onClick={() => {
@@ -649,7 +652,7 @@ export function CompanyFieldForm() {
     weaving: "",
     rotation: "",
     grassing: "",
-    year: ""
+    year: "",
   });
 
   React.useEffect(() => {
@@ -683,7 +686,7 @@ export function CompanyFieldForm() {
         weaving: data.weaving,
         rotation: data.rotation,
         grassing: data.rotation,
-        year: data.year
+        year: data.year,
       };
       setFormData(payload);
       createFieldAction(payload);

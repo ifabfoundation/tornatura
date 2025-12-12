@@ -9,6 +9,13 @@ import { getFieldMapGeoJson } from "../../companies/pages/company-fields";
 import _ from "lodash";
 import { Detection } from "@tornatura/coreapis";
 
+function valOrEmpty(value: any, fallback: string = "–") {
+  if (value === null || value === undefined || (typeof value === "string" && value.trim() === "")) {
+    return fallback;
+  }
+  return value;
+}
+
 export function FieldDashboard() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -16,57 +23,59 @@ export function FieldDashboard() {
   const currentField = useAppSelector((state) =>
     fieldsSelectors.selectFieldbyId(state, fieldId ?? "default")
   );
+  console.log(">>> Current Field:", currentField);
   const detections = useAppSelector((state) =>
     detectionsSelectors.selectDetectionbyFieldId(state, fieldId ?? "default")
   );
 
   React.useEffect(() => {
-    dispatch(headerbarActions.setTitle({ title: "Dashboard", subtitle: "Subtitle" }));
+    dispatch(
+      headerbarActions.setTitle({ title: "Dashboard " + currentField?.name, subtitle: "Subtitle" })
+    );
   }, []);
 
   return (
     <Fragment>
-      {/* TABLE TEST */}
+      {/* TABLE TEST 2 */}
       <div className="container">
         <div className="row">
           <div className="col-xl-9">
-            <div className="details-grid">
-              <div className="details-table">
-                <div className="row">
-                  <div className="label">Coltura</div>
-                  <div className="value">Vite</div>
-                </div>
-                <div className="row">
-                  <div className="label">Cultivar</div>
-                  <div className="value">Garganega</div>
-                </div>
-                <div className="row">
-                  <div className="label">Anno di impianto</div>
-                  <div className="value">2011</div>
-                </div>
-                <div className="row">
-                  <div className="label">Tessitura</div>
-                  <div className="value">Argilla</div>
-                </div>
+            <div className="rt-responsive-table">
+              <div className="rt-row">
+                <div className="rt-label">Coltura</div>
+                <div className="rt-value">{valOrEmpty(currentField?.harvest)}</div>
               </div>
-
-              <div className="details-table">
-                <div className="row">
-                  <div className="label">Num. rilevamenti</div>
-                  <div className="value">9</div>
-                </div>
-                <div className="row">
-                  <div className="label">Dimensione</div>
-                  <div className="value">2,44 he</div>
-                </div>
-                <div className="row">
-                  <div className="label">Num. piante</div>
-                  <div className="value">11.500</div>
-                </div>
-                <div className="row">
-                  <div className="label">Inerbimento</div>
-                  <div className="value">Misto/spoglio</div>
-                </div>
+              <div className="rt-row">
+                <div className="rt-label">Cultivar</div>
+                <div className="rt-value">{valOrEmpty(currentField?.variety)}</div>
+              </div>
+              <div className="rt-row">
+                <div className="rt-label">Rotazione</div>
+                <div className="rt-value">{valOrEmpty(currentField?.rotation)}</div>
+              </div>
+              <div className="rt-row">
+                <div className="rt-label">Anno di impianto</div>
+                <div className="rt-value">{valOrEmpty(currentField?.year)}</div>
+              </div>
+              <div className="rt-row">
+                <div className="rt-label">Tessitura</div>
+                <div className="rt-value">{valOrEmpty(currentField?.weaving)}</div>
+              </div>
+              <div className="rt-row">
+                <div className="rt-label">Num. rilevamenti</div>
+                <div className="rt-value">{valOrEmpty(detections.length)}</div>
+              </div>
+              <div className="rt-row">
+                <div className="rt-label">Dimensione</div>
+                <div className="rt-value">{valOrEmpty(currentField?.area)}</div>
+              </div>
+              <div className="rt-row">
+                <div className="rt-label">Num. piante</div>
+                <div className="rt-value">{valOrEmpty(currentField?.plants)}</div>
+              </div>
+              <div className="rt-row">
+                <div className="rt-label">Inerbimento</div>
+                <div className="rt-value">{valOrEmpty(currentField?.grassing)}</div>
               </div>
             </div>
           </div>

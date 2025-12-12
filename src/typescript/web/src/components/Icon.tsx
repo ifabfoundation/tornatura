@@ -1,3 +1,10 @@
+import circleempty_b from "../assets/images/icons/circleempty-b.svg";
+import circleempty_w from "../assets/images/icons/circleempty-w.svg";
+import circleempty_y from "../assets/images/icons/circleempty-y.svg";
+import circlefull_b from "../assets/images/icons/circlefull-b.svg";
+import circlefull_w from "../assets/images/icons/circlefull-w.svg";
+import circlefull_y from "../assets/images/icons/circlefull-y.svg";
+
 import alert_b from "../assets/images/icons/alert-b.svg";
 import alert_w from "../assets/images/icons/alert-w.svg";
 import alert_y from "../assets/images/icons/alert-y.svg";
@@ -66,6 +73,16 @@ import x_w from "../assets/images/icons/x-w.svg";
 import x_y from "../assets/images/icons/x-y.svg";
 
 const icons = {
+  circleempty: {
+    white: circleempty_w,
+    black: circleempty_b,
+    yellow: circleempty_y,
+  },
+  circlefull: {
+    white: circlefull_w,
+    black: circlefull_b,
+    yellow: circlefull_y,
+  },
   alert: {
     white: alert_w,
     black: alert_b,

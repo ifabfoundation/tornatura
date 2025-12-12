@@ -1,4 +1,5 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect, useState } from "react";
+import { Col, Container, Row } from "react-bootstrap";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { DetectionMutationPayload, FilesApi } from "@tornatura/coreapis";
@@ -10,13 +11,15 @@ import { detectionsActions } from "../state/detections-slice";
 import { FileWithPath, useDropzone } from "react-dropzone";
 import { getCoreApiConfiguration } from "../../../services/utils";
 import { fieldsSelectors } from "../../fields/state/fields-slice";
-import { SearchBox } from "@mapbox/search-js-react";
+// import { SearchBox } from "@mapbox/search-js-react";
 import mapboxgl, { LngLatLike, Marker } from "mapbox-gl";
 import { Point } from "@tornatura/coreapis";
 import * as turf from "@turf/turf";
 import { ModalConfirm } from "../../../components/ModalConfirm";
 import { Accordion, AccordionItem } from "../../../components/Accordion";
 import CozyButton from "../../../components/CozyButton";
+import Icon from "../../../components/Icon";
+import { timeStamp } from "console";
 
 interface DetectionProps {
   formData: DetectionMutationPayload;
@@ -722,6 +725,7 @@ function DetectionFormMapPosition({ onMarkerChange }: DetectionFormMapProps) {
 
 const categorie: any = {
   fungi: {
+    icon: "spots",
     name: "Fungo e peronospora",
     items: {
       peronospora: {
@@ -733,6 +737,7 @@ const categorie: any = {
     },
   },
   bacteria: {
+    icon: "bacteria",
     name: "Batterio",
     items: {
       flavescenza: {
@@ -744,6 +749,7 @@ const categorie: any = {
     },
   },
   insect: {
+    icon: "bug",
     name: "Insetto",
     items: {
       scafoideo: {
@@ -751,6 +757,7 @@ const categorie: any = {
       },
       cimice: {
         name: "Cimice",
+        // icon: "baloon",
       },
       diabrotica: {
         name: "Diabrotica",
@@ -829,52 +836,6 @@ const methods: any = {
   },
 };
 
-function AccordionTest() {
-  let items: AccordionItem[] = [];
-  items = [
-    {
-      id: "one",
-      title: "Fungo e peronospora",
-      content: (
-        <Fragment>
-          <CozyButton iconName={"spots"} text={"Peronospora"} onClick={() => {}} />
-          <CozyButton iconName={"spots"} text={"Altro fungo"} onClick={() => {}} />
-        </Fragment>
-      ),
-      icon: "spots",
-    },
-    {
-      id: "two",
-      title: "Batterio",
-      content: (
-        <Fragment>
-          <CozyButton iconName={"bacteria"} text={"Nome della malattia"} onClick={() => {}} />
-          <CozyButton iconName={"bacteria"} text={"Altro batterio"} onClick={() => {}} />
-        </Fragment>
-      ),
-      icon: "bacteria",
-    },
-    {
-      id: "three",
-      title: "Insetto",
-      content: (
-        <Fragment>
-          <CozyButton iconName={"bug"} text={"Scafoideo"} onClick={() => {}} />
-          <CozyButton iconName={"bug"} text={"Cimice"} onClick={() => {}} />
-          <CozyButton iconName={"bug"} text={"Diabrotica"} onClick={() => {}} />
-          <CozyButton iconName={"bug"} text={"Altro insetto"} onClick={() => {}} />
-        </Fragment>
-      ),
-      icon: "bug",
-    },
-  ];
-  return (
-    <div style={{ margin: "auto", maxWidth: "600px", marginTop: "80px", marginBottom: "80px" }}>
-      <Accordion items={items} />
-    </div>
-  );
-}
-
 interface AccordionTipologiaProps {
   onSelect: (selection: string) => void;
 }
@@ -882,22 +843,30 @@ interface AccordionTipologiaProps {
 function AccordionTipologia({ onSelect }: AccordionTipologiaProps) {
   let items: AccordionItem[] = [];
   items = Object.keys(categorie).map((key: string, index: number) => {
+    let iconNameAccItem = categorie[key].icon ?? null;
     return {
       id: index.toString(),
       title: categorie[key].name,
       content: (
         <Fragment>
-          {Object.keys(categorie[key].items).map((itemKey: string, itemIndex) => (
-            <CozyButton
-              key={itemIndex}
-              iconName={"bug"}
-              text={categorie[key].items[itemKey].name || "Altro"}
-              onClick={() => onSelect(itemKey)}
-            />
-          ))}
+          {Object.keys(categorie[key].items).map((itemKey: string, itemIndex) => {
+            let iconNameBtn = categorie[key].icon ?? null;
+            if (categorie[key].items[itemKey].icon) {
+              iconNameBtn = categorie[key].items[itemKey].icon;
+            }
+            return (
+              <CozyButton
+                key={itemIndex}
+                iconName={iconNameBtn}
+                content={categorie[key].items[itemKey].name || "Altro"}
+                onClick={() => onSelect(itemKey)}
+                arrow={true}
+              />
+            );
+          })}
         </Fragment>
       ),
-      icon: "spots",
+      icon: iconNameAccItem,
     };
   });
   return (
@@ -926,6 +895,7 @@ function DetectionStepPosizione({ action, onNextClick }: DetectionProps) {
       navigator.geolocation.getCurrentPosition((position) => {
         setGeolocation(position);
         setHasGeolocation(true);
+        console.log("Geolocation position:", position);
       });
     }
   }, []);
@@ -936,6 +906,7 @@ function DetectionStepPosizione({ action, onNextClick }: DetectionProps) {
 
   const handleMarkerChange = async (point: Point) => {
     setMarkerPosition(point);
+    setSource("map");
   };
 
   const handleNextClick = async () => {
@@ -1068,35 +1039,159 @@ function DetectionStepMetodo({ formData, onNextClick }: DetectionProps) {
       {methods[formData.type].items.map((itemKey: string, itemIndex: number) => (
         <CozyButton
           key={itemIndex}
-          iconName={"bug"}
-          text={itemKey}
+          content={itemKey}
           onClick={() => handleOnSelectClick(itemKey)}
+          arrow={true}
         />
       ))}
     </div>
   );
 }
 
+type ScoreEntry = {
+  timeStamp: number;
+  score: number;
+  scoreNorm: number;
+};
+
 function DetectionUI({ formData, onNextClick }: DetectionProps) {
+  // const endRef = React.useRef<HTMLDivElement>(null);
+  const listRef = React.useRef<HTMLDivElement>(null);
+
+  const [scores, setScores] = useState<ScoreEntry[]>([]);
+
+  // Scroll to bottom whenever scores changes
+  // useEffect(() => {
+  //   endRef.current?.scrollIntoView({ behavior: "smooth" });
+  // }, [scores]);
+
+  useEffect(() => {
+    const el = listRef.current;
+    if (el) {
+      el.scrollTo({
+        top: el.scrollHeight, // scroll to the end
+        behavior: "smooth", // animate the scroll
+      });
+    }
+  }, [scores]); // run whenever scores updates
+
+  const handleScoreClick = (score: number, multiplier: number) => {
+    for (let i = 0; i < multiplier; i++) {
+      const scoreEntry = {
+        timeStamp: new Date().getTime(),
+        score: score,
+        scoreNorm: score / 5,
+      };
+      setScores((prev) => [...prev, scoreEntry]);
+    }
+    console.log(
+      `Scores (${scores.length})`,
+      scores
+        .slice(-5)
+        .map((entry) => entry.score)
+        .join(", ")
+    );
+  };
+  function ScoreBtnRow({ score, label }: { score: number; label: string }) {
+    return (
+      <div className="d-flex" style={{ gap: "4px", marginBottom: "4px" }}>
+        <div style={{ width: "90%" }}>
+          <CozyButton
+            btnSize="small"
+            content={btnCnt(score, label)}
+            onClick={() => handleScoreClick(score, 1)}
+          />
+        </div>
+        <div style={{ width: "63px" }}>
+          <CozyButton btnSize="small" content={"×5"} onClick={() => handleScoreClick(score, 5)} />
+        </div>
+      </div>
+    );
+  }
   const handleOnSelectClick = (value: string) => {
     onNextClick({
       method: value,
     });
   };
 
+  const scoreDots = (dotsNum = 5, score = 0) => {
+    const dots = Array.from({ length: dotsNum }, (_, i) => {
+      const circleType = i < score ? "circlefull" : "circleempty";
+      return <Icon key={i} iconName={circleType} color="black" />;
+    });
+    return <span className="score-dots">{dots}</span>;
+  };
+
+  const btnCnt = (score: number, label: string) => {
+    return (
+      <div className="d-inline-flex align-items-center mt-1">
+        {scoreDots(5, score)}
+        <div>{label}</div>
+      </div>
+    );
+  };
+
+  const getStat = (scores: ScoreEntry[], stat: string) => {
+    if (scores.length === 0) return "-";
+    if (stat === "pianteColpite") {
+      // count entries with score > 0
+      const infectedCount = scores.filter((entry) => entry.score > 0).length;
+      const percent = ((infectedCount / scores.length) * 100).toFixed(1);
+      return `${percent}%`;
+    } else if (stat === "intensitaMedia") {
+      const totalScores = scores.reduce((acc, entry) => acc + entry.scoreNorm, 0);
+      const avgScore = totalScores / scores.length;
+      const percent = (avgScore * 100).toFixed(1);
+      return `${percent}%`;
+    }
+    return "-";
+  };
+
   return (
-    <div className="narrow-container my-lg-5">
-      <div className="detection-ui">
-        <div className="detection-scores"></div>
-        <div className="detection-inputs">
-          <CozyButton btnSize="small" text={"●○○○○   Assente o Basso"} onClick={() => {}} />
-          <CozyButton btnSize="small" text={"●●○○○   Limitato"} onClick={() => {}} />
-          <CozyButton btnSize="small" text={"●●●○○   Cospicuo"} onClick={() => {}} />
-          <CozyButton btnSize="small" text={"●●●●○   Alto"} onClick={() => {}} />
-          <CozyButton btnSize="small" text={"●●●●●   Molto Alto"} onClick={() => {}} />
+    <Fragment>
+      <div className="narrow-container">
+        <div className="detection-ui">
+          <div className="detection-scores">
+            <Container className="h-100 p-0">
+              <Row className="h-100">
+                <Col className="h-100">
+                  <header className="font-s-label">Piante colpite</header>
+                  <div className="font-xl mt-1 mb-3">{getStat(scores, "pianteColpite")}</div>
+                  <header className="font-s-label">Intensità media</header>
+                  <div className="font-xl mt-1 mb-3">{getStat(scores, "intensitaMedia")}</div>
+                </Col>
+                <Col className="h-100">
+                  <div className="scores-list-wrapper">
+                    <div className="scores-list" ref={listRef}>
+                      <header className="font-s-label">Ultime osservazioni</header>
+                      {scores.length === 0 && <div>Nessuna osservazione ancora registrata</div>}
+                      {scores.map((entry, index) => (
+                        <div key={index}>
+                          <span>#{index + 1}</span> — <span>{entry.score}</span>
+                        </div>
+                      ))}
+                      {/* <div ref={endRef} /> invisible anchor */}
+                    </div>
+                  </div>
+                </Col>
+              </Row>
+            </Container>
+          </div>
+          <div className="detection-inputs">
+            <div className="mt-2 mb-3">
+              <div className="font-s-label">Osservazione #{scores.length + 1}</div>
+              <div className="font-l mt-1">Valuta l'intensità del problema</div>
+            </div>
+            <ScoreBtnRow score={0} label="Assente" />
+            <ScoreBtnRow score={1} label="Basso" />
+            <ScoreBtnRow score={2} label="Limitato" />
+            <ScoreBtnRow score={3} label="Cospicuo" />
+            <ScoreBtnRow score={4} label="Alto" />
+            <ScoreBtnRow score={5} label="Molto Alto" />
+          </div>
         </div>
       </div>
-    </div>
+    </Fragment>
   );
 }
 

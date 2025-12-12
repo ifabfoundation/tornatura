@@ -1,17 +1,26 @@
 import { Fragment } from "react/jsx-runtime";
 import Icon, { IconName } from "./Icon";
+import React from "react";
 
 interface CozyButtonProps {
   iconName?: IconName;
-  text: string;
+  content: React.ReactNode;
   btnSize?: "small" | "large";
   onClick?: () => void;
+  arrow?: boolean;
 }
 
-export default function CozyButton({ iconName, btnSize, text, onClick }: CozyButtonProps) {
+export default function CozyButton({
+  iconName,
+  btnSize,
+  content,
+  onClick,
+  arrow = false,
+}: CozyButtonProps) {
   // const [isActive, setIsActive] = useState(false);
+  const classes = ["cozy-button", arrow ? "" : "unarrowed"];
   return (
-    <button className="cozy-button" onClick={onClick} data-size={btnSize ? btnSize : "large"}>
+    <button className={classes.join(" ")} onClick={onClick} data-size={btnSize ? btnSize : "large"}>
       <div className="btn-content">
         {iconName && (
           <Fragment>
@@ -23,7 +32,7 @@ export default function CozyButton({ iconName, btnSize, text, onClick }: CozyBut
             </span>
           </Fragment>
         )}
-        <span>{text}</span>
+        <span>{content}</span>
       </div>
     </button>
   );
