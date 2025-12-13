@@ -12749,7 +12749,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100%;
+  height: 100dvh;
 }
 
 #root {
@@ -13073,6 +13073,7 @@ body {
   border-radius: 5px;
   border: 0;
   cursor: pointer;
+  text-align: center;
   outline: none;
   min-width: 140px;
   font-family: "Inter", sans-serif;
@@ -13131,6 +13132,12 @@ body {
   border-radius: 20px;
   width: 40px;
   min-width: 40px;
+}
+
+#app a.button[data-type="rounded"],
+#app input[type="submit"][data-type="rounded"],
+#app button.trnt_btn[data-type="rounded"] {
+  border-radius: 60px;
 }
 
 #app a.button[data-type="table"],
@@ -13229,6 +13236,96 @@ body {
 #app input[type="submit"].slim-y,
 #app button.trnt_btn.slim-y {
   height: 30px;
+  font-family: "Inter", sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  line-height: 1.3em;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+@media (min-width: 576px) {
+  #app a.button.slim-y,
+  #app input[type="submit"].slim-y,
+  #app button.trnt_btn.slim-y {
+    font-size: 11px;
+  }
+}
+
+@media (min-width: 768px) {
+  #app a.button.slim-y,
+  #app input[type="submit"].slim-y,
+  #app button.trnt_btn.slim-y {
+    font-size: 11px;
+  }
+}
+
+@media (min-width: 992px) {
+  #app a.button.slim-y,
+  #app input[type="submit"].slim-y,
+  #app button.trnt_btn.slim-y {
+    font-size: 11px;
+  }
+}
+
+@media (min-width: 1200px) {
+  #app a.button.slim-y,
+  #app input[type="submit"].slim-y,
+  #app button.trnt_btn.slim-y {
+    font-size: 11px;
+  }
+}
+
+#app a.button.fat-y,
+#app input[type="submit"].fat-y,
+#app button.trnt_btn.fat-y {
+  height: 60px;
+  font-family: "Inter", sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  line-height: 1.3em;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+@media (min-width: 576px) {
+  #app a.button.fat-y,
+  #app input[type="submit"].fat-y,
+  #app button.trnt_btn.fat-y {
+    font-size: 11px;
+  }
+}
+
+@media (min-width: 768px) {
+  #app a.button.fat-y,
+  #app input[type="submit"].fat-y,
+  #app button.trnt_btn.fat-y {
+    font-size: 11px;
+  }
+}
+
+@media (min-width: 992px) {
+  #app a.button.fat-y,
+  #app input[type="submit"].fat-y,
+  #app button.trnt_btn.fat-y {
+    font-size: 11px;
+  }
+}
+
+@media (min-width: 1200px) {
+  #app a.button.fat-y,
+  #app input[type="submit"].fat-y,
+  #app button.trnt_btn.fat-y {
+    font-size: 11px;
+  }
 }
 
 #app a.button.narrow-x,
@@ -15856,42 +15953,41 @@ ul.list-group li.list-group-item:hover {
 .card .cardlet-header,
 .card .cardlet-header span.title {
   font-family: "Inter", sans-serif;
-  font-size: 11px;
+  font-size: 15px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
   font-style: normal;
   font-stretch: normal;
   font-optical-sizing: auto;
-  font-weight: 700;
-  text-transform: uppercase;
+  font-weight: 600;
 }
 
 @media (min-width: 576px) {
   .card .cardlet-header,
   .card .cardlet-header span.title {
-    font-size: 11px;
+    font-size: 15px;
   }
 }
 
 @media (min-width: 768px) {
   .card .cardlet-header,
   .card .cardlet-header span.title {
-    font-size: 11px;
+    font-size: 15px;
   }
 }
 
 @media (min-width: 992px) {
   .card .cardlet-header,
   .card .cardlet-header span.title {
-    font-size: 11px;
+    font-size: 15px;
   }
 }
 
 @media (min-width: 1200px) {
   .card .cardlet-header,
   .card .cardlet-header span.title {
-    font-size: 11px;
+    font-size: 15px;
   }
 }
 

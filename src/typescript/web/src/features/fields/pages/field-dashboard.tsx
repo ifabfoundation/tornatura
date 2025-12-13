@@ -79,10 +79,12 @@ export function FieldDashboard() {
               </div>
             </div>
           </div>
-          <div className="col-xl-3">
+          <div className="col-xl-3 ps-xl-5">
             <div className="mt-5 mt-xl-0"></div>
             <a
-              className="cardlet-button"
+              // className="cardlet-button"
+              className="button accent fat-y wide"
+              data-type="rounded"
               onClick={() => navigate(`/companies/${companyId}/fields/${fieldId}/new-detection`)}
             >
               + Nuovo Rilevamento
@@ -127,7 +129,7 @@ export function FieldDashboard() {
        */}
 
       <Container>
-        <Row className="mt-4">
+        <Row className="mt-5">
           <Col xl={6}>
             <Card>
               <div className="cardlet-header">

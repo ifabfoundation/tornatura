@@ -146,7 +146,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100%;
+  height: 100dvh;
 }
 
 // --------------------------------------------------------------------------------------------------
@@ -233,6 +233,7 @@ body {
     border-radius: $r;
     border: 0;
     cursor: pointer;
+    text-align: center;
     outline: none;
     min-width: 140px;
     @include font-m-600;
@@ -244,6 +245,9 @@ body {
       border-radius: $btn-h/2;
       width: $btn-h;
       min-width: $btn-h;
+    }
+    &[data-type="rounded"] {
+      border-radius: 60px;
     }
     &[data-type="table"] {
       min-width: auto;
@@ -298,6 +302,11 @@ body {
     }
     &.slim-y {
       height: 30px;
+      @include font-s-label;
+    }
+    &.fat-y {
+      height: 60px;
+      @include font-s-label;
     }
     &.narrow-x {
       width: auto;
@@ -1787,7 +1796,8 @@ $hb-color-on-hover: #eee;
   .cardlet-header {
     &,
     span.title {
-      @include font-s-label;
+      @include font-m-600;
+      // text-transform: uppercase;
     }
     height: 43px;
     display: flex;
