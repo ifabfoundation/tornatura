@@ -20,6 +20,7 @@ import { Accordion, AccordionItem } from "../../../components/Accordion";
 import CozyButton from "../../../components/CozyButton";
 import Icon from "../../../components/Icon";
 // import { timeStamp } from "console";
+import doneIcon from "../../../assets/images/icon-large-done.svg";
 
 interface DetectionProps {
   formData: DetectionMutationPayload;
@@ -1153,6 +1154,7 @@ function DetectionStepPosizione({ action, onNextClick }: DetectionProps) {
           <select name="source" onChange={(e) => handleSourceChange(e.target.value)} value={source}>
             <option value="current">Usa posizione corrente</option>
             <option value="map">Seleziona un punto sulla mappa</option>
+            <option value="map">Rilevamento per l'intero campo</option>
           </select>
         </label>
       </div>
@@ -1210,10 +1212,20 @@ type ScoreEntry = {
 };
 
 function DetectionUI({ formData, onBackClick, onNextClick }: DetectionProps) {
-  // const endRef = React.useRef<HTMLDivElement>(null);
   const listRef = React.useRef<HTMLDivElement>(null);
 
   const [scores, setScores] = useState<ScoreEntry[]>([]);
+
+  const handleFinishClick = () => {
+    console.log("Clicked FINE:", scores);
+    if (scores.length === 0) {
+      alert("Devi registrare almeno un'osservazione prima di terminare.");
+      return;
+    }
+    onNextClick({
+      scores: scores,
+    });
+  };
 
   // Scroll to bottom whenever scores changes
   // useEffect(() => {
@@ -1263,11 +1275,6 @@ function DetectionUI({ formData, onBackClick, onNextClick }: DetectionProps) {
       </div>
     );
   }
-  const handleSendScores = (scores: ScoreEntry[]) => {
-    onNextClick({
-      scores: scores,
-    });
-  };
 
   const scoreDots = (dotsNum = 5, score = 0) => {
     const dots = Array.from({ length: dotsNum }, (_, i) => {
@@ -1306,7 +1313,12 @@ function DetectionUI({ formData, onBackClick, onNextClick }: DetectionProps) {
     <Fragment>
       <div className="hacky-header-cover">
         <a onClick={() => onBackClick()}>&larr;</a>
-        <a onClick={() => onNextClick()}>
+        <a
+          className="finish-btn"
+          onClick={() => {
+            handleFinishClick();
+          }}
+        >
           <span>FINE</span>
         </a>
       </div>
@@ -1316,12 +1328,6 @@ function DetectionUI({ formData, onBackClick, onNextClick }: DetectionProps) {
           <div className="detection-scores">
             <Container className="h-100 p-0">
               <Row className="h-100">
-                <Col className="h-100">
-                  <header className="font-s-label">Piante colpite</header>
-                  <div className="font-xl mt-1 mb-3">{getStat(scores, "pianteColpite")}</div>
-                  <header className="font-s-label">Intensità media</header>
-                  <div className="font-xl mt-1 mb-3">{getStat(scores, "intensitaMedia")}</div>
-                </Col>
                 <Col className="h-100">
                   <div className="scores-list-wrapper">
                     <div className="scores-list" ref={listRef}>
@@ -1337,6 +1343,12 @@ function DetectionUI({ formData, onBackClick, onNextClick }: DetectionProps) {
                       {/* <div ref={endRef} /> invisible anchor */}
                     </div>
                   </div>
+                </Col>
+                <Col className="h-100">
+                  <header className="font-s-label">Piante colpite</header>
+                  <div className="font-xl mt-1 mb-3">{getStat(scores, "pianteColpite")}</div>
+                  <header className="font-s-label">Intensità media</header>
+                  <div className="font-xl mt-1 mb-3">{getStat(scores, "intensitaMedia")}</div>
                 </Col>
               </Row>
             </Container>
@@ -1360,11 +1372,23 @@ function DetectionUI({ formData, onBackClick, onNextClick }: DetectionProps) {
 }
 
 function SaveDone() {
-  const handleNextClick = () => {};
+  const navigate = useNavigate();
+  const { companyId, fieldId } = useParams();
   return (
-    <div className="narrow-container my-5 text-center">
+    <div className="narrow-container my-5 text-center px-4">
+      <div className="my-5 py-4"></div>
+      <img src={doneIcon} />
+      <div className="my-4"></div>
       <h3 className="mb-4">Rilevamento salvato con successo!</h3>
-      <CozyButton content="Chiudi" onClick={handleNextClick} />
+      <p className="mb-4 color-grey">{"(storage to be implemented)"}</p>
+      <button
+        className="trnt_btn"
+        onClick={() => {
+          navigate(`/companies/${companyId}/fields/${fieldId}`, { replace: true });
+        }}
+      >
+        Chiudi
+      </button>
     </div>
   );
 }
@@ -1439,6 +1463,14 @@ export function DetectionForm() {
       setFormData(payload);
       setAction("Avanti");
       setStep(step + 1);
+    } else if (step === 2) {
+      const payload = {
+        ...formData,
+        method: data.method,
+      };
+      setFormData(payload);
+      setStep(step + 1);
+      setAction("Avanti");
     } else if (step === 3) {
       const payload = {
         ...formData,
@@ -1450,14 +1482,16 @@ export function DetectionForm() {
       setFormData(payload);
       setAction("Avanti");
       setStep(step + 1);
-    } else if (step === 2) {
+    } else if (step === 4) {
       const payload = {
         ...formData,
-        method: data.method,
+        scores: {
+          scores: data.scores,
+        },
       };
       setFormData(payload);
-      setStep(step + 1);
       setAction("Avanti");
+      setStep(step + 1);
     }
   };
 

@@ -42,6 +42,7 @@ $space-half: 15px;
 $r: 5px;
 $sidebar-btn-h: 50px;
 $btn-h: 40px;
+$narrow-cont-w: 580px;
 
 $ms-sidebar-transition: 100ms;
 
@@ -68,7 +69,8 @@ $ms-sidebar-transition: 100ms;
 .color-white {
   color: white;
 }
-.color-gray {
+.color-gray,
+.color-grey {
   color: gray;
 }
 @keyframes blinkk {
@@ -613,6 +615,7 @@ body {
     .rt-row {
       display: grid;
       grid-template-columns: 150px 1fr; // label + value
+      grid-template-columns: auto 1fr; // label + value
       // gap: 0 40px;
       padding: 0.5rem 0;
       border-bottom: 1px solid rgba(black, 0.1);
@@ -622,10 +625,12 @@ body {
         align-items: center;
       }
       .rt-value {
+        flex-grow: 1;
         @include font-l-600;
         display: flex;
         align-items: center;
         justify-content: flex-end;
+        text-align: right;
       }
       &:first-child {
         border-top: 1px solid rgba(black, 0.1);
@@ -799,6 +804,7 @@ body {
 
   .hacky-header-cover {
     position: fixed;
+    pointer-events: none;
     top: 0;
     height: $header-h;
     left: 0;
@@ -809,19 +815,31 @@ body {
     align-items: center;
     justify-content: space-between;
     padding: 0 5px;
-    border-bottom: 1px solid rgba($c-grey_6, 0.1);
+    // border-bottom: 1px solid rgba($c-grey_6, 0.1);
+
+    @include media-breakpoint-up(lg) {
+      top: $header-h + 15px;
+      left: calc((100vw - 320px - #{$narrow-cont-w}) / 2 + 320px - 60px);
+      left: 335px;
+      right: calc((100vw - 320px - #{$narrow-cont-w}) / 2 + 15px);
+      .finish-btn {
+        background-color: transparent;
+      }
+    }
 
     a {
+      pointer-events: all;
       display: inline-flex;
       align-items: center;
       justify-content: center;
+      text-decoration: none;
       cursor: pointer;
       @include font-l-600;
       border-radius: 50%;
       height: 50px;
       width: 50px;
       background-color: $c-dark;
-      color: $c-yelo;
+      color: white;
       span {
         display: inline-flex;
         width: 100%;
@@ -838,10 +856,11 @@ body {
 
   .score-entry {
     padding: 2px;
+    margin-left: -2px;
     .txt {
       border-radius: 3px;
       padding: 2px;
-      margin: 3px 0;
+      // margin: 3px 0;
     }
     .new-score-entry {
       // add an animation that plays once to highlight the new entry
@@ -851,6 +870,12 @@ body {
   @keyframes blink-once {
     0% {
       background-color: rgba(white, 0.6);
+    }
+    6% {
+      background-color: rgba(white, 0.3);
+    }
+    70% {
+      background-color: rgba(white, 0.3);
     }
     100% {
       background-color: rgba(white, 0);
@@ -872,10 +897,10 @@ body {
     gap: 5px;
     .detection-scores {
       flex: 1 1 auto; /* grows to fill leftover vertical space */
-      background-color: $c-grey_6;
-      border-radius: 5px;
+      background-color: lighten($c-grey_6, 4%);
+      border-radius: 15px;
       // border-bottom: #3d401a solid 4px;
-      padding: 15px;
+      padding: 25px;
       padding-bottom: 0;
       color: white;
       @include media-breakpoint-down(sm) {
@@ -901,24 +926,28 @@ body {
           header {
             position: sticky;
             top: 0;
-            background-color: $c-grey_6;
+            background-color: lighten($c-grey_6, 4%);
             padding-bottom: 10px;
             z-index: 2;
             padding-bottom: 4px;
             margin-bottom: 6px;
           }
         }
-        &::after {
-          content: "";
-          z-index: 2;
-          position: absolute;
-          top: 14px;
-          left: 0;
-          right: 0;
-          height: 20px;
-          background: linear-gradient(to bottom, $c-grey_6, rgba($c-grey_6, 0));
-          pointer-events: none;
-        }
+        // &::after {
+        //   content: "";
+        //   z-index: 2;
+        //   position: absolute;
+        //   top: 14px;
+        //   left: 0;
+        //   right: 0;
+        //   height: 20px;
+        //   background: linear-gradient(
+        //     to bottom,
+        //     lighten($c-grey_6, 4%),
+        //     rgba(lighten($c-grey_6, 4%), 0)
+        //   );
+        //   pointer-events: none;
+        // }
       }
     }
     .detection-inputs {
@@ -2111,7 +2140,7 @@ $hb-color-on-hover: #eee;
 // ------------------------------------------------------------------------
 
 .narrow-container {
-  max-width: 600px;
+  max-width: $narrow-cont-w;
   padding: 0 10px;
   margin-left: auto;
   margin-right: auto;

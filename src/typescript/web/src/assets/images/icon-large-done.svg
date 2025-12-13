@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="70px" height="71px" viewBox="0 0 70 71" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>icon-large-done</title>
+    <defs>
+        <path d="M0,0 L70,0 L70,70.1728395 L0,70.1728395 L0,0 Z" id="path-1"></path>
+    </defs>
+    <g id="icon-large-done" stroke="none" fill="none" xlink:href="#path-1" fill-rule="evenodd">
+        <path d="M35,70.1728395 C54.3299662,70.1728395 70,54.4641143 70,35.0864198 C70,15.7087252 54.3299662,0 35,0 C15.6700338,0 0,15.7087252 0,35.0864198 C0,54.4641143 15.6700338,70.1728395 35,70.1728395 Z" id="Oval-20" fill="#5AB144" transform="translate(35, 35.0864) scale(-1, 1) translate(-35, -35.0864)"></path>
+        <g id="✓" stroke-width="1" transform="translate(17, 11.097)" fill="#FFFFFF">
+            <polygon id="Path" fill-rule="nonzero" points="4.69390565 25.875 6.84234315 23.6484375 14.3423432 31.03125 29.8501557 15.6015625 32.0767182 17.7890625 14.3423432 35.484375"></polygon>
+        </g>
+    </g>
+</svg>

@@ -54,7 +54,7 @@ export function FieldDashboard() {
                 <div className="rt-value">{valOrEmpty(currentField?.rotation)}</div>
               </div>
               <div className="rt-row">
-                <div className="rt-label">Anno di impianto</div>
+                <div className="rt-label">Anno di impianto</div>
                 <div className="rt-value">{valOrEmpty(currentField?.year)}</div>
               </div>
               <div className="rt-row">
@@ -62,7 +62,7 @@ export function FieldDashboard() {
                 <div className="rt-value">{valOrEmpty(currentField?.weaving)}</div>
               </div>
               <div className="rt-row">
-                <div className="rt-label">Num. rilevamenti</div>
+                <div className="rt-label">Num. rilevamenti</div>
                 <div className="rt-value">{valOrEmpty(detections.length)}</div>
               </div>
               <div className="rt-row">
