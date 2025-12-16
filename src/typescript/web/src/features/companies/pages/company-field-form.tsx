@@ -12,6 +12,7 @@ import { headerbarActions } from "../../headerbar/state/headerbar-slice";
 import { fieldsActions } from "../../fields/state/fields-slice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import * as turf from "@turf/turf";
+import { gpsStore } from "../../../providers/gps-providers";
 
 interface FieldProps {
   formData: AgriFieldMutationPayload;
@@ -508,7 +509,7 @@ export const FieldFormMap = ({ action, onNextClick }: FieldProps) => {
   const [mapLoaded, setMapLoaded] = React.useState(false);
   const [inputValue, setInputValue] = React.useState("");
   const [map, setMap] = React.useState<Point[]>([]);
-  const [currentPosition, setCurrentPosition] = React.useState<Point>();
+  const currentPosition = React.useContext(gpsStore);
 
   const calcArea = (points: Point[]) => {
     const coords: number[][] = [];
@@ -522,16 +523,6 @@ export const FieldFormMap = ({ action, onNextClick }: FieldProps) => {
     console.log("area in hectares", areaHe);
   };
 
-  React.useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        setCurrentPosition({
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        });
-      });
-    }
-  }, []);
 
   React.useEffect(() => {
     if (mapContainerRef.current) {

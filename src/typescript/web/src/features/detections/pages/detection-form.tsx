@@ -21,6 +21,7 @@ import CozyButton from "../../../components/CozyButton";
 import Icon from "../../../components/Icon";
 // import { timeStamp } from "console";
 import doneIcon from "../../../assets/images/icon-large-done.svg";
+import { gpsStore } from "../../../providers/gps-providers";
 
 interface DetectionProps {
   formData: DetectionMutationPayload;
@@ -620,6 +621,7 @@ function DetectionFormMapPosition({ onMarkerChange }: DetectionFormMapProps) {
   const [mapLoaded, setMapLoaded] = React.useState(false);
   const [inputValue, setInputValue] = React.useState("");
   const markerRef = React.useRef<Marker | null>(null);
+  const currentPosition = React.useContext(gpsStore);
 
   // React.useEffect(() => {
   //   if (map.current) return; // initialize only once
@@ -838,39 +840,31 @@ function DetectionFormMapPosition({ onMarkerChange }: DetectionFormMapProps) {
         setMapLoaded(true);
       });
 
-      // ----------------------------------
-      // Watch position continuously
-      const watchId = navigator.geolocation.watchPosition(
-        (pos) => {
-          const lng = pos.coords.longitude;
-          const lat = pos.coords.latitude;
-
-          // Update source data
-          const source = mapRef.current!.getSource("current-location") as mapboxgl.GeoJSONSource;
-          if (source) {
-            source.setData({
-              type: "Feature",
-              geometry: {
-                type: "Point",
-                coordinates: [lng, lat],
-              },
-              properties: {}, // 👈 required by type definition
-            });
-          }
-
-          // Optionally recenter map
-          // mapRef.current!.setCenter([lng, lat]);
-        },
-        (err) => console.error("Geolocation error:", err),
-        { enableHighAccuracy: true }
-      );
-      // ----------------------------------
-
       return () => {
         mapRef.current.remove();
       };
     }
   }, [mapContainerRef, currentField]);
+
+
+  React.useEffect(() => {
+    // Update source data
+    const source = mapRef.current!.getSource("current-location") as mapboxgl.GeoJSONSource;
+    if (source) {
+      source.setData({
+        type: "Feature",
+        geometry: {
+          type: "Point",
+          coordinates: [currentPosition.lng, currentPosition.lat],
+        },
+        properties: {}, // 👈 required by type definition
+      });
+    }
+
+    // Optionally recenter map
+    // mapRef.current!.setCenter([lng, lat]);
+    // ----------------------------------
+  }, [mapLoaded, currentPosition])
 
   return (
     <div>
