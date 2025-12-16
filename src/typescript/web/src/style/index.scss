@@ -482,7 +482,9 @@ body {
       }
       &:hover,
       &:active {
-        border: 1px solid $c-grey_4;
+        &:not(:disabled) {
+          border: 1px solid $c-grey_4;
+        }
       }
       &:focus {
         border: 1px solid $c-grey_5;
@@ -492,8 +494,8 @@ body {
       }
       &:disabled {
         background-color: $c-grey_2;
-        pointer-events: none;
-        color: rgba(white, 0.3);
+        pointer-events: none !important;
+        // color: rgba(white, 0.3);
         opacity: 0.5;
       }
     }
@@ -1427,6 +1429,7 @@ body {
         }
       }
       .user-avatar {
+        position: relative;
         width: 33px;
         height: 33px;
         border-radius: 20px;
@@ -1434,6 +1437,27 @@ body {
         margin-left: 8px;
         background-size: cover;
         background-position: center center;
+        &.notification {
+          // get the content from the data attribute data-notifications
+          &::after {
+            content: "88";
+            content: attr(data-notifications);
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background-color: $red;
+            @include font-s-label;
+            color: white;
+            height: 16px;
+            min-width: 16px;
+            padding: 0 4px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: translate(50%, -50%);
+          }
+        }
       }
     }
     .content-area {
@@ -1745,6 +1769,7 @@ $hb-color-on-hover: #eee;
     .user-menu-item {
       // border-top: 1px solid $c-grey_1;
       display: flex;
+      position: relative;
       border-radius: $r;
       background-color: white;
       color: black;
@@ -1757,6 +1782,27 @@ $hb-color-on-hover: #eee;
       &:hover {
         background-color: $c-grey_6;
         color: white;
+      }
+      &.notification {
+        // get the content from the data attribute data-notifications
+        &::after {
+          content: "88";
+          content: attr(data-notifications);
+          position: absolute;
+          top: 15px;
+          right: 14px;
+          background-color: $red;
+          @include font-s-label;
+          color: white;
+          height: 16px;
+          min-width: 16px;
+          padding: 0 4px;
+          border-radius: 8px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transform: translate(50%, -50%);
+        }
       }
     }
   }

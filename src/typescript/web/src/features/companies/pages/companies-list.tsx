@@ -39,12 +39,12 @@ export function CompaniesList() {
         text: "Invia Feedback",
         path: "/new-feedback",
       },
-      {
-        id: "my-invitations",
-        icon: "grid",
-        text: "I miei inviti",
-        path: "/invitations/me",
-      },
+      // {
+      //   id: "my-invitations",
+      //   icon: "grid",
+      //   text: "I miei inviti",
+      //   path: "/invitations/me",
+      // },
       {
         id: "user",
         icon: "users",
@@ -87,13 +87,15 @@ export function CompaniesList() {
             </Col>
           );
         })}
-        {currentUser.accountType === AccountTypeEnum.Agronomist && <Col md={6} xl={4}>
-          <Card
-            className="add-item with-hover-effect"
-            data-text="Invita un'azienda"
-            onClick={() => navigate("/invitations/invite-company-owner")}
-          ></Card>
-        </Col>}
+        {currentUser.accountType === AccountTypeEnum.Agronomist && (
+          <Col md={6} xl={4}>
+            <Card
+              className="add-item with-hover-effect"
+              data-text="Invita un'azienda"
+              onClick={() => navigate("/invitations/invite-company-owner")}
+            ></Card>
+          </Col>
+        )}
       </Row>
     </Container>
   );

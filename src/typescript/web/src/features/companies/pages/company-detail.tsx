@@ -45,12 +45,12 @@ export function CompanyDetail() {
           text: "Invia Feedback",
           path: `/companies/${companyId}/new-feedback`,
         },
-        {
-          id: "my-invitations",
-          icon: "grid",
-          text: "I miei inviti",
-          path: `/companies/${companyId}/invitations/me`,
-        },
+        // {
+        //   id: "my-invitations",
+        //   icon: "grid",
+        //   text: "I miei inviti",
+        //   path: `/companies/${companyId}/invitations/me`,
+        // },
         {
           id: "user",
           icon: "users",

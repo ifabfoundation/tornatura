@@ -164,7 +164,7 @@ $font-sans: "Inter", sans-serif;
 }
 @mixin font-m-600 {
   @include font-m;
-  font-weight: 600;
+  font-weight: 600 !important;
 }
 @mixin font-m-strong {
   @include font-m;

@@ -13084,7 +13084,7 @@ body {
   font-style: normal;
   font-stretch: normal;
   font-optical-sizing: auto;
-  font-weight: 600;
+  font-weight: 600 !important;
   transition: background-color 100ms;
 }
 
@@ -13720,17 +13720,17 @@ body {
   width: 100%;
 }
 
-#app .input-row input:hover, #app .input-row input:active,
-#app .input-row select:hover,
-#app .input-row select:active,
-#app .input-row textarea:hover,
-#app .input-row textarea:active,
-#app .form-row input:hover,
-#app .form-row input:active,
-#app .form-row select:hover,
-#app .form-row select:active,
-#app .form-row textarea:hover,
-#app .form-row textarea:active {
+#app .input-row input:hover:not(:disabled), #app .input-row input:active:not(:disabled),
+#app .input-row select:hover:not(:disabled),
+#app .input-row select:active:not(:disabled),
+#app .input-row textarea:hover:not(:disabled),
+#app .input-row textarea:active:not(:disabled),
+#app .form-row input:hover:not(:disabled),
+#app .form-row input:active:not(:disabled),
+#app .form-row select:hover:not(:disabled),
+#app .form-row select:active:not(:disabled),
+#app .form-row textarea:hover:not(:disabled),
+#app .form-row textarea:active:not(:disabled) {
   border: 1px solid #8b8b8b;
 }
 
@@ -13759,8 +13759,7 @@ body {
 #app .form-row select:disabled,
 #app .form-row textarea:disabled {
   background-color: #d8d8d8;
-  pointer-events: none;
-  color: rgba(255, 255, 255, 0.3);
+  pointer-events: none !important;
   opacity: 0.5;
 }
 
@@ -13944,7 +13943,7 @@ body {
   font-style: normal;
   font-stretch: normal;
   font-optical-sizing: auto;
-  font-weight: 600;
+  font-weight: 600 !important;
   color: inherit;
   background-color: transparent;
   padding: 0;
@@ -14133,7 +14132,7 @@ body {
   font-style: normal;
   font-stretch: normal;
   font-optical-sizing: auto;
-  font-weight: 600;
+  font-weight: 600 !important;
 }
 
 @media (min-width: 576px) {
@@ -14173,7 +14172,7 @@ body {
   font-style: normal;
   font-stretch: normal;
   font-optical-sizing: auto;
-  font-weight: 600;
+  font-weight: 600 !important;
   display: inline-block;
   transition: transform 0.3s;
   transform: rotate(45deg);
@@ -14282,7 +14281,7 @@ body {
   font-style: normal;
   font-stretch: normal;
   font-optical-sizing: auto;
-  font-weight: 600;
+  font-weight: 600 !important;
 }
 
 @media (min-width: 576px) {
@@ -14336,7 +14335,7 @@ body {
   font-style: normal;
   font-stretch: normal;
   font-optical-sizing: auto;
-  font-weight: 600;
+  font-weight: 600 !important;
   content: "›";
   content: ">";
   content: "→";
@@ -14711,7 +14710,7 @@ body {
   font-style: normal;
   font-stretch: normal;
   font-optical-sizing: auto;
-  font-weight: 600;
+  font-weight: 600 !important;
 }
 
 #app .stepper-wrapper ol.stepper li:first-child {
@@ -15210,7 +15209,7 @@ body {
   font-style: normal;
   font-stretch: normal;
   font-optical-sizing: auto;
-  font-weight: 600;
+  font-weight: 600 !important;
 }
 
 @media (min-width: 576px) {
@@ -15410,6 +15409,7 @@ body {
 }
 
 #app .ui-right .headerbar .user-avatar {
+  position: relative;
   width: 33px;
   height: 33px;
   border-radius: 20px;
@@ -15417,6 +15417,58 @@ body {
   margin-left: 8px;
   background-size: cover;
   background-position: center center;
+}
+
+#app .ui-right .headerbar .user-avatar.notification::after {
+  content: "88";
+  content: attr(data-notifications);
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background-color: #dc3545;
+  font-family: "Inter", sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  line-height: 1.3em;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: white;
+  height: 16px;
+  min-width: 16px;
+  padding: 0 4px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translate(50%, -50%);
+}
+
+@media (min-width: 576px) {
+  #app .ui-right .headerbar .user-avatar.notification::after {
+    font-size: 11px;
+  }
+}
+
+@media (min-width: 768px) {
+  #app .ui-right .headerbar .user-avatar.notification::after {
+    font-size: 11px;
+  }
+}
+
+@media (min-width: 992px) {
+  #app .ui-right .headerbar .user-avatar.notification::after {
+    font-size: 11px;
+  }
+}
+
+@media (min-width: 1200px) {
+  #app .ui-right .headerbar .user-avatar.notification::after {
+    font-size: 11px;
+  }
 }
 
 #app .ui-right .content-area {
@@ -15862,6 +15914,7 @@ ul.list-group li.list-group-item:hover {
 
 .user-menu .user-menu-items .user-menu-item {
   display: flex;
+  position: relative;
   border-radius: 5px;
   background-color: white;
   color: black;
@@ -15876,6 +15929,58 @@ ul.list-group li.list-group-item:hover {
 .user-menu .user-menu-items .user-menu-item:hover {
   background-color: #1f1f1f;
   color: white;
+}
+
+.user-menu .user-menu-items .user-menu-item.notification::after {
+  content: "88";
+  content: attr(data-notifications);
+  position: absolute;
+  top: 15px;
+  right: 14px;
+  background-color: #dc3545;
+  font-family: "Inter", sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  line-height: 1.3em;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: white;
+  height: 16px;
+  min-width: 16px;
+  padding: 0 4px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translate(50%, -50%);
+}
+
+@media (min-width: 576px) {
+  .user-menu .user-menu-items .user-menu-item.notification::after {
+    font-size: 11px;
+  }
+}
+
+@media (min-width: 768px) {
+  .user-menu .user-menu-items .user-menu-item.notification::after {
+    font-size: 11px;
+  }
+}
+
+@media (min-width: 992px) {
+  .user-menu .user-menu-items .user-menu-item.notification::after {
+    font-size: 11px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .user-menu .user-menu-items .user-menu-item.notification::after {
+    font-size: 11px;
+  }
 }
 
 .nav-tabs {
@@ -15960,7 +16065,7 @@ ul.list-group li.list-group-item:hover {
   font-style: normal;
   font-stretch: normal;
   font-optical-sizing: auto;
-  font-weight: 600;
+  font-weight: 600 !important;
 }
 
 @media (min-width: 576px) {
@@ -16007,7 +16112,7 @@ ul.list-group li.list-group-item:hover {
   font-style: normal;
   font-stretch: normal;
   font-optical-sizing: auto;
-  font-weight: 600;
+  font-weight: 600 !important;
 }
 
 @media (min-width: 576px) {
@@ -16077,7 +16182,7 @@ ul.list-group li.list-group-item:hover {
   font-style: normal;
   font-stretch: normal;
   font-optical-sizing: auto;
-  font-weight: 600;
+  font-weight: 600 !important;
 }
 
 @media (min-width: 576px) {
@@ -16292,7 +16397,7 @@ ul.list-group li.list-group-item:hover {
   font-style: normal;
   font-stretch: normal;
   font-optical-sizing: auto;
-  font-weight: 600;
+  font-weight: 600 !important;
   transition: all 0.3s;
   cursor: pointer;
   cursor: pointer;
