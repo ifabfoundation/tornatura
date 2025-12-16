@@ -71,7 +71,7 @@ export function FeedbackForm() {
             onBlur={formik.handleBlur}
             value={formik.values.category}
           >
-            <option value={FeedbackCategoryEnum.NewFeature}>Nuova funzionalita</option>
+            <option value={FeedbackCategoryEnum.NewFeature}>Nuova funzionalità</option>
             <option value={FeedbackCategoryEnum.Improvement}>Miglioramento</option>
             <option value={FeedbackCategoryEnum.BugFixing}>Bug</option>
             <option value={FeedbackCategoryEnum.Other}>Altro</option>

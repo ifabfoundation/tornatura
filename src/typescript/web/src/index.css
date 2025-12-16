@@ -13220,6 +13220,29 @@ body {
   border-color: #8b8b8b;
 }
 
+#app a.button.danger,
+#app input[type="submit"].danger,
+#app button.trnt_btn.danger {
+  background-color: #dc3545;
+  color: white;
+  text-decoration: none;
+}
+
+#app a.button.danger:hover,
+#app input[type="submit"].danger:hover,
+#app button.trnt_btn.danger:hover {
+  background-color: #d32535;
+}
+
+#app a.button.danger:active,
+#app a.button.danger .active,
+#app input[type="submit"].danger:active,
+#app input[type="submit"].danger .active,
+#app button.trnt_btn.danger:active,
+#app button.trnt_btn.danger .active {
+  background-color: #bd2130;
+}
+
 #app a.button.wider,
 #app input[type="submit"].wider,
 #app button.trnt_btn.wider {
@@ -13577,6 +13600,12 @@ body {
 #app .modal-bg .mod-scrollable .modal .buttons-wrapper button:not(:last-child),
 #app .modal-bg .mod-scrollable .modal .buttons-wrapper input:not(:last-child) {
   margin-right: 15px;
+}
+
+#app .form-section {
+  padding: 30px;
+  border-radius: 30px;
+  background-color: #e8e8e8;
 }
 
 #app .input-row + .input-row {

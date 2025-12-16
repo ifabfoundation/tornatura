@@ -848,7 +848,6 @@ function DetectionFormMapPosition({ onMarkerChange }: DetectionFormMapProps) {
     }
   }, [mapContainerRef, currentField]);
 
-
   React.useEffect(() => {
     // Update source data
     const source = mapRef.current!.getSource("current-location") as mapboxgl.GeoJSONSource;
@@ -866,7 +865,7 @@ function DetectionFormMapPosition({ onMarkerChange }: DetectionFormMapProps) {
     // Optionally recenter map
     // mapRef.current!.setCenter([lng, lat]);
     // ----------------------------------
-  }, [mapLoaded, currentPosition])
+  }, [mapLoaded, currentPosition]);
 
   return (
     <div>
@@ -1201,10 +1200,13 @@ type ScoreEntry = {
   timeStamp: number;
   score: number;
   scoreNorm: number;
+  location?: Point;
 };
 
 function DetectionUI({ formData, onBackClick, onNextClick }: DetectionProps) {
   const listRef = React.useRef<HTMLDivElement>(null);
+
+  const currentPosition = React.useContext(gpsStore);
 
   const [scores, setScores] = useState<ScoreEntry[]>([]);
 
@@ -1240,15 +1242,17 @@ function DetectionUI({ formData, onBackClick, onNextClick }: DetectionProps) {
         timeStamp: new Date().getTime(),
         score: score,
         scoreNorm: score / 5,
+        location: currentPosition,
       };
       setScores((prev) => [...prev, scoreEntry]);
     }
     console.log(
       `Scores (${scores.length})`,
       scores
-        .slice(-5)
-        .map((entry) => entry.score)
-        .join(", ")
+      // scores
+      //   .slice(-5)
+      //   .map((entry) => entry.score)
+      //   .join(", ")
     );
   };
   function ScoreBtnRow({ score, label }: { score: number; label: string }) {
@@ -1304,7 +1308,13 @@ function DetectionUI({ formData, onBackClick, onNextClick }: DetectionProps) {
   return (
     <Fragment>
       <div className="hacky-header-cover">
-        <a onClick={() => {onBackClick()}}>&larr;</a>
+        <a
+          onClick={() => {
+            onBackClick();
+          }}
+        >
+          &larr;
+        </a>
         <a
           className="finish-btn"
           onClick={() => {

@@ -17,6 +17,7 @@ $c-dark: #1f1f1f;
 $c-green: #4dffbc;
 $c-red: #ff4d4d;
 $c-grey_1: #efefef; // lightest
+// #e8e8e8
 $c-grey_2: #d8d8d8; // app bg
 $c-grey_3: #bbbbbb;
 $c-grey_4: #8b8b8b;
@@ -294,6 +295,21 @@ body {
       }
       text-decoration: none;
     }
+    &.danger {
+      background-color: $red;
+      // border: 1px solid $c-dark;
+      color: white;
+      &:hover {
+        background-color: darken($red, 5%);
+        // border-color: $c-grey_3;
+      }
+      &:active,
+      .active {
+        background-color: darken($red, 10%);
+        // border-color: $c-grey_4;
+      }
+      text-decoration: none;
+    }
     &.wider {
       min-width: 200px;
     }
@@ -447,6 +463,12 @@ body {
         }
       }
     }
+  }
+
+  .form-section {
+    padding: $space;
+    border-radius: $space;
+    background-color: #e8e8e8;
   }
 
   .input-row + .input-row {
