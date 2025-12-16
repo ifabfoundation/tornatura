@@ -13,6 +13,8 @@ import _ from "lodash";
 import { AgriField, AgriFieldMutationPayload, Point } from "@tornatura/coreapis";
 import * as turf from "@turf/turf";
 import { ModalConfirm } from "../../../components/ModalConfirm";
+import { FieldFormInfo } from "../../companies/pages/company-field-form";
+import { FieldDetailForm } from "../forms/detail-form";
 
 
 interface FieldFormProps {
@@ -40,7 +42,7 @@ function FieldFormStep1({ formData }: FieldFormProps) {
       area: Yup.number().required("Campo necessario"),
     }),
     onSubmit: (values, { setSubmitting }) => {
-      const payload: AgriFieldMutationPayload = {
+      /*const payload: AgriFieldMutationPayload = {
         name: values.name,
         description: values.description,
         harvest: values.harvest,
@@ -48,7 +50,7 @@ function FieldFormStep1({ formData }: FieldFormProps) {
         map: formData.map,
         plants: values.plants,
       };
-      dispatch(fieldsActions.updateFieldAction({ orgId: formData.orgId, fieldId: formData.id, body: payload }));
+      dispatch(fieldsActions.updateFieldAction({ orgId: formData.orgId, fieldId: formData.id, body: payload }));*/
       setSubmitting(false);
     },
   });
@@ -290,7 +292,7 @@ const FieldFormStep2 = ({ formData }: FieldFormProps) => {
   const handleSaveMap = async () => {
     if (map && map.length !== 0) {
       console.log("Map data to save: ", map);
-      const payload: AgriFieldMutationPayload = {
+      /*const payload: AgriFieldMutationPayload = {
         name: formData.name,
         description: formData.description,
         harvest: formData.harvest,
@@ -298,7 +300,7 @@ const FieldFormStep2 = ({ formData }: FieldFormProps) => {
         plants: formData.plants,
         map: map,
       };
-      await dispatch(fieldsActions.updateFieldAction({ orgId: formData.orgId, fieldId: formData.id, body: payload }));
+      await dispatch(fieldsActions.updateFieldAction({ orgId: formData.orgId, fieldId: formData.id, body: payload }));*/
     }
   }
 
@@ -350,16 +352,16 @@ export function FieldSettings() {
     <Fragment>
       <Container>
         <Row className="mt-2">
-          <Col xl={6}>
+          <Col xl={12}>
             <h4>Dettaglio del campo</h4>
             <hr />
-            <FieldFormStep1 formData={currentField} />
+            <FieldDetailForm field={currentField} />
           </Col>
-          <Col xl={6}>
+          {/*<Col xl={6}>
             <h4>Mappa del campo</h4>
             <hr />
             <FieldFormStep2 formData={currentField} />
-          </Col>
+          </Col>*/}
         </Row>
       </Container>
     </Fragment>
