@@ -12,7 +12,7 @@ import { headerbarActions } from "../../headerbar/state/headerbar-slice";
 import { fieldsActions } from "../../fields/state/fields-slice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import * as turf from "@turf/turf";
-import { Col, Row } from "react-bootstrap";
+import { gpsStore } from "../../../providers/gps-providers";
 
 interface FieldProps {
   formData: AgriFieldMutationPayload;
@@ -30,7 +30,7 @@ const calcArea = (points: Point[]) => {
   return parseFloat(areaHe.toFixed(2));
 };
 
-function FieldFormStep2({ formData, action, onNextClick, onBackClick }: FieldProps) {
+export function FieldFormInfo({ formData, action, onNextClick, onBackClick }: FieldProps) {
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -81,7 +81,7 @@ function FieldFormStep2({ formData, action, onNextClick, onBackClick }: FieldPro
       description: formData.description,
       harvest: formData.harvest,
       area: formData.area,
-      areafrom: "mappa",
+      areafrom: "map",
       plants: formData.plants || 0,
       variety: formData.variety,
       irrigation: formData.irrigation,
@@ -503,13 +503,13 @@ function FieldFormStep2({ formData, action, onNextClick, onBackClick }: FieldPro
   );
 }
 
-const FieldFormStep1 = ({ action, onNextClick }: FieldProps) => {
+export const FieldFormMap = ({ action, onNextClick }: FieldProps) => {
   const mapContainerRef = React.useRef<HTMLDivElement>(null);
   const mapRef = React.useRef<any>(null);
   const [mapLoaded, setMapLoaded] = React.useState(false);
   const [inputValue, setInputValue] = React.useState("");
   const [map, setMap] = React.useState<Point[]>([]);
-  const [currentPosition, setCurrentPosition] = React.useState<Point>();
+  const currentPosition = React.useContext(gpsStore);
 
   const calcArea = (points: Point[]) => {
     const coords: number[][] = [];
@@ -523,16 +523,6 @@ const FieldFormStep1 = ({ action, onNextClick }: FieldProps) => {
     console.log("area in hectares", areaHe);
   };
 
-  React.useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        setCurrentPosition({
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        });
-      });
-    }
-  }, []);
 
   React.useEffect(() => {
     if (mapContainerRef.current) {
@@ -711,10 +701,10 @@ export function CompanyFieldForm() {
   return (
     <div className="form-wrapper">
       {step === 1 && (
-        <FieldFormStep1 formData={formData} action={action} onNextClick={handleNextClick} />
+        <FieldFormMap formData={formData} action={action} onNextClick={handleNextClick} />
       )}
       {step === 2 && (
-        <FieldFormStep2
+        <FieldFormInfo
           formData={formData}
           action={action}
           onBackClick={handleBackClick}

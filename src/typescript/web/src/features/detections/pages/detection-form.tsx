@@ -21,6 +21,7 @@ import CozyButton from "../../../components/CozyButton";
 import Icon from "../../../components/Icon";
 // import { timeStamp } from "console";
 import doneIcon from "../../../assets/images/icon-large-done.svg";
+import { gpsStore } from "../../../providers/gps-providers";
 
 interface DetectionProps {
   formData: DetectionMutationPayload;
@@ -620,6 +621,7 @@ function DetectionFormMapPosition({ onMarkerChange }: DetectionFormMapProps) {
   const [mapLoaded, setMapLoaded] = React.useState(false);
   const [inputValue, setInputValue] = React.useState("");
   const markerRef = React.useRef<Marker | null>(null);
+  const currentPosition = React.useContext(gpsStore);
 
   // React.useEffect(() => {
   //   if (map.current) return; // initialize only once
@@ -789,7 +791,9 @@ function DetectionFormMapPosition({ onMarkerChange }: DetectionFormMapProps) {
           if (radius > 20) growing = false;
           if (radius < 10) growing = true;
 
-          mapRef.current!.setPaintProperty("current-location-circle", "circle-radius", radius);
+          if (mapRef.current) {
+            mapRef.current!.setPaintProperty("current-location-circle", "circle-radius", radius);
+          }
 
           requestAnimationFrame(animate);
         }
@@ -838,39 +842,31 @@ function DetectionFormMapPosition({ onMarkerChange }: DetectionFormMapProps) {
         setMapLoaded(true);
       });
 
-      // ----------------------------------
-      // Watch position continuously
-      const watchId = navigator.geolocation.watchPosition(
-        (pos) => {
-          const lng = pos.coords.longitude;
-          const lat = pos.coords.latitude;
-
-          // Update source data
-          const source = mapRef.current!.getSource("current-location") as mapboxgl.GeoJSONSource;
-          if (source) {
-            source.setData({
-              type: "Feature",
-              geometry: {
-                type: "Point",
-                coordinates: [lng, lat],
-              },
-              properties: {}, // 👈 required by type definition
-            });
-          }
-
-          // Optionally recenter map
-          // mapRef.current!.setCenter([lng, lat]);
-        },
-        (err) => console.error("Geolocation error:", err),
-        { enableHighAccuracy: true }
-      );
-      // ----------------------------------
-
       return () => {
         mapRef.current.remove();
       };
     }
   }, [mapContainerRef, currentField]);
+
+
+  React.useEffect(() => {
+    // Update source data
+    const source = mapRef.current!.getSource("current-location") as mapboxgl.GeoJSONSource;
+    if (source) {
+      source.setData({
+        type: "Feature",
+        geometry: {
+          type: "Point",
+          coordinates: [currentPosition.lng, currentPosition.lat],
+        },
+        properties: {}, // 👈 required by type definition
+      });
+    }
+
+    // Optionally recenter map
+    // mapRef.current!.setCenter([lng, lat]);
+    // ----------------------------------
+  }, [mapLoaded, currentPosition])
 
   return (
     <div>
@@ -1042,17 +1038,13 @@ function DetectionStepPosizione({ action, onNextClick }: DetectionProps) {
     fieldsSelectors.selectFieldbyId(state, fieldId ?? "default")
   );
 
-  const [geolocation, setGeolocation] = React.useState<GeolocationPosition>();
+  const currentPosition = React.useContext(gpsStore);
   const [hasGeolocation, setHasGeolocation] = React.useState<boolean>(false);
   const [markerPosition, setMarkerPosition] = React.useState<Point>();
 
   React.useEffect(() => {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        setGeolocation(position);
-        setHasGeolocation(true);
-        console.log("Geolocation position:", position);
-      });
+      setHasGeolocation(true);
     }
   }, []);
 
@@ -1108,38 +1100,38 @@ function DetectionStepPosizione({ action, onNextClick }: DetectionProps) {
       });
       if (data.length > 2) {
         const polygon = turf.polygon([data]);
-        console.log("Using current position: ", geolocation);
-        if (geolocation === undefined || !geolocation.hasOwnProperty("coords")) {
-          console.log("Geolocation coords not found");
+        if (!hasGeolocation) {
+          console.log("No Geolocation data");
           return;
         } else {
-          const point = turf.point([geolocation.coords.longitude, geolocation.coords.latitude]);
+          const point = turf.point([currentPosition.lng, currentPosition.lat]);
           const geolocationValid = turf.booleanContains(polygon, point);
           console.log("Geolocation valid?", geolocationValid);
-
-          setModal({
-            component: ModalConfirm,
-            componentProps: {
-              title: "Rilevamento",
-              content:
-                "La tua posizione corrente risulta fuori dall'area del campo. Scegli un altro punto cliccando sulla mappa.",
-              action: "Ok",
-              handleCancel: () => setModalOpen(false),
-              handleConfirm: () => {
-                setSource("map");
-                setModalOpen(false);
+          if (!geolocationValid) {
+            setModal({
+              component: ModalConfirm,
+              componentProps: {
+                title: "Rilevamento",
+                content:
+                  "La tua posizione corrente risulta fuori dall'area del campo. Scegli un altro punto cliccando sulla mappa.",
+                action: "Ok",
+                handleCancel: () => setModalOpen(false),
+                handleConfirm: () => {
+                  setSource("map");
+                  setModalOpen(false);
+                },
               },
-            },
-          });
-          setModalOpen(true);
-          return;
+            });
+            setModalOpen(true);
+            return;
+          }
         }
       }
     }
 
     const data = {
-      latitude: source === "current" ? geolocation?.coords.latitude : markerPosition?.lat,
-      longitude: source === "current" ? geolocation?.coords.longitude : markerPosition?.lng,
+      latitude: source === "current" ? currentPosition.lat : markerPosition?.lat,
+      longitude: source === "current" ? currentPosition.lng : markerPosition?.lng,
     };
 
     onNextClick(data);
@@ -1312,7 +1304,7 @@ function DetectionUI({ formData, onBackClick, onNextClick }: DetectionProps) {
   return (
     <Fragment>
       <div className="hacky-header-cover">
-        <a onClick={() => onBackClick()}>&larr;</a>
+        <a onClick={() => {onBackClick()}}>&larr;</a>
         <a
           className="finish-btn"
           onClick={() => {
