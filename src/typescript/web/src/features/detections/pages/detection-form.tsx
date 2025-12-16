@@ -791,7 +791,9 @@ function DetectionFormMapPosition({ onMarkerChange }: DetectionFormMapProps) {
           if (radius > 20) growing = false;
           if (radius < 10) growing = true;
 
-          mapRef.current!.setPaintProperty("current-location-circle", "circle-radius", radius);
+          if (mapRef.current) {
+            mapRef.current!.setPaintProperty("current-location-circle", "circle-radius", radius);
+          }
 
           requestAnimationFrame(animate);
         }
@@ -1036,17 +1038,13 @@ function DetectionStepPosizione({ action, onNextClick }: DetectionProps) {
     fieldsSelectors.selectFieldbyId(state, fieldId ?? "default")
   );
 
-  const [geolocation, setGeolocation] = React.useState<GeolocationPosition>();
+  const currentPosition = React.useContext(gpsStore);
   const [hasGeolocation, setHasGeolocation] = React.useState<boolean>(false);
   const [markerPosition, setMarkerPosition] = React.useState<Point>();
 
   React.useEffect(() => {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        setGeolocation(position);
-        setHasGeolocation(true);
-        console.log("Geolocation position:", position);
-      });
+      setHasGeolocation(true);
     }
   }, []);
 
@@ -1102,38 +1100,38 @@ function DetectionStepPosizione({ action, onNextClick }: DetectionProps) {
       });
       if (data.length > 2) {
         const polygon = turf.polygon([data]);
-        console.log("Using current position: ", geolocation);
-        if (geolocation === undefined || !geolocation.hasOwnProperty("coords")) {
-          console.log("Geolocation coords not found");
+        if (!hasGeolocation) {
+          console.log("No Geolocation data");
           return;
         } else {
-          const point = turf.point([geolocation.coords.longitude, geolocation.coords.latitude]);
+          const point = turf.point([currentPosition.lng, currentPosition.lat]);
           const geolocationValid = turf.booleanContains(polygon, point);
           console.log("Geolocation valid?", geolocationValid);
-
-          setModal({
-            component: ModalConfirm,
-            componentProps: {
-              title: "Rilevamento",
-              content:
-                "La tua posizione corrente risulta fuori dall'area del campo. Scegli un altro punto cliccando sulla mappa.",
-              action: "Ok",
-              handleCancel: () => setModalOpen(false),
-              handleConfirm: () => {
-                setSource("map");
-                setModalOpen(false);
+          if (!geolocationValid) {
+            setModal({
+              component: ModalConfirm,
+              componentProps: {
+                title: "Rilevamento",
+                content:
+                  "La tua posizione corrente risulta fuori dall'area del campo. Scegli un altro punto cliccando sulla mappa.",
+                action: "Ok",
+                handleCancel: () => setModalOpen(false),
+                handleConfirm: () => {
+                  setSource("map");
+                  setModalOpen(false);
+                },
               },
-            },
-          });
-          setModalOpen(true);
-          return;
+            });
+            setModalOpen(true);
+            return;
+          }
         }
       }
     }
 
     const data = {
-      latitude: source === "current" ? geolocation?.coords.latitude : markerPosition?.lat,
-      longitude: source === "current" ? geolocation?.coords.longitude : markerPosition?.lng,
+      latitude: source === "current" ? currentPosition.lat : markerPosition?.lat,
+      longitude: source === "current" ? currentPosition.lng : markerPosition?.lng,
     };
 
     onNextClick(data);
@@ -1306,7 +1304,7 @@ function DetectionUI({ formData, onBackClick, onNextClick }: DetectionProps) {
   return (
     <Fragment>
       <div className="hacky-header-cover">
-        <a onClick={() => onBackClick()}>&larr;</a>
+        <a onClick={() => {onBackClick()}}>&larr;</a>
         <a
           className="finish-btn"
           onClick={() => {

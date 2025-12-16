@@ -25,7 +25,7 @@ const CurrentPositionProvider = (props: PropsWithChildren) => {
   
   const options: any = {
     enableHighAccuracy: false,
-    maximumAge: 3600000,
+    maximumAge: 3600000 * 24,
   };
 
   React.useEffect(() => {
