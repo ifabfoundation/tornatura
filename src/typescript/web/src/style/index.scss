@@ -43,6 +43,7 @@ $space-half: 15px;
 $r: 5px;
 $sidebar-btn-h: 50px;
 $btn-h: 40px;
+$cont-w: 800px;
 $narrow-cont-w: 580px;
 
 $ms-sidebar-transition: 100ms;
@@ -178,7 +179,7 @@ body {
   @include font-m;
   display: flex;
   max-width: 100vw;
-  @include transition(color $ms-sidebar-transition);
+  transition: color $ms-sidebar-transition;
 
   // --------------------------------------------------------------------------------------------------
   // Structure
@@ -272,7 +273,7 @@ body {
       background-color: $c-dark;
       color: white;
       &:hover {
-        background-color: $c-grey_5;
+        background-color: lighten($c-dark, 8%);
       }
       &:active,
       .active {
@@ -295,18 +296,27 @@ body {
       }
       text-decoration: none;
     }
-    &.danger {
+    &.danger1 {
+      background-color: white;
+      color: $red;
+      &:hover {
+        background-color: darken(white, 5%);
+      }
+      &:active,
+      .active {
+        background-color: darken(white, 10%);
+      }
+      text-decoration: none;
+    }
+    &.danger2 {
       background-color: $red;
-      // border: 1px solid $c-dark;
       color: white;
       &:hover {
         background-color: darken($red, 5%);
-        // border-color: $c-grey_3;
       }
       &:active,
       .active {
         background-color: darken($red, 10%);
-        // border-color: $c-grey_4;
       }
       text-decoration: none;
     }
@@ -330,16 +340,23 @@ body {
     }
   }
 
-  a.button + a.button,
-  a.button + input[type="submit"],
-  a.button + button,
-  input[type="submit"] + a.button,
-  input[type="submit"] + input[type="submit"],
-  input[type="submit"] + button,
-  button + a.button,
-  button + input[type="submit"],
-  button + button {
-    margin-left: $space/3;
+  // OLD
+  // a.button + a.button,
+  // a.button + input[type="submit"],
+  // a.button + button,
+  // input[type="submit"] + a.button,
+  // input[type="submit"] + input[type="submit"],
+  // input[type="submit"] + button,
+  // button + a.button,
+  // button + input[type="submit"],
+  // button + button {
+  //   margin-left: $space/3;
+  // }
+  // NEW
+  a.button,
+  input[type="submit"],
+  button {
+    margin: 3px;
   }
 
   .form-wrapper {
@@ -379,24 +396,32 @@ body {
 
   .modal-bg {
     z-index: 3;
+    z-index: 5;
     position: fixed;
     top: 0;
     bottom: 0;
     left: 0;
     right: 0;
-    background-color: rgba(black, 0.5);
+    background-color: rgba(#131415, 0.8);
     display: flex;
     justify-content: center;
     align-items: flex-start;
     .mod-scrollable {
       width: 100vw;
-      max-height: 100vh;
+      height: 100dvh;
+      max-height: 100dvh;
       overflow-y: scroll;
       padding: 30px;
+      padding-top: 130px;
+      @include media-breakpoint-up(lg) {
+        padding-left: 320px;
+      }
       display: flex;
       align-items: flex-start;
       justify-content: center;
       // pointer-events: none;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s;
       .modal {
         z-index: 4;
         display: inline-block;
@@ -407,7 +432,7 @@ body {
         max-width: 90vw;
         border-radius: 10px;
         background-color: white;
-        @include transition(background-color $ms-sidebar-transition);
+        transition: background-color $ms-sidebar-transition;
         header {
           position: relative;
           border-bottom: 1px solid rgba($c-grey_6, 0.15);
@@ -452,23 +477,31 @@ body {
         .buttons-wrapper {
           display: flex;
           align-items: center;
-          justify-content: space-between;
-          .button,
-          button,
-          input {
-            &:not(:last-child) {
-              margin-right: $space/2;
-            }
-          }
+          // justify-content: space-between;
+          justify-content: center;
+          // .button,
+          // button,
+          // input {
+          //   &:not(:last-child) {
+          //     margin-right: $space/2;
+          //   }
+          // }
         }
       }
     }
   }
 
   .form-section {
+    max-width: $cont-w;
+    margin-left: auto;
+    margin-right: auto;
     padding: $space;
     border-radius: $space;
     background-color: #e8e8e8;
+    @include media-breakpoint-down(sm) {
+      padding: $space/2;
+      border-radius: $space/2;
+    }
   }
 
   .input-row + .input-row {
@@ -498,7 +531,7 @@ body {
       border: 1px solid transparent;
       border: 1px solid $c-grey_3;
       @include font-m;
-      @include transition(background-color $ms-sidebar-transition);
+      transition: background-color $ms-sidebar-transition;
       &[type="text"] {
         width: 100%;
       }
@@ -693,13 +726,14 @@ body {
       border-radius: $acc-h/2;
       margin-bottom: 8px;
       background-color: rgba(255, 255, 255, 0.5);
-      .accordion-header {
+      button.accordion-header {
         height: $acc-h;
         border-radius: $acc-h/2;
         overflow: hidden;
         background-color: white;
         border: 1px solid #c5c5c5;
         width: 100%;
+        margin: 0;
         // border: 0;
         display: flex;
         align-items: center;
@@ -1228,9 +1262,9 @@ body {
       display: flex;
       flex-flow: column nowrap;
       justify-content: space-between;
-      @include transition(background-color $ms-sidebar-transition);
+      transition: background-color $ms-sidebar-transition;
       .menu-item .text {
-        @include transition(visibility 0s $ms-sidebar-transition);
+        transition: visibility 0s $ms-sidebar-transition;
       }
     }
     // .level-2 {
@@ -1267,11 +1301,11 @@ body {
       padding-top: 23px;
       #hamburger {
         cursor: pointer;
-        @include transition(opacity $ms-sidebar-transition);
+        transition: opacity $ms-sidebar-transition;
         opacity: 0;
         pointer-events: none;
       }
-      @include transition(background-color $ms-sidebar-transition);
+      transition: background-color $ms-sidebar-transition;
       background-color: $c-sidebar_bg;
     }
 
@@ -1282,7 +1316,7 @@ body {
         width: 70px;
         .menu-item {
           .text {
-            @include transition(visibility 0s);
+            transition: visibility 0s;
             visibility: hidden;
           }
           &:not(.selected) .icon {
@@ -1291,7 +1325,7 @@ body {
         }
       }
       .level-2 {
-        @include transition(opacity $ms-sidebar-transition 0ms);
+        transition: opacity $ms-sidebar-transition 0ms;
         opacity: 1;
       }
       .hamburger-col {
@@ -1308,7 +1342,7 @@ body {
           width: 200px;
           .menu-item {
             .text {
-              @include transition(visibility 0s $ms-sidebar-transition);
+              transition: visibility 0s $ms-sidebar-transition;
               visibility: visible;
             }
             .icon {
@@ -1400,7 +1434,7 @@ body {
     .headerbar {
       z-index: 2;
       background-color: white;
-      @include transition(background-color $ms-sidebar-transition);
+      transition: background-color $ms-sidebar-transition;
       height: $header-h;
       min-height: $header-h;
       display: flex;
@@ -1483,7 +1517,7 @@ body {
       }
     }
     .content-area {
-      @include transition(background-color $ms-sidebar-transition);
+      transition: background-color $ms-sidebar-transition;
       flex-grow: 1;
       overflow-y: scroll;
       .content {
@@ -1639,7 +1673,7 @@ ul.list-group {
     height: 60px;
     background-color: white;
     box-shadow: 0 2px 10px 0 rgba($c-shadow, 0.05);
-    @include transition(box-shadow 300ms, background-color $ms-sidebar-transition);
+    transition: box-shadow 300ms, background-color $ms-sidebar-transition;
     &.clickable {
       cursor: pointer;
       &:hover {
@@ -1741,7 +1775,7 @@ $hb-color-on-hover: #eee;
     height: $hb-line-weight;
     background-color: $hb-color;
     border-radius: $hb-line-weight/2;
-    @include transition(transform 200ms, background 200ms, opacity 200ms);
+    transition: transform 200ms, background 200ms, opacity 200ms;
     &:nth-last-child(3) {
       transform: translate(0, -$hb-h/2);
     }

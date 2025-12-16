@@ -6,6 +6,7 @@ interface ModalConfirmProps {
   title: string;
   content: React.ReactNode;
   action: string;
+  actionBtnClass?: string;
   handleConfirm: () => void;
 }
 
@@ -14,18 +15,21 @@ export function ModalConfirm({
   title,
   content,
   action,
+  actionBtnClass,
   handleConfirm,
 }: ModalConfirmProps) {
+  const className = actionBtnClass ? actionBtnClass : "primary";
+  console.log("actionBtnClass", actionBtnClass);
   return (
     <Modal closeModal={handleCancel} title={title}>
       <section>
-        <div>{content}</div>
+        <div className="font-m">{content}</div>
         <hr />
-        <div className="buttons-wrapper">
+        <div className="buttons-wrapper text-center">
           <button className="trnt_btn secondary" onClick={handleCancel}>
             Annulla
           </button>
-          <button className="trnt_btn primary" onClick={handleConfirm}>
+          <button className={`trnt_btn ${className}`} onClick={handleConfirm}>
             {action}
           </button>
         </div>

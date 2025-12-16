@@ -16,7 +16,6 @@ import { ModalConfirm } from "../../../components/ModalConfirm";
 import { FieldFormInfo } from "../../companies/pages/company-field-form";
 import { FieldDetailForm } from "../forms/detail-form";
 
-
 interface FieldFormProps {
   formData: AgriField;
 }
@@ -24,7 +23,7 @@ interface FieldFormProps {
 function FieldFormStep1({ formData }: FieldFormProps) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  
+
   const [modalOpen, setModalOpen] = React.useState(false);
   const [modal, setModal] = React.useState<any>({});
 
@@ -70,19 +69,22 @@ function FieldFormStep1({ formData }: FieldFormProps) {
       component: ModalConfirm,
       componentProps: {
         title: "Eliminazione campo",
-        content: "Sei sicuro di voler eliminare questo campo? Questa azione non può essere annullata.",
+        content:
+          "Sei sicuro di voler eliminare questo campo? Questa azione non può essere annullata.",
         action: "Elimina",
+        actionBtnClass: "danger2",
         handleCancel: () => setModalOpen(false),
         handleConfirm: () => {
-          dispatch(fieldsActions.deleteFieldAction({ orgId: formData.orgId, fieldId: formData.id}));
+          dispatch(
+            fieldsActions.deleteFieldAction({ orgId: formData.orgId, fieldId: formData.id })
+          );
           setModalOpen(false);
           navigate(`/companies/${formData.orgId}`, { replace: true });
         },
       },
     });
     setModalOpen(true);
-  }
-
+  };
 
   return (
     <Fragment>
@@ -179,7 +181,9 @@ function FieldFormStep1({ formData }: FieldFormProps) {
         <hr />
         <div className="buttons-wrapper">
           <input type="submit" className="primary" value="Salva modifiche" />
-          <button className="trnt_btn info" onClick={handleFieldDelete}>Elimina campo</button>
+          <button className="trnt_btn info" onClick={handleFieldDelete}>
+            Elimina campo
+          </button>
         </div>
       </form>
     </Fragment>
@@ -197,7 +201,6 @@ const FieldFormStep2 = ({ formData }: FieldFormProps) => {
   const [mapLoaded, setMapLoaded] = React.useState(false);
   const [inputValue, setInputValue] = React.useState("");
   const [map, setMap] = React.useState<Point[]>([]);
-
 
   React.useEffect(() => {
     if (mapContainerRef.current && currentField) {
@@ -287,7 +290,6 @@ const FieldFormStep2 = ({ formData }: FieldFormProps) => {
       };
     }
   }, [mapContainerRef, currentField]);
-  
 
   const handleSaveMap = async () => {
     if (map && map.length !== 0) {
@@ -302,8 +304,7 @@ const FieldFormStep2 = ({ formData }: FieldFormProps) => {
       };
       await dispatch(fieldsActions.updateFieldAction({ orgId: formData.orgId, fieldId: formData.id, body: payload }));*/
     }
-  }
-
+  };
 
   return (
     <>
@@ -329,12 +330,13 @@ const FieldFormStep2 = ({ formData }: FieldFormProps) => {
       <div ref={mapContainerRef} id="map" style={{ height: "500px" }}></div>
       <hr />
       <div className="buttons-wrapper">
-        <button className="trnt_btn primary" onClick={handleSaveMap}>Salva modifiche</button>
+        <button className="trnt_btn primary" onClick={handleSaveMap}>
+          Salva modifiche
+        </button>
       </div>
     </>
   );
 };
-
 
 export function FieldSettings() {
   const dispatch = useAppDispatch();
@@ -352,9 +354,8 @@ export function FieldSettings() {
     <Fragment>
       <Container>
         <Row className="mt-2">
-          <Col xl={12}>
-            <h4>Dettaglio del campo</h4>
-            <hr />
+          <Col xl={12} className="py-3">
+            {/* Dettaglio del campo */}
             <FieldDetailForm field={currentField} />
           </Col>
           {/*<Col xl={6}>

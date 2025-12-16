@@ -162,9 +162,9 @@ export function FieldDetailForm({ field }: FieldDetailProps) {
     <Fragment>
       <form onSubmit={formik.handleSubmit} autoComplete="off">
         <div className="form-section">
-          <div className="container">
+          <div className="container px-0">
             <div className="row input-row">
-              <div className="col mb-5">
+              <div className="col mb-4">
                 <h4>
                   <strong>Dettagli del Campo</strong>
                 </h4>
@@ -407,13 +407,13 @@ export function FieldDetailForm({ field }: FieldDetailProps) {
           </div>
         </div>
       </form>
-      <div className="buttons-wrapper mt-5 text-center">
+      <div className="buttons-wrapper mt-4 text-center">
         <input type="submit" className="primary" value="Salva modifiche" />
-        <button className="trnt_btn info danger" onClick={handleFieldDelete}>
+        <button className="trnt_btn info danger1" onClick={handleFieldDelete}>
           Elimina campo
         </button>
       </div>
-      <div className="spacer" style={{ height: "200px" }}></div>
+      <div className="spacer my-5"></div>
     </Fragment>
   );
 }

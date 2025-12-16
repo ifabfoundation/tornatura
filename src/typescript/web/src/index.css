@@ -12798,12 +12798,6 @@ body {
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  #app {
-    transition: none;
-  }
-}
-
 #app.main-app {
   max-width: 100vw;
 }
@@ -13182,7 +13176,7 @@ body {
 #app a.button.primary:hover,
 #app input[type="submit"].primary:hover,
 #app button.trnt_btn.primary:hover {
-  background-color: #545454;
+  background-color: #333333;
 }
 
 #app a.button.primary:active,
@@ -13220,26 +13214,49 @@ body {
   border-color: #8b8b8b;
 }
 
-#app a.button.danger,
-#app input[type="submit"].danger,
-#app button.trnt_btn.danger {
+#app a.button.danger1,
+#app input[type="submit"].danger1,
+#app button.trnt_btn.danger1 {
+  background-color: white;
+  color: #dc3545;
+  text-decoration: none;
+}
+
+#app a.button.danger1:hover,
+#app input[type="submit"].danger1:hover,
+#app button.trnt_btn.danger1:hover {
+  background-color: #f2f2f2;
+}
+
+#app a.button.danger1:active,
+#app a.button.danger1 .active,
+#app input[type="submit"].danger1:active,
+#app input[type="submit"].danger1 .active,
+#app button.trnt_btn.danger1:active,
+#app button.trnt_btn.danger1 .active {
+  background-color: #e6e6e6;
+}
+
+#app a.button.danger2,
+#app input[type="submit"].danger2,
+#app button.trnt_btn.danger2 {
   background-color: #dc3545;
   color: white;
   text-decoration: none;
 }
 
-#app a.button.danger:hover,
-#app input[type="submit"].danger:hover,
-#app button.trnt_btn.danger:hover {
+#app a.button.danger2:hover,
+#app input[type="submit"].danger2:hover,
+#app button.trnt_btn.danger2:hover {
   background-color: #d32535;
 }
 
-#app a.button.danger:active,
-#app a.button.danger .active,
-#app input[type="submit"].danger:active,
-#app input[type="submit"].danger .active,
-#app button.trnt_btn.danger:active,
-#app button.trnt_btn.danger .active {
+#app a.button.danger2:active,
+#app a.button.danger2 .active,
+#app input[type="submit"].danger2:active,
+#app input[type="submit"].danger2 .active,
+#app button.trnt_btn.danger2:active,
+#app button.trnt_btn.danger2 .active {
   background-color: #bd2130;
 }
 
@@ -13358,16 +13375,10 @@ body {
   min-width: auto;
 }
 
-#app a.button + a.button,
-#app a.button + input[type="submit"],
-#app a.button + button,
-#app input[type="submit"] + a.button,
-#app input[type="submit"] + input[type="submit"],
-#app input[type="submit"] + button,
-#app button + a.button,
-#app button + input[type="submit"],
-#app button + button {
-  margin-left: 10px;
+#app a.button,
+#app input[type="submit"],
+#app button {
+  margin: 3px;
 }
 
 #app .form-wrapper {
@@ -13440,12 +13451,13 @@ body {
 
 #app .modal-bg {
   z-index: 3;
+  z-index: 5;
   position: fixed;
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(19, 20, 21, 0.8);
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -13453,12 +13465,22 @@ body {
 
 #app .modal-bg .mod-scrollable {
   width: 100vw;
-  max-height: 100vh;
+  height: 100dvh;
+  max-height: 100dvh;
   overflow-y: scroll;
   padding: 30px;
+  padding-top: 130px;
   display: flex;
   align-items: flex-start;
   justify-content: center;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s;
+}
+
+@media (min-width: 992px) {
+  #app .modal-bg .mod-scrollable {
+    padding-left: 320px;
+  }
 }
 
 #app .modal-bg .mod-scrollable .modal {
@@ -13472,12 +13494,6 @@ body {
   border-radius: 10px;
   background-color: white;
   transition: background-color 100ms;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  #app .modal-bg .mod-scrollable .modal {
-    transition: none;
-  }
 }
 
 #app .modal-bg .mod-scrollable .modal header {
@@ -13593,19 +13609,23 @@ body {
 #app .modal-bg .mod-scrollable .modal .buttons-wrapper {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-}
-
-#app .modal-bg .mod-scrollable .modal .buttons-wrapper .button:not(:last-child),
-#app .modal-bg .mod-scrollable .modal .buttons-wrapper button:not(:last-child),
-#app .modal-bg .mod-scrollable .modal .buttons-wrapper input:not(:last-child) {
-  margin-right: 15px;
+  justify-content: center;
 }
 
 #app .form-section {
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
   padding: 30px;
   border-radius: 30px;
   background-color: #e8e8e8;
+}
+
+@media (max-width: 575.98px) {
+  #app .form-section {
+    padding: 15px;
+    border-radius: 15px;
+  }
 }
 
 #app .input-row + .input-row {
@@ -13726,17 +13746,6 @@ body {
   #app .form-row select,
   #app .form-row textarea {
     font-size: 15px;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  #app .input-row input,
-  #app .input-row select,
-  #app .input-row textarea,
-  #app .form-row input,
-  #app .form-row select,
-  #app .form-row textarea {
-    transition: none;
   }
 }
 
@@ -14131,13 +14140,14 @@ body {
   background-color: rgba(255, 255, 255, 0.5);
 }
 
-#app .accordion .accordion-section .accordion-header {
+#app .accordion .accordion-section button.accordion-header {
   height: 54px;
   border-radius: 27px;
   overflow: hidden;
   background-color: white;
   border: 1px solid #c5c5c5;
   width: 100%;
+  margin: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -14147,12 +14157,12 @@ body {
   font-size: 16px;
 }
 
-#app .accordion .accordion-section .accordion-header .accordion-header-left {
+#app .accordion .accordion-section button.accordion-header .accordion-header-left {
   display: flex;
   align-items: center;
 }
 
-#app .accordion .accordion-section .accordion-header .accordion-header-left .accordion-title {
+#app .accordion .accordion-section button.accordion-header .accordion-header-left .accordion-title {
   font-family: "Inter", sans-serif;
   font-size: 15px;
   letter-spacing: 0.02em;
@@ -14165,30 +14175,30 @@ body {
 }
 
 @media (min-width: 576px) {
-  #app .accordion .accordion-section .accordion-header .accordion-header-left .accordion-title {
+  #app .accordion .accordion-section button.accordion-header .accordion-header-left .accordion-title {
     font-size: 15px;
   }
 }
 
 @media (min-width: 768px) {
-  #app .accordion .accordion-section .accordion-header .accordion-header-left .accordion-title {
+  #app .accordion .accordion-section button.accordion-header .accordion-header-left .accordion-title {
     font-size: 15px;
   }
 }
 
 @media (min-width: 992px) {
-  #app .accordion .accordion-section .accordion-header .accordion-header-left .accordion-title {
+  #app .accordion .accordion-section button.accordion-header .accordion-header-left .accordion-title {
     font-size: 15px;
   }
 }
 
 @media (min-width: 1200px) {
-  #app .accordion .accordion-section .accordion-header .accordion-header-left .accordion-title {
+  #app .accordion .accordion-section button.accordion-header .accordion-header-left .accordion-title {
     font-size: 15px;
   }
 }
 
-#app .accordion .accordion-section .accordion-header .accordion-arrow::after {
+#app .accordion .accordion-section button.accordion-header .accordion-arrow::after {
   content: "▼";
   content: "⊕";
   content: "×";
@@ -14208,30 +14218,30 @@ body {
 }
 
 @media (min-width: 576px) {
-  #app .accordion .accordion-section .accordion-header .accordion-arrow::after {
+  #app .accordion .accordion-section button.accordion-header .accordion-arrow::after {
     font-size: 15px;
   }
 }
 
 @media (min-width: 768px) {
-  #app .accordion .accordion-section .accordion-header .accordion-arrow::after {
+  #app .accordion .accordion-section button.accordion-header .accordion-arrow::after {
     font-size: 15px;
   }
 }
 
 @media (min-width: 992px) {
-  #app .accordion .accordion-section .accordion-header .accordion-arrow::after {
+  #app .accordion .accordion-section button.accordion-header .accordion-arrow::after {
     font-size: 15px;
   }
 }
 
 @media (min-width: 1200px) {
-  #app .accordion .accordion-section .accordion-header .accordion-arrow::after {
+  #app .accordion .accordion-section button.accordion-header .accordion-arrow::after {
     font-size: 15px;
   }
 }
 
-#app .accordion .accordion-section .accordion-header .accordion-arrow.open::after {
+#app .accordion .accordion-section button.accordion-header .accordion-arrow.open::after {
   transform: rotate(0deg);
 }
 
@@ -15019,20 +15029,8 @@ body {
   transition: background-color 100ms;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  #app .sidebar .level-1 {
-    transition: none;
-  }
-}
-
 #app .sidebar .level-1 .menu-item .text {
   transition: visibility 0s 100ms;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  #app .sidebar .level-1 .menu-item .text {
-    transition: none;
-  }
 }
 
 #app .sidebar .level-1 .submenu-label,
@@ -15100,18 +15098,6 @@ body {
   pointer-events: none;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  #app .sidebar .hamburger-col #hamburger {
-    transition: none;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  #app .sidebar .hamburger-col {
-    transition: none;
-  }
-}
-
 #app .sidebar.double {
   width: 270px;
   min-width: 270px;
@@ -15126,12 +15112,6 @@ body {
   visibility: hidden;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  #app .sidebar.double .level-1 .menu-item .text {
-    transition: none;
-  }
-}
-
 #app .sidebar.double .level-1 .menu-item:not(.selected) .icon {
   opacity: 0.4;
 }
@@ -15139,12 +15119,6 @@ body {
 #app .sidebar.double .level-2 {
   transition: opacity 100ms 0ms;
   opacity: 1;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  #app .sidebar.double .level-2 {
-    transition: none;
-  }
 }
 
 #app .sidebar.double .hamburger-col {
@@ -15168,12 +15142,6 @@ body {
 #app .sidebar.double.open .level-1 .menu-item .text {
   transition: visibility 0s 100ms;
   visibility: visible;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  #app .sidebar.double.open .level-1 .menu-item .text {
-    transition: none;
-  }
 }
 
 #app .sidebar.double.open .level-1 .menu-item .icon {
@@ -15314,12 +15282,6 @@ body {
   align-items: center;
   padding-right: 30px;
   box-shadow: 0 2px 10px 0 rgba(31, 31, 31, 0.15);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  #app .ui-right .headerbar {
-    transition: none;
-  }
 }
 
 @media (max-width: 991.98px) {
@@ -15506,12 +15468,6 @@ body {
   overflow-y: scroll;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  #app .ui-right .content-area {
-    transition: none;
-  }
-}
-
 #app .ui-right .content-area .content {
   padding: 20px 10px;
 }
@@ -15681,12 +15637,6 @@ ul.list-group li.list-group-item:hover {
   background-color: white;
   box-shadow: 0 2px 10px 0 rgba(31, 31, 31, 0.05);
   transition: box-shadow 300ms, background-color 100ms;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .component-table-cozy .data-row {
-    transition: none;
-  }
 }
 
 .component-table-cozy .data-row.clickable {
@@ -15887,12 +15837,6 @@ ul.list-group li.list-group-item:hover {
   background-color: white;
   border-radius: 1px;
   transition: transform 200ms, background 200ms, opacity 200ms;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  #hamburger span {
-    transition: none;
-  }
 }
 
 #hamburger span:nth-last-child(3) {

@@ -881,9 +881,11 @@ const categorie: any = {
     items: {
       peronospora: {
         name: "Peronospora",
+        icon: false,
       },
       other_fungi: {
         name: "Altro fungo",
+        icon: false,
       },
     },
   },
@@ -893,9 +895,11 @@ const categorie: any = {
     items: {
       flavescenza: {
         name: "Flavescenza",
+        icon: false,
       },
       other_bacteria: {
         name: "Altro batterio",
+        icon: false,
       },
     },
   },
@@ -905,16 +909,20 @@ const categorie: any = {
     items: {
       scafoideo: {
         name: "Scafoideo",
+        icon: false,
       },
       cimice: {
         name: "Cimice",
         // icon: "baloon",
+        icon: false,
       },
       diabrotica: {
         name: "Diabrotica",
+        icon: false,
       },
       other_insect: {
         name: "Altro insetto",
+        icon: false,
       },
     },
   },
@@ -1004,6 +1012,9 @@ function AccordionTipologia({ onSelect }: AccordionTipologiaProps) {
             let iconNameBtn = categorie[key].icon ?? null;
             if (categorie[key].items[itemKey].icon) {
               iconNameBtn = categorie[key].items[itemKey].icon;
+            }
+            if (categorie[key].items[itemKey].icon === false) {
+              iconNameBtn = null;
             }
             return (
               <CozyButton
@@ -1150,8 +1161,8 @@ function DetectionStepPosizione({ action, onNextClick }: DetectionProps) {
         </label>
       </div>
       <DetectionFormMapPosition onMarkerChange={handleMarkerChange} />
-      <hr />
-      <div className="buttons-wrapper">
+      {/* <hr /> */}
+      <div className="buttons-wrapper mt-4 text-center">
         <button className="trnt_btn primary" onClick={handleNextClick}>
           {action}
         </button>
