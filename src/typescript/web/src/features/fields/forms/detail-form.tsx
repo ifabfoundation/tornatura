@@ -163,7 +163,7 @@ export function FieldDetailForm({ field }: FieldDetailProps) {
       <form onSubmit={formik.handleSubmit} autoComplete="off">
         <div className="form-section">
           <div className="container px-0">
-            <div className="row input-row">
+            <div className="row">
               <div className="col mb-4">
                 <h4>
                   <strong>Dettagli del Campo</strong>

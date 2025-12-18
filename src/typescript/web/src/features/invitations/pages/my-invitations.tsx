@@ -44,7 +44,7 @@ export function MyInvitations() {
   }, [dispatch]);
 
   React.useEffect(() => {
-    dispatch(headerbarActions.setTitle({ title: "I miei inviti", subtitle: "Subtitle" }));
+    dispatch(headerbarActions.setTitle({ title: "Inviti ricevuti", subtitle: "Subtitle" }));
   }, []);
 
   const handleViewInvitation = (token: string) => {
@@ -63,7 +63,7 @@ export function MyInvitations() {
     <Container>
       <section>
         <header>
-          <h1>I miei inviti</h1>
+          <h1>Inviti ricevuti</h1>
           <p>Visualizza e gestisci gli inviti che hai ricevuto</p>
         </header>
 
@@ -85,9 +85,7 @@ export function MyInvitations() {
                 <Card className="with-hover-effect" style={{ marginBottom: "1.5rem" }}>
                   <Card.Header>
                     <strong>
-                      {invitation.orgId
-                        ? "Invito da organizzazione"
-                        : "Invito da agronomo"}
+                      {invitation.orgId ? "Invito da organizzazione" : "Invito da agronomo"}
                     </strong>
                   </Card.Header>
                   <Card.Body>

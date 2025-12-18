@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import mapboxgl from "mapbox-gl";
@@ -13,6 +13,7 @@ import { fieldsActions } from "../../fields/state/fields-slice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import * as turf from "@turf/turf";
 import { gpsStore } from "../../../providers/gps-providers";
+import { Col, Container, Row } from "react-bootstrap";
 
 interface FieldProps {
   formData: AgriFieldMutationPayload;
@@ -126,245 +127,255 @@ export function FieldFormInfo({ formData, action, onNextClick, onBackClick }: Fi
   };
 
   return (
-    <div className="container">
-      <form onSubmit={formik.handleSubmit} autoComplete="off">
-        <div className="row input-row">
-          <div className="col">
-            <label>
-              Nome
-              <input
-                id="FIELD_1"
-                name="name"
-                type="text"
-                placeholder="Nome del campo"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.name}
-              />
-            </label>
+    <form onSubmit={formik.handleSubmit} autoComplete="off">
+      <div className="form-section">
+        <div className="container px-0">
+          <div className="row">
+            <div className="col mb-4">
+              <h4>
+                <strong>Dettagli del Campo</strong>
+              </h4>
+            </div>
           </div>
-        </div>
-        <div className="row input-row">
-          <div className="col-md-6 input-row-margin-fix">
-            <label>
-              Coltura
-              <select
-                id="FIELD_2"
-                name="harvest"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.harvest}
-              >
-                <option value="" disabled>
-                  Scegli la coltura
-                </option>
-                {Object.entries(form_options_coltura).map(([key, label]) => (
-                  <option key={key} value={key}>
-                    {label}
+          <div className="row input-row">
+            <div className="col">
+              <label>
+                Nome
+                <input
+                  id="FIELD_1"
+                  name="name"
+                  type="text"
+                  placeholder="Nome del campo"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.name}
+                />
+              </label>
+            </div>
+          </div>
+          <div className="row input-row">
+            <div className="col-md-6 input-row-margin-fix">
+              <label>
+                Coltura
+                <select
+                  id="FIELD_2"
+                  name="harvest"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.harvest}
+                >
+                  <option value="" disabled>
+                    Scegli la coltura
                   </option>
-                ))}
-              </select>
-            </label>
+                  {Object.entries(form_options_coltura).map(([key, label]) => (
+                    <option key={key} value={key}>
+                      {label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
+            <div className="col-md-6 input-row-margin-fix">
+              <label>
+                Varietà/Cultivar
+                <input
+                  id="FIELD_3"
+                  name="variety"
+                  type="text"
+                  placeholder="Indica la varietà o cultivar"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.variety}
+                />
+              </label>
+            </div>
           </div>
-          <div className="col-md-6 input-row-margin-fix">
-            <label>
-              Varietà/Cultivar
-              <input
-                id="FIELD_3"
-                name="variety"
-                type="text"
-                placeholder="Indica la varietà o cultivar"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.variety}
-              />
-            </label>
-          </div>
-        </div>
-        <div className="row input-row">
-          <div className="col-md-6 input-row-margin-fix">
-            <label>
-              Rotazione
-              <select
-                id="FIELD_4"
-                name="rotation"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.rotation}
-              >
-                <option value="" disabled>
-                  Scegli...
-                </option>
-                {Object.entries(form_options_rotazione).map(([key, label]) => (
-                  <option key={key} value={key}>
-                    {label}
+          <div className="row input-row">
+            <div className="col-md-6 input-row-margin-fix">
+              <label>
+                Rotazione
+                <select
+                  id="FIELD_4"
+                  name="rotation"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.rotation}
+                >
+                  <option value="" disabled>
+                    Scegli...
                   </option>
-                ))}
-              </select>
-            </label>
+                  {Object.entries(form_options_rotazione).map(([key, label]) => (
+                    <option key={key} value={key}>
+                      {label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
+            <div className="col-md-6 input-row-margin-fix">
+              <label>
+                Anno di impianto
+                <input
+                  id="FIELD_5"
+                  name="year"
+                  type="text"
+                  // placeholder="[SOLO SE ROTAZIONE = NO]"
+                  placeholder="Anno"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  disabled={formik.values.rotation === "si"}
+                  value={formik.values.rotation === "no" ? formik.values.year : ""}
+                />
+              </label>
+            </div>
           </div>
-          <div className="col-md-6 input-row-margin-fix">
-            <label>
-              Anno di impianto
-              <input
-                id="FIELD_5"
-                name="year"
-                type="text"
-                // placeholder="[SOLO SE ROTAZIONE = NO]"
-                placeholder="Anno"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                disabled={formik.values.rotation === "si"}
-                value={formik.values.rotation === "no" ? formik.values.year : ""}
-              />
-            </label>
-          </div>
-        </div>
-        <div className="row input-row">
-          <div className="col-md-6 input-row-margin-fix">
-            <label>
-              Dimensione del campo
-              <select
-                id="FIELD_6"
-                name="areafrom"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.areafrom}
-              >
-                <option value="" disabled>
-                  Scegli il metodo di inserimento
-                </option>
-                {Object.entries(form_options_dimensione).map(([key, label]) => (
-                  <option key={key} value={key}>
-                    {label}
+          <div className="row input-row">
+            <div className="col-md-6 input-row-margin-fix">
+              <label>
+                Dimensione del campo
+                <select
+                  id="FIELD_6"
+                  name="areafrom"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.areafrom}
+                >
+                  <option value="" disabled>
+                    Scegli il metodo di inserimento
                   </option>
-                ))}
-              </select>
-            </label>
+                  {Object.entries(form_options_dimensione).map(([key, label]) => (
+                    <option key={key} value={key}>
+                      {label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
+            <div className="col-md-6 input-row-margin-fix">
+              <label>
+                Dimensione in ettari
+                <input
+                  id="FIELD_7"
+                  name="area"
+                  type="text"
+                  min={0}
+                  // placeholder="[NON MODIFICABILE SE CALCOLO AUTOMATICO]"
+                  placeholder="He"
+                  disabled={formik.values.areafrom === "map"}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={
+                    formik.values.areafrom === "manual"
+                      ? formik.values.area
+                      : calcArea(formData.map)
+                  }
+                />
+              </label>
+            </div>
           </div>
-          <div className="col-md-6 input-row-margin-fix">
-            <label>
-              Dimensione in ettari
-              <input
-                id="FIELD_7"
-                name="area"
-                type="text"
-                min={0}
-                // placeholder="[NON MODIFICABILE SE CALCOLO AUTOMATICO]"
-                placeholder="He"
-                disabled={formik.values.areafrom === "map"}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={
-                  formik.values.areafrom === "manual" ? formik.values.area : calcArea(formData.map)
-                }
-              />
-            </label>
-          </div>
-        </div>
-        <div className="row input-row">
-          <div className="col-md-6 input-row-margin-fix">
-            <label>
-              Numero di piante
-              <input
-                id="FIELD_8"
-                name="plants"
-                type="text"
-                placeholder="Numero di piante"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.plants}
-              />
-            </label>
-          </div>
-          {formik.touched.plants && formik.errors.plants ? (
-            <div className="error">{formik.errors.plants}</div>
-          ) : null}
-          <div className="col-md-6 input-row-margin-fix">
-            <label>
-              Irrigazione
-              <select
-                id="FIELD_9"
-                name="irrigation"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.irrigation}
-              >
-                <option value="" disabled>
-                  Scegli il tipo di irrigazione
-                </option>
-                {Object.entries(form_options_irrigazione).map(([key, label]) => (
-                  <option key={key} value={key}>
-                    {label}
+          <div className="row input-row">
+            <div className="col-md-6 input-row-margin-fix">
+              <label>
+                Numero di piante
+                <input
+                  id="FIELD_8"
+                  name="plants"
+                  type="text"
+                  placeholder="Numero di piante"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.plants}
+                />
+              </label>
+            </div>
+            {formik.touched.plants && formik.errors.plants ? (
+              <div className="error">{formik.errors.plants}</div>
+            ) : null}
+            <div className="col-md-6 input-row-margin-fix">
+              <label>
+                Irrigazione
+                <select
+                  id="FIELD_9"
+                  name="irrigation"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.irrigation}
+                >
+                  <option value="" disabled>
+                    Scegli il tipo di irrigazione
                   </option>
-                ))}
-              </select>
-            </label>
+                  {Object.entries(form_options_irrigazione).map(([key, label]) => (
+                    <option key={key} value={key}>
+                      {label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
           </div>
-        </div>
-        <div className="row input-row">
-          <div className="col-md-6 input-row-margin-fix">
-            <label>
-              Inerbimento
-              <select
-                id="FIELD_10"
-                name="grassing"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.grassing}
-              >
-                <option value="" disabled>
-                  Scegli il tipo di inerbimento
-                </option>
-                {Object.entries(form_options_inerbimento).map(([key, label]) => (
-                  <option key={key} value={key}>
-                    {label}
+          <div className="row input-row">
+            <div className="col-md-6 input-row-margin-fix">
+              <label>
+                Inerbimento
+                <select
+                  id="FIELD_10"
+                  name="grassing"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.grassing}
+                >
+                  <option value="" disabled>
+                    Scegli il tipo di inerbimento
                   </option>
-                ))}
-              </select>
-            </label>
-          </div>
-          <div className="col-md-6 input-row-margin-fix">
-            <label>
-              Tessitura
-              <select
-                id="FIELD_11"
-                name="weaving"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.weaving}
-              >
-                <option value="" disabled>
-                  Scegli la tessitura del suolo
-                </option>
-                {Object.entries(form_options_tessitura).map(([key, label]) => (
-                  <option key={key} value={key}>
-                    {label}
+                  {Object.entries(form_options_inerbimento).map(([key, label]) => (
+                    <option key={key} value={key}>
+                      {label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
+            <div className="col-md-6 input-row-margin-fix">
+              <label>
+                Tessitura
+                <select
+                  id="FIELD_11"
+                  name="weaving"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.weaving}
+                >
+                  <option value="" disabled>
+                    Scegli la tessitura del suolo
                   </option>
-                ))}
-              </select>
-            </label>
+                  {Object.entries(form_options_tessitura).map(([key, label]) => (
+                    <option key={key} value={key}>
+                      {label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
           </div>
-        </div>
-        <div className="row input-row">
-          <div className="col">
-            <label>
-              Descrizione
-              <textarea
-                id="FIELD_12"
-                name="description"
-                rows={15}
-                cols={50}
-                placeholder="Descrizione del campo"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.description}
-              />
-            </label>
+          <div className="row input-row">
+            <div className="col">
+              <label>
+                Descrizione
+                <textarea
+                  id="FIELD_12"
+                  name="description"
+                  rows={15}
+                  cols={50}
+                  placeholder="Descrizione del campo"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.description}
+                />
+              </label>
+            </div>
           </div>
-        </div>
 
-        {/*  
+          {/*  
         <div className="spacer" style={{ height: "200px" }}></div>
 
         <div className="input-row">
@@ -486,20 +497,19 @@ export function FieldFormInfo({ formData, action, onNextClick, onBackClick }: Fi
           ) : null}
         </div>
 
+          <hr />
         */}
-
-        <hr />
-
-        <div className="buttons-wrapper">
-          <button className="trnt_btn secondary" onClick={onBackClick}>
-            Indietro
-          </button>
-          <input type="submit" className="primary" value={action} />
         </div>
+      </div>
+      <div className="buttons-wrapper mt-4 text-center">
+        <button className="trnt_btn secondary" onClick={onBackClick}>
+          Indietro
+        </button>
+        <input type="submit" className="primary" value={action} />
+      </div>
 
-        <div className="spacer" style={{ height: "200px" }}></div>
-      </form>
-    </div>
+      <div className="spacer my-5"></div>
+    </form>
   );
 }
 
@@ -522,7 +532,6 @@ export const FieldFormMap = ({ action, onNextClick }: FieldProps) => {
     console.log("area in sqm", areaSqm);
     console.log("area in hectares", areaHe);
   };
-
 
   React.useEffect(() => {
     if (mapContainerRef.current) {
@@ -699,18 +708,24 @@ export function CompanyFieldForm() {
   };
 
   return (
-    <div className="form-wrapper">
+    <Fragment>
       {step === 1 && (
         <FieldFormMap formData={formData} action={action} onNextClick={handleNextClick} />
       )}
       {step === 2 && (
-        <FieldFormInfo
-          formData={formData}
-          action={action}
-          onBackClick={handleBackClick}
-          onNextClick={handleNextClick}
-        />
+        <Container>
+          <Row className="mt-2">
+            <Col xl={12} className="py-3">
+              <FieldFormInfo
+                formData={formData}
+                action={action}
+                onBackClick={handleBackClick}
+                onNextClick={handleNextClick}
+              />
+            </Col>
+          </Row>
+        </Container>
       )}
-    </div>
+    </Fragment>
   );
 }

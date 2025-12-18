@@ -7,6 +7,7 @@ import { invitationsActions, invitationsSelectors } from "../state/invitations-s
 import { Invitation } from "@tornatura/coreapis";
 import { ModalConfirm } from "../../../components/ModalConfirm";
 import { headerbarActions } from "../../headerbar/state/headerbar-slice";
+import TableCozy, { TableColumn, TableOptions } from "../../../components/TableCozy";
 
 // Helper to format timestamps
 const formatDate = (timestamp: number) => {
@@ -138,6 +139,77 @@ export function InvitationsList() {
       });
   };
 
+  // -----------------------------------------------------------
+  const tableOptions: TableOptions = {
+    defaultSortCol: "sentDate",
+    defaultSortDir: "desc",
+  };
+
+  const tableColumns: TableColumn[] = [
+    {
+      headerText: "Email",
+      id: "email",
+      sortable: true,
+      style: "normal",
+      type: "text",
+    },
+    {
+      headerText: "Ruolo",
+      id: "role",
+      sortable: true,
+      style: "normal",
+      type: "text",
+    },
+    {
+      headerText: "Stato",
+      id: "status",
+      sortable: true,
+      style: "normal",
+      type: "text",
+    },
+    {
+      headerText: "Data invio",
+      id: "sentDate",
+      sortable: true,
+      style: "normal",
+      type: "text",
+    },
+    {
+      headerText: "Scadenza",
+      id: "expirationDate",
+      sortable: true,
+      style: "normal",
+      type: "text",
+    },
+    {
+      headerText: "Azioni",
+      id: "button_resend",
+      buttonText: "Reinvia",
+      type: "button",
+      style: "secondary",
+      onButtonClick: handleResend,
+    },
+    {
+      headerText: "",
+      id: "button_cancel",
+      buttonText: "Revoca",
+      type: "button",
+      style: "secondary",
+      onButtonClick: handleCancelClick,
+    },
+  ];
+
+  const tableData = invitations.map((invitation) => ({
+    email: invitation.email,
+    role: translateRole(invitation.role),
+    status: translateStatus(invitation.status),
+    sentDate: formatDate(invitation.creationTime),
+    expirationDate: formatDate(invitation.expiresAt),
+    // action1:
+    // action2:
+  }));
+  // -----------------------------------------------------------
+
   if (status === "pending") {
     return (
       <Container>
@@ -148,14 +220,9 @@ export function InvitationsList() {
 
   return (
     <Container>
-      <section>
-        <header>
-          <h1>Gestione inviti</h1>
-          <button className="trnt_btn primary" onClick={handleSendInvitation}>
-            + Invia nuovo invito
-          </button>
-        </header>
-
+      <section className="my-5">
+        <p>Lista degli inviti fatti a nome dell'azienda, e che sono in attesa di una risposta.</p>
+        <div className="my-4"></div>
         {message && (
           <Alert
             variant={hasError ? "danger" : "success"}
@@ -180,59 +247,71 @@ export function InvitationsList() {
             </button>
           </div>
         ) : (
-          <div className="table-responsive">
-            <table className="table table-hover">
-              <thead>
-                <tr>
-                  <th>Email</th>
-                  <th>Ruolo</th>
-                  <th>Stato</th>
-                  <th>Data invio</th>
-                  <th>Scadenza</th>
-                  <th>Azioni</th>
-                </tr>
-              </thead>
-              <tbody>
-                {invitations.map((invitation) => (
-                  <tr key={invitation.id}>
-                    <td>{invitation.email}</td>
-                    <td>{translateRole(invitation.role)}</td>
-                    <td>
-                      <span className={`badge ${getStatusClass(invitation.status)}`}>
-                        {translateStatus(invitation.status)}
-                      </span>
-                    </td>
-                    <td>{formatDate(invitation.creationTime)}</td>
-                    <td>{formatDate(invitation.expiresAt)}</td>
-                    <td>
-                      {invitation.status === "pending" && (
-                        <Fragment>
-                          <button
-                            className="trnt_btn trnt_btn-sm secondary"
-                            onClick={() => handleResend(invitation)}
-                            style={{ marginRight: "0.5rem" }}
-                          >
-                            Reinvia
-                          </button>
-                          <button
-                            className="trnt_btn trnt_btn-sm danger"
-                            onClick={() => handleCancelClick(invitation)}
-                          >
-                            Revoca
-                          </button>
-                        </Fragment>
-                      )}
-                      {invitation.status === "accepted" && (
-                        <span className="text-muted">
-                          {invitation.acceptedAt && `Accettato il ${formatDate(invitation.acceptedAt)}`}
-                        </span>
-                      )}
-                    </td>
+          <Fragment>
+            {/* 
+            <div className="table-responsive">
+              <table className="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Email</th>
+                    <th>Ruolo</th>
+                    <th>Stato</th>
+                    <th>Data invio</th>
+                    <th>Scadenza</th>
+                    <th>Azioni</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {invitations.map((invitation) => (
+                    <tr key={invitation.id}>
+                      <td>{invitation.email}</td>
+                      <td>{translateRole(invitation.role)}</td>
+                      <td>
+                        <span className={`badge ${getStatusClass(invitation.status)}`}>
+                          {translateStatus(invitation.status)}
+                        </span>
+                      </td>
+                      <td>{formatDate(invitation.creationTime)}</td>
+                      <td>{formatDate(invitation.expiresAt)}</td>
+                      <td>
+                        {invitation.status === "pending" && (
+                          <Fragment>
+                            <button
+                              className="trnt_btn trnt_btn-sm secondary"
+                              onClick={() => handleResend(invitation)}
+                              style={{ marginRight: "0.5rem" }}
+                            >
+                              Reinvia
+                            </button>
+                            <button
+                              className="trnt_btn trnt_btn-sm danger"
+                              onClick={() => handleCancelClick(invitation)}
+                            >
+                              Revoca
+                            </button>
+                          </Fragment>
+                        )}
+                        {invitation.status === "accepted" && (
+                          <span className="text-muted">
+                            {invitation.acceptedAt &&
+                              `Accettato il ${formatDate(invitation.acceptedAt)}`}
+                          </span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+ */}
+            <TableCozy columns={tableColumns} data={tableData} options={tableOptions} />
+
+            <section className="my-3">
+              <button className="trnt_btn primary m-0" onClick={handleSendInvitation}>
+                + Nuovo invito
+              </button>
+            </section>
+          </Fragment>
         )}
       </section>
 

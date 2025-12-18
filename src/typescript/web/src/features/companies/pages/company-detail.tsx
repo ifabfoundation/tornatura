@@ -27,8 +27,14 @@ export function CompanyDetail() {
         },
         {
           id: "invitations",
-          icon: "checklist",
-          text: "Inviti",
+          icon: "baloon",
+          text: "Gestione inviti",
+          path: `/companies/${companyId}/invitations`,
+        },
+        {
+          id: "members",
+          icon: "user",
+          text: "Membri azienda",
           path: `/companies/${companyId}/invitations`,
         },
         {

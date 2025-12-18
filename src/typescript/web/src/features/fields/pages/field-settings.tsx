@@ -351,20 +351,12 @@ export function FieldSettings() {
   }, []);
 
   return (
-    <Fragment>
-      <Container>
-        <Row className="mt-2">
-          <Col xl={12} className="py-3">
-            {/* Dettaglio del campo */}
-            <FieldDetailForm field={currentField} />
-          </Col>
-          {/*<Col xl={6}>
-            <h4>Mappa del campo</h4>
-            <hr />
-            <FieldFormStep2 formData={currentField} />
-          </Col>*/}
-        </Row>
-      </Container>
-    </Fragment>
+    <Container>
+      <Row className="mt-2">
+        <Col xl={12} className="py-3">
+          <FieldDetailForm field={currentField} />
+        </Col>
+      </Row>
+    </Container>
   );
 }
