@@ -13222,8 +13222,7 @@ body {
 #app a.button.secondary,
 #app input[type="submit"].secondary,
 #app button.trnt_btn.secondary {
-  background-color: transparent;
-  border: 1px solid #1f1f1f;
+  background-color: rgba(0, 0, 0, 0.05);
   color: #1f1f1f;
   text-decoration: none;
 }
@@ -13231,8 +13230,7 @@ body {
 #app a.button.secondary:hover,
 #app input[type="submit"].secondary:hover,
 #app button.trnt_btn.secondary:hover {
-  background-color: #bbbbbb;
-  border-color: #bbbbbb;
+  background-color: rgba(0, 0, 0, 0.15);
 }
 
 #app a.button.secondary:active,
@@ -13241,8 +13239,7 @@ body {
 #app input[type="submit"].secondary .active,
 #app button.trnt_btn.secondary:active,
 #app button.trnt_btn.secondary .active {
-  background-color: #8b8b8b;
-  border-color: #8b8b8b;
+  background-color: #bbbbbb;
 }
 
 #app a.button.danger1,

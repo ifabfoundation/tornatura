@@ -16,6 +16,13 @@ function valOrEmpty(value: any, fallback: string = "–") {
   return value;
 }
 
+function toTitleCase(str: string): string {
+  return str.replace(
+    /\w\S*/g,
+    (text) => text.charAt(0).toUpperCase() + text.substring(1).toLowerCase()
+  );
+}
+
 export function FieldDashboard() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -40,30 +47,66 @@ export function FieldDashboard() {
       <div className="container">
         <div className="row">
           <div className="col-xl-9">
+            <div className="row">
+              <div className="iiinfo-col mt-2 mb-3 col-6 col-sm-4 col-md-3">
+                <div className="iiinfo-label font-s-label">Coltura</div>
+                <div className="iiinfo-value font-l-600 mt-1">
+                  {valOrEmpty(toTitleCase(currentField?.harvest))}
+                </div>
+              </div>
+              <div className="iiinfo-col mt-2 mb-3 col-6 col-sm-4 col-md-3">
+                <div className="iiinfo-label font-s-label">Cultivar</div>
+                <div className="iiinfo-value font-l-600 mt-1">
+                  {valOrEmpty(currentField?.variety)}
+                </div>
+              </div>
+              <div className="iiinfo-col mt-2 mb-3 col-6 col-sm-4 col-md-3">
+                <div className="iiinfo-label font-s-label">Dimensione</div>
+                <div className="iiinfo-value font-l-600 mt-1">{valOrEmpty(currentField?.area)}</div>
+              </div>
+              <div className="iiinfo-col mt-2 mb-3 col-6 col-sm-4 col-md-3">
+                <div className="iiinfo-label font-s-label">Num. piante</div>
+                <div className="iiinfo-value font-l-600 mt-1">
+                  {valOrEmpty(currentField?.plants)}
+                </div>
+              </div>
+              <div className="iiinfo-col mt-2 mb-3 col-6 col-sm-4 col-md-3">
+                <div className="iiinfo-label font-s-label">Num. rilevamenti</div>
+                <div className="iiinfo-value font-l-600 mt-1">{valOrEmpty(detections.length)}</div>
+              </div>
+              <div className="iiinfo-col mt-2 mb-3 col-6 col-sm-4 col-md-3">
+                <div className="iiinfo-label font-s-label">Anno di impianto</div>
+                <div className="iiinfo-value font-l-600 mt-1">{valOrEmpty(currentField?.year)}</div>
+              </div>
+              <div className="iiinfo-col mt-2 mb-3 col-6 col-sm-4 col-md-3 d-none d-md-block">
+                <div className="iiinfo-label font-s-label">Rotazione</div>
+                <div className="iiinfo-value font-l-600 mt-1">
+                  {valOrEmpty(toTitleCase(currentField?.rotation))}
+                </div>
+              </div>
+              <div className="iiinfo-col mt-2 mb-3 col-6 col-sm-4 col-md-3 d-none d-md-block">
+                <div className="iiinfo-label font-s-label">Tessitura</div>
+                <div className="iiinfo-value font-l-600 mt-1">
+                  {valOrEmpty(toTitleCase(currentField?.weaving))}
+                </div>
+              </div>
+              {/*  
+              <div className="col-3">
+                <div className="font-s-label">Inerbimento</div>
+                <div className="font-l-600">{valOrEmpty(toTitleCase(currentField?.grassing))}</div>
+              </div>
+              */}
+            </div>
+
+            {/*  
             <div className="rt-responsive-table">
               <div className="rt-row">
                 <div className="rt-label">Coltura</div>
-                <div className="rt-value">{valOrEmpty(currentField?.harvest)}</div>
+                <div className="rt-value">{valOrEmpty(toTitleCase(currentField?.harvest))}</div>
               </div>
               <div className="rt-row">
                 <div className="rt-label">Cultivar</div>
                 <div className="rt-value">{valOrEmpty(currentField?.variety)}</div>
-              </div>
-              <div className="rt-row">
-                <div className="rt-label">Rotazione</div>
-                <div className="rt-value">{valOrEmpty(currentField?.rotation)}</div>
-              </div>
-              <div className="rt-row">
-                <div className="rt-label">Anno di impianto</div>
-                <div className="rt-value">{valOrEmpty(currentField?.year)}</div>
-              </div>
-              <div className="rt-row">
-                <div className="rt-label">Tessitura</div>
-                <div className="rt-value">{valOrEmpty(currentField?.weaving)}</div>
-              </div>
-              <div className="rt-row">
-                <div className="rt-label">Num. rilevamenti</div>
-                <div className="rt-value">{valOrEmpty(detections.length)}</div>
               </div>
               <div className="rt-row">
                 <div className="rt-label">Dimensione</div>
@@ -73,11 +116,29 @@ export function FieldDashboard() {
                 <div className="rt-label">Num. piante</div>
                 <div className="rt-value">{valOrEmpty(currentField?.plants)}</div>
               </div>
+
+              <div className="rt-row">
+                <div className="rt-label">Num. rilevamenti</div>
+                <div className="rt-value">{valOrEmpty(detections.length)}</div>
+              </div>
+              <div className="rt-row">
+                <div className="rt-label">Rotazione</div>
+                <div className="rt-value">{valOrEmpty(toTitleCase(currentField?.rotation))}</div>
+              </div>
+              <div className="rt-row">
+                <div className="rt-label">Anno di impianto</div>
+                <div className="rt-value">{valOrEmpty(currentField?.year)}</div>
+              </div>
+              <div className="rt-row">
+                <div className="rt-label">Tessitura</div>
+                <div className="rt-value">{valOrEmpty(toTitleCase(currentField?.weaving))}</div>
+              </div>
               <div className="rt-row">
                 <div className="rt-label">Inerbimento</div>
-                <div className="rt-value">{valOrEmpty(currentField?.grassing)}</div>
+                <div className="rt-value">{valOrEmpty(toTitleCase(currentField?.grassing))}</div>
               </div>
             </div>
+              */}
           </div>
           <div className="col-xl-3 ps-xl-5">
             <div className="mt-5 mt-xl-0"></div>

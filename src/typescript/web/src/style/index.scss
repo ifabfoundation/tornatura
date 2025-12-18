@@ -330,17 +330,14 @@ body {
       text-decoration: none;
     }
     &.secondary {
-      background-color: transparent;
-      border: 1px solid $c-dark;
+      background-color: rgba(black, 0.05);
       color: $c-dark;
       &:hover {
-        background-color: $c-grey_3;
-        border-color: $c-grey_3;
+        background-color: rgba(black, 0.15);
       }
       &:active,
       .active {
-        background-color: $c-grey_4;
-        border-color: $c-grey_4;
+        background-color: $c-grey_3;
       }
       text-decoration: none;
     }

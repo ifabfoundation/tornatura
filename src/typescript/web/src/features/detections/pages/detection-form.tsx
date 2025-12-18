@@ -23,6 +23,8 @@ import Icon from "../../../components/Icon";
 import doneIcon from "../../../assets/images/icon-large-done.svg";
 import { gpsStore } from "../../../providers/gps-providers";
 
+const markerOptions = { color: "#EAFF00" };
+
 interface DetectionProps {
   formData: DetectionMutationPayload;
   action: string;
@@ -608,10 +610,11 @@ function isPointInsideField(pointLon: number, pointLat: number, areaPoints: numb
 // }
 
 interface DetectionFormMapProps {
+  sourceType: string;
   onMarkerChange: (p: Point) => Promise<void>;
 }
 
-function DetectionFormMapPosition({ onMarkerChange }: DetectionFormMapProps) {
+function DetectionFormMapPosition({ sourceType, onMarkerChange }: DetectionFormMapProps) {
   const { fieldId } = useParams();
   const currentField = useAppSelector((state) =>
     fieldsSelectors.selectFieldbyId(state, fieldId ?? "default")
@@ -619,7 +622,6 @@ function DetectionFormMapPosition({ onMarkerChange }: DetectionFormMapProps) {
   const mapContainerRef = React.useRef<HTMLDivElement>(null);
   const mapRef = React.useRef<any>(null);
   const [mapLoaded, setMapLoaded] = React.useState(false);
-  const [inputValue, setInputValue] = React.useState("");
   const markerRef = React.useRef<Marker | null>(null);
   const currentPosition = React.useContext(gpsStore);
 
@@ -700,6 +702,23 @@ function DetectionFormMapPosition({ onMarkerChange }: DetectionFormMapProps) {
   // }, []);
 
   React.useEffect(() => {
+    // -------------------------------
+    // also set marker position if the
+    if (sourceType === "current" && currentPosition) {
+      // console.log(">>>>>>>>>>>>>>>>> sourceType updated", sourceType);
+      // console.log(">>>>>>>>>>>>>>>>> currentPosition updated", currentPosition);
+      if (markerRef.current) {
+        markerRef.current.setLngLat([currentPosition.lng, currentPosition.lat]);
+      } else {
+        // markerRef.current = new mapboxgl.Marker(markerOptions)
+        //   .setLngLat([currentPosition.lng, currentPosition.lat])
+        //   .addTo(mapRef.current!);
+      }
+    }
+    // -------------------------------
+  }, [sourceType]);
+
+  React.useEffect(() => {
     if (mapContainerRef.current && currentField) {
       mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_API_TOKEN;
 
@@ -752,8 +771,19 @@ function DetectionFormMapPosition({ onMarkerChange }: DetectionFormMapProps) {
           source: "fieldShape",
           layout: {},
           paint: {
-            "fill-color": "#c4c920",
-            "fill-opacity": 0.7,
+            "fill-color": "#fff",
+            "fill-opacity": 0.5,
+          },
+        });
+        mapRef.current.addLayer({
+          id: "fieldShapeLine",
+          type: "line",
+          source: "fieldShape",
+          layout: {},
+          paint: {
+            "line-color": "#fff",
+            "line-width": 2,
+            "line-opacity": 1.0, // outline opacity
           },
         });
 
@@ -771,33 +801,69 @@ function DetectionFormMapPosition({ onMarkerChange }: DetectionFormMapProps) {
           },
         });
 
+        // Static dot
         mapRef.current!.addLayer({
-          id: "current-location-circle",
+          id: "current-location-dot",
           type: "circle",
           source: "current-location",
           paint: {
-            "circle-radius": 12,
-            "circle-color": "#007AFF", // iOS blue
-            "circle-opacity": 0.6,
+            "circle-radius": 5,
+            "circle-color": "#007AFF",
+            "circle-opacity": 1,
           },
         });
 
-        // Animate pulsing radius
-        let radius = 10;
-        let growing = true;
+        // Pulse layer
+        mapRef.current!.addLayer({
+          id: "current-location-pulse",
+          type: "circle",
+          source: "current-location",
+          paint: {
+            "circle-radius": 5,
+            "circle-color": "#007AFF",
+            "circle-opacity": 0,
+            "circle-radius-transition": { duration: 0, delay: 0 },
+            "circle-opacity-transition": { duration: 0, delay: 0 },
+          },
+        });
 
-        function animate() {
-          radius = growing ? radius + 0.3 : radius - 0.3;
-          if (radius > 20) growing = false;
-          if (radius < 10) growing = true;
+        function animatePulse(startTime: number) {
+          const t = (performance.now() - startTime) / 1000;
+          const cycle = 2; // seconds per pulse
+          const minRadius = 5;
+          const maxRadius = 40;
+          const maxOpacity = 0.8;
 
-          if (mapRef.current) {
-            mapRef.current!.setPaintProperty("current-location-circle", "circle-radius", radius);
+          // Instead of one pulse, compute multiple overlapping pulses
+          const pulses = 3; // number of simultaneous ripples
+          const radii: number[] = [];
+          const opacities: number[] = [];
+
+          for (let i = 0; i < pulses; i++) {
+            const offset = i * (cycle / pulses);
+            const progress = ((t - offset) % cycle) / cycle;
+
+            const radius = minRadius + progress * (maxRadius - minRadius);
+            const opacity = maxOpacity * (1 - progress);
+
+            radii.push(radius);
+            opacities.push(opacity);
           }
 
-          requestAnimationFrame(animate);
+          // Use the largest radius and highest opacity for the layer
+          // (or dynamically create multiple layers if you want all visible)
+          const radius = radii[0];
+          const opacity = opacities[0];
+
+          if (mapRef.current) {
+            mapRef.current.setPaintProperty("current-location-pulse", "circle-radius", radius);
+            mapRef.current.setPaintProperty("current-location-pulse", "circle-opacity", opacity);
+          }
+
+          requestAnimationFrame(() => animatePulse(startTime));
         }
-        animate();
+
+        animatePulse(performance.now());
         // --------------------------------------------------
 
         mapRef.current.on("click", function (e: any) {
@@ -831,7 +897,7 @@ function DetectionFormMapPosition({ onMarkerChange }: DetectionFormMapProps) {
           if (markerRef.current) {
             markerRef.current.setLngLat([point.lng, point.lat]);
           } else {
-            markerRef.current = new mapboxgl.Marker()
+            markerRef.current = new mapboxgl.Marker(markerOptions)
               .setLngLat([point.lng, point.lat])
               .addTo(mapRef.current!);
           }
@@ -860,6 +926,17 @@ function DetectionFormMapPosition({ onMarkerChange }: DetectionFormMapProps) {
         },
         properties: {}, // 👈 required by type definition
       });
+
+      // -------------------------------
+      // also set marker position if the
+      if (markerRef.current) {
+        markerRef.current.setLngLat([currentPosition.lng, currentPosition.lat]);
+      } else {
+        markerRef.current = new mapboxgl.Marker(markerOptions)
+          .setLngLat([currentPosition.lng, currentPosition.lat])
+          .addTo(mapRef.current!);
+      }
+      // -------------------------------
     }
 
     // Optionally recenter map
@@ -1160,7 +1237,7 @@ function DetectionStepPosizione({ action, onNextClick }: DetectionProps) {
           </select>
         </label>
       </div>
-      <DetectionFormMapPosition onMarkerChange={handleMarkerChange} />
+      <DetectionFormMapPosition sourceType={source} onMarkerChange={handleMarkerChange} />
       {/* <hr /> */}
       <div className="buttons-wrapper mt-4 text-center">
         <button className="trnt_btn primary" onClick={handleNextClick}>
@@ -1520,7 +1597,7 @@ export function DetectionForm() {
       {step <= 3 && (
         <div className="stepper-wrapper">
           <button
-            className="stepper-back-button"
+            className="stepper-back-button m-0"
             onClick={() => {
               if (step > 1) setStep(step - 1);
               else navigate(-1);

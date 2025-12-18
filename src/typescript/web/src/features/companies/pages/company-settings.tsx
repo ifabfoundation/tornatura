@@ -7,17 +7,18 @@ import { FilesApi, OrganizationUpdatePayload } from "@tornatura/coreapis";
 import { companiesActions, companiesSelectors } from "../state/companies-slice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useParams } from "react-router-dom";
-import { Col, Container, Row , Image, Alert} from "react-bootstrap";
+import { Col, Container, Row, Image, Alert } from "react-bootstrap";
 import { FileWithPath, useDropzone } from "react-dropzone";
 import { getCoreApiConfiguration } from "../../../services/utils";
-
 
 const PhoneRegExp = /^\+?[0-9]{1,4}[\s\-]?[0-9]{6,14}$/;
 
 export function CompanySettings() {
   const dispatch = useAppDispatch();
   const { companyId } = useParams();
-  const currentCompany = useAppSelector((state) => companiesSelectors.selectCompanybyId(state, companyId ?? "default"));
+  const currentCompany = useAppSelector((state) =>
+    companiesSelectors.selectCompanybyId(state, companyId ?? "default")
+  );
   const [files, setFiles] = React.useState<FileWithPath[]>([]);
   const [message, setMessage] = React.useState<string>();
   const [hasError, setHasError] = React.useState<boolean>(false);
@@ -40,7 +41,9 @@ export function CompanySettings() {
     },
     validationSchema: Yup.object({
       email: Yup.string().email("Email non valida").required("Campo obbligatorio"),
-      phone: Yup.string().matches(PhoneRegExp, "Telefono non valido").required("Campo obbligatorio"),
+      phone: Yup.string()
+        .matches(PhoneRegExp, "Telefono non valido")
+        .required("Campo obbligatorio"),
     }),
     onSubmit: (values, { setSubmitting }) => {
       const organization: OrganizationUpdatePayload = {
@@ -49,18 +52,20 @@ export function CompanySettings() {
           phone: values.phone,
         },
       };
-      dispatch(companiesActions.updateCompanyAction({ orgId: companyId ?? "default", body: organization }))
-      .then(unwrapResult)
-      .then((_) => {
-        setMessage("Anagrafica aggiornata con successo");
-        setHasError(false);
-        setSubmitting(false);
-      })
-      .catch((_) => {
-        setMessage("Errore durante l'aggiornamento dell'anagrafica");
-        setHasError(true);
-        setSubmitting(false);
-      });
+      dispatch(
+        companiesActions.updateCompanyAction({ orgId: companyId ?? "default", body: organization })
+      )
+        .then(unwrapResult)
+        .then((_) => {
+          setMessage("Anagrafica aggiornata con successo");
+          setHasError(false);
+          setSubmitting(false);
+        })
+        .catch((_) => {
+          setMessage("Errore durante l'aggiornamento dell'anagrafica");
+          setHasError(true);
+          setSubmitting(false);
+        });
     },
   });
 
@@ -134,17 +139,22 @@ export function CompanySettings() {
   };
 
   return (
-    <Fragment>
-      <Container>
+    <div className="form-section">
+      <Container className="px-0">
         {message && (
           <Alert variant={hasError ? "danger" : "success"} dismissible>
             {message}
           </Alert>
         )}
         <Row className="mt-2">
-          <Col xl={8}>
-            <h4>Anagrafica</h4>
-            <hr />
+          <Col className="mb-4">
+            <h4>
+              <strong>Anagrafica</strong>
+            </h4>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
             <form onSubmit={formik.handleSubmit} autoComplete="off">
               <div className="input-row">
                 <label>
@@ -224,12 +234,12 @@ export function CompanySettings() {
           </Col>
         </Row>
         <Row className="mt-5">
-          <Col xl={8}>
+          <Col>
             <h4>Logo Aziendale</h4>
-            <hr/>
+            <hr />
             <div className="input-row">
-              <Image src={filesPreview} roundedCircle width="80px" height="80px"/>
-              <div className="mt-3"{...getRootProps()}>
+              <Image src={filesPreview} roundedCircle width="80px" height="80px" />
+              <div className="mt-3" {...getRootProps()}>
                 <input {...getInputProps()} accept=".png, .jpeg, .jpg" />
                 {isDragActive ? (
                   <p>Trascina i file qui...</p>
@@ -240,11 +250,13 @@ export function CompanySettings() {
             </div>
             <hr />
             <div className="buttons-wrapper">
-              <button className="trnt_btn primary" value="Aggiorna" onClick={handleLogoUpdate}>Aggiorna</button>
+              <button className="trnt_btn primary" value="Aggiorna" onClick={handleLogoUpdate}>
+                Aggiorna
+              </button>
             </div>
           </Col>
         </Row>
       </Container>
-    </Fragment>
+    </div>
   );
 }
