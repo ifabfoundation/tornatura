@@ -48,45 +48,41 @@ export function FieldDashboard() {
         <div className="row">
           <div className="col-xl-9">
             <div className="row">
-              <div className="iiinfo-col mt-2 mb-3 col-6 col-sm-4 col-md-3">
+              <div className="iiinfo-col mt-2 mb-2 col-6 col-sm-4 col-md-3">
                 <div className="iiinfo-label font-s-label">Coltura</div>
-                <div className="iiinfo-value font-l-600 mt-1">
+                <div className="iiinfo-value font-l-600">
                   {valOrEmpty(toTitleCase(currentField?.harvest))}
                 </div>
               </div>
-              <div className="iiinfo-col mt-2 mb-3 col-6 col-sm-4 col-md-3">
+              <div className="iiinfo-col mt-2 mb-2 col-6 col-sm-4 col-md-3">
                 <div className="iiinfo-label font-s-label">Cultivar</div>
-                <div className="iiinfo-value font-l-600 mt-1">
-                  {valOrEmpty(currentField?.variety)}
-                </div>
+                <div className="iiinfo-value font-l-600">{valOrEmpty(currentField?.variety)}</div>
               </div>
-              <div className="iiinfo-col mt-2 mb-3 col-6 col-sm-4 col-md-3">
+              <div className="iiinfo-col mt-2 mb-2 col-6 col-sm-4 col-md-3">
                 <div className="iiinfo-label font-s-label">Dimensione</div>
-                <div className="iiinfo-value font-l-600 mt-1">{valOrEmpty(currentField?.area)}</div>
+                <div className="iiinfo-value font-l-600">{valOrEmpty(currentField?.area)}</div>
               </div>
-              <div className="iiinfo-col mt-2 mb-3 col-6 col-sm-4 col-md-3">
+              <div className="iiinfo-col mt-2 mb-2 col-6 col-sm-4 col-md-3">
                 <div className="iiinfo-label font-s-label">Num. piante</div>
-                <div className="iiinfo-value font-l-600 mt-1">
-                  {valOrEmpty(currentField?.plants)}
-                </div>
+                <div className="iiinfo-value font-l-600">{valOrEmpty(currentField?.plants)}</div>
               </div>
-              <div className="iiinfo-col mt-2 mb-3 col-6 col-sm-4 col-md-3">
+              <div className="iiinfo-col mt-2 mb-2 col-6 col-sm-4 col-md-3">
                 <div className="iiinfo-label font-s-label">Num. rilevamenti</div>
-                <div className="iiinfo-value font-l-600 mt-1">{valOrEmpty(detections.length)}</div>
+                <div className="iiinfo-value font-l-600">{valOrEmpty(detections.length)}</div>
               </div>
-              <div className="iiinfo-col mt-2 mb-3 col-6 col-sm-4 col-md-3">
+              <div className="iiinfo-col mt-2 mb-2 col-6 col-sm-4 col-md-3">
                 <div className="iiinfo-label font-s-label">Anno di impianto</div>
-                <div className="iiinfo-value font-l-600 mt-1">{valOrEmpty(currentField?.year)}</div>
+                <div className="iiinfo-value font-l-600">{valOrEmpty(currentField?.year)}</div>
               </div>
-              <div className="iiinfo-col mt-2 mb-3 col-6 col-sm-4 col-md-3 d-none d-md-block">
+              <div className="iiinfo-col mt-2 mb-2 col-6 col-sm-4 col-md-3 d-none d-md-block">
                 <div className="iiinfo-label font-s-label">Rotazione</div>
-                <div className="iiinfo-value font-l-600 mt-1">
+                <div className="iiinfo-value font-l-600">
                   {valOrEmpty(toTitleCase(currentField?.rotation))}
                 </div>
               </div>
-              <div className="iiinfo-col mt-2 mb-3 col-6 col-sm-4 col-md-3 d-none d-md-block">
+              <div className="iiinfo-col mt-2 mb-2 col-6 col-sm-4 col-md-3 d-none d-md-block">
                 <div className="iiinfo-label font-s-label">Tessitura</div>
-                <div className="iiinfo-value font-l-600 mt-1">
+                <div className="iiinfo-value font-l-600">
                   {valOrEmpty(toTitleCase(currentField?.weaving))}
                 </div>
               </div>
