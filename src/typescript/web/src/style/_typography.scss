@@ -173,6 +173,12 @@ $font-sans: "Inter", sans-serif;
 .font-m {
   @include font-m;
 }
+.font-m-strong {
+  @include font-m-strong;
+}
+.font-m-600 {
+  @include font-m-600;
+}
 
 // --------------------------------
 

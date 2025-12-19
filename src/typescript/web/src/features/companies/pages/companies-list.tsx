@@ -26,7 +26,8 @@ export function CompaniesList() {
     menuEntries = [
       {
         id: "companies",
-        icon: "grid",
+        // icon: "grid",
+        icon: "barn",
         text: "Aziende gestite",
         path: "/companies",
       },

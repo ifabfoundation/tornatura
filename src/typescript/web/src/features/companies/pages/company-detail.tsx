@@ -15,15 +15,21 @@ export function CompanyDetail() {
       menuEntries = [
         {
           id: "fields",
-          icon: "grid",
-          text: "Campi dell'azienda",
+          icon: "sprout",
+          text: "Campi",
           path: `/companies/${companyId}/fields`,
         },
+        // {
+        //   id: "detections",
+        //   icon: "checklist",
+        //   text: "Lista dei rilevamenti",
+        //   path: `/companies/${companyId}/detections`,
+        // },
         {
-          id: "detections",
-          icon: "checklist",
-          text: "Lista dei rilevamenti",
-          path: `/companies/${companyId}/detections`,
+          id: "members",
+          icon: "user",
+          text: "Membri",
+          path: `/companies/${companyId}/invitations`,
         },
         {
           id: "invitations",
@@ -32,15 +38,9 @@ export function CompanyDetail() {
           path: `/companies/${companyId}/invitations`,
         },
         {
-          id: "members",
-          icon: "user",
-          text: "Membri azienda",
-          path: `/companies/${companyId}/invitations`,
-        },
-        {
           id: "settings",
           icon: "cog",
-          text: "Impostazioni azienda",
+          text: "Impostazioni",
           path: `/companies/${companyId}/settings`,
         },
       ];

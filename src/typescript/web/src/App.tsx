@@ -716,7 +716,7 @@ function MainApp() {
         menuEntries = [
           {
             id: "companies",
-            icon: "grid",
+            icon: "barn",
             text: "Aziende",
             path: "/admin/companies",
           },

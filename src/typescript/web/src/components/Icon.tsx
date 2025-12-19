@@ -1,10 +1,12 @@
+import darrs_b from "../assets/images/icons/darrs-b.svg";
+import darrs_w from "../assets/images/icons/darrs-w.svg";
+import darrs_y from "../assets/images/icons/darrs-y.svg";
 import circleempty_b from "../assets/images/icons/circleempty-b.svg";
 import circleempty_w from "../assets/images/icons/circleempty-w.svg";
 import circleempty_y from "../assets/images/icons/circleempty-y.svg";
 import circlefull_b from "../assets/images/icons/circlefull-b.svg";
 import circlefull_w from "../assets/images/icons/circlefull-w.svg";
 import circlefull_y from "../assets/images/icons/circlefull-y.svg";
-
 import alert_b from "../assets/images/icons/alert-b.svg";
 import alert_w from "../assets/images/icons/alert-w.svg";
 import alert_y from "../assets/images/icons/alert-y.svg";
@@ -77,6 +79,11 @@ const icons = {
     white: circleempty_w,
     black: circleempty_b,
     yellow: circleempty_y,
+  },
+  darrs: {
+    white: darrs_w,
+    black: darrs_b,
+    yellow: darrs_y,
   },
   circlefull: {
     white: circlefull_w,

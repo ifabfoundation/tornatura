@@ -12421,6 +12421,78 @@ fieldset:disabled .btn {
   }
 }
 
+.font-m-strong {
+  font-family: "Inter", sans-serif;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+  line-height: 1.3em;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  font-optical-sizing: auto;
+  font-weight: 700;
+}
+
+@media (min-width: 576px) {
+  .font-m-strong {
+    font-size: 15px;
+  }
+}
+
+@media (min-width: 768px) {
+  .font-m-strong {
+    font-size: 15px;
+  }
+}
+
+@media (min-width: 992px) {
+  .font-m-strong {
+    font-size: 15px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .font-m-strong {
+    font-size: 15px;
+  }
+}
+
+.font-m-600 {
+  font-family: "Inter", sans-serif;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+  line-height: 1.3em;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  font-optical-sizing: auto;
+  font-weight: 600 !important;
+}
+
+@media (min-width: 576px) {
+  .font-m-600 {
+    font-size: 15px;
+  }
+}
+
+@media (min-width: 768px) {
+  .font-m-600 {
+    font-size: 15px;
+  }
+}
+
+@media (min-width: 992px) {
+  .font-m-600 {
+    font-size: 15px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .font-m-600 {
+    font-size: 15px;
+  }
+}
+
 .font-l-600 {
   font-family: "Inter", sans-serif;
   font-size: 20px;
@@ -13903,8 +13975,9 @@ body {
   }
 }
 
-#app .context-selector {
-  height: 77px;
+#app .context-selector-v2 {
+  position: relative;
+  height: 75px;
   background-color: rgba(84, 84, 84, 0.5);
   display: flex;
   align-items: center;
@@ -13912,56 +13985,68 @@ body {
   padding: 0 10px;
 }
 
-#app .context-selector button {
+#app .context-selector-v2 .circular-icon {
+  background-color: black;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 8px;
+}
+
+#app .context-selector-v2 button {
   width: 36px;
   height: 36px;
   min-width: 36px;
   max-width: 36px;
   padding: 0;
-  background-color: rgba(139, 139, 139, 0.5);
+  margin: 2px;
+  background-color: rgba(139, 139, 139, 0.3);
   border-radius: 5px;
-  margin-right: 10px;
 }
 
-#app .context-selector button:hover {
-  background-color: rgba(139, 139, 139, 0.7);
+#app .context-selector-v2 button img {
+  opacity: 0.5;
 }
 
-#app .context-selector button:active {
+#app .context-selector-v2 button:hover {
+  background-color: rgba(139, 139, 139, 0.6);
+}
+
+#app .context-selector-v2 button:hover img {
+  opacity: 1;
+}
+
+#app .context-selector-v2 button:active {
   background-color: rgba(139, 139, 139, 0.25);
 }
 
-#app .context-selector .main-area {
+#app .context-selector-v2 .main-area {
   position: relative;
   height: 0;
   flex-grow: 1;
   display: flex;
   align-items: center;
-  height: 100%;
-  margin-left: -2px;
+  justify-content: flex-start;
   color: #d8d8d8;
   transition: all 0.2s;
   padding-left: 2px;
+  height: 100%;
+  height: 77%;
+  margin-right: 6px;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
-#app .context-selector .main-area:hover {
-  color: #d8d8d8;
-  color: white;
-  color: #eaff00;
-}
-
-#app .context-selector label {
+#app .context-selector-v2 .main-area .label {
   flex-grow: 1;
   width: 100%;
-}
-
-#app .context-selector label::before {
-  content: attr(data-name);
-  position: absolute;
-  left: 0;
-  top: 21px;
-  margin-left: 6px;
+  position: relative;
   display: block;
+  color: inherit;
+  margin-bottom: 2px;
   font-family: "Inter", sans-serif;
   font-size: 11px;
   letter-spacing: 0.02em;
@@ -13975,32 +14060,30 @@ body {
 }
 
 @media (min-width: 576px) {
-  #app .context-selector label::before {
+  #app .context-selector-v2 .main-area .label {
     font-size: 11px;
   }
 }
 
 @media (min-width: 768px) {
-  #app .context-selector label::before {
+  #app .context-selector-v2 .main-area .label {
     font-size: 11px;
   }
 }
 
 @media (min-width: 992px) {
-  #app .context-selector label::before {
+  #app .context-selector-v2 .main-area .label {
     font-size: 11px;
   }
 }
 
 @media (min-width: 1200px) {
-  #app .context-selector label::before {
+  #app .context-selector-v2 .main-area .label {
     font-size: 11px;
   }
 }
 
-#app .context-selector select {
-  height: 77px;
-  width: 100%;
+#app .context-selector-v2 .main-area .value {
   font-family: "Inter", sans-serif;
   font-size: 15px;
   letter-spacing: 0.02em;
@@ -14011,41 +14094,57 @@ body {
   font-optical-sizing: auto;
   font-weight: 600 !important;
   color: inherit;
-  background-color: transparent;
-  padding: 0;
-  margin: 0;
-  border: none !important;
-  border-color: none !important;
-  padding-top: 17px !important;
-  cursor: pointer;
 }
 
 @media (min-width: 576px) {
-  #app .context-selector select {
+  #app .context-selector-v2 .main-area .value {
     font-size: 15px;
   }
 }
 
 @media (min-width: 768px) {
-  #app .context-selector select {
+  #app .context-selector-v2 .main-area .value {
     font-size: 15px;
   }
 }
 
 @media (min-width: 992px) {
-  #app .context-selector select {
+  #app .context-selector-v2 .main-area .value {
     font-size: 15px;
   }
 }
 
 @media (min-width: 1200px) {
-  #app .context-selector select {
+  #app .context-selector-v2 .main-area .value {
     font-size: 15px;
   }
 }
 
-#app .context-selector + .context-selector {
+#app .context-selector-v2 .main-area:hover {
+  color: white;
+  background-color: rgba(139, 139, 139, 0.1);
+}
+
+#app .context-selector-v2 + .context-selector-v2 {
   margin-top: 2px !important;
+}
+
+#app .context-selector-v2 .context-selector-options-list {
+  z-index: 3;
+  position: absolute;
+  left: 0;
+  top: 77px;
+  width: 100%;
+  background-color: #1f1f1f;
+  color: white;
+  opacity: 0;
+  pointer-events: none;
+  box-shadow: 0px 30px 20px rgba(0, 0, 0, 0.5);
+}
+
+#app .context-selector-v2 .context-selector-options-list[data-open="true"] {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 #app .rt-responsive-table {

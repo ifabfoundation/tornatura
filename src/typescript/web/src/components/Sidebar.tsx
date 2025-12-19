@@ -1,5 +1,5 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import React, { Fragment } from "react";
+import React, { useState, Fragment } from "react";
 import MenuItem from "./MenuItem";
 import logo from "../assets/images/logo-full-white-color.svg";
 import { IconName } from "./Icon";
@@ -10,7 +10,6 @@ import { companiesSelectors } from "../features/companies/state/companies-slice"
 import { fieldsSelectors } from "../features/fields/state/fields-slice";
 import Icon from "../components/Icon";
 
-
 export interface MenuItemEntry {
   id: string;
   icon: IconName;
@@ -20,10 +19,12 @@ export interface MenuItemEntry {
 
 function CompanySelector() {
   const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
   const { companyId } = useParams();
   const companies = useAppSelector(companiesSelectors.selectAllCompanies);
 
   const handleCompanyChange = async (id: string) => {
+    setOpen(false);
     navigate(`/companies/${id}/fields`, { replace: true });
   };
 
@@ -32,28 +33,35 @@ function CompanySelector() {
   };
 
   return (
-    <li className="context-selector">
+    <li className="context-selector-v2">
+      <div className="main-area" onClick={() => handleCompanyChange(companyId!)}>
+        <div className="circular-icon">
+          <Icon iconName={"barn"} color={"white"} />
+        </div>
+        <div>
+          <div className="label">AZIENDA</div>
+          <div className="value">
+            {companies.find((company) => company.orgId === companyId)?.name}
+          </div>
+        </div>
+      </div>
+      <button className="trnt_btn" onClick={() => setOpen(!open)}>
+        <Icon iconName={"darrs"} color={"white"} />
+      </button>
       <button className="trnt_btn" onClick={handeleBackClick}>
         <Icon iconName={"x"} color={"white"} />
       </button>
-      <div className="main-area">
-        <label data-name="AZIENDA">
-          <select
-            id="company"
-            name="company"
-            value={companyId}
-            onChange={(e) => {
-              const selectedCompanyId = e.target.value;
-              handleCompanyChange(selectedCompanyId);
-            }}
+
+      <div className="context-selector-options-list" data-open={open ? "true" : "false"}>
+        {companies.map((company) => (
+          <div
+            className="context-selector-option"
+            key={company.orgId}
+            onClick={() => handleCompanyChange(company.orgId)}
           >
-            {companies.map((company) => (
-              <option key={company.orgId} value={company.orgId}>
-                {company.name}
-              </option>
-            ))}
-          </select>
-        </label>
+            {company.name}
+          </div>
+        ))}
       </div>
     </li>
   );
@@ -61,10 +69,12 @@ function CompanySelector() {
 
 function FieldSelector() {
   const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
   const { fieldId, companyId } = useParams();
   const fields = useAppSelector((state) => fieldsSelectors.selectFieldsByOrgId(state, companyId));
 
   const handleFieldChange = async (id: string) => {
+    setOpen(false);
     navigate(`/companies/${companyId}/fields/${id}`, { replace: true });
   };
 
@@ -73,28 +83,34 @@ function FieldSelector() {
   };
 
   return (
-    <li className="context-selector">
+    <li className="context-selector-v2">
+      <div className="main-area" onClick={() => handleFieldChange(fieldId!)}>
+        <div className="circular-icon">
+          <Icon iconName={"sprout"} color={"white"} />
+        </div>
+        <div>
+          <div className="label">CAMPO</div>
+          <div className="value">{fields.find((field) => field.id === fieldId)?.name}</div>
+        </div>
+      </div>
+
+      <button className="trnt_btn" onClick={() => setOpen(!open)}>
+        <Icon iconName={"darrs"} color={"white"} />
+      </button>
       <button className="trnt_btn" onClick={handeleBackClick}>
         <Icon iconName={"x"} color={"white"} />
       </button>
-      <div className="main-area">
-        <label data-name="CAMPO">
-          <select
-            id="field"
-            name="field"
-            value={fieldId}
-            onChange={(e) => {
-              const selectedFieldId = e.target.value;
-              handleFieldChange(selectedFieldId);
-            }}
+
+      <div className="context-selector-options-list" data-open={open ? "true" : "false"}>
+        {fields.map((field) => (
+          <div
+            className="context-selector-option"
+            key={field.id}
+            onClick={() => handleFieldChange(field.id)}
           >
-            {fields.map((field) => (
-              <option key={field.id} value={field.id}>
-                {field.name}
-              </option>
-            ))}
-          </select>
-        </label>
+            {field.name}
+          </div>
+        ))}
       </div>
     </li>
   );
