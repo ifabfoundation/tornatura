@@ -66,8 +66,7 @@ export function MyInvitations() {
     <Container>
       <section>
         <header className="my-4">
-          <h1>Inviti ricevuti</h1>
-          <p>Visualizza e gestisci gli inviti che hai ricevuto</p>
+          <p className="">Lista degli inviti che hai ricevuto</p>
         </header>
 
         {error && (
@@ -131,7 +130,7 @@ export function MyInvitations() {
                           onClick={() => handleViewInvitation(invitation.token)}
                           style={{ width: "100%" }}
                         >
-                          Visualizza invito
+                          Vedi l'invito
                         </button>
                       </div>
                     </div>

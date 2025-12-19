@@ -550,8 +550,9 @@ body {
       background-color: white;
       outline: none;
       margin: 5px 0;
-      border: 1px solid transparent;
-      border: 1px solid $c-grey_3;
+      border: 1.5px solid transparent;
+      border-color: $c-grey_3;
+      border-color: rgba($c-grey_4, 0.3);
       @include font-m;
       transition: background-color $ms-sidebar-transition;
       &[type="text"] {
@@ -560,11 +561,13 @@ body {
       &:hover,
       &:active {
         &:not(:disabled) {
-          border: 1px solid $c-grey_4;
+          border-color: rgba($c-grey_4, 0.5);
         }
       }
       &:focus {
-        border: 1px solid $c-grey_5;
+        border-color: $c-grey_5 !important;
+        border-color: $c-yelo !important;
+        border-color: $c-yelo_dark !important;
       }
       &::placeholder {
         color: rgba(black, 0.3);

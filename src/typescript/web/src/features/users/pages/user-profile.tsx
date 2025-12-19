@@ -4,12 +4,11 @@ import * as Yup from "yup";
 import { headerbarActions } from "../../headerbar/state/headerbar-slice";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { Col, Container, Row , Image, Alert} from "react-bootstrap";
+import { Col, Container, Row, Image, Alert } from "react-bootstrap";
 import { FileWithPath, useDropzone } from "react-dropzone";
 import { getCoreApiConfiguration } from "../../../services/utils";
 import { userActions, userSelectors } from "../state/user-slice";
 import { AccountTypeEnum, UsersApi, UserUpdatePayload } from "@tornatura/coreapis";
-
 
 const PhoneRegExp = /^\+?[0-9]{1,4}[\s\-]?[0-9]{6,14}$/;
 
@@ -30,12 +29,14 @@ export function UserProfile() {
       lastName: "",
       email: "",
       piva: "",
-      phone: ""
+      phone: "",
     },
     validationSchema: Yup.object({
       firstName: Yup.string().required("Campo obbligatorio"),
       lastName: Yup.string().required("Campo obbligatorio"),
-      phone: Yup.string().matches(PhoneRegExp, "Telefono non valido").required("Campo obbligatorio")
+      phone: Yup.string()
+        .matches(PhoneRegExp, "Telefono non valido")
+        .required("Campo obbligatorio"),
     }),
     onSubmit: (values, { setSubmitting }) => {
       const payload: UserUpdatePayload = {
@@ -44,18 +45,18 @@ export function UserProfile() {
         firstName: values.firstName,
       };
       dispatch(userActions.updateUserAction(payload))
-      .then(unwrapResult)
-      .then((_) => {
-        setMessage("Profilo aggiornato con successo");
-        setHasError(false);
-        setSubmitting(false);
-      })
-      .catch((error) => {
-        console.error(error);
-        setMessage("Errore durante l'aggiornamento del profilo");
-        setHasError(true);
-        setSubmitting(false);
-      });
+        .then(unwrapResult)
+        .then((_) => {
+          setMessage("Profilo aggiornato con successo");
+          setHasError(false);
+          setSubmitting(false);
+        })
+        .catch((error) => {
+          console.error(error);
+          setMessage("Errore durante l'aggiornamento del profilo");
+          setHasError(true);
+          setSubmitting(false);
+        });
     },
   });
 
@@ -65,7 +66,7 @@ export function UserProfile() {
       lastName: currentUser.lastName || "",
       email: currentUser.email || "",
       piva: currentUser.piva || "",
-      phone: currentUser.phone || ""
+      phone: currentUser.phone || "",
     });
   }, [currentUser]);
 
@@ -103,135 +104,156 @@ export function UserProfile() {
 
   return (
     <Fragment>
-      <Container>
-        {message && (
-          <Alert variant={hasError ? "danger" : "success"} dismissible>
-            {message}
-          </Alert>
-        )}
-        <Row className="mt-2">
-          <Col xl={8}>
-            <h4>Profilo</h4>
-            <hr />
-            <form onSubmit={formik.handleSubmit} autoComplete="off">
-              <div className="input-row">
-                <label>
-                  Nome
-                  <input
-                    id="name"
-                    name="firstName"
-                    type="text"
-                    placeholder="Nome"
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    value={formik.values.firstName}
-                  />
-                </label>
-                {formik.touched.firstName && formik.errors.firstName ? (
-                  <div className="error">{formik.errors.firstName}</div>
-                ) : null}
-              </div>
-              <div className="input-row">
-                <label>
-                  Cognome
-                  <input
-                    id="lastname"
-                    name="lastName"
-                    type="text"
-                    placeholder="Cognome"
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    value={formik.values.lastName}
-                  />
-                </label>
-                {formik.touched.lastName && formik.errors.lastName ? (
-                  <div className="error">{formik.errors.lastName}</div>
-                ) : null}
-              </div>
-              <div className="input-row">
-                <label>
-                  Email
-                  <input
-                    id="email"
-                    name="email"
-                    type="text"
-                    placeholder="Email"
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    value={formik.values.email}
-                    disabled={true}
-                  />
-                </label>
-                {formik.touched.email && formik.errors.email ? (
-                  <div className="error">{formik.errors.email}</div>
-                ) : null}
-              </div>
-              {currentUser.accountType === AccountTypeEnum.Agronomist && (
+      {message && (
+        <Alert variant={hasError ? "danger" : "success"} dismissible>
+          {message}
+        </Alert>
+      )}
+      <form onSubmit={formik.handleSubmit} autoComplete="off">
+        <div className="form-section">
+          <Container className="px-0">
+            <Row>
+              <Col className="mb-4">
+                <h4>
+                  <strong>Profilo</strong>
+                </h4>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
                 <div className="input-row">
                   <label>
-                    Partita Iva
+                    Nome
                     <input
-                      id="piva"
-                      name="piva"
+                      id="name"
+                      name="firstName"
                       type="text"
-                      placeholder="P.IVA"
+                      placeholder="Nome"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
-                      value={formik.values.piva}
+                      value={formik.values.firstName}
+                    />
+                  </label>
+                  {formik.touched.firstName && formik.errors.firstName ? (
+                    <div className="error">{formik.errors.firstName}</div>
+                  ) : null}
+                </div>
+                <div className="input-row">
+                  <label>
+                    Cognome
+                    <input
+                      id="lastname"
+                      name="lastName"
+                      type="text"
+                      placeholder="Cognome"
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.lastName}
+                    />
+                  </label>
+                  {formik.touched.lastName && formik.errors.lastName ? (
+                    <div className="error">{formik.errors.lastName}</div>
+                  ) : null}
+                </div>
+                <div className="input-row">
+                  <label>
+                    Email
+                    <input
+                      id="email"
+                      name="email"
+                      type="text"
+                      placeholder="Email"
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.email}
                       disabled={true}
                     />
                   </label>
-                  {formik.touched.piva && formik.errors.piva ? (
-                    <div className="error">{formik.errors.piva}</div>
+                  {formik.touched.email && formik.errors.email ? (
+                    <div className="error">{formik.errors.email}</div>
                   ) : null}
                 </div>
-              )}
-              <div className="input-row">
-                <label>
-                  Telefono
-                  <input
-                    id="phone"
-                    name="phone"
-                    type="text"
-                    placeholder="Telefono"
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    value={formik.values.phone}
-                  />
-                </label>
-                {formik.touched.phone && formik.errors.phone ? (
-                  <div className="error">{formik.errors.phone}</div>
-                ) : null}
-              </div>
-              <hr />
-              <div className="buttons-wrapper">
-                <input type="submit" className="primary" value="Modifica Profilo" />
-              </div>
-            </form>
-          </Col>
-        </Row>
-        <Row className="mt-5">
-          <Col xl={8}>
-            <h4>Avatar</h4>
-            <hr/>
-            <div className="input-row">
-              <Image src={filesPreview} roundedCircle width="80px" height="80px"/>
-              <div className="mt-3"{...getRootProps()}>
-                <input {...getInputProps()} accept=".png, .jpeg, .jpg" />
-                {isDragActive ? (
-                  <p>Trascina i file qui...</p>
-                ) : (
-                  <p>Trascina e rilascia alcuni file qui, oppure fai clic per selezionarli</p>
+                {currentUser.accountType === AccountTypeEnum.Agronomist && (
+                  <div className="input-row">
+                    <label>
+                      Partita Iva
+                      <input
+                        id="piva"
+                        name="piva"
+                        type="text"
+                        placeholder="P.IVA"
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        value={formik.values.piva}
+                        disabled={true}
+                      />
+                    </label>
+                    {formik.touched.piva && formik.errors.piva ? (
+                      <div className="error">{formik.errors.piva}</div>
+                    ) : null}
+                  </div>
                 )}
+                <div className="input-row">
+                  <label>
+                    Telefono
+                    <input
+                      id="phone"
+                      name="phone"
+                      type="text"
+                      placeholder="Telefono"
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.phone}
+                    />
+                  </label>
+                  {formik.touched.phone && formik.errors.phone ? (
+                    <div className="error">{formik.errors.phone}</div>
+                  ) : null}
+                </div>
+                <div className="buttons-wrapper mt-4">
+                  <input type="submit" className="primary m-0" value="Modifica Profilo" />
+                </div>
+              </Col>
+            </Row>
+          </Container>
+        </div>
+      </form>
+
+      <div className="my-5"></div>
+
+      <div className="form-section">
+        <Container className="px-0">
+          <Row>
+            <Col>
+              <h4 className="mb-4">
+                <strong>Avatar</strong>
+              </h4>
+              <div className="input-row">
+                <Image src={filesPreview} roundedCircle width="80px" height="80px" />
+                <div className="mt-3" {...getRootProps()}>
+                  <input {...getInputProps()} accept=".png, .jpeg, .jpg" />
+                  {isDragActive ? (
+                    <p>Trascina i file qui...</p>
+                  ) : (
+                    <p>Trascina e rilascia alcuni file qui, oppure fai clic per selezionarli</p>
+                  )}
+                </div>
               </div>
-            </div>
-            <hr />
-            <div className="buttons-wrapper">
-              <button className="trnt_btn primary" value="Aggiorna" onClick={handleAvatarUpdate}>Aggiorna</button>
-            </div>
-          </Col>
-        </Row>
-      </Container>
+
+              <div className="buttons-wrapper mt-4">
+                <button
+                  className="trnt_btn primary m-0"
+                  value="Aggiorna"
+                  onClick={handleAvatarUpdate}
+                >
+                  Aggiorna
+                </button>
+              </div>
+            </Col>
+          </Row>
+        </Container>
+      </div>
+      <div className="my-5"></div>
     </Fragment>
   );
 }

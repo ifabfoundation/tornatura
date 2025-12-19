@@ -5,7 +5,7 @@ import { headerbarActions } from "../../headerbar/state/headerbar-slice";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { userSelectors } from "../../users/state/user-slice";
 import { FeedbackCategoryEnum, FeedbackCreatePayload, FeedbacksApi } from "@tornatura/coreapis";
-import { Alert } from "react-bootstrap";
+import { Col, Container, Row, Alert } from "react-bootstrap";
 import { getCoreApiConfiguration } from "../../../services/utils";
 
 export function FeedbackForm() {
@@ -61,44 +61,52 @@ export function FeedbackForm() {
           {message}
         </Alert>
       )}
-      <div className="input-row">
-        <label>
-          Categoria
-          <select
-            id="category"
-            name="category"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.category}
-          >
-            <option value={FeedbackCategoryEnum.NewFeature}>Nuova funzionalità</option>
-            <option value={FeedbackCategoryEnum.Improvement}>Miglioramento</option>
-            <option value={FeedbackCategoryEnum.BugFixing}>Bug</option>
-            <option value={FeedbackCategoryEnum.Other}>Altro</option>
-          </select>
-        </label>
-      </div>
-      <div className="input-row">
-        <label>
-          Feedback
-          <textarea
-            id="feedback"
-            name="feedback"
-            placeholder=""
-            rows={15}
-            cols={50}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.feedback}
-          ></textarea>
-        </label>
-        {formik.touched.feedback && formik.errors.feedback ? (
-          <div className="error">{formik.errors.feedback}</div>
-        ) : null}
-      </div>
-      <hr />
-      <div className="buttons-wrapper">
-        <input type="submit" className="primary" value="Invia" />
+      <div className="form-section">
+        <Container className="px-0">
+          <Row>
+            <Col>
+              <div className="input-row">
+                <label>
+                  Categoria
+                  <select
+                    id="category"
+                    name="category"
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.category}
+                  >
+                    <option value={FeedbackCategoryEnum.NewFeature}>Nuova funzionalità</option>
+                    <option value={FeedbackCategoryEnum.Improvement}>Miglioramento</option>
+                    <option value={FeedbackCategoryEnum.BugFixing}>Bug</option>
+                    <option value={FeedbackCategoryEnum.Other}>Altro</option>
+                  </select>
+                </label>
+              </div>
+              <div className="input-row">
+                <label>
+                  Feedback
+                  <textarea
+                    id="feedback"
+                    name="feedback"
+                    placeholder=""
+                    rows={15}
+                    cols={50}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.feedback}
+                  ></textarea>
+                </label>
+                {formik.touched.feedback && formik.errors.feedback ? (
+                  <div className="error">{formik.errors.feedback}</div>
+                ) : null}
+              </div>
+
+              <div className="buttons-wrapper mt-4">
+                <input type="submit" className="primary m-0" value="Invia" />
+              </div>
+            </Col>
+          </Row>
+        </Container>
       </div>
     </form>
   );

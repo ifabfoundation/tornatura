@@ -249,5 +249,5 @@ p {
   @include font-m;
 }
 strong {
-  font-weight: 600;
+  font-weight: 600 !important;
 }

@@ -12850,7 +12850,7 @@ p {
 }
 
 strong {
-  font-weight: 600;
+  font-weight: 600 !important;
 }
 
 /* http://meyerweb.com/eric/tools/css/reset/ 
@@ -13800,8 +13800,9 @@ body {
   background-color: white;
   outline: none;
   margin: 5px 0;
-  border: 1px solid transparent;
-  border: 1px solid #bbbbbb;
+  border: 1.5px solid transparent;
+  border-color: #bbbbbb;
+  border-color: rgba(139, 139, 139, 0.3);
   font-family: "Inter", sans-serif;
   font-size: 15px;
   letter-spacing: 0.02em;
@@ -13877,7 +13878,7 @@ body {
 #app .form-row select:active:not(:disabled),
 #app .form-row textarea:hover:not(:disabled),
 #app .form-row textarea:active:not(:disabled) {
-  border: 1px solid #8b8b8b;
+  border-color: rgba(139, 139, 139, 0.5);
 }
 
 #app .input-row input:focus,
@@ -13886,7 +13887,9 @@ body {
 #app .form-row input:focus,
 #app .form-row select:focus,
 #app .form-row textarea:focus {
-  border: 1px solid #545454;
+  border-color: #545454 !important;
+  border-color: #eaff00 !important;
+  border-color: #3d401a !important;
 }
 
 #app .input-row input::placeholder,
