@@ -1,5 +1,5 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import React, { useState, Fragment } from "react";
+import React, { useState, Fragment, useRef } from "react";
 import MenuItem from "./MenuItem";
 import logo from "../assets/images/logo-full-white-color.svg";
 import { IconName } from "./Icon";
@@ -22,6 +22,7 @@ function CompanySelector() {
   const [open, setOpen] = useState(false);
   const { companyId } = useParams();
   const companies = useAppSelector(companiesSelectors.selectAllCompanies);
+  const ref = useRef<HTMLDivElement>(null);
 
   const handleCompanyChange = async (id: string) => {
     setOpen(false);
@@ -32,8 +33,20 @@ function CompanySelector() {
     navigate(`/companies`, { replace: true });
   };
 
+  React.useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (ref.current && !ref.current.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
-    <li className="context-selector-v2">
+    <li className="context-selector-v2" data-open={open ? "true" : "false"}>
       <div className="main-area" onClick={() => handleCompanyChange(companyId!)}>
         <div className="circular-icon">
           <Icon iconName={"barn"} color={"white"} />
@@ -52,7 +65,7 @@ function CompanySelector() {
         <Icon iconName={"x"} color={"white"} />
       </button>
 
-      <div className="context-selector-options-list" data-open={open ? "true" : "false"}>
+      <div ref={ref} className="context-selector-options-list">
         {companies.map((company) => (
           <div
             className="context-selector-option"
@@ -72,6 +85,7 @@ function FieldSelector() {
   const [open, setOpen] = useState(false);
   const { fieldId, companyId } = useParams();
   const fields = useAppSelector((state) => fieldsSelectors.selectFieldsByOrgId(state, companyId));
+  const ref = useRef<HTMLDivElement>(null);
 
   const handleFieldChange = async (id: string) => {
     setOpen(false);
@@ -82,8 +96,20 @@ function FieldSelector() {
     navigate(`/companies/${companyId}/fields`, { replace: true });
   };
 
+  React.useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (ref.current && !ref.current.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
-    <li className="context-selector-v2">
+    <li className="context-selector-v2" data-open={open ? "true" : "false"}>
       <div className="main-area" onClick={() => handleFieldChange(fieldId!)}>
         <div className="circular-icon">
           <Icon iconName={"sprout"} color={"white"} />
@@ -101,7 +127,7 @@ function FieldSelector() {
         <Icon iconName={"x"} color={"white"} />
       </button>
 
-      <div className="context-selector-options-list" data-open={open ? "true" : "false"}>
+      <div ref={ref} className="context-selector-options-list">
         {fields.map((field) => (
           <div
             className="context-selector-option"
