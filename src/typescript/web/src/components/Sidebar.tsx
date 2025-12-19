@@ -66,15 +66,21 @@ function CompanySelector() {
       </button>
 
       <div ref={ref} className="context-selector-options-list">
-        {companies.map((company) => (
-          <div
-            className="context-selector-option"
-            key={company.orgId}
-            onClick={() => handleCompanyChange(company.orgId)}
-          >
-            {company.name}
-          </div>
-        ))}
+        {companies.map((company) => {
+          const fields = useAppSelector((state) =>
+            fieldsSelectors.selectFieldsByOrgId(state, company.orgId)
+          );
+          return (
+            <div
+              className="context-selector-option"
+              key={company.orgId}
+              onClick={() => handleCompanyChange(company.orgId)}
+            >
+              <span className="font-m-600">{company.name}</span>
+              <span className="font-s-label color-grey-4">{`${fields.length} campi`}</span>
+            </div>
+          );
+        })}
       </div>
     </li>
   );

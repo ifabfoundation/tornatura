@@ -12,9 +12,9 @@ import TableCozy, { TableColumn, TableOptions } from "../../../components/TableC
 // Helper to format timestamps
 const formatDate = (timestamp: number) => {
   return new Date(timestamp).toLocaleDateString("it-IT", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
+    day: "2-digit",
+    month: "2-digit",
+    year: "2-digit",
   });
 };
 
@@ -194,7 +194,7 @@ export function InvitationsList() {
       id: "button_cancel",
       buttonText: "Revoca",
       type: "button",
-      style: "secondary",
+      style: "danger1",
       onButtonClick: handleCancelClick,
     },
   ];

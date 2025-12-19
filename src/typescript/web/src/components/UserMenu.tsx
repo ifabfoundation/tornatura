@@ -19,7 +19,10 @@ export default function UserMenu({ open }: UserMenuProps) {
   const navigate = useNavigate();
   const { fieldId, companyId } = useParams();
   const currentUser = useAppSelector(userSelectors.selectCurrentUser);
+
   const invitations = useAppSelector(invitationsSelectors.selectAllInvitations);
+  console.log("invitations in UserMenu:", invitations);
+
   const notificationsNum = invitations.length;
 
   React.useEffect(() => {

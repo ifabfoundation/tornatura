@@ -8,6 +8,7 @@ import { MenuItemEntry } from "../../../components/Sidebar";
 import { SidebarActions } from "../../sidebar/state/sidebar-slice";
 import { userSelectors } from "../../users/state/user-slice";
 import { AccountTypeEnum } from "@tornatura/coreapis";
+import Icon from "../../../components/Icon";
 
 export function CompaniesList() {
   const dispatch = useAppDispatch();
@@ -70,11 +71,12 @@ export function CompaniesList() {
             <Col md={6} xl={4} key={index} style={{ display: "flex", alignItems: "stretch" }}>
               <Card className="with-hover-effect" onClick={() => handleCompanyClick(company.orgId)}>
                 <Card.Header>
-                  {company.logo ? (
+                  <Icon iconName={"barn"} color={"black"} />
+                  {/* {company.logo ? (
                     <img src={company.logo} width="30px" height="30px" />
                   ) : (
                     <div className="round-thumb" style={{ backgroundImage: company.logo }}></div>
-                  )}
+                  )} */}
                   <span style={{ marginLeft: 10 }}>{company.name}</span>
                 </Card.Header>
                 <Card.Img variant="top" src={company.cover} />

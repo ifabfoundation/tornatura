@@ -226,3 +226,28 @@ $font-sans: "Inter", sans-serif;
 .font-xl {
   @include font-xl;
 }
+
+h1 {
+  @include font-l-600;
+}
+h2 {
+  @include font-l-600;
+}
+h3 {
+  @include font-l;
+}
+h4 {
+  @include font-m;
+}
+h5 {
+  @include font-s-label;
+}
+h6 {
+  @include font-s-600;
+}
+p {
+  @include font-m;
+}
+strong {
+  font-weight: 600;
+}
