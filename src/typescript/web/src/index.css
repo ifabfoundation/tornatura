@@ -12254,6 +12254,111 @@ fieldset:disabled .btn {
   }
 }
 
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+html, body, div, span, applet, object, iframe, h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp, small, .small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, .mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+  display: block;
+}
+
+body {
+  line-height: 1;
+}
+
+ol,
+ul {
+  list-style: none;
+}
+
+blockquote, q {
+  quotes: none;
+}
+
+blockquote:before, blockquote:after,
+q:before, q:after {
+  content: '';
+  content: none;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/*
+*:not(i) {
+  &,
+  &::before,
+  &::after {
+    margin: 0;
+    padding: 0;
+    border: none;
+    box-sizing: border-box;
+  }
+}
+
+:root {
+  color: $black;
+}
+
+button,
+input,
+optgroup,
+select,
+textarea,
+html input[type='button'],
+input[type='reset'],
+input[type='submit'],
+button[disabled],
+html input[disabled],
+button::-moz-focus-inner,
+input::-moz-focus-inner,
+input[type='checkbox'],
+input[type='radio'],
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button,
+input[type='search'],
+input[type='search']::-webkit-search-cancel-button,
+input[type='search']::-webkit-search-decoration {
+  border: none;
+  background-image: none;
+  background-color: transparent;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  outline-width: 0;
+}
+
+ul,
+ul li {
+  margin:0;
+  padding: 0;
+  text-indent: 0;
+  list-style-type: none;
+}
+*/
 @font-face {
   font-family: "Inter";
   src: url("../assets/fonts/Inter-4.1/web/InterVariable.woff2") format("woff2");
@@ -12430,7 +12535,7 @@ fieldset:disabled .btn {
   font-style: normal;
   font-stretch: normal;
   font-optical-sizing: auto;
-  font-weight: 700;
+  font-weight: 700 !important;
 }
 
 @media (min-width: 576px) {
@@ -12853,111 +12958,6 @@ strong {
   font-weight: 600 !important;
 }
 
-/* http://meyerweb.com/eric/tools/css/reset/ 
-   v2.0 | 20110126
-   License: none (public domain)
-*/
-html, body, div, span, applet, object, iframe, h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp, small, .small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed,
-figure, figcaption, footer, header, hgroup,
-menu, nav, output, ruby, section, summary,
-time, mark, .mark, audio, video {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  font-size: 100%;
-  font: inherit;
-  vertical-align: baseline;
-}
-
-/* HTML5 display-role reset for older browsers */
-article, aside, details, figcaption, figure,
-footer, header, hgroup, menu, nav, section {
-  display: block;
-}
-
-body {
-  line-height: 1;
-}
-
-ol,
-ul {
-  list-style: none;
-}
-
-blockquote, q {
-  quotes: none;
-}
-
-blockquote:before, blockquote:after,
-q:before, q:after {
-  content: '';
-  content: none;
-}
-
-table {
-  border-collapse: collapse;
-  border-spacing: 0;
-}
-
-/*
-*:not(i) {
-  &,
-  &::before,
-  &::after {
-    margin: 0;
-    padding: 0;
-    border: none;
-    box-sizing: border-box;
-  }
-}
-
-:root {
-  color: $black;
-}
-
-button,
-input,
-optgroup,
-select,
-textarea,
-html input[type='button'],
-input[type='reset'],
-input[type='submit'],
-button[disabled],
-html input[disabled],
-button::-moz-focus-inner,
-input::-moz-focus-inner,
-input[type='checkbox'],
-input[type='radio'],
-input[type='number']::-webkit-inner-spin-button,
-input[type='number']::-webkit-outer-spin-button,
-input[type='search'],
-input[type='search']::-webkit-search-cancel-button,
-input[type='search']::-webkit-search-decoration {
-  border: none;
-  background-image: none;
-  background-color: transparent;
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  box-shadow: none;
-  outline-width: 0;
-}
-
-ul,
-ul li {
-  margin:0;
-  padding: 0;
-  text-indent: 0;
-  list-style-type: none;
-}
-*/
 .lh-0 {
   line-height: 0;
 }
@@ -13595,9 +13595,8 @@ body {
   z-index: 4;
   display: inline-block;
   position: relative;
-  width: 300px;
   height: auto;
-  min-width: 450px;
+  width: 450px;
   max-width: 90vw;
   border-radius: 10px;
   background-color: white;
@@ -13858,12 +13857,17 @@ body {
   }
 }
 
-#app .input-row input[type="text"],
+#app .input-row input[type="text"], #app .input-row input[type="email"],
 #app .input-row select[type="text"],
+#app .input-row select[type="email"],
 #app .input-row textarea[type="text"],
+#app .input-row textarea[type="email"],
 #app .form-row input[type="text"],
+#app .form-row input[type="email"],
 #app .form-row select[type="text"],
-#app .form-row textarea[type="text"] {
+#app .form-row select[type="email"],
+#app .form-row textarea[type="text"],
+#app .form-row textarea[type="email"] {
   width: 100%;
 }
 
@@ -14173,6 +14177,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  border: 1px solid transparent;
 }
 
 @media (min-width: 576px) {
@@ -14199,10 +14204,13 @@ body {
   }
 }
 
-#app .context-selector-v2 .context-selector-options-list .context-selector-option:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+#app .context-selector-v2 .context-selector-options-list .context-selector-option.selected {
   background-color: #3d401a;
-  color: #eaff00;
+  color: #eaff00 !important;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+#app .context-selector-v2 .context-selector-options-list .context-selector-option:hover {
   background-color: #1f1f1f;
   color: white;
 }
@@ -16172,7 +16180,7 @@ ul.list-group li.list-group-item:hover {
   font-style: normal;
   font-stretch: normal;
   font-optical-sizing: auto;
-  font-weight: 700;
+  font-weight: 700 !important;
   border-color: #8b8b8b #8b8b8b transparent;
   background-color: #d8d8d8;
 }
@@ -16617,6 +16625,11 @@ ul.list-group li.list-group-item:hover {
 .pagination .page-item.active .page-link {
   background-color: #1f1f1f;
   color: white;
+}
+
+[role="alert"].alert button {
+  margin: 0 !important;
+  padding: 17px;
 }
 
 .narrow-container {

@@ -56,8 +56,8 @@ $ms-sidebar-transition: 100ms;
 // @import '.~bootstrap/scss/_variables.scss';
 // @import '.~bootstrap/scss/mixins/_breakpoints.scss';
 // @import './style/_boogrid';
-@import "./_typography";
 @import "./_reset";
+@import "./_typography";
 // @import './style/_mixins';
 // @import './_bootstrap-override';
 
@@ -448,9 +448,10 @@ body {
         z-index: 4;
         display: inline-block;
         position: relative;
-        width: 300px;
         height: auto;
-        min-width: 450px;
+        // width: 300px;
+        // min-width: 450px;
+        width: 450px;
         max-width: 90vw;
         border-radius: 10px;
         background-color: white;
@@ -555,7 +556,8 @@ body {
       border-color: rgba($c-grey_4, 0.3);
       @include font-m;
       transition: background-color $ms-sidebar-transition;
-      &[type="text"] {
+      &[type="text"],
+      &[type="email"] {
         width: 100%;
       }
       &:hover,
@@ -800,10 +802,15 @@ body {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        &:hover {
-          background-color: rgba(white, 0.1);
+        border: 1px solid transparent;
+        &.selected {
+          // background-color: rgba(white, 0.05);
+          // opacity: 0.3;
           background-color: $c-yelo_dark;
-          color: $c-yelo;
+          color: $c-yelo !important;
+          border: 1px solid rgba(black, 0.05);
+        }
+        &:hover {
           background-color: $c-grey_6;
           color: white;
         }
@@ -2211,6 +2218,13 @@ $hb-color-on-hover: #eee;
       background-color: $c-dark;
       color: white;
     }
+  }
+}
+
+[role="alert"].alert {
+  button {
+    margin: 0 !important;
+    padding: 17px;
   }
 }
 

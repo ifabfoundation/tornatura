@@ -70,14 +70,17 @@ function CompanySelector() {
           const fields = useAppSelector((state) =>
             fieldsSelectors.selectFieldsByOrgId(state, company.orgId)
           );
+          const selected = company.orgId === companyId;
           return (
             <div
-              className="context-selector-option"
+              className={`context-selector-option${selected ? " selected" : ""}`}
               key={company.orgId}
               onClick={() => handleCompanyChange(company.orgId)}
             >
               <span className="font-m-600">{company.name}</span>
-              <span className="font-s-label color-grey-4">{`${fields.length} campi`}</span>
+              <span className={`font-s-label color-grey-4`}>{`${fields.length} camp${
+                fields.length === 1 ? "o" : "i"
+              }`}</span>
             </div>
           );
         })}
@@ -134,15 +137,18 @@ function FieldSelector() {
       </button>
 
       <div ref={ref} className="context-selector-options-list">
-        {fields.map((field) => (
-          <div
-            className="context-selector-option"
-            key={field.id}
-            onClick={() => handleFieldChange(field.id)}
-          >
-            {field.name}
-          </div>
-        ))}
+        {fields.map((field) => {
+          const selected = field.id === fieldId;
+          return (
+            <div
+              className={`context-selector-option${selected ? " selected" : ""}`}
+              key={field.id}
+              onClick={() => handleFieldChange(field.id)}
+            >
+              {field.name}
+            </div>
+          );
+        })}
       </div>
     </li>
   );

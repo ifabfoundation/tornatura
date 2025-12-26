@@ -51,7 +51,7 @@ export function CompanyFields() {
   const detections = useAppSelector(detectionsSelectors.selectDetections);
 
   React.useEffect(() => {
-    dispatch(headerbarActions.setTitle({ title: "Campi", subtitle: "" }));
+    dispatch(headerbarActions.setTitle({ title: "Campi dell'azienda", subtitle: "" }));
   }, []);
 
   React.useEffect(() => {}, [currentCompany]);

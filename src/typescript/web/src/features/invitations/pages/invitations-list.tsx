@@ -221,98 +221,42 @@ export function InvitationsList() {
   return (
     <Container>
       <section className="my-5">
-        <p>Lista degli inviti fatti a nome dell'azienda, e che sono in attesa di una risposta.</p>
-        <div className="my-4"></div>
-        {message && (
-          <Alert
-            variant={hasError ? "danger" : "success"}
-            dismissible
-            onClose={() => setMessage(undefined)}
-          >
-            {message}
-          </Alert>
-        )}
-
-        {error && (
-          <Alert variant="danger" dismissible>
-            {error}
-          </Alert>
-        )}
-
-        {invitations.length === 0 ? (
-          <div className="empty-state">
-            <p>Nessun invito trovato</p>
-            <button className="trnt_btn primary" onClick={handleSendInvitation}>
-              Invia il primo invito
-            </button>
-          </div>
-        ) : (
-          <Fragment>
-            {/* 
-            <div className="table-responsive">
-              <table className="table table-hover">
-                <thead>
-                  <tr>
-                    <th>Email</th>
-                    <th>Ruolo</th>
-                    <th>Stato</th>
-                    <th>Data invio</th>
-                    <th>Scadenza</th>
-                    <th>Azioni</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {invitations.map((invitation) => (
-                    <tr key={invitation.id}>
-                      <td>{invitation.email}</td>
-                      <td>{translateRole(invitation.role)}</td>
-                      <td>
-                        <span className={`badge ${getStatusClass(invitation.status)}`}>
-                          {translateStatus(invitation.status)}
-                        </span>
-                      </td>
-                      <td>{formatDate(invitation.creationTime)}</td>
-                      <td>{formatDate(invitation.expiresAt)}</td>
-                      <td>
-                        {invitation.status === "pending" && (
-                          <Fragment>
-                            <button
-                              className="trnt_btn trnt_btn-sm secondary"
-                              onClick={() => handleResend(invitation)}
-                              style={{ marginRight: "0.5rem" }}
-                            >
-                              Reinvia
-                            </button>
-                            <button
-                              className="trnt_btn trnt_btn-sm danger"
-                              onClick={() => handleCancelClick(invitation)}
-                            >
-                              Revoca
-                            </button>
-                          </Fragment>
-                        )}
-                        {invitation.status === "accepted" && (
-                          <span className="text-muted">
-                            {invitation.acceptedAt &&
-                              `Accettato il ${formatDate(invitation.acceptedAt)}`}
-                          </span>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
- */}
-            <TableCozy columns={tableColumns} data={tableData} options={tableOptions} />
-
-            <section className="my-3">
-              <button className="trnt_btn primary m-0" onClick={handleSendInvitation}>
-                + Nuovo invito
+        <div className="text-center">
+          <h3 className="mb-4">Lista degli inviti fatti dall'azienda</h3>
+          <p>Qui puoi vedere gli inviti che hai creato e che sono in attesa di una risposta.</p>
+          <div className="my-4"></div>
+          {message && (
+            <Alert
+              variant={hasError ? "danger" : "success"}
+              dismissible
+              onClose={() => setMessage(undefined)}
+            >
+              {message}
+            </Alert>
+          )}
+          {error && (
+            <Alert variant="danger" dismissible>
+              {error}
+            </Alert>
+          )}
+          {invitations.length === 0 ? (
+            <div className="empty-state">
+              {/* <p>Nessun invito trovato</p> */}
+              <button className="trnt_btn primary" onClick={handleSendInvitation}>
+                Crea un invito
               </button>
-            </section>
-          </Fragment>
-        )}
+            </div>
+          ) : (
+            <Fragment>
+              <TableCozy columns={tableColumns} data={tableData} options={tableOptions} />
+              <section className="my-3">
+                <button className="trnt_btn primary m-0" onClick={handleSendInvitation}>
+                  + Nuovo invito
+                </button>
+              </section>
+            </Fragment>
+          )}
+        </div>
       </section>
 
       {showCancelModal && selectedInvitation && (

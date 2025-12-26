@@ -82,61 +82,61 @@ export function MyInvitations() {
           </div>
         ) : (
           <Row>
-            {/* {invitations.map((invitation) => ( */}
-            {Array(3)
+            {/* {Array(3)
               .fill(invitations)
               .flat()
-              .map((invitation) => (
-                <Col md={6} xl={4} key={invitation.id} className="mb-4">
-                  <div className="form-section p-4">
+              .map((invitation) => ( */}
+            {invitations.map((invitation) => (
+              <Col md={6} xl={4} key={invitation.id} className="mb-4">
+                <div className="form-section p-4">
+                  <div>
                     <div>
-                      <div>
-                        <p className="font-s-label mb-1">Invito da</p>
-                        <p className="font-m-600 mb-3">
-                          {`${invitation.inviterId} (${
-                            invitation.orgId ? "Organizzazione" : "Agronomo"
-                          })`}
-                        </p>
+                      <p className="font-s-label mb-1">Invito da</p>
+                      <p className="font-m-600 mb-3">
+                        {`${invitation.inviterId} (${
+                          invitation.orgId ? "Organizzazione" : "Agronomo"
+                        })`}
+                      </p>
 
-                        <hr />
+                      <hr />
 
-                        <p className="font-s-label mb-1">Invito al ruolo di</p>
-                        <p className="font-m-600 mb-3">{translateRole(invitation.role)}</p>
+                      <p className="font-s-label mb-1">Invito al ruolo di</p>
+                      <p className="font-m-600 mb-3">{translateRole(invitation.role)}</p>
 
-                        {invitation.orgId && (
-                          <Fragment>
-                            <p className="font-s-label mb-1">Organizzazione</p>
-                            <p className="font-m-600 mb-3">{invitation.orgId}</p>
-                          </Fragment>
-                        )}
+                      {invitation.orgId && (
+                        <Fragment>
+                          <p className="font-s-label mb-1">Organizzazione</p>
+                          <p className="font-m-600 mb-3">{invitation.orgId}</p>
+                        </Fragment>
+                      )}
 
-                        <hr />
+                      <hr />
 
-                        <div className="row">
-                          <div className="col">
-                            <p className="font-s-label mb-1">Ricezione</p>
-                            <p className="font-m-600 mb-3">{formatDate(invitation.creationTime)}</p>
-                          </div>
+                      <div className="row">
+                        <div className="col">
+                          <p className="font-s-label mb-1">Ricezione</p>
+                          <p className="font-m-600 mb-3">{formatDate(invitation.creationTime)}</p>
+                        </div>
 
-                          <div className="col">
-                            <p className="font-s-label mb-1">Scadenza</p>
-                            <p className="font-m-600 mb-3">{formatDate(invitation.expiresAt)}</p>
-                          </div>
+                        <div className="col">
+                          <p className="font-s-label mb-1">Scadenza</p>
+                          <p className="font-m-600 mb-3">{formatDate(invitation.expiresAt)}</p>
                         </div>
                       </div>
-                      <div className="buttons-wrapper">
-                        <button
-                          className="trnt_btn primary m-0"
-                          onClick={() => handleViewInvitation(invitation.token)}
-                          style={{ width: "100%" }}
-                        >
-                          Vedi l'invito
-                        </button>
-                      </div>
+                    </div>
+                    <div className="buttons-wrapper">
+                      <button
+                        className="trnt_btn primary m-0"
+                        onClick={() => handleViewInvitation(invitation.token)}
+                        style={{ width: "100%" }}
+                      >
+                        Vedi l'invito
+                      </button>
                     </div>
                   </div>
-                </Col>
-              ))}
+                </div>
+              </Col>
+            ))}
           </Row>
         )}
       </section>
