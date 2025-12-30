@@ -12,8 +12,9 @@ from phasetwo.model.organization_role_representation import OrganizationRoleRepr
 from core import config
 from core.decorators import catch_api_exception
 from core.models import OrganizationModel
-from core.serializers import Organization, OrganizationCreatePayload, OrganizationUpdatePayload
+from core.serializers import Organization, OrganizationCreatePayload, OrganizationUpdatePayload, OrganizationMember
 from core.services.files_services import FileServices
+from core.services.users_services import UserServices
 
 
 class OrganizationDefaultRole(Enum):
@@ -292,4 +293,58 @@ class OrganizationServices:
         organization.save()
     
         return self._serialize(organization)
+
+    @catch_api_exception
+    def list_members(self, org_id: str):
+        """List organization members with their roles
+        :rtype: List[OrganizationMember]
+        """
+        token = get_service_access_token()
+        configuration = phasetwo.Configuration(
+            host=f"{config.APIConfig.KEYCLOAK_ENDPOINT}/realms",
+            access_token=token
+        )
+        client = phasetwo.ApiClient(configuration)
+        memberships_api = organization_memberships_api.OrganizationMembershipsApi(client)
+        user_services = UserServices()
+
+        response = memberships_api.get_organization_memberships(
+            path_params = {
+            "realm": config.APIConfig.KEYCLOAK_REALM,
+            "orgId": org_id
+        })
+
+        if hasattr(response, "response"):
+            members_data = json.loads(response.response.data)
+        else:
+            members_data = response
+        members = []
+
+        for member in members_data:
+            user_id = member.get("id")
+            if not user_id:
+                continue
+            user = user_services.get_by_id(user_id)
+            member_roles = []
+            for membership in user.organizations:
+                if membership.id == org_id:
+                    member_roles = membership.roles
+                    break
+            members.append(
+                OrganizationMember(
+                    user=user,
+                    role=self._map_member_role(user, member_roles)
+                )
+            )
+        return members
+
+    @staticmethod
+    def _map_member_role(user, member_roles):
+        if user.accountType == "Agronomist":
+            return "agronomist"
+        if OrganizationDefaultRole.ManageOrganization.value in member_roles:
+            return "company-owner"
+        if OrganizationDefaultRole.ManageMembers.value in member_roles:
+            return "company-manager"
+        return "company-standard"
     

@@ -26,11 +26,19 @@ class InvitationServices:
 
     def _serialize(self, obj, many=False):
         """Serialize MongoDB document(s) to Pydantic model(s)"""
+        organization_services = OrganizationServices()
         def _create_instance(item) -> Invitation:
+            organization = None
+            if item.orgId:
+                try:
+                    organization = organization_services.get(item.orgId)
+                except DoesNotExist:
+                    organization = None
             return self.serializer(
                 id=str(item.id),
                 email=item.email,
                 orgId=item.orgId,
+                organization=organization,
                 inviterId=item.inviterId,
                 role=item.role,
                 token=item.token,
@@ -118,6 +126,13 @@ class InvitationServices:
         # Check for duplicate pending invitation
         # For company owner invitations without org, only check email + inviter
         if actual_org_id:
+            members = organization_services.list_members(actual_org_id)
+            for member in members:
+                if member.user.email.lower() == payload.email.lower():
+                    raise HTTPException(
+                        status_code=400,
+                        detail="User is already a member of this organization"
+                    )
             existing = self.model.objects(
                 email=payload.email,
                 orgId=actual_org_id,
@@ -297,6 +312,7 @@ class InvitationServices:
             try:
                 organization_services.add_member(target_org_id, invitation.inviterId)
                 # Give agronomist appropriate permissions
+                organization_services.assign_role(target_org_id, invitation.inviterId, OrganizationDefaultRole.ViewMembers)
                 organization_services.assign_role(target_org_id, invitation.inviterId, OrganizationDefaultRole.ViewOrganization)
                 organization_services.assign_role(target_org_id, invitation.inviterId, OrganizationCustomRole.ViewAgrifields)
                 organization_services.assign_role(target_org_id, invitation.inviterId, OrganizationCustomRole.ManageAgrifields)
@@ -311,6 +327,7 @@ class InvitationServices:
             # Standard case: Add invitee to inviter's organization
             try:
                 organization_services.add_member(invitation.orgId, user_id)
+                organization_services.assign_role(invitation.orgId, user_id, OrganizationDefaultRole.ViewMembers)
                 if invitation.role == ClientRole.Agronomist.value:
                     organization_services.assign_role(invitation.orgId, user_id, OrganizationDefaultRole.ViewOrganization)
                     organization_services.assign_role(invitation.orgId, user_id, OrganizationCustomRole.ViewAgrifields)

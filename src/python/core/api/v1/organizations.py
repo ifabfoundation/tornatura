@@ -1,8 +1,8 @@
 from typing import Annotated, List
 from fastapi import APIRouter, Depends, HTTPException, Path, Query, status
-from core.permissions import CanManageOrganization, CanViewOrganization, IsAdmin, IsAgronomist, IsAuthenticated
+from core.permissions import CanManageOrganization, CanViewOrganization, CanViewOrganizationMembers, IsAdmin, IsAgronomist, IsAuthenticated
 from core.security import SecurityChecker
-from core.serializers import AccountTypeEnum, ErrorResponse, Organization, OrganizationCreatePayload, OrganizationUpdatePayload, PaginatedResponse
+from core.serializers import AccountTypeEnum, ErrorResponse, Organization, OrganizationCreatePayload, OrganizationUpdatePayload, PaginatedResponse, OrganizationMember
 
 from core.services.organizations_services import OrganizationCustomRole, OrganizationDefaultRole, OrganizationServices
 from core.services.users_services import UserServices
@@ -94,3 +94,21 @@ async def update_organization(
     organization = organization_services.update(org_id, payload)
     return organization
 
+
+@router.get(
+    "/{org_id}/members",
+    operation_id="list_organization_members",
+    summary="List Organization Members",
+    response_description="Organization members with roles",
+)
+async def list_organization_members(
+    token_info: Annotated[dict, Depends(SecurityChecker(IsAuthenticated))],
+    org_id: str = Path(..., description="Organization ID"),
+    ) -> List[OrganizationMember]:
+    organization_services = OrganizationServices()
+    organization = organization_services.get(org_id)
+
+    checker = SecurityChecker(CanViewOrganizationMembers)
+    checker.check_object_permission(token_info, organization)
+
+    return organization_services.list_members(org_id)

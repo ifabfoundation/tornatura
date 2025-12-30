@@ -46,6 +46,10 @@ class User(BaseModel):
     organizations: List[UserOrgananizationMembership] = []
     creationTime: int
 
+class OrganizationMember(BaseModel):
+    user: User
+    role: str
+
 class Point(BaseModel):
     lng: float
     lat: float
@@ -187,6 +191,7 @@ class Invitation(BaseModel):
     id: str
     email: str
     orgId: Optional[str] = None  # Optional - null when agronomist invites non-existent company owner
+    organization: Optional[Organization] = None  # Optional - null when agronomist invites non-existent company owner
     inviterId: str
     role: str
     token: str
