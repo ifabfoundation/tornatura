@@ -19,6 +19,7 @@ import { unwrapResult } from "@reduxjs/toolkit";
 import { detectionsActions } from "./features/detections/state/detections-slice";
 import { SidebarActions } from "./features/sidebar/state/sidebar-slice";
 import Loading from "./components/Loading";
+import { invitationsActions } from "./features/invitations/state/invitations-slice";
 
 export function RouteApp() {
   const currentUser = useAppSelector(userSelectors.selectCurrentUser);
@@ -136,6 +137,7 @@ function App() {
         profile.accountType === AccountTypeEnum.Agronomist ||
         profile.accountType === AccountTypeEnum.Standard
       ) {
+        await dispatch(invitationsActions.fetchMyInvitationsAction());
         if (profile.organizations) {
           for (let org of profile.organizations) {
             await dispatch(companiesActions.getCompanyAction(org.id));

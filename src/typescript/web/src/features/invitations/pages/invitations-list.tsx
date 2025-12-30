@@ -75,7 +75,7 @@ export function InvitationsList() {
   const navigate = useNavigate();
   const { companyId } = useParams<{ companyId: string }>();
 
-  const invitations = useAppSelector(invitationsSelectors.selectAllInvitations);
+  const invitations = useAppSelector(state => invitationsSelectors.selectInvitationsByOrgId(state, companyId));
   const status = useAppSelector(invitationsSelectors.selectInvitationsStatus);
   const error = useAppSelector(invitationsSelectors.selectInvitationsError);
 

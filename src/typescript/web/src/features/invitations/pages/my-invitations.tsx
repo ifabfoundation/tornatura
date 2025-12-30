@@ -37,7 +37,7 @@ export function MyInvitations() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const invitations = useAppSelector(invitationsSelectors.selectAllInvitations);
+  const invitations = useAppSelector(invitationsSelectors.selectMyInvitations);
   const status = useAppSelector(invitationsSelectors.selectInvitationsStatus);
   const error = useAppSelector(invitationsSelectors.selectInvitationsError);
 

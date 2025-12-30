@@ -20,7 +20,7 @@ export default function TopBar({ showBackButton }: TopBarProps) {
   const navigate = useNavigate();
   const currentUser = useAppSelector(userSelectors.selectCurrentUser);
   const title = useAppSelector(headerbarSelectors.selectTitle);
-  const invitations = useAppSelector(invitationsSelectors.selectAllInvitations);
+  const invitations = useAppSelector(invitationsSelectors.selectMyInvitations);
   const notificationsNum = invitations.length;
 
   React.useEffect(() => {

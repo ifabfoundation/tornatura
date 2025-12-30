@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, createEntityAdapter } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, createEntityAdapter, createSelector } from "@reduxjs/toolkit";
 import {
   Invitation,
   InvitationCreatePayload,
@@ -295,6 +295,22 @@ const selectors = invitationsAdapter.getSelectors<RootState>(
 export const invitationsSelectors = {
   selectAllInvitations: selectors.selectAll,
   selectInvitationById: selectors.selectById,
+  selectInvitationsByOrgId: createSelector(
+    [
+      selectors.selectAll,
+      (_: RootState, orgId?: string) => orgId,
+    ],
+    (invitations, orgId) =>
+      orgId ? invitations.filter((invitation) => invitation.orgId === orgId) : []
+  ),
+  selectMyInvitations: createSelector(
+    [
+      selectors.selectAll,
+      (state: RootState) => state.users.currentUser.email,
+    ],
+    (invitations, currentUserEmail) =>
+      invitations.filter((invitation) => invitation.email === currentUserEmail)
+  ),
   selectInvitationsStatus: (state: RootState) => state.invitations.status,
   selectInvitationsError: (state: RootState) => state.invitations.error,
   selectValidationStatus: (state: RootState) => state.invitations.validationStatus,
