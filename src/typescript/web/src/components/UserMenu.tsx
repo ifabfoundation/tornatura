@@ -19,10 +19,8 @@ export default function UserMenu({ open }: UserMenuProps) {
   const navigate = useNavigate();
   const { fieldId, companyId } = useParams();
   const currentUser = useAppSelector(userSelectors.selectCurrentUser);
-
-  const invitations = useAppSelector(invitationsSelectors.selectAllInvitations);
-  console.log("invitations in UserMenu:", invitations);
-
+  const invitations = useAppSelector(invitationsSelectors.selectMyInvitations);
+  
   const notificationsNum = invitations.length;
 
   React.useEffect(() => {
@@ -46,7 +44,13 @@ export default function UserMenu({ open }: UserMenuProps) {
 
   const handleInvitiRicevuti = () => {
     dispatch(userMenuActions.toggle());
-    navigate(`/companies/${companyId}/invitations/me`);
+    if (fieldId && companyId) {
+      navigate(`/companies/${companyId}/fields/${fieldId}/invitations/me`);
+    } else if (companyId) {
+      navigate(`/companies/${companyId}/invitations/me`);
+    } else {
+      navigate("/invitations/me");
+    }
   };
 
   const accountTypeString = (accountType: string | undefined) => {

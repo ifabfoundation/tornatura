@@ -53,7 +53,7 @@ export function MyInvitations() {
   const handleViewInvitation = (token: string) => {
     navigate(`/invitations/accept?token=${token}`);
   };
-
+ 
   if (status === "pending") {
     return (
       <Container>

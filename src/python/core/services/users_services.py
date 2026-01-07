@@ -288,3 +288,13 @@ class UserServices:
         keycloak_admin.update_user(user_id=token_info["sub"], payload=user)
         return self.get(token_info)
     
+
+    @catch_api_exception
+    def get_groups(self, user_id: str):
+        """List groups
+        :rtype: List[str]
+        """
+        keycloak_admin = get_keycloak_admin()
+        groups = keycloak_admin.get_user_groups(user_id)
+        return [group.get("name") for group in groups]
+        

@@ -1,4 +1,3 @@
-import React from "react";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { userSelectors } from "../features/users/state/user-slice";
 import { userMenuActions } from "../features/userMenu/state/userMenu-slice";
@@ -7,7 +6,6 @@ import larr from "../assets/images/larr.svg";
 import { useNavigate } from "react-router-dom";
 import { fallbacks } from "../assets/images/fallback";
 import {
-  invitationsActions,
   invitationsSelectors,
 } from "../features/invitations/state/invitations-slice";
 
@@ -22,10 +20,6 @@ export default function TopBar({ showBackButton }: TopBarProps) {
   const title = useAppSelector(headerbarSelectors.selectTitle);
   const invitations = useAppSelector(invitationsSelectors.selectMyInvitations);
   const notificationsNum = invitations.length;
-
-  React.useEffect(() => {
-    dispatch(invitationsActions.fetchMyInvitationsAction());
-  }, []);
 
   return (
     <div className="headerbar">

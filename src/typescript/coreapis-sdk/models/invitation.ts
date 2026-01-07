@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { Organization } from './organization';
  /**
  * Complete invitation model with all fields
  *
@@ -37,6 +38,12 @@ export interface Invitation {
      * @memberof Invitation
      */
     orgId?: string | null;
+
+    /**
+     * @type {Organization}
+     * @memberof Invitation
+     */
+    organization?: Organization;
 
     /**
      * @type {string}

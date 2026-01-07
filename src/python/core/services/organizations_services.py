@@ -324,18 +324,20 @@ class OrganizationServices:
             user_id = member.get("id")
             if not user_id:
                 continue
-            user = user_services.get_by_id(user_id)
-            member_roles = []
-            for membership in user.organizations:
-                if membership.id == org_id:
-                    member_roles = membership.roles
-                    break
-            members.append(
-                OrganizationMember(
-                    user=user,
-                    role=self._map_member_role(user, member_roles)
+            groups = user_services.get_groups(user_id)
+            if "tornatura" in groups:
+                user = user_services.get_by_id(user_id)
+                member_roles = []
+                for membership in user.organizations:
+                    if membership.id == org_id:
+                        member_roles = membership.roles
+                        break
+                members.append(
+                    OrganizationMember(
+                        user=user,
+                        role=self._map_member_role(user, member_roles)
+                    )
                 )
-            )
         return members
 
     @staticmethod

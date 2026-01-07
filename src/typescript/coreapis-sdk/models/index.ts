@@ -19,6 +19,7 @@ export * from './invitation-validate-response';
 export * from './office';
 export * from './organization';
 export * from './organization-create-payload';
+export * from './organization-member';
 export * from './organization-update-payload';
 export * from './paginated-response';
 export * from './point';

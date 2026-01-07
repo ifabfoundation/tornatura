@@ -574,6 +574,57 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /v1/organizations/{org_id}/members:
+    get:
+      tags:
+      - Organizations
+      summary: List Organization Members
+      operationId: list_organization_members
+      security:
+      - SecurityChecker: []
+      parameters:
+      - name: org_id
+        in: path
+        required: true
+        schema:
+          type: string
+          description: Organization ID
+          title: Org Id
+        description: Organization ID
+      responses:
+        '200':
+          description: Organization members with roles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OrganizationMember'
+                title: Response List Organization Members
+        '401':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /v1/organizations/{org_id}/agrifields/{agrifield_id}/detections:
     get:
       tags:
@@ -1934,6 +1985,9 @@ components:
           title: Orgid
           type: string
           nullable: true
+        organization:
+          $ref: '#/components/schemas/Organization'
+          nullable: true
         inviterId:
           type: string
           title: Inviterid
@@ -2126,6 +2180,18 @@ components:
       - creationTime
       - lastUpdateTime
       title: Organization
+    OrganizationMember:
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
+        role:
+          type: string
+          title: Role
+      type: object
+      required:
+      - user
+      - role
+      title: OrganizationMember
     OrganizationCreatePayload:
       properties:
         name:

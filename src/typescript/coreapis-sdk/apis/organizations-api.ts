@@ -20,6 +20,7 @@ import { BASE_PATH, COLLECTION_FORMATS, RequestArgs, BaseAPI, RequiredError } fr
 import { ErrorResponse } from '../models';
 import { Organization } from '../models';
 import { OrganizationCreatePayload } from '../models';
+import { OrganizationMember } from '../models';
 import { OrganizationUpdatePayload } from '../models';
 import { PaginatedResponse } from '../models';
 /**
@@ -184,6 +185,55 @@ export const OrganizationsApiAxiosParamCreator = function (configuration?: Confi
         },
         /**
          * 
+         * @summary List Organization Members
+         * @param {string} orgId Organization ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        listOrganizationMembers: async (orgId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orgId' is not null or undefined
+            if (orgId === null || orgId === undefined) {
+                throw new RequiredError('orgId','Required parameter orgId was null or undefined when calling listOrganizationMembers.');
+            }
+            const localVarPath = `/v1/organizations/{org_id}/members`
+                .replace(`{${"org_id"}}`, encodeURIComponent(String(orgId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, 'https://example.com');
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions :AxiosRequestConfig = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication SecurityChecker required
+            // http bearer authentication required
+            if (configuration && configuration.accessToken) {
+                const accessToken = typeof configuration.accessToken === 'function'
+                    ? await configuration.accessToken()
+                    : await configuration.accessToken;
+                localVarHeaderParameter["Authorization"] = "Bearer " + accessToken;
+            }
+
+            const query = new URLSearchParams(localVarUrlObj.search);
+            for (const key in localVarQueryParameter) {
+                query.set(key, localVarQueryParameter[key]);
+            }
+            for (const key in options.params) {
+                query.set(key, options.params[key]);
+            }
+            localVarUrlObj.search = (new URLSearchParams(query)).toString();
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: localVarUrlObj.pathname + localVarUrlObj.search + localVarUrlObj.hash,
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Update Organization Info
          * @param {OrganizationUpdatePayload} body 
          * @param {string} orgId Organization ID
@@ -294,6 +344,20 @@ export const OrganizationsApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary List Organization Members
+         * @param {string} orgId Organization ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async listOrganizationMembers(orgId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => Promise<AxiosResponse<Array<OrganizationMember>>>> {
+            const localVarAxiosArgs = await OrganizationsApiAxiosParamCreator(configuration).listOrganizationMembers(orgId, options);
+            return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
+                const axiosRequestArgs :AxiosRequestConfig = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
+                return axios.request(axiosRequestArgs);
+            };
+        },
+        /**
+         * 
          * @summary Update Organization Info
          * @param {OrganizationUpdatePayload} body 
          * @param {string} orgId Organization ID
@@ -349,6 +413,16 @@ export const OrganizationsApiFactory = function (configuration?: Configuration, 
         },
         /**
          * 
+         * @summary List Organization Members
+         * @param {string} orgId Organization ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async listOrganizationMembers(orgId: string, options?: AxiosRequestConfig): Promise<AxiosResponse<Array<OrganizationMember>>> {
+            return OrganizationsApiFp(configuration).listOrganizationMembers(orgId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary Update Organization Info
          * @param {OrganizationUpdatePayload} body 
          * @param {string} orgId Organization ID
@@ -401,6 +475,17 @@ export class OrganizationsApi extends BaseAPI {
      */
     public async listOrganization(page?: number, limit?: number, options?: AxiosRequestConfig) : Promise<AxiosResponse<PaginatedResponse>> {
         return OrganizationsApiFp(this.configuration).listOrganization(page, limit, options).then((request) => request(this.axios, this.basePath));
+    }
+    /**
+     * 
+     * @summary List Organization Members
+     * @param {string} orgId Organization ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof OrganizationsApi
+     */
+    public async listOrganizationMembers(orgId: string, options?: AxiosRequestConfig) : Promise<AxiosResponse<Array<OrganizationMember>>> {
+        return OrganizationsApiFp(this.configuration).listOrganizationMembers(orgId, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      * 
