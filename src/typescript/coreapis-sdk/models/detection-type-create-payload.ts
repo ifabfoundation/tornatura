@@ -12,30 +12,23 @@
  * Do not edit the class manually.
  */
 
-import { Contacts } from './contacts';
  /**
  * 
  *
  * @export
- * @interface OrganizationCreatePayload
+ * @interface DetectionTypeCreatePayload
  */
-export interface OrganizationCreatePayload {
+export interface DetectionTypeCreatePayload {
 
     /**
      * @type {string}
-     * @memberof OrganizationCreatePayload
+     * @memberof DetectionTypeCreatePayload
      */
-    name: string;
+    typology: string;
 
     /**
      * @type {string}
-     * @memberof OrganizationCreatePayload
+     * @memberof DetectionTypeCreatePayload
      */
-    piva: string;
-
-    /**
-     * @type {Contacts}
-     * @memberof OrganizationCreatePayload
-     */
-    contacts: Contacts;
+    method: string;
 }

@@ -12,30 +12,35 @@
  * Do not edit the class manually.
  */
 
-import { Contacts } from './contacts';
  /**
  * 
  *
  * @export
- * @interface OrganizationCreatePayload
+ * @interface DetectionTextCreatePayload
  */
-export interface OrganizationCreatePayload {
+export interface DetectionTextCreatePayload {
 
     /**
      * @type {string}
-     * @memberof OrganizationCreatePayload
+     * @memberof DetectionTextCreatePayload
      */
-    name: string;
+    typology: string;
 
     /**
      * @type {string}
-     * @memberof OrganizationCreatePayload
+     * @memberof DetectionTextCreatePayload
      */
-    piva: string;
+    method: string;
 
     /**
-     * @type {Contacts}
-     * @memberof OrganizationCreatePayload
+     * @type {string}
+     * @memberof DetectionTextCreatePayload
      */
-    contacts: Contacts;
+    locationAndScoreInstructions: string;
+
+    /**
+     * @type {string}
+     * @memberof DetectionTextCreatePayload
+     */
+    bbchInstructions: string;
 }

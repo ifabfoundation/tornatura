@@ -12,30 +12,36 @@
  * Do not edit the class manually.
  */
 
-import { Contacts } from './contacts';
+import { ObservationPoint } from './observation-point';
  /**
  * 
  *
  * @export
- * @interface OrganizationCreatePayload
+ * @interface DetectionData
  */
-export interface OrganizationCreatePayload {
+export interface DetectionData {
 
     /**
      * @type {string}
-     * @memberof OrganizationCreatePayload
+     * @memberof DetectionData
      */
-    name: string;
+    bbch: string;
 
     /**
      * @type {string}
-     * @memberof OrganizationCreatePayload
+     * @memberof DetectionData
      */
-    piva: string;
+    notes: string;
 
     /**
-     * @type {Contacts}
-     * @memberof OrganizationCreatePayload
+     * @type {Array<string>}
+     * @memberof DetectionData
      */
-    contacts: Contacts;
+    photos: Array<string>;
+
+    /**
+     * @type {Array<ObservationPoint>}
+     * @memberof DetectionData
+     */
+    points: Array<ObservationPoint>;
 }

@@ -12,43 +12,37 @@
  * Do not edit the class manually.
  */
 
-import { Contacts } from './contacts';
 import { FileInfo } from './file-info';
+import { ObservationPoint } from './observation-point';
  /**
  * 
  *
  * @export
- * @interface OrganizationUpdatePayload
+ * @interface DetectionDataPayload
  */
-export interface OrganizationUpdatePayload {
+export interface DetectionDataPayload {
 
     /**
      * @type {string}
-     * @memberof OrganizationUpdatePayload
+     * @memberof DetectionDataPayload
      */
-    name?: string | null;
+    bbch: string;
 
     /**
      * @type {string}
-     * @memberof OrganizationUpdatePayload
+     * @memberof DetectionDataPayload
      */
-    piva?: string | null;
+    notes: string;
 
     /**
-     * @type {FileInfo}
-     * @memberof OrganizationUpdatePayload
+     * @type {Array<FileInfo>}
+     * @memberof DetectionDataPayload
      */
-    logo?: FileInfo;
+    photos: Array<FileInfo>;
 
     /**
-     * @type {FileInfo}
-     * @memberof OrganizationUpdatePayload
+     * @type {Array<ObservationPoint>}
+     * @memberof DetectionDataPayload
      */
-    cover?: FileInfo;
-
-    /**
-     * @type {Contacts}
-     * @memberof OrganizationUpdatePayload
-     */
-    contacts?: Contacts;
+    points: Array<ObservationPoint>;
 }

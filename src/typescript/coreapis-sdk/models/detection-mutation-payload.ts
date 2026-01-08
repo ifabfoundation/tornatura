@@ -12,8 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { FileInfo } from './file-info';
-import { Point } from './point';
+import { DetectionDataPayload } from './detection-data-payload';
  /**
  * 
  *
@@ -32,29 +31,11 @@ export interface DetectionMutationPayload {
      * @type {string}
      * @memberof DetectionMutationPayload
      */
-    type: string;
+    detectionTypeId: string;
 
     /**
-     * @type {Point}
+     * @type {DetectionDataPayload}
      * @memberof DetectionMutationPayload
      */
-    position: Point;
-
-    /**
-     * @type {Array<FileInfo>}
-     * @memberof DetectionMutationPayload
-     */
-    photos: Array<FileInfo>;
-
-    /**
-     * @type {string}
-     * @memberof DetectionMutationPayload
-     */
-    note: string;
-
-    /**
-     * @type {any}
-     * @memberof DetectionMutationPayload
-     */
-    details: any;
+    detectionData: DetectionDataPayload;
 }

@@ -12,54 +12,47 @@
  * Do not edit the class manually.
  */
 
-import { DetectionData } from './detection-data';
  /**
  * 
  *
  * @export
- * @interface Detection
+ * @interface ObservationTypeCreatePayload
  */
-export interface Detection {
+export interface ObservationTypeCreatePayload {
 
     /**
      * @type {string}
-     * @memberof Detection
+     * @memberof ObservationTypeCreatePayload
      */
-    id: string;
+    typology: string;
 
     /**
      * @type {string}
-     * @memberof Detection
+     * @memberof ObservationTypeCreatePayload
      */
-    agrifieldId: string;
-
-    /**
-     * @type {number}
-     * @memberof Detection
-     */
-    detectionTime: number;
+    method: string;
 
     /**
      * @type {string}
-     * @memberof Detection
+     * @memberof ObservationTypeCreatePayload
      */
-    detectionTypeId: string;
-
-    /**
-     * @type {DetectionData}
-     * @memberof Detection
-     */
-    detectionData: DetectionData;
+    observationType: string;
 
     /**
      * @type {number}
-     * @memberof Detection
+     * @memberof ObservationTypeCreatePayload
      */
-    creationTime: number;
+    rangeMin?: number | null;
 
     /**
      * @type {number}
-     * @memberof Detection
+     * @memberof ObservationTypeCreatePayload
      */
-    lastUpdateTime: number;
+    rangeMax?: number | null;
+
+    /**
+     * @type {Array<string>}
+     * @memberof ObservationTypeCreatePayload
+     */
+    counters?: Array<string>;
 }

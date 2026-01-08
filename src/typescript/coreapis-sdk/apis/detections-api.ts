@@ -158,12 +158,13 @@ export const DetectionsApiAxiosParamCreator = function (configuration?: Configur
          * @summary List Detections
          * @param {string} orgId Organization ID
          * @param {string} agrifieldId Agriculture Field ID
+         * @param {string} [detectionTypeId] Detection type ID
          * @param {number} [page] Page number
          * @param {number} [limit] Items per page
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        listDetections: async (orgId: string, agrifieldId: string, page?: number, limit?: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        listDetections: async (orgId: string, agrifieldId: string, detectionTypeId?: string, page?: number, limit?: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'orgId' is not null or undefined
             if (orgId === null || orgId === undefined) {
                 throw new RequiredError('orgId','Required parameter orgId was null or undefined when calling listDetections.');
@@ -194,6 +195,10 @@ export const DetectionsApiAxiosParamCreator = function (configuration?: Configur
                 localVarHeaderParameter["Authorization"] = "Bearer " + accessToken;
             }
 
+            if (detectionTypeId !== undefined) {
+                localVarQueryParameter['detection_type_id'] = detectionTypeId;
+            }
+
             if (page !== undefined) {
                 localVarQueryParameter['page'] = page;
             }
@@ -212,76 +217,6 @@ export const DetectionsApiAxiosParamCreator = function (configuration?: Configur
             localVarUrlObj.search = (new URLSearchParams(query)).toString();
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: localVarUrlObj.pathname + localVarUrlObj.search + localVarUrlObj.hash,
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @summary Update Detection
-         * @param {DetectionMutationPayload} body 
-         * @param {string} orgId Organization ID
-         * @param {string} agrifieldId Agriculture Field ID
-         * @param {string} detectionId Detection Field ID
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        updateDetection: async (body: DetectionMutationPayload, orgId: string, agrifieldId: string, detectionId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'body' is not null or undefined
-            if (body === null || body === undefined) {
-                throw new RequiredError('body','Required parameter body was null or undefined when calling updateDetection.');
-            }
-            // verify required parameter 'orgId' is not null or undefined
-            if (orgId === null || orgId === undefined) {
-                throw new RequiredError('orgId','Required parameter orgId was null or undefined when calling updateDetection.');
-            }
-            // verify required parameter 'agrifieldId' is not null or undefined
-            if (agrifieldId === null || agrifieldId === undefined) {
-                throw new RequiredError('agrifieldId','Required parameter agrifieldId was null or undefined when calling updateDetection.');
-            }
-            // verify required parameter 'detectionId' is not null or undefined
-            if (detectionId === null || detectionId === undefined) {
-                throw new RequiredError('detectionId','Required parameter detectionId was null or undefined when calling updateDetection.');
-            }
-            const localVarPath = `/v1/organizations/{org_id}/agrifields/{agrifield_id}/detections/{detection_id}`
-                .replace(`{${"org_id"}}`, encodeURIComponent(String(orgId)))
-                .replace(`{${"agrifield_id"}}`, encodeURIComponent(String(agrifieldId)))
-                .replace(`{${"detection_id"}}`, encodeURIComponent(String(detectionId)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, 'https://example.com');
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-            const localVarRequestOptions :AxiosRequestConfig = { method: 'PUT', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication SecurityChecker required
-            // http bearer authentication required
-            if (configuration && configuration.accessToken) {
-                const accessToken = typeof configuration.accessToken === 'function'
-                    ? await configuration.accessToken()
-                    : await configuration.accessToken;
-                localVarHeaderParameter["Authorization"] = "Bearer " + accessToken;
-            }
-
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            const query = new URLSearchParams(localVarUrlObj.search);
-            for (const key in localVarQueryParameter) {
-                query.set(key, localVarQueryParameter[key]);
-            }
-            for (const key in options.params) {
-                query.set(key, options.params[key]);
-            }
-            localVarUrlObj.search = (new URLSearchParams(query)).toString();
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            const needsSerialization = (typeof body !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
-            localVarRequestOptions.data =  needsSerialization ? JSON.stringify(body !== undefined ? body : {}) : (body || "");
 
             return {
                 url: localVarUrlObj.pathname + localVarUrlObj.search + localVarUrlObj.hash,
@@ -334,30 +269,14 @@ export const DetectionsApiFp = function(configuration?: Configuration) {
          * @summary List Detections
          * @param {string} orgId Organization ID
          * @param {string} agrifieldId Agriculture Field ID
+         * @param {string} [detectionTypeId] Detection type ID
          * @param {number} [page] Page number
          * @param {number} [limit] Items per page
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async listDetections(orgId: string, agrifieldId: string, page?: number, limit?: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => Promise<AxiosResponse<PaginatedResponse>>> {
-            const localVarAxiosArgs = await DetectionsApiAxiosParamCreator(configuration).listDetections(orgId, agrifieldId, page, limit, options);
-            return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
-                const axiosRequestArgs :AxiosRequestConfig = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
-                return axios.request(axiosRequestArgs);
-            };
-        },
-        /**
-         * 
-         * @summary Update Detection
-         * @param {DetectionMutationPayload} body 
-         * @param {string} orgId Organization ID
-         * @param {string} agrifieldId Agriculture Field ID
-         * @param {string} detectionId Detection Field ID
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async updateDetection(body: DetectionMutationPayload, orgId: string, agrifieldId: string, detectionId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => Promise<AxiosResponse<Detection>>> {
-            const localVarAxiosArgs = await DetectionsApiAxiosParamCreator(configuration).updateDetection(body, orgId, agrifieldId, detectionId, options);
+        async listDetections(orgId: string, agrifieldId: string, detectionTypeId?: string, page?: number, limit?: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => Promise<AxiosResponse<PaginatedResponse>>> {
+            const localVarAxiosArgs = await DetectionsApiAxiosParamCreator(configuration).listDetections(orgId, agrifieldId, detectionTypeId, page, limit, options);
             return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
                 const axiosRequestArgs :AxiosRequestConfig = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
                 return axios.request(axiosRequestArgs);
@@ -401,26 +320,14 @@ export const DetectionsApiFactory = function (configuration?: Configuration, bas
          * @summary List Detections
          * @param {string} orgId Organization ID
          * @param {string} agrifieldId Agriculture Field ID
+         * @param {string} [detectionTypeId] Detection type ID
          * @param {number} [page] Page number
          * @param {number} [limit] Items per page
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async listDetections(orgId: string, agrifieldId: string, page?: number, limit?: number, options?: AxiosRequestConfig): Promise<AxiosResponse<PaginatedResponse>> {
-            return DetectionsApiFp(configuration).listDetections(orgId, agrifieldId, page, limit, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary Update Detection
-         * @param {DetectionMutationPayload} body 
-         * @param {string} orgId Organization ID
-         * @param {string} agrifieldId Agriculture Field ID
-         * @param {string} detectionId Detection Field ID
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async updateDetection(body: DetectionMutationPayload, orgId: string, agrifieldId: string, detectionId: string, options?: AxiosRequestConfig): Promise<AxiosResponse<Detection>> {
-            return DetectionsApiFp(configuration).updateDetection(body, orgId, agrifieldId, detectionId, options).then((request) => request(axios, basePath));
+        async listDetections(orgId: string, agrifieldId: string, detectionTypeId?: string, page?: number, limit?: number, options?: AxiosRequestConfig): Promise<AxiosResponse<PaginatedResponse>> {
+            return DetectionsApiFp(configuration).listDetections(orgId, agrifieldId, detectionTypeId, page, limit, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -463,27 +370,14 @@ export class DetectionsApi extends BaseAPI {
      * @summary List Detections
      * @param {string} orgId Organization ID
      * @param {string} agrifieldId Agriculture Field ID
+     * @param {string} [detectionTypeId] Detection type ID
      * @param {number} [page] Page number
      * @param {number} [limit] Items per page
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DetectionsApi
      */
-    public async listDetections(orgId: string, agrifieldId: string, page?: number, limit?: number, options?: AxiosRequestConfig) : Promise<AxiosResponse<PaginatedResponse>> {
-        return DetectionsApiFp(this.configuration).listDetections(orgId, agrifieldId, page, limit, options).then((request) => request(this.axios, this.basePath));
-    }
-    /**
-     * 
-     * @summary Update Detection
-     * @param {DetectionMutationPayload} body 
-     * @param {string} orgId Organization ID
-     * @param {string} agrifieldId Agriculture Field ID
-     * @param {string} detectionId Detection Field ID
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof DetectionsApi
-     */
-    public async updateDetection(body: DetectionMutationPayload, orgId: string, agrifieldId: string, detectionId: string, options?: AxiosRequestConfig) : Promise<AxiosResponse<Detection>> {
-        return DetectionsApiFp(this.configuration).updateDetection(body, orgId, agrifieldId, detectionId, options).then((request) => request(this.axios, this.basePath));
+    public async listDetections(orgId: string, agrifieldId: string, detectionTypeId?: string, page?: number, limit?: number, options?: AxiosRequestConfig) : Promise<AxiosResponse<PaginatedResponse>> {
+        return DetectionsApiFp(this.configuration).listDetections(orgId, agrifieldId, detectionTypeId, page, limit, options).then((request) => request(this.axios, this.basePath));
     }
 }

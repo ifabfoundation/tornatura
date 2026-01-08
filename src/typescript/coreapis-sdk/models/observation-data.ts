@@ -12,30 +12,24 @@
  * Do not edit the class manually.
  */
 
-import { Contacts } from './contacts';
+import { ObservationCounter } from './observation-counter';
  /**
  * 
  *
  * @export
- * @interface OrganizationCreatePayload
+ * @interface ObservationData
  */
-export interface OrganizationCreatePayload {
+export interface ObservationData {
 
     /**
-     * @type {string}
-     * @memberof OrganizationCreatePayload
+     * @type {number}
+     * @memberof ObservationData
      */
-    name: string;
+    rangeValue?: number | null;
 
     /**
-     * @type {string}
-     * @memberof OrganizationCreatePayload
+     * @type {Array<ObservationCounter>}
+     * @memberof ObservationData
      */
-    piva: string;
-
-    /**
-     * @type {Contacts}
-     * @memberof OrganizationCreatePayload
-     */
-    contacts: Contacts;
+    counters?: Array<ObservationCounter>;
 }
