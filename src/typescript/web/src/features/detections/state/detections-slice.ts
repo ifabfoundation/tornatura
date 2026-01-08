@@ -35,9 +35,29 @@ export const fetchFieldDetections = createAsyncThunk(
   async ({orgId, fieldId, page=1, limit=1000}: IFetchFieldDetections, ) => {
     const apiConfig = await getCoreApiConfiguration();
     const detectionsApi = new DetectionsApi(apiConfig);
-    const data = detectionsApi.listDetections(orgId, fieldId, page, limit).then((response) => {
+    const data = detectionsApi.listDetections(orgId, fieldId, undefined, page, limit).then((response) => {
       return response.data;
     });
+    return data;
+  }
+);
+
+interface IFetchDetectionsByType {
+  orgId: string;
+  fieldId: string;
+  detectionTypeId: string;
+  page?: number;
+  limit?: number;
+}
+
+export const fetchDetectionsByType = createAsyncThunk(
+  "detections/fetchDetectionsByType",
+  async ({ orgId, fieldId, detectionTypeId, page = 1, limit = 1000 }: IFetchDetectionsByType) => {
+    const apiConfig = await getCoreApiConfiguration();
+    const detectionsApi = new DetectionsApi(apiConfig);
+    const data = detectionsApi
+      .listDetections(orgId, fieldId, detectionTypeId, page, limit)
+      .then((response) => response.data);
     return data;
   }
 );
@@ -105,6 +125,21 @@ const detectionsSlice = createSlice({
       state.error = action.error.message;
     });
 
+    builder.addCase(fetchDetectionsByType.pending, (state) => {
+      state.status = "pending";
+    });
+
+    builder.addCase(fetchDetectionsByType.fulfilled, (state, action) => {
+      state.status = "succeeded";
+      state.total = action.payload.total;
+      detectionsAdapter.upsertMany(state, action.payload.data as Detection[]);
+    });
+
+    builder.addCase(fetchDetectionsByType.rejected, (state, action) => {
+      state.status = "failed";
+      state.error = action.error.message;
+    });
+
     builder.addCase(addNewDetection.fulfilled, (state, action) => {
       detectionsAdapter.upsertOne(state, action.payload as Detection);
     });
@@ -139,6 +174,7 @@ export const detectionsSelectors = {
 
 export const detectionsActions = {
   fetchFieldDetectionsAction: fetchFieldDetections,
+  fetchDetectionsByTypeAction: fetchDetectionsByType,
   addNewDetectionAction: addNewDetection,
   updateDetectionAction: updateDetection,
 };
