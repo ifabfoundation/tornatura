@@ -709,6 +709,7 @@ body {
       background-color: black;
       border-radius: 50%;
       width: 36px;
+      min-width: 36px;
       height: 36px;
       display: flex;
       align-items: center;
@@ -722,7 +723,7 @@ body {
       max-width: 36px;
       padding: 0;
       margin: 2px;
-      background-color: rgba($c-grey_4, 0.3);
+      background-color: rgba($c-grey_4, 0.1);
       border-radius: $r;
       img {
         opacity: 0.5;

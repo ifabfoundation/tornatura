@@ -34,7 +34,7 @@ export function CompanyDetail() {
         {
           id: "invitations",
           icon: "baloon",
-          text: "Gestione inviti",
+          text: "Gestione inviti azienda",
           path: `/companies/${companyId}/invitations`,
         },
         {

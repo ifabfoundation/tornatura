@@ -20,7 +20,7 @@ export default function UserMenu({ open }: UserMenuProps) {
   const { fieldId, companyId } = useParams();
   const currentUser = useAppSelector(userSelectors.selectCurrentUser);
   const invitations = useAppSelector(invitationsSelectors.selectMyInvitations);
-  
+
   const notificationsNum = invitations.length;
 
   React.useEffect(() => {
@@ -93,7 +93,7 @@ export default function UserMenu({ open }: UserMenuProps) {
               data-notifications={notificationsNum}
               onClick={handleInvitiRicevuti}
             >
-              Inviti ricevuti
+              Inviti utente ricevuti
             </div>
             <div className="user-menu-item" onClick={handleProfile}>
               Modifica profilo
