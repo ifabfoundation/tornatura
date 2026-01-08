@@ -103,10 +103,10 @@ export function MyInvitations() {
                       <p className="font-s-label mb-1">Invito al ruolo di</p>
                       <p className="font-m-600 mb-3">{translateRole(invitation.role)}</p>
 
-                      {invitation.orgId && (
+                      {invitation.orgId && invitation.organization && (
                         <Fragment>
                           <p className="font-s-label mb-1">Organizzazione</p>
-                          <p className="font-m-600 mb-3">{invitation.orgId}</p>
+                          <p className="font-m-600 mb-3">{invitation.organization.name}</p>
                         </Fragment>
                       )}
 

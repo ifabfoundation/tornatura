@@ -29,7 +29,7 @@ export function CompanyDetail() {
           id: "members",
           icon: "user",
           text: "Membri",
-          path: `/companies/${companyId}/invitations`,
+          path: `/companies/${companyId}/members`,
         },
         {
           id: "invitations",
