@@ -2,14 +2,12 @@ import React, { Fragment, useEffect, useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 // import { useFormik } from "formik";
 // import * as Yup from "yup";
-import { DetectionMutationPayload, FilesApi } from "@tornatura/coreapis";
+import { DetectionMutationPayload, ObservationType, DetectionText } from "@tornatura/coreapis";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { headerbarActions } from "../../headerbar/state/headerbar-slice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { detectionsActions } from "../state/detections-slice";
-import { FileWithPath /* , useDropzone */ } from "react-dropzone";
-import { getCoreApiConfiguration } from "../../../services/utils";
 import { fieldsSelectors } from "../../fields/state/fields-slice";
 // import { SearchBox } from "@mapbox/search-js-react";
 import mapboxgl, { LngLatLike, Marker } from "mapbox-gl";
@@ -20,14 +18,16 @@ import { Accordion, AccordionItem } from "../../../components/Accordion";
 import CozyButton from "../../../components/CozyButton";
 import Icon from "../../../components/Icon";
 // import { timeStamp } from "console";
-import doneIcon from "../../../assets/images/icon-large-done.svg";
+import { detectionTypesActions, detectionTypesSelectors } from "../../detection-types/state/detection-types-slice";
+import { observationTypesActions, observationTypesSelectors } from "../../observation-types/state/observation-types-slice";
+import { detectionTextsActions, detectionTextsSelectors } from "../../detection-texts/state/detection-texts-slice";
 import { gpsStore } from "../../../providers/gps-providers";
 
 const markerOptions = { color: "#EAFF00" };
 
 interface DetectionProps {
   formData: DetectionMutationPayload;
-  action: string;
+  action?: string;
   onBackClick?: () => Promise<void>;
   onNextClick: (data: any) => Promise<void>;
 }
@@ -1248,39 +1248,362 @@ function DetectionStepPosizione({ action, onNextClick }: DetectionProps) {
   );
 }
 
-function DetectionStepTipologia({ onNextClick }: DetectionProps) {
-  const handleOnSelectClick = (value: string) => {
-    onNextClick({
-      type: value,
-    });
-  };
-
-  return (
-    <Fragment>
-      <AccordionTipologia onSelect={handleOnSelectClick} />
-    </Fragment>
-  );
-}
-
-function DetectionStepMetodo({ formData, onNextClick }: DetectionProps) {
-  const handleOnSelectClick = (value: string) => {
-    onNextClick({
-      method: value,
-    });
-  };
-
+function DetectionStepTipologia({
+  typologies,
+  onNextClick,
+}: DetectionProps & { typologies: string[] }) {
   return (
     <div className="narrow-container my-5">
-      <h3 className="mb-4 text-center">{methods[formData.type].title}</h3>
-      {methods[formData.type].items.map((itemKey: string, itemIndex: number) => (
+      <h3 className="mb-4 text-center">Seleziona la tipologia di rilevamento</h3>
+      {typologies.length === 0 && <div>Nessuna tipologia disponibile.</div>}
+      {typologies.map((item, index) => (
         <CozyButton
-          key={itemIndex}
-          content={itemKey}
-          onClick={() => handleOnSelectClick(itemKey)}
+          key={index}
+          content={item}
+          onClick={() => onNextClick({ typology: item })}
           arrow={true}
         />
       ))}
     </div>
+  );
+}
+
+function DetectionStepMetodo({
+  typology,
+  methods,
+  onNextClick,
+}: DetectionProps & { typology: string; methods: string[] }) {
+  return (
+    <div className="narrow-container my-5">
+      <h3 className="mb-4 text-center">Seleziona il metodo di osservazione</h3>
+      {typology && <p className="text-center">Tipologia: {typology}</p>}
+      {methods.length === 0 && <div>Nessun metodo disponibile.</div>}
+      {methods.map((item, index) => (
+        <CozyButton
+          key={index}
+          content={item}
+          onClick={() => onNextClick({ method: item })}
+          arrow={true}
+        />
+      ))}
+    </div>
+  );
+}
+
+function DetectionStepGuide({
+  detectionText,
+  onNextClick,
+}: DetectionProps & { detectionText?: DetectionText }) {
+  return (
+    <div className="narrow-container my-5 text-center">
+      <h3 className="mb-4">Guida all'osservazione</h3>
+      {detectionText ? (
+        <Fragment>
+          <div className="mb-3">
+            <strong>Istruzioni posizione e punteggio</strong>
+            <p>{detectionText.locationAndScoreInstructions}</p>
+          </div>
+          <div className="mb-4">
+            <strong>Istruzioni BBCH</strong>
+            <p>{detectionText.bbchInstructions}</p>
+          </div>
+        </Fragment>
+      ) : (
+        <div>Nessuna guida disponibile per questa tipologia e metodo.</div>
+      )}
+      <div className="buttons-wrapper mt-4 text-center">
+        <button className="trnt_btn primary" onClick={() => onNextClick({})}>
+          Avanti
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function DetectionStepBbch({
+  formData,
+  onNextClick,
+}: DetectionProps) {
+  const [bbch, setBbch] = React.useState(formData?.detectionData?.bbch ?? "");
+  const [notes, setNotes] = React.useState(formData?.detectionData?.notes ?? "");
+
+  React.useEffect(() => {
+    setBbch(formData?.detectionData?.bbch ?? "");
+    setNotes(formData?.detectionData?.notes ?? "");
+  }, [formData]);
+
+  return (
+    <div className="narrow-container my-5">
+      <h3 className="mb-4 text-center">Seleziona BBCH</h3>
+      <div className="input-row">
+        <label>
+          BBCH
+          <input
+            id="bbch"
+            name="bbch"
+            type="text"
+            placeholder="BBCH"
+            onChange={(event) => setBbch(event.target.value)}
+            value={bbch}
+          />
+        </label>
+      </div>
+      <div className="input-row">
+        <label>
+          Note
+          <textarea
+            id="notes"
+            name="notes"
+            placeholder=""
+            rows={6}
+            onChange={(event) => setNotes(event.target.value)}
+            value={notes}
+          ></textarea>
+        </label>
+      </div>
+      <div className="buttons-wrapper mt-4 text-center">
+        <button className="trnt_btn primary" onClick={() => onNextClick({ bbch, notes })}>
+          Avanti
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function DetectionStepObservationPoints({
+  formData,
+  observationType,
+  onNextClick,
+}: DetectionProps & { observationType?: ObservationType }) {
+  const { fieldId } = useParams();
+  const currentField = useAppSelector((state) =>
+    fieldsSelectors.selectFieldbyId(state, fieldId ?? "default")
+  );
+  const currentPosition = React.useContext(gpsStore);
+  const [source, setSource] = React.useState<string>("current");
+  const [markerPosition, setMarkerPosition] = React.useState<Point>();
+  const [rangeValue, setRangeValue] = React.useState<string>("");
+  const [counterValues, setCounterValues] = React.useState<Record<string, string>>({});
+  const [points, setPoints] = React.useState(formData?.detectionData?.points ?? []);
+  const [modalOpen, setModalOpen] = React.useState(false);
+  const [modal, setModal] = React.useState<any>({});
+
+  React.useEffect(() => {
+    setPoints(formData?.detectionData?.points ?? []);
+  }, [formData]);
+
+  React.useEffect(() => {
+    if (!observationType) {
+      return;
+    }
+    if (observationType.observationType === "counters") {
+      const defaults: Record<string, string> = {};
+      observationType.counters.forEach((counter) => {
+        defaults[counter] = "";
+      });
+      setCounterValues(defaults);
+    }
+  }, [observationType]);
+
+  const handleMarkerChange = async (point: Point) => {
+    setMarkerPosition(point);
+    setSource("map");
+  };
+
+  const buildPointData = () => {
+    if (!observationType) {
+      return null;
+    }
+    if (observationType.observationType === "range") {
+      if (rangeValue === "") {
+        return null;
+      }
+      return {
+        rangeValue: Number(rangeValue),
+        counters: [],
+      };
+    }
+    const counters = observationType.counters.map((counter) => {
+      return {
+        counterName: counter,
+        counterValue: Number(counterValues[counter] || 0),
+      };
+    });
+    return {
+      rangeValue: null,
+      counters,
+    };
+  };
+
+  const validatePoint = () => {
+    if (!currentField) {
+      return "Campo non trovato.";
+    }
+    if (source === "current" && !currentPosition) {
+      return "Posizione corrente non disponibile.";
+    }
+    if (source === "map" && !markerPosition) {
+      return "Devi selezionare un punto sulla mappa.";
+    }
+    const point = source === "current" ? currentPosition : markerPosition;
+    if (!point) {
+      return "Posizione non valida.";
+    }
+    const areaPoints: number[][] = currentField.map.map((pt: Point) => [pt.lng, pt.lat]);
+    if (areaPoints.length > 2 && !isPointInsideField(point.lng, point.lat, areaPoints)) {
+      return "Il punto selezionato è fuori dall'area del campo.";
+    }
+    if (!buildPointData()) {
+      return "Inserisci i dati dell'osservazione.";
+    }
+    return null;
+  };
+
+  const handleAddPoint = () => {
+    const error = validatePoint();
+    if (error) {
+      setModal({
+        component: ModalConfirm,
+        componentProps: {
+          title: "Rilevamento",
+          content: error,
+          action: "Ok",
+          handleCancel: () => setModalOpen(false),
+          handleConfirm: () => setModalOpen(false),
+        },
+      });
+      setModalOpen(true);
+      return;
+    }
+    const point = source === "current" ? currentPosition : markerPosition;
+    const data = buildPointData();
+    if (!point || !data) {
+      return;
+    }
+    setPoints((prev) => [
+      ...prev,
+      {
+        position: {
+          lng: point.lng,
+          lat: point.lat,
+        },
+        data,
+      },
+    ]);
+    setMarkerPosition(undefined);
+    setRangeValue("");
+    if (observationType?.observationType === "counters") {
+      const defaults: Record<string, string> = {};
+      observationType.counters.forEach((counter) => {
+        defaults[counter] = "";
+      });
+      setCounterValues(defaults);
+    }
+  };
+
+  const handleSave = () => {
+    if (points.length === 0) {
+      setModal({
+        component: ModalConfirm,
+        componentProps: {
+          title: "Rilevamento",
+          content: "Devi aggiungere almeno un punto di osservazione.",
+          action: "Ok",
+          handleCancel: () => setModalOpen(false),
+          handleConfirm: () => setModalOpen(false),
+        },
+      });
+      setModalOpen(true);
+      return;
+    }
+    onNextClick({ points });
+  };
+
+  if (!observationType) {
+    return (
+      <div className="narrow-container my-5 text-center">
+        <h3 className="mb-4">Osservazioni</h3>
+        <p>Nessun tipo di osservazione disponibile per questa tipologia e metodo.</p>
+      </div>
+    );
+  }
+
+  return (
+    <Fragment>
+      {modalOpen && <modal.component {...modal.componentProps} />}
+      <div className="narrow-container my-5">
+        <h3 className="mb-4 text-center">Aggiungi punti di osservazione</h3>
+        <div className="input-row">
+          <label>
+            <select name="source" onChange={(e) => setSource(e.target.value)} value={source}>
+              <option value="current">Usa posizione corrente</option>
+              <option value="map">Seleziona un punto sulla mappa</option>
+            </select>
+          </label>
+        </div>
+        <DetectionFormMapPosition sourceType={source} onMarkerChange={handleMarkerChange} />
+        <div className="my-4"></div>
+        {observationType.observationType === "range" && (
+          <div className="input-row">
+            <label>
+              Valore
+              <input
+                type="number"
+                placeholder="Valore"
+                value={rangeValue}
+                onChange={(event) => setRangeValue(event.target.value)}
+              />
+            </label>
+          </div>
+        )}
+        {observationType.observationType === "counters" &&
+          observationType.counters.map((counter) => (
+            <div className="input-row" key={counter}>
+              <label>
+                {counter}
+                <input
+                  type="number"
+                  placeholder="Valore"
+                  value={counterValues[counter] ?? ""}
+                  onChange={(event) =>
+                    setCounterValues((prev) => ({ ...prev, [counter]: event.target.value }))
+                  }
+                />
+              </label>
+            </div>
+          ))}
+        <div className="buttons-wrapper mt-4 text-center">
+          <button className="trnt_btn secondary" onClick={handleAddPoint}>
+            + Aggiungi punto
+          </button>
+        </div>
+        {points.length > 0 && (
+          <div className="mt-4">
+            <h5 className="mb-3">Punti aggiunti</h5>
+            {points.map((point: any, index: number) => (
+              <div key={index} className="mb-2 d-flex align-items-center">
+                <span className="mr-3">
+                  #{index + 1} — {point.position.lat.toFixed(5)}, {point.position.lng.toFixed(5)}
+                </span>
+                <button
+                  className="trnt_btn danger1 m-0"
+                  onClick={() =>
+                    setPoints((prev: any[]) => prev.filter((_, idx) => idx !== index))
+                  }
+                >
+                  Rimuovi
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+        <div className="buttons-wrapper mt-4 text-center">
+          <button className="trnt_btn primary" onClick={handleSave}>
+            Salva rilevamento
+          </button>
+        </div>
+      </div>
+    </Fragment>
   );
 }
 
@@ -1487,24 +1810,97 @@ export function DetectionForm() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { companyId, fieldId } = useParams();
-  const [step, setStep] = React.useState(1);
-  const [action, setAction] = React.useState("Avanti");
-  const [formData, setFormData] = React.useState<DetectionMutationPayload | any>({
+  const [stepIndex, setStepIndex] = React.useState(0);
+  const [formData, setFormData] = React.useState<DetectionMutationPayload>({
     detectionTime: new Date().getTime(),
-    type: "",
-    method: "",
-    note: "",
-    position: {
-      lat: 0,
-      lng: 0,
+    detectionTypeId: "",
+    detectionData: {
+      bbch: "",
+      notes: "",
+      photos: [],
+      points: [],
     },
-    details: {},
-    photos: [],
   });
+  const [selectedTypology, setSelectedTypology] = React.useState("");
+  const [selectedMethod, setSelectedMethod] = React.useState("");
+  const [useShortFlow, setUseShortFlow] = React.useState(false);
+
+  const detectionTypes = useAppSelector((state) =>
+    detectionTypesSelectors.selectDetectionTypesByField(state, fieldId ?? "default")
+  );
+  const detectionTexts = useAppSelector((state) =>
+    detectionTextsSelectors.selectDetectionTexts(state)
+  );
+  const observationTypes = useAppSelector((state) =>
+    observationTypesSelectors.selectObservationTypes(state)
+  );
 
   React.useEffect(() => {
     dispatch(headerbarActions.setTitle({ title: "Nuovo Rilevamento", subtitle: "Subtitle" }));
   }, []);
+
+  React.useEffect(() => {
+    if (companyId && fieldId) {
+      dispatch(detectionTypesActions.fetchDetectionTypesAction({ orgId: companyId, fieldId }));
+    }
+    dispatch(detectionTextsActions.fetchDetectionTextsAction({}));
+    dispatch(observationTypesActions.fetchObservationTypesAction({}));
+  }, [companyId, fieldId, dispatch]);
+
+  React.useEffect(() => {
+    if (detectionTypes.length > 0) {
+      const detectionType = detectionTypes[0];
+      setUseShortFlow(true);
+      setSelectedTypology(detectionType.typology);
+      setSelectedMethod(detectionType.method);
+      setFormData((prev) => ({
+        ...prev,
+        detectionTypeId: detectionType.id,
+      }));
+      setStepIndex(0);
+    } else {
+      setUseShortFlow(false);
+    }
+  }, [detectionTypes]);
+
+  const steps = useShortFlow
+    ? ["bbch", "points"]
+    : ["typology", "method", "guide", "bbch", "points"];
+
+  const currentStepKey = steps[stepIndex];
+
+  const typologyOptions = React.useMemo(() => {
+    const values = detectionTexts.length
+      ? detectionTexts.map((item) => item.typology)
+      : observationTypes.map((item) => item.typology);
+    return Array.from(new Set(values));
+  }, [detectionTexts, observationTypes]);
+
+  const methodOptions = React.useMemo(() => {
+    const texts = detectionTexts.filter((item) => item.typology === selectedTypology);
+    const values = texts.length
+      ? texts.map((item) => item.method)
+      : observationTypes
+          .filter((item) => item.typology === selectedTypology)
+          .map((item) => item.method);
+    return Array.from(new Set(values));
+  }, [detectionTexts, observationTypes, selectedTypology]);
+
+  const detectionText = useAppSelector((state) =>
+    detectionTextsSelectors.selectDetectionTextsByTypologyAndMethod(
+      state,
+      selectedTypology,
+      selectedMethod
+    )
+  )[0];
+
+  const observationType = useAppSelector((state) =>
+    observationTypesSelectors.selectObservationTypesByTypologyAndMethod(
+      state,
+      selectedTypology,
+      selectedMethod
+    )
+  )[0];
 
   const createDetectionAction = async (payload: DetectionMutationPayload) => {
     if (companyId && fieldId) {
@@ -1525,157 +1921,152 @@ export function DetectionForm() {
     }
   };
 
-  const uploadFiles = async (files: FileWithPath[]) => {
-    const apiConfig = await getCoreApiConfiguration();
-    const filesApi = new FilesApi(apiConfig);
-
-    if (files.length === 0 || companyId === undefined) {
-      return [];
-    }
-
-    try {
-      const results = await filesApi.uploadFilesForm(files, companyId, "data").then((response) => {
-        return response.data;
-      });
-      return results;
-    } catch (error) {
-      console.error("Error uploading files:", error);
-      return [];
-    }
-  };
-
   const handleNextClick = async (data: any) => {
-    if (step === 1) {
-      const payload = {
+    if (currentStepKey === "typology") {
+      setSelectedTypology(data.typology);
+      setSelectedMethod("");
+      setStepIndex(stepIndex + 1);
+      return;
+    }
+    if (currentStepKey === "method") {
+      setSelectedMethod(data.method);
+      setStepIndex(stepIndex + 1);
+      return;
+    }
+    if (currentStepKey === "guide") {
+      setStepIndex(stepIndex + 1);
+      return;
+    }
+    if (currentStepKey === "bbch") {
+      setFormData((prev) => ({
+        ...prev,
+        detectionData: {
+          ...prev.detectionData,
+          bbch: data.bbch ?? "",
+          notes: data.notes ?? "",
+        },
+      }));
+      setStepIndex(stepIndex + 1);
+      return;
+    }
+    if (currentStepKey === "points") {
+      let detectionTypeId = formData.detectionTypeId;
+      if (!detectionTypeId && companyId && fieldId) {
+        try {
+          const created = await dispatch(
+            detectionTypesActions.addDetectionTypeAction({
+              orgId: companyId,
+              fieldId,
+              body: {
+                typology: selectedTypology,
+                method: selectedMethod,
+              },
+            })
+          ).then(unwrapResult);
+          detectionTypeId = created.id;
+          setFormData((prev) => ({
+            ...prev,
+            detectionTypeId: created.id,
+          }));
+        } catch (error) {
+          console.error("Error creating detection type:", error);
+          return;
+        }
+      }
+
+      if (!detectionTypeId) {
+        console.error("Missing detection type id for detection creation.");
+        return;
+      }
+
+      const payload: DetectionMutationPayload = {
         ...formData,
-        type: data.type,
-      };
-      setFormData(payload);
-      setAction("Avanti");
-      setStep(step + 1);
-    } else if (step === 2) {
-      const payload = {
-        ...formData,
-        method: data.method,
-      };
-      setFormData(payload);
-      setStep(step + 1);
-      setAction("Avanti");
-    } else if (step === 3) {
-      const payload = {
-        ...formData,
-        position: {
-          lat: data.latitude,
-          lng: data.longitude,
+        detectionTypeId: detectionTypeId,
+        detectionData: {
+          ...formData.detectionData,
+          points: data.points ?? [],
         },
       };
-      setFormData(payload);
-      setAction("Avanti");
-      setStep(step + 1);
-    } else if (step === 4) {
-      const payload = {
-        ...formData,
-        scores: {
-          scores: data.scores,
-        },
-      };
-      setFormData(payload);
-      setAction("Avanti");
-      setStep(step + 1);
+      await createDetectionAction(payload);
     }
   };
 
   const handleBackClick = async () => {
-    if (step > 1) {
-      setStep(step - 1);
-      setAction("Avanti");
+    if (stepIndex > 0) {
+      setStepIndex(stepIndex - 1);
     }
   };
 
   return (
     <Fragment>
-      {step <= 3 && (
-        <div className="stepper-wrapper">
-          <button
-            className="stepper-back-button m-0"
-            onClick={() => {
-              if (step > 1) setStep(step - 1);
-              else navigate(-1);
-            }}
-          >
-            &larr;
-          </button>
-          <ol className="stepper" data-steps={3}>
+      <div className="stepper-wrapper">
+        <button
+          className="stepper-back-button m-0"
+          onClick={() => {
+            if (stepIndex > 0) setStepIndex(stepIndex - 1);
+            else navigate(-1);
+          }}
+        >
+          &larr;
+        </button>
+        <ol className="stepper" data-steps={steps.length}>
+          {steps.map((stepKey, index) => (
             <li
-              data-step-num="1"
-              data-done={step > 1 ? "true" : "false"}
-              data-current={step == 1 ? "true" : "false"}
+              key={stepKey}
+              data-step-num={index + 1}
+              data-done={stepIndex > index ? "true" : "false"}
+              data-current={stepIndex === index ? "true" : "false"}
               onClick={() => {
-                if (step > 1) setStep(1);
+                if (stepIndex > index) setStepIndex(index);
               }}
             >
-              <span>Tipologia</span>
+              <span>
+                {stepKey === "typology" && "Tipologia"}
+                {stepKey === "method" && "Metodo"}
+                {stepKey === "guide" && "Guida"}
+                {stepKey === "bbch" && "BBCH"}
+                {stepKey === "points" && "Osservazioni"}
+              </span>
             </li>
-            <li
-              data-step-num="2"
-              data-done={step > 2 ? "true" : "false"}
-              data-current={step == 2 ? "true" : "false"}
-              onClick={() => {
-                if (step > 2) setStep(2);
-              }}
-            >
-              <span>Metodo</span>
-            </li>
-            <li
-              data-step-num="3"
-              data-done={step > 3 ? "true" : "false"}
-              data-current={step == 3 ? "true" : "false"}
-              onClick={() => {
-                if (step > 3) setStep(3);
-              }}
-            >
-              <span>Posizione</span>
-            </li>
-          </ol>
-        </div>
-      )}
+          ))}
+        </ol>
+      </div>
       <div>
-        {step === 1 && (
+        {currentStepKey === "typology" && (
           <DetectionStepTipologia
+            typologies={typologyOptions}
             formData={formData}
-            action={action}
             onNextClick={handleNextClick}
           />
         )}
-        {step === 2 && (
+        {currentStepKey === "method" && (
           <DetectionStepMetodo
-            formData={formData}
-            action={action}
+            typology={selectedTypology}
+            methods={methodOptions}
             onBackClick={handleBackClick}
             onNextClick={handleNextClick}
           />
         )}
-        {step === 3 && (
-          <DetectionStepPosizione
+        {currentStepKey === "guide" && (
+          <DetectionStepGuide
             formData={formData}
-            action={action}
+            onBackClick={handleBackClick}
+            detectionText={detectionText}
+            onNextClick={handleNextClick}
+          />
+        )}
+        {currentStepKey === "bbch" && (
+          <DetectionStepBbch
+            formData={formData}
             onBackClick={handleBackClick}
             onNextClick={handleNextClick}
           />
         )}
-        {step === 4 && (
-          <DetectionUI
+        {currentStepKey === "points" && (
+          <DetectionStepObservationPoints
             formData={formData}
-            action={action}
             onBackClick={handleBackClick}
-            onNextClick={handleNextClick}
-          />
-        )}
-        {step === 5 && (
-          <SaveDone
-            formData={formData}
-            action={action}
-            onBackClick={handleBackClick}
+            observationType={observationType}
             onNextClick={handleNextClick}
           />
         )}
