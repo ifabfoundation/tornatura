@@ -2,12 +2,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import React, { Fragment } from "react";
 import { headerbarActions } from "../../headerbar/state/headerbar-slice";
-import { Card, Col, Container, Row, Table } from "react-bootstrap";
+import { Card, Col, Container, Row} from "react-bootstrap";
 import { fieldsSelectors } from "../state/fields-slice";
 import { detectionsSelectors } from "../../detections/state/detections-slice";
 import { getFieldMapGeoJson } from "../../companies/pages/company-fields";
 import _ from "lodash";
-import { Detection } from "@tornatura/coreapis";
 import { GradientLineChart } from "../../../components/GradientLineChart";
 
 function valOrEmpty(value: any, fallback: string = "–") {
@@ -235,29 +234,6 @@ export function FieldDashboard() {
                     ]}
                   />
                 </div>
-
-                <Table responsive>
-                  <tbody>
-                    {detections.map((d: Detection, index) => {
-                      const c = new Date(d.detectionTime);
-                      let summary = "";
-                      if (d.details.desease) {
-                        summary = d.details.desease;
-                      } else if (d.details.insect) {
-                        summary = d.details.insect;
-                      } else if (d.details.parasite) {
-                        summary = d.details.parasite;
-                      }
-                      return (
-                        <tr key={index}>
-                          <td>{c.toLocaleString("it-IT")}</td>
-                          <td>{d.type}</td>
-                          <td>{summary}</td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </Table>
               </Card.Body>
             </Card>
           </Col>

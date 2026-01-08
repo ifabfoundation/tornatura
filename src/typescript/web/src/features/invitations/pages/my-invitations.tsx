@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import { useNavigate } from "react-router-dom";
-import { Alert, Container, Card, Col, Row } from "react-bootstrap";
+import { Alert, Container, Col, Row } from "react-bootstrap";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { invitationsActions, invitationsSelectors } from "../state/invitations-slice";
 import { headerbarActions } from "../../headerbar/state/headerbar-slice";

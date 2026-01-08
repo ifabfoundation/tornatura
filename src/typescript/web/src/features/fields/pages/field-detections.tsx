@@ -3,7 +3,6 @@ import { useAppDispatch, useAppSelector } from "../../../hooks";
 import React, { Fragment } from "react";
 import { headerbarActions } from "../../headerbar/state/headerbar-slice";
 import { Col, Container, Row } from "react-bootstrap";
-import { DetectionTableComponent } from "../../detections/components/detections-table";
 import { detectionsSelectors } from "../../detections/state/detections-slice";
 import { GradientLineChart } from "../../../components/GradientLineChart";
 import _ from "lodash";
@@ -58,7 +57,7 @@ export function FieldDetections() {
         </Row>
         <Row className="mt-4">
           <Col>
-            <DetectionTableComponent detections={detections} />
+            
           </Col>
         </Row>
       </Container>
