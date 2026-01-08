@@ -55,12 +55,8 @@ export function CompanyTable() {
     return {
       "name": c.name,
       "piva": c.piva,
-      "state": c.office.state,
-      "city": c.office.city,
-      "rapresentative": c.rapresentative,
-      "rapresentativeContact": c.rapresentativeContact,
-      "email": c.contacts.email,
-      "phone": c.contacts.phone
+      "email": c.contacts?.email ?? "",
+      "phone": c.contacts?.phone ?? "",
     }
   });
 

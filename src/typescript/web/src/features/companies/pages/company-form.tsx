@@ -53,11 +53,6 @@ export function CompanyForm() {
     initialValues: {
       name: "",
       piva: "",
-      state: "",
-      city: "",
-      legalForm: "",
-      rappresentative: "",
-      rappresentativeContact: "",
       email: "",
       phone: "",
     },
@@ -78,13 +73,6 @@ export function CompanyForm() {
       const organization: OrganizationCreatePayload = {
         name: values.name,
         piva: values.piva,
-        legalForm: values.legalForm,
-        office: {
-          state: values.state,
-          city: values.city,
-        },
-        rapresentative: values.rappresentative,
-        rapresentativeContact: values.rappresentativeContact,
         contacts: {
           email: values.email,
           phone: values.phone,

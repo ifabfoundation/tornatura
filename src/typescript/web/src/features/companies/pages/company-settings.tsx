@@ -31,11 +31,6 @@ export function CompanySettings() {
     initialValues: {
       name: "",
       piva: "",
-      state: "",
-      city: "",
-      legalForm: "",
-      rappresentative: "",
-      rappresentativeContact: "",
       email: "",
       phone: "",
     },
@@ -74,11 +69,6 @@ export function CompanySettings() {
       formik.setValues({
         name: currentCompany.name ?? "",
         piva: currentCompany.piva ?? "",
-        state: currentCompany.office?.state ?? "",
-        city: currentCompany.office?.city ?? "",
-        legalForm: currentCompany.legalForm ?? "",
-        rappresentative: currentCompany.rapresentative ?? "",
-        rappresentativeContact: currentCompany.rapresentativeContact ?? "",
         email: currentCompany.contacts?.email ?? "",
         phone: currentCompany.contacts?.phone ?? "",
       });

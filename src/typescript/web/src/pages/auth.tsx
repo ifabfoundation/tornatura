@@ -95,11 +95,6 @@ function SignupStep3({ formData, action, onBackClick, onNextClick }: SignupProps
     initialValues: {
       name: "",
       piva: "",
-      state: "",
-      city: "",
-      legalForm: "",
-      rappresentative: "",
-      rappresentativeContact: "",
       email: "",
       phone: "",
     },
@@ -127,11 +122,6 @@ function SignupStep3({ formData, action, onBackClick, onNextClick }: SignupProps
     formik.setValues({
       name: formData.organization?.name || "",
       piva: formData.organization?.piva || "",
-      state: "",
-      city: "",
-      legalForm: "",
-      rappresentative: "",
-      rappresentativeContact: "",
       email: formData.organization?.contacts.email || "",
       phone: formData.organization?.contacts.phone || "",
     });
@@ -508,13 +498,6 @@ export function Signup() {
           organization: {
             name: data.name,
             piva: data.piva,
-            legalForm: "",
-            office: {
-              state: data.state,
-              city: data.city,
-            },
-            rapresentative: data.rappresentative,
-            rapresentativeContact: data.rappresentativeContact,
             contacts: {
               email: data.email,
               phone: data.phone,
