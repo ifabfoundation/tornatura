@@ -1,7 +1,16 @@
 import datetime
 from fastapi import HTTPException, status
 from core.decorators import catch_api_exception
-from core.models import DetectionModel, FileInfo, Point
+from core.models import (
+    DetectionData,
+    DetectionModel,
+    DetectionType as DetectionTypeModel,
+    FileInfo,
+    ObservationCounter,
+    ObservationData,
+    ObservationPoint,
+    Point,
+)
 from core.serializers import Detection, DetectionMutationPayload
 from core.services.agrifields_services import AgriFieldServices
 from core.services.files_services import FileServices
@@ -26,20 +35,43 @@ class DetectionServices:
        
         def _create_instance(item) -> Detection:
             agrifield = agrifield_services.get(item.agrifieldId)
+            points = []
+            for point in item.detectionData.points:
+                points.append(
+                    {
+                        "position": {
+                            "lng": point.position.lng,
+                            "lat": point.position.lat,
+                        },
+                        "data": {
+                            "rangeValue": point.data.rangeValue,
+                            "counters": [
+                                {
+                                    "counterName": counter.counterName,
+                                    "counterValue": counter.counterValue,
+                                }
+                                for counter in point.data.counters
+                            ],
+                        }
+                    }
+                )
+
             return self.serializer(
                 id=str(item.id),
                 agrifieldId=item.agrifieldId,
                 detectionTime=item.detectionTime if item.detectionTime else item.creationTime,
-                type=item.type, 
-                position={
-                    "lng": item.position.lng,
-                    "lat": item.position.lat
+                detectionTypeId=item.detectionTypeId,
+                detectionData={
+                    "bbch": item.detectionData.bbch,
+                    "notes": item.detectionData.notes,
+                    "photos": [
+                        file_services.get_file_url(agrifield.orgId, photo.category, photo.name)
+                        for photo in item.detectionData.photos
+                    ],
+                    "points": points,
                 },
-                photos=[file_services.get_file_url(agrifield.orgId, photo.category, photo.name) for photo in item.photos],
-                note=item.note,
-                details=item.details,
                 creationTime=item.creationTime,
-                lastUpdateTime=item.lastUpdateTime
+                lastUpdateTime=item.lastUpdateTime,
             )
             
         if many:
@@ -47,16 +79,20 @@ class DetectionServices:
         return _create_instance(obj)
     
     @catch_api_exception
-    def list(self, agrifield_id: str):
+    def list(self, agrifield_id: str, detection_type_id: str | None = None):
         """List detections for an agricultural field
         
         Args:
             agrifield_id: ID of the agricultural field
+            detection_type_id: Optional detection type ID filter
             
         Returns:
             serialized detections
         """
-        detections = self.model.objects(agrifieldId=agrifield_id, deleted=False)
+        query = {"agrifieldId": agrifield_id, "deleted": False}
+        if detection_type_id:
+            query["detectionTypeId"] = detection_type_id
+        detections = self.model.objects(**query)
         return self._serialize(detections, many=True)
     
     @catch_api_exception
@@ -73,13 +109,50 @@ class DetectionServices:
         data = payload.model_dump()
         current_time = int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp() * 1000)
 
-        data.update({
-            "agrifieldId": agrifield_id,
-            "creationTime": current_time,
-            "lastUpdateTime": current_time
-        })
+        detection_type = DetectionTypeModel.objects(id=data["detectionTypeId"]).first()
+        if detection_type is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Detection type not found"
+            )
+        if detection_type.agrifieldId != agrifield_id:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Detection type does not belong to this agrifield"
+            )
 
-        detection = self.model(**data).save()
+        detection_data = data["detectionData"]
+        points = []
+        for point in detection_data.get("points", []):
+            observation = point.get("data", {})
+            counters = [
+                ObservationCounter(**counter)
+                for counter in observation.get("counters", [])
+            ]
+            observation_doc = ObservationData(
+                rangeValue=observation.get("rangeValue"),
+                counters=counters,
+            )
+            points.append(
+                ObservationPoint(
+                    position=Point(**point.get("position")),
+                    data=observation_doc,
+                )
+            )
+
+        detection = self.model(
+            agrifieldId=agrifield_id,
+            detectionTime=data["detectionTime"],
+            detectionTypeId=data["detectionTypeId"],
+            detectionData=DetectionData(
+                bbch=detection_data.get("bbch", ""),
+                notes=detection_data.get("notes", ""),
+                photos=[FileInfo(**photo) for photo in detection_data.get("photos", [])],
+                points=points,
+            ),
+            creationTime=current_time,
+            lastUpdateTime=current_time,
+        ).save()
         return self._serialize(detection)
     
     @catch_api_exception
@@ -98,38 +171,6 @@ class DetectionServices:
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Detection not found"
             )
-        return self._serialize(detection)
-    
-    @catch_api_exception
-    def update(self, detection_id: str, payload: DetectionMutationPayload):
-        """Update detection
-        
-        Args:
-            detection_id: ID of the detection
-            payload: Detection update data
-            
-        Returns:
-            Serialized updated detection
-        """
-        detection = self.model.objects(id=detection_id, deleted=False).first()
-        if not detection:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Detection not found"
-            )
-        print(f"Updating detection {detection_id} with payload: {payload}")
-        data = payload.model_dump()
-        current_time = int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp() * 1000)
-        
-        detection.detectionTime = data["detectionTime"]
-        detection.type = data["type"]
-        detection.note = data["note"]
-        detection.position = Point(**data["position"])
-        detection.photos = [FileInfo(**photo) for photo in data["photos"]]
-        detection.details = data["details"]
-        detection.lastUpdateTime = current_time
-        detection.save()
-        
         return self._serialize(detection)
     
     @catch_api_exception

@@ -65,13 +65,6 @@ class OrganizationServices:
                 orgId=item.orgId,
                 name=item.name,
                 piva=item.piva,
-                rapresentative=item.rapresentative,
-                rapresentativeContact=item.rapresentativeContact,
-                legalForm=item.legalForm,
-                office={
-                    "state": item.office.state,
-                    "city": item.office.city
-                },
                 logo=file_services.get_file_url(item.orgId, item.logo.category, item.logo.name),
                 cover=file_services.get_file_url(item.orgId, item.cover.category, item.cover.name),
                 contacts={
@@ -264,18 +257,11 @@ class OrganizationServices:
         
         current_time = int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp() * 1000)
 
-        if payload.rapresentative is not None:
-            organization.rapresentative = payload.rapresentative
+        if payload.name is not None:
+            organization.name = payload.name
         
-        if payload.rapresentativeContact is not None:
-            organization.rapresentativeContact = payload.rapresentativeContact
-       
-        if payload.legalForm is not None:
-            organization.legalForm = payload.legalForm
-        
-        if payload.office is not None:
-            organization.office.state = payload.office.state
-            organization.office.city = payload.office.city
+        if payload.piva is not None:
+            organization.piva = payload.piva
         
         if payload.contacts is not None:
             organization.contacts.email = payload.contacts.email

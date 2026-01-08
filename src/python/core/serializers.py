@@ -54,6 +54,91 @@ class Point(BaseModel):
     lng: float
     lat: float
 
+class DetectionType(BaseModel):
+    id: str
+    agrifieldId: str
+    typology: str
+    method: str
+    creationTime: int
+
+class ObservationCounter(BaseModel):
+    counterName: str
+    counterValue: float
+
+class ObservationType(BaseModel):
+    id: str
+    typology: str
+    method: str
+    observationType: str
+    rangeMin: Optional[float] = None
+    rangeMax: Optional[float] = None
+    counters: List[str] = []
+    creationTime: int
+
+class ObservationData(BaseModel):
+    rangeValue: Optional[float] = None
+    counters: List[ObservationCounter] = []
+
+class ObservationPoint(BaseModel):
+    position: Point
+    data: ObservationData
+
+class DetectionData(BaseModel):
+    bbch: str
+    notes: str
+    photos: List[str]
+    points: List[ObservationPoint]
+
+class DetectionDataPayload(BaseModel):
+    bbch: str
+    notes: str
+    photos: List[FileInfo]
+    points: List[ObservationPoint]
+
+class DetectionTypeCreatePayload(BaseModel):
+    typology: str
+    method: str
+
+class DetectionTypeUpdatePayload(BaseModel):
+    typology: Optional[str] = None
+    method: Optional[str] = None
+
+class ObservationTypeCreatePayload(BaseModel):
+    typology: str
+    method: str
+    observationType: str
+    rangeMin: Optional[float] = None
+    rangeMax: Optional[float] = None
+    counters: List[str] = []
+
+class ObservationTypeUpdatePayload(BaseModel):
+    typology: Optional[str] = None
+    method: Optional[str] = None
+    observationType: Optional[str] = None
+    rangeMin: Optional[float] = None
+    rangeMax: Optional[float] = None
+    counters: Optional[List[str]] = None
+
+class DetectionText(BaseModel):
+    id: str
+    typology: str
+    method: str
+    locationAndScoreInstructions: str
+    bbchInstructions: str
+    creationTime: int
+
+class DetectionTextCreatePayload(BaseModel):
+    typology: str
+    method: str
+    locationAndScoreInstructions: str
+    bbchInstructions: str
+
+class DetectionTextUpdatePayload(BaseModel):
+    typology: Optional[str] = None
+    method: Optional[str] = None
+    locationAndScoreInstructions: Optional[str] = None
+    bbchInstructions: Optional[str] = None
+
 class AgriField(BaseModel):
     id: str
     name: str
@@ -84,10 +169,6 @@ class Organization(BaseModel):
     orgId: str
     name: str
     piva: str
-    rapresentative: str
-    rapresentativeContact: str
-    legalForm: str
-    office: Office
     logo: str
     cover: str
     contacts: Contacts
@@ -98,11 +179,8 @@ class Detection(BaseModel):
     id: str
     agrifieldId: str
     detectionTime: int
-    type: str
-    position: Point
-    photos: List[str]
-    note: str
-    details: dict
+    detectionTypeId: str
+    detectionData: DetectionData
     creationTime: int
     lastUpdateTime: int
 
@@ -123,17 +201,11 @@ class PaginatedResponse(BaseModel):
 class OrganizationCreatePayload(BaseModel):
     name: str
     piva: str
-    rapresentative: str
-    rapresentativeContact: str
-    legalForm: str
-    office: Office
     contacts: Contacts
 
 class OrganizationUpdatePayload(BaseModel):
-    rapresentative: Optional[str] = None
-    rapresentativeContact: Optional[str] = None
-    legalForm: Optional[str] = None
-    office: Optional[Office] = None
+    name: Optional[str] = None
+    piva: Optional[str] = None
     logo:  Optional[FileInfo] = None
     cover: Optional[FileInfo] = None
     contacts: Optional[Contacts] = None
@@ -154,11 +226,8 @@ class AgriFieldMutationPayload(BaseModel):
 
 class DetectionMutationPayload(BaseModel):
     detectionTime: int
-    type: str
-    position: Point
-    photos: List[FileInfo]
-    note: str
-    details: dict
+    detectionTypeId: str
+    detectionData: DetectionDataPayload
 
 class UserCreatePayload(BaseModel):
     firstName: str

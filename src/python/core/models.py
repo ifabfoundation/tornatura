@@ -13,6 +13,28 @@ class Point(EmbeddedDocument):
     lat = DecimalField(required=True, precision=14)
 
 
+class ObservationCounter(EmbeddedDocument):
+    counterName = StringField(required=True)
+    counterValue = FloatField(required=True)
+
+
+class ObservationData(EmbeddedDocument):
+    rangeValue = FloatField(null=True)
+    counters = ListField(EmbeddedDocumentField(ObservationCounter), default=[])
+
+
+class ObservationPoint(EmbeddedDocument):
+    position = EmbeddedDocumentField(Point, required=True)
+    data = EmbeddedDocumentField(ObservationData, required=True)
+
+
+class DetectionData(EmbeddedDocument):
+    bbch = StringField(default="")
+    notes = StringField(default="")
+    photos = ListField(EmbeddedDocumentField(FileInfo), default=[])
+    points = ListField(EmbeddedDocumentField(ObservationPoint), default=[])
+
+
 class Contacts(EmbeddedDocument):
     email = StringField(required=True)
     phone = StringField(required=True)
@@ -54,16 +76,8 @@ class OrganizationModel(Document):
     orgId = StringField(required=True, unique=True)
     name = StringField(required=True)
     piva = StringField(required=True, default="")
-    rapresentative = StringField(required=True, default="")
-    rapresentativeContact = StringField(required=True, default="")
-    office = EmbeddedDocumentField(Office, required=True, default=Office(
-        state="",
-        city=""
-    ))
-    legalForm = StringField(required=True, default="")
     logo = EmbeddedDocumentField(FileInfo, required=True)
     cover = EmbeddedDocumentField(FileInfo, required=True)
-    description = StringField(required=True, default="")
     contacts = EmbeddedDocumentField(Contacts, required=True)
     deleted = BooleanField(default=False)
     creationTime = IntField()
@@ -77,15 +91,45 @@ class OrganizationModel(Document):
         return str(self.orgId)
 
 
+class ObservationType(Document):
+    """The object Observation Type stored in the Database"""
+    typology = StringField(required=True)
+    method = StringField(required=True)
+    observationType = StringField(required=True, choices=("range", "counters"))
+    rangeMin = FloatField(null=True)
+    rangeMax = FloatField(null=True)
+    counters = ListField(StringField(), default=[])
+    creationTime = IntField()
+
+    meta = {
+        'ordering': ['-creationTime']
+    }
+
+    def __str__(self):
+        return str(self.id)
+
+
+class DetectionType(Document):
+    """The object Detection Type stored in the Database"""
+    agrifieldId = StringField(required=True)
+    typology = StringField(required=True)
+    method = StringField(required=True)
+    creationTime = IntField()
+
+    meta = {
+        'ordering': ['-creationTime']
+    }
+
+    def __str__(self):
+        return str(self.id)
+
+
 class DetectionModel(Document):
     """The object Detection stored in the Database"""
     agrifieldId = StringField(required=True)
     detectionTime = IntField(default=None)
-    type = StringField(required=True)
-    note = StringField(required=True)
-    details = DictField(default={})
-    position = EmbeddedDocumentField(Point, required=True)
-    photos = ListField(EmbeddedDocumentField(FileInfo), default=[])
+    detectionTypeId = StringField(required=True)
+    detectionData = EmbeddedDocumentField(DetectionData, required=True)
     deleted = BooleanField(default=False)
     creationTime = IntField()
     lastUpdateTime = IntField()
@@ -96,7 +140,23 @@ class DetectionModel(Document):
 
     def __str__(self):
         return str(self.id)
-    
+
+
+class DetectionText(Document):
+    """The object detection Text stored in the Database"""
+    typology = StringField(required=True)
+    method = StringField(required=True)
+    locationAndScoreInstructions = StringField(required=True)
+    bbchInstructions = StringField(required=True)
+    creationTime = IntField()
+
+    meta = {
+        'ordering': ['-creationTime']
+    }
+
+    def __str__(self):
+        return str(self.id)
+
 
 class FeedbackModel(Document):
     """The object Feedback stored in the Database"""
