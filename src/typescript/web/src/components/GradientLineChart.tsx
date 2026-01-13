@@ -10,7 +10,7 @@ type LineChartProps = {
   data: Point[];
   height: number;
   strokeWidth?: number;
-  padding?: number;
+  padding?: number | { top?: number; right?: number; bottom?: number; left?: number };
   dotSize?: number; // configurable dot size
 };
 
@@ -38,10 +38,18 @@ export function GradientLineChart({
   const maxY = yMax ?? Math.max(...ys);
 
   const points = useMemo(() => {
-    const innerW = vbWidth - padding * 2;
-    const innerH = vbHeight - padding * 2;
-    const xScale = (x: number) => padding + ((x - minX) / (maxX - minX || 1)) * innerW;
-    const yScale = (y: number) => padding + (1 - (y - minY) / (maxY - minY || 1)) * innerH;
+    const innerW =
+      vbWidth -
+      (typeof padding === "number" ? padding * 2 : (padding.left ?? 0) + (padding.right ?? 0));
+    const innerH =
+      vbHeight -
+      (typeof padding === "number" ? padding * 2 : (padding.top ?? 0) + (padding.bottom ?? 0));
+    const xScale = (x: number) =>
+      (typeof padding === "number" ? padding : padding.left ?? 0) +
+      ((x - minX) / (maxX - minX || 1)) * innerW;
+    const yScale = (y: number) =>
+      (typeof padding === "number" ? padding : padding.top ?? 0) +
+      (1 - (y - minY) / (maxY - minY || 1)) * innerH;
     return data.map((d) => ({ x: xScale(d.x), y: yScale(d.y), color: d.color }));
   }, [data, minX, maxX, minY, maxY, vbWidth, vbHeight, padding]);
 
@@ -84,9 +92,41 @@ export function GradientLineChart({
     });
   }, [points, strokeWidth]);
 
+  const vertLines = useMemo(() => {
+    return points.map((p, i) => (
+      <line
+        key={`line-${i}`}
+        x1={p.x}
+        y1={height + 1000}
+        x2={p.x}
+        y2={-1000}
+        stroke={"#ccc"}
+        strokeWidth={2}
+        strokeLinecap="round"
+        fill="none"
+      />
+    ));
+  }, [points, strokeWidth, dotSize]);
+
   const dots = useMemo(() => {
     const r = (dotSize ?? strokeWidth) / 2; // default to strokeWidth
-    return points.map((p, i) => <circle key={`dot-${i}`} cx={p.x} cy={p.y} r={r} fill="black" />);
+    return points.map((p, i) => (
+      <circle
+        key={`dot-${i}`}
+        cx={p.x}
+        cy={p.y}
+        r={r * 2}
+        fill={p.color}
+        stroke="rgba(0,0,0,0.2)"
+      />
+    ));
+  }, [points, strokeWidth, dotSize]);
+
+  const dotsBlack = useMemo(() => {
+    const r = (dotSize ?? strokeWidth) / 2; // default to strokeWidth
+    return points.map((p, i) => (
+      <circle key={`dotblack-${i}`} cx={p.x} cy={p.y} r={r} fill="black" />
+    ));
   }, [points, strokeWidth, dotSize]);
 
   return (
@@ -102,11 +142,14 @@ export function GradientLineChart({
         width="100%"
         height={height}
         viewBox={`0 0 ${vbWidth} ${vbHeight}`}
+        // overflow={"visible"}
         preserveAspectRatio="xMidYMid meet" // keep circles circular
       >
         <defs>{gradients}</defs>
+        {vertLines}
         {segments}
         {dots}
+        {dotsBlack}
       </svg>
     </div>
   );

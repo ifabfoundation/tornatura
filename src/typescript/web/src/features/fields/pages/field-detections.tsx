@@ -10,6 +10,7 @@ import {
   detectionTypesSelectors,
 } from "../../detection-types/state/detection-types-slice";
 import { Detection } from "@tornatura/coreapis";
+import { dateToString } from "../../../services/utils";
 
 function getColor(min: number, max: number, value: number): string {
   console.log("getColor", { min, max, value });
@@ -125,21 +126,6 @@ export function FieldDetections() {
 
   return (
     <Fragment>
-      <GradientLineChart
-        height={200}
-        padding={50}
-        strokeWidth={20}
-        dotSize={14}
-        data={[
-          { x: 3, y: 40, color: "#FFB290" },
-          { x: 5, y: 25, color: "#42C318" },
-          { x: 8, y: 60, color: "#FF4D4D" },
-          { x: 9, y: 70, color: "#A10505" },
-        ]}
-      />
-
-      <div className="my-5"></div>
-
       <Container>
         <Row>
           <Col>
@@ -177,18 +163,20 @@ export function FieldDetections() {
             });
             console.log("groupStats", groupStats);
 
-            var graphData = group.items.map((detection, index) => {
-              return {
-                // x: detection.detectionTime,
-                x: index,
-                y: getDetectionStats(detection).pointsAvg,
-                color: getColor(
-                  groupStats.groupMin,
-                  groupStats.groupMax,
-                  getDetectionStats(detection).pointsAvg
-                ),
-              };
-            });
+            var graphData = group.items
+              .map((detection, index) => {
+                return {
+                  x: detection.detectionTime,
+                  // x: index,
+                  y: getDetectionStats(detection).pointsAvg,
+                  color: getColor(
+                    groupStats.groupMin,
+                    groupStats.groupMax,
+                    getDetectionStats(detection).pointsAvg
+                  ),
+                };
+              })
+              .sort((a, b) => a.x - b.x);
 
             // -------------------------
             // -------------------------
@@ -196,50 +184,65 @@ export function FieldDetections() {
             // -------------------------
             console.log("graphData", graphData);
 
+            const lastDate = group.items
+              .map((e) => e.detectionTime)
+              .sort((a, b) => b - a)
+              .reverse()[0];
+            const lastDateString = dateToString(lastDate, false);
+
             return (
               <Col key={`${group.typology}-${group.method}`} xl={6}>
-                <Card className="mb-4">
-                  <div className="cardlet-header">
-                    <span className="title">
-                      {group.typology} - {group.method}
-                    </span>
+                <div className="detection-card">
+                  <header>
+                    <div className="label py-1">Rilevamenti di</div>
+                    <div className="value">{`${group.typology}  ›  ${group.method}`}</div>
+                  </header>
+
+                  <div className="small-texts d-flex justify-content-between align-items-center mt-4 mb-2">
+                    <div className="label">{`${detections.length} RILEVAMENTI`}</div>
+                    <div className="label">{`AGGIORNATO IL ${lastDateString}`}</div>
+                  </div>
+
+                  <GradientLineChart
+                    height={100}
+                    padding={{ top: 0, bottom: 0, left: 40, right: 40 }}
+                    strokeWidth={20}
+                    dotSize={14}
+                    data={graphData}
+                  />
+
+                  <div className="mt-3 pt-1">
                     <button
-                      className="trnt_btn slim-y narrow-x primary"
+                      className="trnt_btn accent wide"
+                      data-type="round"
                       onClick={() =>
                         navigate(`/companies/${companyId}/fields/${fieldId}/new-detection`, {
                           state: { typology: group.typology, method: group.method },
                         })
                       }
                     >
-                      + Nuovo
+                      + Rilevamento {group.typology}
                     </button>
                   </div>
-                  <Card.Body>
-                    <div className="d-flex justify-content-between align-items-center mb-2">
-                      <div className="cardlet-content">{group.items.length}</div>
-                      <div className="text-muted">Rilevamenti</div>
-                    </div>
 
-                    <GradientLineChart
-                      height={100}
-                      padding={15}
-                      strokeWidth={20}
-                      dotSize={14}
-                      data={graphData}
-                    />
-
-                    {group.items
-                      .slice()
-                      .sort((a, b) => (b.detectionTime ?? 0) - (a.detectionTime ?? 0))
-                      .map((item) => (
-                        <div key={item.id} className="d-flex justify-content-between py-1">
-                          <div>Rilevamento</div>
-                          <div>{formatDate(item.detectionTime)}</div>{" "}
-                          {/* dati della singola detection */}
+                  {/*  
+                  {group.items
+                    .slice()
+                    .sort((a, b) => (b.detectionTime ?? 0) - (a.detectionTime ?? 0))
+                    .map((item) => {
+                      const ds = getDetectionStats(item);
+                      return (
+                        <div key={item.id} className="d-flex justify-content-between pt-1">
+                          <div className="label">
+                            Rilevamento del {formatDate(item.detectionTime)}
+                          </div>{" "}
+                          <div className="label tabular-nums">Avg: {ds.pointsAvg.toFixed(2)}</div>
                         </div>
-                      ))}
-                  </Card.Body>
-                </Card>
+                      );
+                    })
+                  }
+                  */}
+                </div>
               </Col>
             );
           })}
