@@ -3,7 +3,7 @@ import { Col, Container, Row } from "react-bootstrap";
 // import { useFormik } from "formik";
 // import * as Yup from "yup";
 import { DetectionMutationPayload, ObservationType, DetectionText } from "@tornatura/coreapis";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { headerbarActions } from "../../headerbar/state/headerbar-slice";
 import { unwrapResult } from "@reduxjs/toolkit";
@@ -30,6 +30,136 @@ interface DetectionProps {
   action?: string;
   onBackClick?: () => Promise<void>;
   onNextClick: (data: any) => Promise<void>;
+}
+
+function CameraCapture({
+  open,
+  onClose,
+  onCapture,
+}: {
+  open: boolean;
+  onClose: () => void;
+  onCapture: (file: File) => void;
+}) {
+  const videoRef = React.useRef<HTMLVideoElement>(null);
+  const streamRef = React.useRef<MediaStream | null>(null);
+  const [error, setError] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    if (!open) {
+      return;
+    }
+    if (!navigator.mediaDevices?.getUserMedia) {
+      setError("Camera non disponibile.");
+      return;
+    }
+    let active = true;
+    navigator.mediaDevices
+      .getUserMedia({ video: { facingMode: { ideal: "environment" } }, audio: false })
+      .then((stream) => {
+        if (!active) {
+          stream.getTracks().forEach((track) => track.stop());
+          return;
+        }
+        streamRef.current = stream;
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+          videoRef.current.play().catch(() => null);
+        }
+      })
+      .catch(() => {
+        setError("Impossibile accedere alla camera.");
+      });
+
+    return () => {
+      active = false;
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((track) => track.stop());
+        streamRef.current = null;
+      }
+    };
+  }, [open]);
+
+  const handleCapture = () => {
+    const video = videoRef.current;
+    if (!video) {
+      return;
+    }
+    const canvas = document.createElement("canvas");
+    canvas.width = video.videoWidth || 1280;
+    canvas.height = video.videoHeight || 720;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) {
+      return;
+    }
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    canvas.toBlob(
+      (blob) => {
+        if (!blob) {
+          return;
+        }
+        const file = new File([blob], `photo-${Date.now()}.jpg`, { type: "image/jpeg" });
+        onCapture(file);
+        onClose();
+      },
+      "image/jpeg",
+      0.9
+    );
+  };
+
+  if (!open) {
+    return null;
+  }
+
+  return (
+    <div
+      style={{
+        position: "fixed",
+        inset: 0,
+        background: "rgba(0, 0, 0, 0.75)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        zIndex: 2000,
+      }}
+    >
+      <div
+        style={{
+          width: "min(92vw, 560px)",
+          background: "#fff",
+          borderRadius: "12px",
+          padding: "12px",
+        }}
+      >
+        {error ? (
+          <div className="text-center">
+            <p className="mb-3">{error}</p>
+            <button className="trnt_btn primary" onClick={onClose}>
+              Chiudi
+            </button>
+          </div>
+        ) : (
+          <Fragment>
+            <video
+              ref={videoRef}
+              autoPlay
+              playsInline
+              muted
+              style={{ width: "100%", borderRadius: "8px" }}
+            />
+            <div className="buttons-wrapper mt-3 text-center">
+              <button className="trnt_btn secondary" onClick={onClose}>
+                Annulla
+              </button>
+              <button className="trnt_btn primary ms-2" onClick={handleCapture}>
+                Scatta
+              </button>
+            </div>
+          </Fragment>
+        )}
+      </div>
+    </div>
+  );
 }
 
 function isPointInsideField(pointLon: number, pointLat: number, areaPoints: number[][]) {
@@ -1374,7 +1504,13 @@ function DetectionStepObservationPoints({
   formData,
   observationType,
   onNextClick,
+  onBackClick,
 }: DetectionProps & { observationType?: ObservationType }) {
+  if (observationType?.observationType === "range") {
+    return (
+      <DetectionUI formData={formData} onBackClick={onBackClick} onNextClick={onNextClick} />
+    );
+  }
   const { fieldId } = useParams();
   const currentField = useAppSelector((state) =>
     fieldsSelectors.selectFieldbyId(state, fieldId ?? "default")
@@ -1385,6 +1521,10 @@ function DetectionStepObservationPoints({
   const [rangeValue, setRangeValue] = React.useState<string>("");
   const [counterValues, setCounterValues] = React.useState<Record<string, string>>({});
   const [points, setPoints] = React.useState(formData?.detectionData?.points ?? []);
+  const [photos, setPhotos] = React.useState<File[]>(
+    (formData?.detectionData?.photos as File[]) ?? []
+  );
+  const [cameraOpen, setCameraOpen] = React.useState(false);
   const [modalOpen, setModalOpen] = React.useState(false);
   const [modal, setModal] = React.useState<any>({});
 
@@ -1516,7 +1656,7 @@ function DetectionStepObservationPoints({
       setModalOpen(true);
       return;
     }
-    onNextClick({ points });
+    onNextClick({ points, photos });
   };
 
   if (!observationType) {
@@ -1531,6 +1671,11 @@ function DetectionStepObservationPoints({
   return (
     <Fragment>
       {modalOpen && <modal.component {...modal.componentProps} />}
+      <CameraCapture
+        open={cameraOpen}
+        onClose={() => setCameraOpen(false)}
+        onCapture={(file) => setPhotos((prev) => [...prev, file])}
+      />
       <div className="narrow-container my-5">
         <h3 className="mb-4 text-center">Aggiungi punti di osservazione</h3>
         <div className="input-row">
@@ -1598,6 +1743,12 @@ function DetectionStepObservationPoints({
           </div>
         )}
         <div className="buttons-wrapper mt-4 text-center">
+          <button
+            className="trnt_btn secondary"
+            onClick={() => setCameraOpen(true)}
+          >
+            + Foto
+          </button>
           <button className="trnt_btn primary" onClick={handleSave}>
             Salva rilevamento
           </button>
@@ -1620,6 +1771,10 @@ function DetectionUI({ formData, onBackClick, onNextClick }: DetectionProps) {
   const currentPosition = React.useContext(gpsStore);
 
   const [scores, setScores] = useState<ScoreEntry[]>([]);
+  const [photos, setPhotos] = useState<File[]>(
+    (formData?.detectionData?.photos as File[]) ?? []
+  );
+  const [cameraOpen, setCameraOpen] = useState(false);
 
   const handleFinishClick = () => {
     console.log("Clicked FINE:", scores);
@@ -1627,9 +1782,26 @@ function DetectionUI({ formData, onBackClick, onNextClick }: DetectionProps) {
       alert("Devi registrare almeno un'osservazione prima di terminare.");
       return;
     }
-    onNextClick({
-      scores: scores,
+    const points = scores.map((entry) => {
+      return {
+        position: {
+          lng: entry.location?.lng ?? currentPosition.lng,
+          lat: entry.location?.lat ?? currentPosition.lat,
+        },
+        data: {
+          rangeValue: entry.score,
+          counters: [],
+        },
+      };
     });
+    const hasInvalidLocation = points.some(
+      (point) => point.position.lat === 0 && point.position.lng === 0
+    );
+    if (hasInvalidLocation) {
+      alert("Posizione corrente non disponibile.");
+      return;
+    }
+    onNextClick({ points, photos });
   };
 
   // Scroll to bottom whenever scores changes
@@ -1648,6 +1820,10 @@ function DetectionUI({ formData, onBackClick, onNextClick }: DetectionProps) {
   }, [scores]); // run whenever scores updates
 
   const handleScoreClick = (score: number, multiplier: number) => {
+    if (currentPosition.lat === 0 && currentPosition.lng === 0) {
+      alert("Posizione corrente non disponibile.");
+      return;
+    }
     for (let i = 0; i < multiplier; i++) {
       const scoreEntry = {
         timeStamp: new Date().getTime(),
@@ -1721,10 +1897,17 @@ function DetectionUI({ formData, onBackClick, onNextClick }: DetectionProps) {
       <div className="hacky-header-cover">
         <a
           onClick={() => {
-            onBackClick();
+            onBackClick?.();
           }}
         >
           &larr;
+        </a>
+        <a
+          onClick={() => {
+            setCameraOpen(true);
+          }}
+        >
+          <span>FOTO</span>
         </a>
         <a
           className="finish-btn"
@@ -1735,6 +1918,11 @@ function DetectionUI({ formData, onBackClick, onNextClick }: DetectionProps) {
           <span>FINE</span>
         </a>
       </div>
+      <CameraCapture
+        open={cameraOpen}
+        onClose={() => setCameraOpen(false)}
+        onCapture={(file) => setPhotos((prev) => [...prev, file])}
+      />
 
       <div className="narrow-container">
         <div className="detection-ui">
@@ -1809,7 +1997,13 @@ function SaveDone() {
 export function DetectionForm() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
   const { companyId, fieldId } = useParams();
+  const preselectedState = location.state as { typology?: string; method?: string } | null;
+  const preselectedTypology = (preselectedState?.typology ?? searchParams.get("typology") ?? "").trim();
+  const preselectedMethod = (preselectedState?.method ?? searchParams.get("method") ?? "").trim();
+  const hasPreselection = preselectedTypology !== "" && preselectedMethod !== "";
   const [stepIndex, setStepIndex] = React.useState(0);
   const [formData, setFormData] = React.useState<DetectionMutationPayload>({
     detectionTime: new Date().getTime(),
@@ -1821,8 +2015,12 @@ export function DetectionForm() {
       points: [],
     },
   });
-  const [selectedTypology, setSelectedTypology] = React.useState("");
-  const [selectedMethod, setSelectedMethod] = React.useState("");
+  const [selectedTypology, setSelectedTypology] = React.useState(() =>
+    hasPreselection ? preselectedTypology : ""
+  );
+  const [selectedMethod, setSelectedMethod] = React.useState(() =>
+    hasPreselection ? preselectedMethod : ""
+  );
   const [useShortFlow, setUseShortFlow] = React.useState(false);
 
   const detectionTypes = useAppSelector((state) =>
@@ -1848,24 +2046,30 @@ export function DetectionForm() {
   }, [companyId, fieldId, dispatch]);
 
   React.useEffect(() => {
-    if (detectionTypes.length > 0) {
-      const detectionType = detectionTypes[0];
-      setUseShortFlow(true);
-      setSelectedTypology(detectionType.typology);
-      setSelectedMethod(detectionType.method);
-      setFormData((prev) => ({
-        ...prev,
-        detectionTypeId: detectionType.id,
-      }));
-      setStepIndex(0);
+    if (hasPreselection) {
+      const matchingType = detectionTypes.find(
+        (item) => item.typology === preselectedTypology && item.method === preselectedMethod
+      );
+      if (matchingType) {
+        setFormData((prev) => ({
+          ...prev,
+          detectionTypeId: matchingType.id,
+        }));
+        setUseShortFlow(true);
+      } else {
+        setUseShortFlow(false);
+      }
+      return;
     } else {
       setUseShortFlow(false);
     }
-  }, [detectionTypes]);
+  }, [detectionTypes, hasPreselection, preselectedMethod, preselectedTypology]);
 
   const steps = useShortFlow
     ? ["bbch", "points"]
-    : ["typology", "method", "guide", "bbch", "points"];
+    : hasPreselection
+      ? ["bbch", "points"]
+      : ["typology", "method", "guide", "bbch", "points"];
 
   const currentStepKey = steps[stepIndex];
 
@@ -1985,6 +2189,7 @@ export function DetectionForm() {
         detectionData: {
           ...formData.detectionData,
           points: data.points ?? [],
+          photos: data.photos ?? formData.detectionData.photos ?? [],
         },
       };
       await createDetectionAction(payload);
@@ -1999,38 +2204,6 @@ export function DetectionForm() {
 
   return (
     <Fragment>
-      <div className="stepper-wrapper">
-        <button
-          className="stepper-back-button m-0"
-          onClick={() => {
-            if (stepIndex > 0) setStepIndex(stepIndex - 1);
-            else navigate(-1);
-          }}
-        >
-          &larr;
-        </button>
-        <ol className="stepper" data-steps={steps.length}>
-          {steps.map((stepKey, index) => (
-            <li
-              key={stepKey}
-              data-step-num={index + 1}
-              data-done={stepIndex > index ? "true" : "false"}
-              data-current={stepIndex === index ? "true" : "false"}
-              onClick={() => {
-                if (stepIndex > index) setStepIndex(index);
-              }}
-            >
-              <span>
-                {stepKey === "typology" && "Tipologia"}
-                {stepKey === "method" && "Metodo"}
-                {stepKey === "guide" && "Guida"}
-                {stepKey === "bbch" && "BBCH"}
-                {stepKey === "points" && "Osservazioni"}
-              </span>
-            </li>
-          ))}
-        </ol>
-      </div>
       <div>
         {currentStepKey === "typology" && (
           <DetectionStepTipologia

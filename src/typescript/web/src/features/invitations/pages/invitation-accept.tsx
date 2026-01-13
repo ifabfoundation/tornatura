@@ -53,9 +53,6 @@ export function InvitationAccept() {
   const [isConfirmationStep, setIsConfirmationStep] = React.useState(false);
 
 
-  console.log(authenticated)
-
-
   React.useEffect(() => {
     if (token) {
       dispatch(invitationsActions.validateInvitationTokenAction(token));
