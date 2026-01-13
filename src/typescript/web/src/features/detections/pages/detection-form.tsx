@@ -2,7 +2,14 @@ import React, { Fragment, useEffect, useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 // import { useFormik } from "formik";
 // import * as Yup from "yup";
-import { DetectionMutationPayload, ObservationType, DetectionText } from "@tornatura/coreapis";
+import {
+  DetectionMutationPayload,
+  ObservationPoint,
+  ObservationType,
+  DetectionText,
+  FilesApi,
+  FileInfo,
+} from "@tornatura/coreapis";
 import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { headerbarActions } from "../../headerbar/state/headerbar-slice";
@@ -22,6 +29,7 @@ import { detectionTypesActions, detectionTypesSelectors } from "../../detection-
 import { observationTypesActions, observationTypesSelectors } from "../../observation-types/state/observation-types-slice";
 import { detectionTextsActions, detectionTextsSelectors } from "../../detection-texts/state/detection-texts-slice";
 import { gpsStore } from "../../../providers/gps-providers";
+import { getCoreApiConfiguration } from "../../../services/utils";
 
 const markerOptions = { color: "#EAFF00" };
 
@@ -29,8 +37,43 @@ interface DetectionProps {
   formData: DetectionMutationPayload;
   action?: string;
   onBackClick?: () => Promise<void>;
-  onNextClick: (data: any) => Promise<void>;
+  onNextClick: (data: DetectionStepData) => Promise<void>;
+  pendingPhotos?: File[];
+  onPhotosChange?: (photos: File[]) => void;
 }
+
+type DetectionStepData =
+  | DetectionStepPositionData
+  | DetectionStepTypologyData
+  | DetectionStepMethodData
+  | DetectionStepGuideData
+  | DetectionStepBbchData
+  | DetectionStepPointsData;
+
+type DetectionStepTypologyData = {
+  typology: string;
+};
+
+type DetectionStepPositionData = {
+  latitude?: number;
+  longitude?: number;
+};
+
+type DetectionStepMethodData = {
+  method: string;
+};
+
+type DetectionStepGuideData = Record<string, never>;
+
+type DetectionStepBbchData = {
+  bbch?: string;
+  notes?: string;
+};
+
+type DetectionStepPointsData = {
+  points: ObservationPoint[];
+  photos?: File[];
+};
 
 function CameraCapture({
   open,
@@ -1505,10 +1548,18 @@ function DetectionStepObservationPoints({
   observationType,
   onNextClick,
   onBackClick,
+  pendingPhotos = [],
+  onPhotosChange,
 }: DetectionProps & { observationType?: ObservationType }) {
   if (observationType?.observationType === "range") {
     return (
-      <DetectionUI formData={formData} onBackClick={onBackClick} onNextClick={onNextClick} />
+      <DetectionUI
+        formData={formData}
+        onBackClick={onBackClick}
+        onNextClick={onNextClick}
+        pendingPhotos={pendingPhotos}
+        onPhotosChange={onPhotosChange}
+      />
     );
   }
   const { fieldId } = useParams();
@@ -1521,9 +1572,6 @@ function DetectionStepObservationPoints({
   const [rangeValue, setRangeValue] = React.useState<string>("");
   const [counterValues, setCounterValues] = React.useState<Record<string, string>>({});
   const [points, setPoints] = React.useState(formData?.detectionData?.points ?? []);
-  const [photos, setPhotos] = React.useState<File[]>(
-    (formData?.detectionData?.photos as File[]) ?? []
-  );
   const [cameraOpen, setCameraOpen] = React.useState(false);
   const [modalOpen, setModalOpen] = React.useState(false);
   const [modal, setModal] = React.useState<any>({});
@@ -1656,7 +1704,7 @@ function DetectionStepObservationPoints({
       setModalOpen(true);
       return;
     }
-    onNextClick({ points, photos });
+    onNextClick({ points, photos: pendingPhotos });
   };
 
   if (!observationType) {
@@ -1674,7 +1722,7 @@ function DetectionStepObservationPoints({
       <CameraCapture
         open={cameraOpen}
         onClose={() => setCameraOpen(false)}
-        onCapture={(file) => setPhotos((prev) => [...prev, file])}
+        onCapture={(file) => onPhotosChange?.([...pendingPhotos, file])}
       />
       <div className="narrow-container my-5">
         <h3 className="mb-4 text-center">Aggiungi punti di osservazione</h3>
@@ -1765,15 +1813,18 @@ type ScoreEntry = {
   location?: Point;
 };
 
-function DetectionUI({ formData, onBackClick, onNextClick }: DetectionProps) {
+function DetectionUI({
+  formData,
+  onBackClick,
+  onNextClick,
+  pendingPhotos = [],
+  onPhotosChange,
+}: DetectionProps) {
   const listRef = React.useRef<HTMLDivElement>(null);
 
   const currentPosition = React.useContext(gpsStore);
 
   const [scores, setScores] = useState<ScoreEntry[]>([]);
-  const [photos, setPhotos] = useState<File[]>(
-    (formData?.detectionData?.photos as File[]) ?? []
-  );
   const [cameraOpen, setCameraOpen] = useState(false);
 
   const handleFinishClick = () => {
@@ -1801,7 +1852,7 @@ function DetectionUI({ formData, onBackClick, onNextClick }: DetectionProps) {
       alert("Posizione corrente non disponibile.");
       return;
     }
-    onNextClick({ points, photos });
+    onNextClick({ points, photos: pendingPhotos });
   };
 
   // Scroll to bottom whenever scores changes
@@ -1921,7 +1972,7 @@ function DetectionUI({ formData, onBackClick, onNextClick }: DetectionProps) {
       <CameraCapture
         open={cameraOpen}
         onClose={() => setCameraOpen(false)}
-        onCapture={(file) => setPhotos((prev) => [...prev, file])}
+        onCapture={(file) => onPhotosChange?.([...pendingPhotos, file])}
       />
 
       <div className="narrow-container">
@@ -2015,6 +2066,7 @@ export function DetectionForm() {
       points: [],
     },
   });
+  const [pendingPhotos, setPendingPhotos] = React.useState<File[]>([]);
   const [selectedTypology, setSelectedTypology] = React.useState(() =>
     hasPreselection ? preselectedTypology : ""
   );
@@ -2125,15 +2177,27 @@ export function DetectionForm() {
     }
   };
 
-  const handleNextClick = async (data: any) => {
+  const uploadDetectionPhotos = async (files: File[]): Promise<FileInfo[]> => {
+    if (!companyId || files.length === 0) {
+      return [];
+    }
+    const apiConfig = await getCoreApiConfiguration();
+    const filesApi = new FilesApi(apiConfig);
+    const response = await filesApi.uploadFilesForm(files, companyId, "data");
+    return response.data;
+  };
+
+  const handleNextClick = async (data: DetectionStepData) => {
     if (currentStepKey === "typology") {
-      setSelectedTypology(data.typology);
+      const typologyData = data as DetectionStepTypologyData;
+      setSelectedTypology(typologyData.typology);
       setSelectedMethod("");
       setStepIndex(stepIndex + 1);
       return;
     }
     if (currentStepKey === "method") {
-      setSelectedMethod(data.method);
+      const methodData = data as DetectionStepMethodData;
+      setSelectedMethod(methodData.method);
       setStepIndex(stepIndex + 1);
       return;
     }
@@ -2142,18 +2206,20 @@ export function DetectionForm() {
       return;
     }
     if (currentStepKey === "bbch") {
+      const bbchData = data as DetectionStepBbchData;
       setFormData((prev) => ({
         ...prev,
         detectionData: {
           ...prev.detectionData,
-          bbch: data.bbch ?? "",
-          notes: data.notes ?? "",
+          bbch: bbchData.bbch ?? "",
+          notes: bbchData.notes ?? "",
         },
       }));
       setStepIndex(stepIndex + 1);
       return;
     }
     if (currentStepKey === "points") {
+      const pointsData = data as DetectionStepPointsData;
       let detectionTypeId = formData.detectionTypeId;
       if (!detectionTypeId && companyId && fieldId) {
         try {
@@ -2183,13 +2249,25 @@ export function DetectionForm() {
         return;
       }
 
+      const photosToUpload = pointsData.photos ?? pendingPhotos;
+      let uploadedPhotos: FileInfo[] = formData.detectionData.photos ?? [];
+      if (photosToUpload.length > 0) {
+        try {
+          uploadedPhotos = await uploadDetectionPhotos(photosToUpload);
+        } catch (error) {
+          console.error("Error uploading detection photos:", error);
+          alert("Errore durante l'upload delle foto.");
+          return;
+        }
+      }
+
       const payload: DetectionMutationPayload = {
         ...formData,
         detectionTypeId: detectionTypeId,
         detectionData: {
           ...formData.detectionData,
-          points: data.points ?? [],
-          photos: data.photos ?? formData.detectionData.photos ?? [],
+          points: pointsData.points ?? [],
+          photos: uploadedPhotos,
         },
       };
       await createDetectionAction(payload);
@@ -2241,6 +2319,8 @@ export function DetectionForm() {
             onBackClick={handleBackClick}
             observationType={observationType}
             onNextClick={handleNextClick}
+            pendingPhotos={pendingPhotos}
+            onPhotosChange={setPendingPhotos}
           />
         )}
       </div>
