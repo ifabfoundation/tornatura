@@ -24,7 +24,6 @@ import { ModalConfirm } from "../../../components/ModalConfirm";
 import { Accordion, AccordionItem } from "../../../components/Accordion";
 import CozyButton from "../../../components/CozyButton";
 import Icon from "../../../components/Icon";
-// import { timeStamp } from "console";
 import {
   detectionTypesActions,
   detectionTypesSelectors,
@@ -39,6 +38,7 @@ import {
 } from "../../detection-texts/state/detection-texts-slice";
 import { gpsStore } from "../../../providers/gps-providers";
 import { getCoreApiConfiguration } from "../../../services/utils";
+import doneIcon from '../../../assets/images/icon-large-done.svg'
 
 const markerOptions = { color: "#EAFF00" };
 
@@ -1553,17 +1553,6 @@ function DetectionStepObservationPoints({
   pendingPhotos = [],
   onPhotosChange,
 }: DetectionProps & { observationType?: ObservationType }) {
-  if (observationType?.observationType === "range") {
-    return (
-      <DetectionUI
-        formData={formData}
-        onBackClick={onBackClick}
-        onNextClick={onNextClick}
-        pendingPhotos={pendingPhotos}
-        onPhotosChange={onPhotosChange}
-      />
-    );
-  }
   const { fieldId } = useParams();
   const currentField = useAppSelector((state) =>
     fieldsSelectors.selectFieldbyId(state, fieldId ?? "default")
@@ -1757,7 +1746,7 @@ function DetectionStepObservationPoints({
           </div>
         )}
         {observationType.observationType === "counters" &&
-          observationType.counters.map((counter) => (
+          observationType.counters?.map((counter) => (
             <div className="input-row" key={counter}>
               <label>
                 {counter}
@@ -1823,9 +1812,7 @@ function DetectionUI({
   onPhotosChange,
 }: DetectionProps) {
   const listRef = React.useRef<HTMLDivElement>(null);
-
   const currentPosition = React.useContext(gpsStore);
-
   const [scores, setScores] = useState<ScoreEntry[]>([]);
   const [cameraOpen, setCameraOpen] = useState(false);
 
@@ -1971,12 +1958,6 @@ function DetectionUI({
           <span>FINE</span>
         </a>
       </div>
-      <CameraCapture
-        open={cameraOpen}
-        onClose={() => setCameraOpen(false)}
-        onCapture={(file) => onPhotosChange?.([...pendingPhotos, file])}
-      />
-
       <div className="narrow-container">
         <div className="detection-ui">
           <div className="detection-scores">
@@ -2003,6 +1984,11 @@ function DetectionUI({
                   <div className="font-xl mt-1 mb-3">{getStat(scores, "pianteColpite")}</div>
                   <header className="font-s-label">Intensità media</header>
                   <div className="font-xl mt-1 mb-3">{getStat(scores, "intensitaMedia")}</div>
+                  <CameraCapture
+                    open={cameraOpen}
+                    onClose={() => setCameraOpen(false)}
+                    onCapture={(file) => onPhotosChange?.([...pendingPhotos, file])}
+                  />
                 </Col>
               </Row>
             </Container>
@@ -2025,7 +2011,7 @@ function DetectionUI({
   );
 }
 
-function SaveDone() {
+function DetectionStepDone() {
   const navigate = useNavigate();
   const { companyId, fieldId } = useParams();
   return (
@@ -2048,7 +2034,6 @@ function SaveDone() {
 }
 
 export function DetectionForm() {
-  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const location = useLocation();
   const [searchParams] = useSearchParams();
@@ -2124,10 +2109,10 @@ export function DetectionForm() {
   }, [detectionTypes, hasPreselection, preselectedMethod, preselectedTypology]);
 
   const steps = useShortFlow
-    ? ["bbch", "points"]
+    ? ["bbch", "points", "complete"]
     : hasPreselection
-    ? ["bbch", "points"]
-    : ["typology", "method", "guide", "bbch", "points"];
+    ? ["bbch", "points", "complete"]
+    : ["typology", "method", "guide", "bbch", "points", "complete"];
 
   const currentStepKey = steps[stepIndex];
 
@@ -2166,20 +2151,18 @@ export function DetectionForm() {
 
   const createDetectionAction = async (payload: DetectionMutationPayload) => {
     if (companyId && fieldId) {
-      dispatch(
-        detectionsActions.addNewDetectionAction({
-          orgId: companyId,
-          fieldId: fieldId,
-          body: payload,
-        })
-      )
-        .then(unwrapResult)
-        .then((_) => {
-          navigate(`/companies/${companyId}/fields/${fieldId}`, { replace: true });
-        })
-        .catch((reason) => {
-          console.error("Error creating detection with reason: ", reason);
-        });
+      try {
+        await dispatch(
+          detectionsActions.addNewDetectionAction({
+            orgId: companyId,
+            fieldId: fieldId,
+            body: payload,
+          })
+        )
+
+      } catch (reason) {
+        console.error("Error creating detection with reason: ", reason);
+      }
     }
   };
 
@@ -2277,6 +2260,7 @@ export function DetectionForm() {
         },
       };
       await createDetectionAction(payload);
+      setStepIndex(stepIndex + 1);
     }
   };
 
@@ -2302,6 +2286,7 @@ export function DetectionForm() {
             methods={methodOptions}
             onBackClick={handleBackClick}
             onNextClick={handleNextClick}
+            formData={formData}
           />
         )}
         {currentStepKey === "guide" && (
@@ -2328,6 +2313,9 @@ export function DetectionForm() {
             pendingPhotos={pendingPhotos}
             onPhotosChange={setPendingPhotos}
           />
+        )}
+        {currentStepKey === "done" && (
+          <DetectionStepDone />
         )}
       </div>
     </Fragment>
