@@ -593,6 +593,17 @@ body {
       option:disabled {
         color: #999; /* works */
       }
+
+      // hide native arrow
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      // custom arrow
+      background-image: url("data:image/svg+xml;utf8,<svg fill='black' viewBox='0 0 10 6' xmlns='http://www.w3.org/2000/svg'><path d='M0 0l5 6 5-6z'/></svg>");
+      background-repeat: no-repeat;
+      background-position: right 0.75rem center;
+      background-size: 10px 6px;
+      padding-right: 2rem;
     }
 
     input[type="checkbox"] {

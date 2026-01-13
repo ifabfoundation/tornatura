@@ -109,6 +109,42 @@ export function UserProfile() {
           {message}
         </Alert>
       )}
+
+      <div className="form-section">
+        <Container className="px-0">
+          <Row>
+            <Col>
+              <h4 className="mb-4">
+                <strong>Avatar</strong>
+              </h4>
+              <div className="input-row">
+                <Image src={filesPreview} roundedCircle width="80px" height="80px" />
+                <div className="mt-3" {...getRootProps()}>
+                  <input {...getInputProps()} accept=".png, .jpeg, .jpg" />
+                  {isDragActive ? (
+                    <p>Trascina i file qui...</p>
+                  ) : (
+                    <p>Trascina e rilascia alcuni file qui, oppure fai clic per selezionarli</p>
+                  )}
+                </div>
+              </div>
+
+              <div className="buttons-wrapper mt-4">
+                <button
+                  className="trnt_btn primary m-0"
+                  value="Aggiorna"
+                  onClick={handleAvatarUpdate}
+                >
+                  Aggiorna
+                </button>
+              </div>
+            </Col>
+          </Row>
+        </Container>
+      </div>
+
+      <div className="my-5"></div>
+
       <form onSubmit={formik.handleSubmit} autoComplete="off">
         <div className="form-section">
           <Container className="px-0">
@@ -219,40 +255,6 @@ export function UserProfile() {
         </div>
       </form>
 
-      <div className="my-5"></div>
-
-      <div className="form-section">
-        <Container className="px-0">
-          <Row>
-            <Col>
-              <h4 className="mb-4">
-                <strong>Avatar</strong>
-              </h4>
-              <div className="input-row">
-                <Image src={filesPreview} roundedCircle width="80px" height="80px" />
-                <div className="mt-3" {...getRootProps()}>
-                  <input {...getInputProps()} accept=".png, .jpeg, .jpg" />
-                  {isDragActive ? (
-                    <p>Trascina i file qui...</p>
-                  ) : (
-                    <p>Trascina e rilascia alcuni file qui, oppure fai clic per selezionarli</p>
-                  )}
-                </div>
-              </div>
-
-              <div className="buttons-wrapper mt-4">
-                <button
-                  className="trnt_btn primary m-0"
-                  value="Aggiorna"
-                  onClick={handleAvatarUpdate}
-                >
-                  Aggiorna
-                </button>
-              </div>
-            </Col>
-          </Row>
-        </Container>
-      </div>
       <div className="my-5"></div>
     </Fragment>
   );

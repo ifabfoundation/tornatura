@@ -25,9 +25,18 @@ import { Accordion, AccordionItem } from "../../../components/Accordion";
 import CozyButton from "../../../components/CozyButton";
 import Icon from "../../../components/Icon";
 // import { timeStamp } from "console";
-import { detectionTypesActions, detectionTypesSelectors } from "../../detection-types/state/detection-types-slice";
-import { observationTypesActions, observationTypesSelectors } from "../../observation-types/state/observation-types-slice";
-import { detectionTextsActions, detectionTextsSelectors } from "../../detection-texts/state/detection-texts-slice";
+import {
+  detectionTypesActions,
+  detectionTypesSelectors,
+} from "../../detection-types/state/detection-types-slice";
+import {
+  observationTypesActions,
+  observationTypesSelectors,
+} from "../../observation-types/state/observation-types-slice";
+import {
+  detectionTextsActions,
+  detectionTextsSelectors,
+} from "../../detection-texts/state/detection-texts-slice";
 import { gpsStore } from "../../../providers/gps-providers";
 import { getCoreApiConfiguration } from "../../../services/utils";
 
@@ -1476,10 +1485,6 @@ function DetectionStepGuide({
             <strong>Istruzioni posizione e punteggio</strong>
             <p>{detectionText.locationAndScoreInstructions}</p>
           </div>
-          <div className="mb-4">
-            <strong>Istruzioni BBCH</strong>
-            <p>{detectionText.bbchInstructions}</p>
-          </div>
         </Fragment>
       ) : (
         <div>Nessuna guida disponibile per questa tipologia e metodo.</div>
@@ -1493,10 +1498,7 @@ function DetectionStepGuide({
   );
 }
 
-function DetectionStepBbch({
-  formData,
-  onNextClick,
-}: DetectionProps) {
+function DetectionStepBbch({ formData, onNextClick }: DetectionProps) {
   const [bbch, setBbch] = React.useState(formData?.detectionData?.bbch ?? "");
   const [notes, setNotes] = React.useState(formData?.detectionData?.notes ?? "");
 
@@ -1581,7 +1583,7 @@ function DetectionStepObservationPoints({
   }, [formData]);
 
   React.useEffect(() => {
-    if (!observationType) {
+    if (!observationType || !observationType.counters) {
       return;
     }
     if (observationType.observationType === "counters") {
@@ -1599,7 +1601,7 @@ function DetectionStepObservationPoints({
   };
 
   const buildPointData = () => {
-    if (!observationType) {
+    if (!observationType || !observationType.counters) {
       return null;
     }
     if (observationType.observationType === "range") {
@@ -1680,7 +1682,12 @@ function DetectionStepObservationPoints({
     ]);
     setMarkerPosition(undefined);
     setRangeValue("");
-    if (observationType?.observationType === "counters") {
+    if (
+      observationType &&
+      observationType.observationType === "counters" &&
+      observationType.counters
+    ) {
+      // if (observationType?.observationType === "counters") {
       const defaults: Record<string, string> = {};
       observationType.counters.forEach((counter) => {
         defaults[counter] = "";
@@ -1780,9 +1787,7 @@ function DetectionStepObservationPoints({
                 </span>
                 <button
                   className="trnt_btn danger1 m-0"
-                  onClick={() =>
-                    setPoints((prev: any[]) => prev.filter((_, idx) => idx !== index))
-                  }
+                  onClick={() => setPoints((prev: any[]) => prev.filter((_, idx) => idx !== index))}
                 >
                   Rimuovi
                 </button>
@@ -1791,10 +1796,7 @@ function DetectionStepObservationPoints({
           </div>
         )}
         <div className="buttons-wrapper mt-4 text-center">
-          <button
-            className="trnt_btn secondary"
-            onClick={() => setCameraOpen(true)}
-          >
+          <button className="trnt_btn secondary" onClick={() => setCameraOpen(true)}>
             + Foto
           </button>
           <button className="trnt_btn primary" onClick={handleSave}>
@@ -2052,7 +2054,11 @@ export function DetectionForm() {
   const [searchParams] = useSearchParams();
   const { companyId, fieldId } = useParams();
   const preselectedState = location.state as { typology?: string; method?: string } | null;
-  const preselectedTypology = (preselectedState?.typology ?? searchParams.get("typology") ?? "").trim();
+  const preselectedTypology = (
+    preselectedState?.typology ??
+    searchParams.get("typology") ??
+    ""
+  ).trim();
   const preselectedMethod = (preselectedState?.method ?? searchParams.get("method") ?? "").trim();
   const hasPreselection = preselectedTypology !== "" && preselectedMethod !== "";
   const [stepIndex, setStepIndex] = React.useState(0);
@@ -2120,8 +2126,8 @@ export function DetectionForm() {
   const steps = useShortFlow
     ? ["bbch", "points"]
     : hasPreselection
-      ? ["bbch", "points"]
-      : ["typology", "method", "guide", "bbch", "points"];
+    ? ["bbch", "points"]
+    : ["typology", "method", "guide", "bbch", "points"];
 
   const currentStepKey = steps[stepIndex];
 

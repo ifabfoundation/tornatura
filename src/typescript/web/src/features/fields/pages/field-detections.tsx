@@ -1,11 +1,48 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
-import React, { Fragment } from "react";
+import React, { Fragment, use } from "react";
 import { headerbarActions } from "../../headerbar/state/headerbar-slice";
 import { Card, Col, Container, Row } from "react-bootstrap";
 import { detectionsSelectors } from "../../detections/state/detections-slice";
 import { GradientLineChart } from "../../../components/GradientLineChart";
-import { detectionTypesActions, detectionTypesSelectors } from "../../detection-types/state/detection-types-slice";
+import {
+  detectionTypesActions,
+  detectionTypesSelectors,
+} from "../../detection-types/state/detection-types-slice";
+import { Detection } from "@tornatura/coreapis";
+
+function getColor(min: number, max: number, value: number): string {
+  console.log("getColor", { min, max, value });
+  const colors = ["#42C318", "#FFB290", "#FF4D4D", "#A10505"];
+  const range = max - min;
+  const segment = range / colors.length;
+  const index = Math.min(colors.length - 1, Math.floor((value - min) / segment));
+  return colors[index];
+}
+
+function getDetectionStats(detection: Detection) {
+  // calculate stats for each detection
+  let detectionStats = {
+    pointsCount: 0,
+    pointsSum: 0,
+    pointsMin: Infinity,
+    pointsMax: -Infinity,
+    pointsAvg: 0,
+  };
+  detection.detectionData.points.forEach((point) => {
+    const v = point.data.rangeValue;
+    const isValidPoint = v !== undefined && v !== null;
+    if (isValidPoint) {
+      detectionStats.pointsCount++;
+      detectionStats.pointsSum += v;
+      detectionStats.pointsMin = Math.min(detectionStats.pointsMin, v);
+      detectionStats.pointsMax = Math.max(detectionStats.pointsMax, v);
+    }
+  });
+  detectionStats.pointsAvg =
+    detectionStats.pointsCount > 0 ? detectionStats.pointsSum / detectionStats.pointsCount : 0;
+  return detectionStats;
+}
 
 function formatDate(value: number | string | undefined | null) {
   if (!value) {
@@ -28,10 +65,12 @@ export function FieldDetections() {
   const detectionTypes = useAppSelector((state) =>
     detectionTypesSelectors.selectDetectionTypesByField(state, fieldId ?? "default")
   );
+  console.log("detectionTypes", detectionTypes);
 
   const detectionTypeById = React.useMemo(() => {
     return new Map(detectionTypes.map((item) => [item.id, item]));
   }, [detectionTypes]);
+  console.log("detectionTypeById", detectionTypeById);
 
   const groupedDetections = React.useMemo(() => {
     const groups = new Map<
@@ -68,6 +107,11 @@ export function FieldDetections() {
       return a.method.localeCompare(b.method);
     });
   }, [detections, detectionTypeById]);
+  // -------------------------
+  // -------------------------
+  console.log("groupedDetections", groupedDetections);
+  // -------------------------
+  // -------------------------
 
   React.useEffect(() => {
     dispatch(headerbarActions.setTitle({ title: "Tutti i rilevamenti", subtitle: "Subtitle" }));
@@ -87,8 +131,7 @@ export function FieldDetections() {
         strokeWidth={20}
         dotSize={14}
         data={[
-          { x: 0, y: 10, color: "#42C318" },
-          { x: 2, y: 40, color: "#FFB290" },
+          { x: 3, y: 40, color: "#FFB290" },
           { x: 5, y: 25, color: "#42C318" },
           { x: 8, y: 60, color: "#FF4D4D" },
           { x: 9, y: 70, color: "#A10505" },
@@ -121,42 +164,85 @@ export function FieldDetections() {
               <div className="text-muted">Nessun rilevamento disponibile.</div>
             </Col>
           )}
-          {groupedDetections.map((group) => (
-            <Col key={`${group.typology}-${group.method}`} xl={6}>
-              <Card className="mb-4">
-                <div className="cardlet-header">
-                  <span className="title">
-                    {group.typology} - {group.method}
-                  </span>
-                  <button
-                    className="trnt_btn slim-y narrow-x primary"
-                    onClick={() =>
-                      navigate(`/companies/${companyId}/fields/${fieldId}/new-detection`, {
-                        state: { typology: group.typology, method: group.method },
-                      })
-                    }
-                  >
-                    + Nuovo
-                  </button>
-                </div>
-                <Card.Body>
-                  <div className="d-flex justify-content-between align-items-center mb-2">
-                    <div className="cardlet-content">{group.items.length}</div>
-                    <div className="text-muted">Rilevamenti</div>
+          {groupedDetections.map((group) => {
+            const groupStats = {
+              groupMin: Infinity,
+              groupMax: -Infinity,
+            };
+            group.items.forEach((detection) => {
+              const ds = getDetectionStats(detection);
+              groupStats.groupMin = Math.min(groupStats.groupMin, ds.pointsMin);
+              groupStats.groupMax = Math.max(groupStats.groupMax, ds.pointsMax);
+              // console.log("ds", ds);
+            });
+            console.log("groupStats", groupStats);
+
+            var graphData = group.items.map((detection, index) => {
+              return {
+                // x: detection.detectionTime,
+                x: index,
+                y: getDetectionStats(detection).pointsAvg,
+                color: getColor(
+                  groupStats.groupMin,
+                  groupStats.groupMax,
+                  getDetectionStats(detection).pointsAvg
+                ),
+              };
+            });
+
+            // -------------------------
+            // -------------------------
+            // -------------------------
+            // -------------------------
+            console.log("graphData", graphData);
+
+            return (
+              <Col key={`${group.typology}-${group.method}`} xl={6}>
+                <Card className="mb-4">
+                  <div className="cardlet-header">
+                    <span className="title">
+                      {group.typology} - {group.method}
+                    </span>
+                    <button
+                      className="trnt_btn slim-y narrow-x primary"
+                      onClick={() =>
+                        navigate(`/companies/${companyId}/fields/${fieldId}/new-detection`, {
+                          state: { typology: group.typology, method: group.method },
+                        })
+                      }
+                    >
+                      + Nuovo
+                    </button>
                   </div>
-                  {group.items
-                    .slice()
-                    .sort((a, b) => (b.detectionTime ?? 0) - (a.detectionTime ?? 0))
-                    .map((item) => (
-                      <div key={item.id} className="d-flex justify-content-between py-1">
-                        <div>Rilevamento</div>
-                        <div>{formatDate(item.detectionTime)}</div>  {/* dati della singola detection */}
-                      </div>
-                    ))}
-                </Card.Body>
-              </Card>
-            </Col>
-          ))}
+                  <Card.Body>
+                    <div className="d-flex justify-content-between align-items-center mb-2">
+                      <div className="cardlet-content">{group.items.length}</div>
+                      <div className="text-muted">Rilevamenti</div>
+                    </div>
+
+                    <GradientLineChart
+                      height={100}
+                      padding={15}
+                      strokeWidth={20}
+                      dotSize={14}
+                      data={graphData}
+                    />
+
+                    {group.items
+                      .slice()
+                      .sort((a, b) => (b.detectionTime ?? 0) - (a.detectionTime ?? 0))
+                      .map((item) => (
+                        <div key={item.id} className="d-flex justify-content-between py-1">
+                          <div>Rilevamento</div>
+                          <div>{formatDate(item.detectionTime)}</div>{" "}
+                          {/* dati della singola detection */}
+                        </div>
+                      ))}
+                  </Card.Body>
+                </Card>
+              </Col>
+            );
+          })}
         </Row>
       </Container>
     </Fragment>

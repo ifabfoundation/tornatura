@@ -85,8 +85,8 @@ export function CompanyFields() {
                   </div>
                   <div className="llist-group-item">
                     <span className="d-flex align-items-center">
-                      <Icon iconName={"asterisk"} color={"black"} /> {numberOdDetections}{" "}
-                      rilevamenti
+                      <Icon iconName={"asterisk"} color={"black"} />
+                      {`${numberOdDetections} rilevament${numberOdDetections === 1 ? "o" : "i"}`}
                     </span>
                   </div>
                 </div>
