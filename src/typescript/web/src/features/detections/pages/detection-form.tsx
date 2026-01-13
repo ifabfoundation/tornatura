@@ -95,6 +95,7 @@ function CameraCapture({
 }) {
   const videoRef = React.useRef<HTMLVideoElement>(null);
   const streamRef = React.useRef<MediaStream | null>(null);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
   const [error, setError] = React.useState<string | null>(null);
 
   React.useEffect(() => {
@@ -159,6 +160,16 @@ function CameraCapture({
     );
   };
 
+  const handleUploadChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) {
+      return;
+    }
+    onCapture(file);
+    onClose();
+    event.target.value = "";
+  };
+
   if (!open) {
     return null;
   }
@@ -186,9 +197,24 @@ function CameraCapture({
         {error ? (
           <div className="text-center">
             <p className="mb-3">{error}</p>
-            <button className="trnt_btn primary" onClick={onClose}>
-              Chiudi
-            </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              className="d-none"
+              onChange={handleUploadChange}
+            />
+            <div className="buttons-wrapper mt-3 text-center">
+              <button className="trnt_btn secondary" onClick={onClose}>
+                Chiudi
+              </button>
+              <button
+                className="trnt_btn primary ms-2"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                Carica
+              </button>
+            </div>
           </div>
         ) : (
           <Fragment>
@@ -199,9 +225,22 @@ function CameraCapture({
               muted
               style={{ width: "100%", borderRadius: "8px" }}
             />
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              className="d-none"
+              onChange={handleUploadChange}
+            />
             <div className="buttons-wrapper mt-3 text-center">
               <button className="trnt_btn secondary" onClick={onClose}>
                 Annulla
+              </button>
+              <button
+                className="trnt_btn secondary ms-2"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                Carica
               </button>
               <button className="trnt_btn primary ms-2" onClick={handleCapture}>
                 Scatta
