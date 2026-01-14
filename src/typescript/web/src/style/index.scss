@@ -133,6 +133,10 @@ $ms-sidebar-transition: 100ms;
   color: $c-grey_5 !important;
 }
 
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
 @mixin noselect {
   -webkit-user-select: none; /* Safari, Chrome (WebKit) */
   -moz-user-select: none; /* Firefox */
@@ -413,6 +417,22 @@ body {
     td {
       background-color: white;
       border-bottom: 1px solid $c-grey_1;
+    }
+  }
+
+  .detection-card {
+    background-color: white;
+    border-radius: 30px;
+    padding: 20px;
+    margin-bottom: 20px;
+    header {
+      .label {
+        text-transform: uppercase;
+      }
+      .value {
+        @include font-l-600;
+        text-transform: capitalize;
+      }
     }
   }
 

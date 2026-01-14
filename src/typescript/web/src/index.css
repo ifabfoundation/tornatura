@@ -13041,6 +13041,10 @@ strong {
   color: #545454 !important;
 }
 
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
 body {
   font-family: "Inter", sans-serif;
   font-size: 15px;
@@ -13555,6 +13559,54 @@ body {
 #app table.table-responsive td {
   background-color: white;
   border-bottom: 1px solid #efefef;
+}
+
+#app .detection-card {
+  background-color: white;
+  border-radius: 30px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+#app .detection-card header .label {
+  text-transform: uppercase;
+}
+
+#app .detection-card header .value {
+  font-family: "Inter", sans-serif;
+  font-size: 20px;
+  letter-spacing: 0.02em;
+  line-height: 1.3em;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  font-optical-sizing: auto;
+  font-weight: 600 !important;
+  text-transform: capitalize;
+}
+
+@media (min-width: 576px) {
+  #app .detection-card header .value {
+    font-size: 20px;
+  }
+}
+
+@media (min-width: 768px) {
+  #app .detection-card header .value {
+    font-size: 20px;
+  }
+}
+
+@media (min-width: 992px) {
+  #app .detection-card header .value {
+    font-size: 20px;
+  }
+}
+
+@media (min-width: 1200px) {
+  #app .detection-card header .value {
+    font-size: 20px;
+  }
 }
 
 #app .modal-bg {
