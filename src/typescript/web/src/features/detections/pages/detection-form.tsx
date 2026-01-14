@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 // import { useFormik } from "formik";
 // import * as Yup from "yup";
@@ -9,6 +9,7 @@ import {
   DetectionText,
   FilesApi,
   FileInfo,
+  ObservationData,
 } from "@tornatura/coreapis";
 import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
@@ -1599,15 +1600,16 @@ function DetectionStepObservationPoints({
   const currentPosition = React.useContext(gpsStore);
   const [source, setSource] = React.useState<string>("current");
   const [markerPosition, setMarkerPosition] = React.useState<Point>();
-  const [rangeValue, setRangeValue] = React.useState<string>("");
+  const [rangeLength, setRangeLength] = React.useState<number>(0);
   const [counterValues, setCounterValues] = React.useState<Record<string, string>>({});
-  const [points, setPoints] = React.useState(formData?.detectionData?.points ?? []);
+  const [points, setPoints] = React.useState(formData.detectionData.points ?? []);
   const [cameraOpen, setCameraOpen] = React.useState(false);
   const [modalOpen, setModalOpen] = React.useState(false);
   const [modal, setModal] = React.useState<any>({});
+  const [activeDataTab, setActiveDataTab] = React.useState<"map" | "list">("list");
 
   React.useEffect(() => {
-    setPoints(formData?.detectionData?.points ?? []);
+    setPoints(formData.detectionData.points ?? []);
   }, [formData]);
 
   React.useEffect(() => {
@@ -1621,6 +1623,9 @@ function DetectionStepObservationPoints({
       });
       setCounterValues(defaults);
     }
+    if (observationType.observationType === "range" && observationType.rangeMax && observationType.rangeMin) {
+      setRangeLength(observationType.rangeMax - observationType.rangeMin);
+    }
   }, [observationType]);
 
   const handleMarkerChange = async (point: Point) => {
@@ -1628,32 +1633,8 @@ function DetectionStepObservationPoints({
     setSource("map");
   };
 
-  const buildPointData = () => {
-    if (!observationType || !observationType.counters) {
-      return null;
-    }
-    if (observationType.observationType === "range") {
-      if (rangeValue === "") {
-        return null;
-      }
-      return {
-        rangeValue: Number(rangeValue),
-        counters: [],
-      };
-    }
-    const counters = observationType.counters.map((counter) => {
-      return {
-        counterName: counter,
-        counterValue: Number(counterValues[counter] || 0),
-      };
-    });
-    return {
-      rangeValue: null,
-      counters,
-    };
-  };
 
-  const validatePoint = () => {
+  const validatePointPosition = () => {
     if (!currentField) {
       return "Campo non trovato.";
     }
@@ -1671,14 +1652,11 @@ function DetectionStepObservationPoints({
     if (areaPoints.length > 2 && !isPointInsideField(point.lng, point.lat, areaPoints)) {
       return "Il punto selezionato è fuori dall'area del campo.";
     }
-    if (!buildPointData()) {
-      return "Inserisci i dati dell'osservazione.";
-    }
     return null;
   };
 
-  const handleAddPoint = () => {
-    const error = validatePoint();
+  const handleAddPoints = (data: ObservationPoint[]) => {
+    const error = validatePointPosition();
     if (error) {
       setModal({
         component: ModalConfirm,
@@ -1693,23 +1671,16 @@ function DetectionStepObservationPoints({
       setModalOpen(true);
       return;
     }
-    const point = source === "current" ? currentPosition : markerPosition;
-    const data = buildPointData();
-    if (!point || !data) {
+    const position = source === "current" ? currentPosition : markerPosition;
+    
+    if (!position || !data.length) {
       return;
     }
-    setPoints((prev) => [
-      ...prev,
-      {
-        position: {
-          lng: point.lng,
-          lat: point.lat,
-        },
-        data,
-      },
-    ]);
-    setMarkerPosition(undefined);
-    setRangeValue("");
+    setPoints((prev) => {
+      return [...prev, ...data]
+    
+    });
+  
     if (
       observationType &&
       observationType.observationType === "counters" &&
@@ -1742,201 +1713,23 @@ function DetectionStepObservationPoints({
     onNextClick({ points, photos: pendingPhotos });
   };
 
-  if (!observationType) {
-    return (
-      <div className="narrow-container my-5 text-center">
-        <h3 className="mb-4">Osservazioni</h3>
-        <p>Nessun tipo di osservazione disponibile per questa tipologia e metodo.</p>
-      </div>
-    );
-  }
-
-  return (
-    <Fragment>
-      {modalOpen && <modal.component {...modal.componentProps} />}
-      <CameraCapture
-        open={cameraOpen}
-        onClose={() => setCameraOpen(false)}
-        onCapture={(file) => onPhotosChange?.([...pendingPhotos, file])}
-      />
-      <div className="narrow-container my-5">
-        <h3 className="mb-4 text-center">Aggiungi punti di osservazione</h3>
-        <div className="input-row">
-          <label>
-            <select name="source" onChange={(e) => setSource(e.target.value)} value={source}>
-              <option value="current">Usa posizione corrente</option>
-              <option value="map">Seleziona un punto sulla mappa</option>
-            </select>
-          </label>
-        </div>
-        <DetectionFormMapPosition sourceType={source} onMarkerChange={handleMarkerChange} />
-        <div className="my-4"></div>
-        {observationType.observationType === "range" && (
-          <div className="input-row">
-            <label>
-              Valore
-              <input
-                type="number"
-                placeholder="Valore"
-                value={rangeValue}
-                onChange={(event) => setRangeValue(event.target.value)}
-              />
-            </label>
-          </div>
-        )}
-        {observationType.observationType === "counters" &&
-          observationType.counters?.map((counter) => (
-            <div className="input-row" key={counter}>
-              <label>
-                {counter}
-                <input
-                  type="number"
-                  placeholder="Valore"
-                  value={counterValues[counter] ?? ""}
-                  onChange={(event) =>
-                    setCounterValues((prev) => ({ ...prev, [counter]: event.target.value }))
-                  }
-                />
-              </label>
-            </div>
-          ))}
-        <div className="buttons-wrapper mt-4 text-center">
-          <button className="trnt_btn secondary" onClick={handleAddPoint}>
-            + Aggiungi punto
-          </button>
-        </div>
-        {points.length > 0 && (
-          <div className="mt-4">
-            <h5 className="mb-3">Punti aggiunti</h5>
-            {points.map((point: any, index: number) => (
-              <div key={index} className="mb-2 d-flex align-items-center">
-                <span className="mr-3">
-                  #{index + 1} — {point.position.lat.toFixed(5)}, {point.position.lng.toFixed(5)}
-                </span>
-                <button
-                  className="trnt_btn danger1 m-0"
-                  onClick={() => setPoints((prev: any[]) => prev.filter((_, idx) => idx !== index))}
-                >
-                  Rimuovi
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
-        <div className="buttons-wrapper mt-4 text-center">
-          <button className="trnt_btn secondary" onClick={() => setCameraOpen(true)}>
-            + Foto
-          </button>
-          <button className="trnt_btn primary" onClick={handleSave}>
-            Salva rilevamento
-          </button>
-        </div>
-      </div>
-    </Fragment>
+  const scorePoints = points.filter(
+    (point: any) => typeof point?.data?.rangeValue === "number"
   );
-}
-
-type ScoreEntry = {
-  timeStamp: number;
-  score: number;
-  scoreNorm: number;
-  location?: Point;
-};
-
-function DetectionUI({
-  formData,
-  onBackClick,
-  onNextClick,
-  pendingPhotos = [],
-  onPhotosChange,
-}: DetectionProps) {
-  const listRef = React.useRef<HTMLDivElement>(null);
-  const currentPosition = React.useContext(gpsStore);
-  const [scores, setScores] = useState<ScoreEntry[]>([]);
-  const [cameraOpen, setCameraOpen] = useState(false);
-
-  const handleFinishClick = () => {
-    console.log("Clicked FINE:", scores);
-    if (scores.length === 0) {
-      alert("Devi registrare almeno un'osservazione prima di terminare.");
-      return;
-    }
-    const points = scores.map((entry) => {
-      return {
-        position: {
-          lng: entry.location?.lng ?? currentPosition.lng,
-          lat: entry.location?.lat ?? currentPosition.lat,
-        },
-        data: {
-          rangeValue: entry.score,
-          counters: [],
-        },
-      };
-    });
-    const hasInvalidLocation = points.some(
-      (point) => point.position.lat === 0 && point.position.lng === 0
-    );
-    if (hasInvalidLocation) {
-      alert("Posizione corrente non disponibile.");
-      return;
-    }
-    onNextClick({ points, photos: pendingPhotos });
-  };
-
-  // Scroll to bottom whenever scores changes
-  // useEffect(() => {
-  //   endRef.current?.scrollIntoView({ behavior: "smooth" });
-  // }, [scores]);
-
-  useEffect(() => {
-    const el = listRef.current;
-    if (el) {
-      el.scrollTo({
-        top: el.scrollHeight, // scroll to the end
-        behavior: "smooth", // animate the scroll
-      });
-    }
-  }, [scores]); // run whenever scores updates
 
   const handleScoreClick = (score: number, multiplier: number) => {
-    if (currentPosition.lat === 0 && currentPosition.lng === 0) {
-      alert("Posizione corrente non disponibile.");
-      return;
-    }
-    for (let i = 0; i < multiplier; i++) {
-      const scoreEntry = {
-        timeStamp: new Date().getTime(),
-        score: score,
-        scoreNorm: score / 5,
-        location: currentPosition,
-      };
-      setScores((prev) => [...prev, scoreEntry]);
-    }
-    console.log(
-      `Scores (${scores.length})`,
-      scores
-      // scores
-      //   .slice(-5)
-      //   .map((entry) => entry.score)
-      //   .join(", ")
-    );
+    const newPoints = Array.from({ length: multiplier }, () => ({
+      position: {
+        lng: currentPosition.lng,
+        lat: currentPosition.lat,
+      },
+      data: {
+        rangeValue: score,
+        counters: [],
+      },
+    }));
+    handleAddPoints(newPoints);
   };
-  function ScoreBtnRow({ score, label }: { score: number; label: string }) {
-    return (
-      <div className="d-flex" style={{ gap: "4px", marginBottom: "4px" }}>
-        <div style={{ width: "90%" }}>
-          <CozyButton
-            btnSize="small"
-            content={btnCnt(score, label)}
-            onClick={() => handleScoreClick(score, 1)}
-          />
-        </div>
-        <div style={{ width: "63px" }}>
-          <CozyButton btnSize="small" content={"×5"} onClick={() => handleScoreClick(score, 5)} />
-        </div>
-      </div>
-    );
-  }
 
   const scoreDots = (dotsNum = 5, score = 0) => {
     const dots = Array.from({ length: dotsNum }, (_, i) => {
@@ -1955,94 +1748,145 @@ function DetectionUI({
     );
   };
 
-  const getStat = (scores: ScoreEntry[], stat: string) => {
-    if (scores.length === 0) return "-";
+  const getStat = (stat: string) => {
+    if (scorePoints.length === 0) return "-";
     if (stat === "pianteColpite") {
-      // count entries with score > 0
-      const infectedCount = scores.filter((entry) => entry.score > 0).length;
-      const percent = ((infectedCount / scores.length) * 100).toFixed(1);
+      const infectedCount = scorePoints.filter((entry: any) => entry.data.rangeValue > 0).length;
+      const percent = ((infectedCount / scorePoints.length) * 100).toFixed(1);
       return `${percent}%`;
-    } else if (stat === "intensitaMedia") {
-      const totalScores = scores.reduce((acc, entry) => acc + entry.scoreNorm, 0);
-      const avgScore = totalScores / scores.length;
+    }
+    if (stat === "intensitaMedia") {
+      const totalScores = scorePoints.reduce(
+        (acc: number, entry: any) => acc + entry.data.rangeValue / 5,
+        0
+      );
+      const avgScore = totalScores / scorePoints.length;
       const percent = (avgScore * 100).toFixed(1);
       return `${percent}%`;
     }
     return "-";
   };
 
+  function ScoreBtnRow({ score, label }: { score: number; label: string }) {
+    return (
+      <div className="d-flex" style={{ gap: "4px", marginBottom: "4px" }}>
+        <div style={{ width: "90%" }}>
+          <CozyButton
+            btnSize="small"
+            content={btnCnt(score, label)}
+            onClick={() => handleScoreClick(score, 1)}
+          />
+        </div>
+        <div style={{ width: "63px" }}>
+          <CozyButton btnSize="small" content={"×5"} onClick={() => handleScoreClick(score, 5)} />
+        </div>
+      </div>
+    );
+  }
+
+  if (!observationType) {
+    return (
+      <div className="narrow-container my-5 text-center">
+        <h3 className="mb-4">Osservazioni</h3>
+        <p>Nessun tipo di osservazione disponibile per questa tipologia e metodo.</p>
+      </div>
+    );
+  }
+
   return (
     <Fragment>
+      {modalOpen && <modal.component {...modal.componentProps} />}
+      <CameraCapture
+        open={cameraOpen}
+        onClose={() => setCameraOpen(false)}
+        onCapture={(file) => onPhotosChange?.([...pendingPhotos, file])}
+      />
       <div className="hacky-header-cover">
-        <a
-          onClick={() => {
-            onBackClick?.();
-          }}
-        >
-          &larr;
-        </a>
-        <a
-          onClick={() => {
-            setCameraOpen(true);
-          }}
-        >
-          <span>FOTO</span>
-        </a>
-        <a
-          className="finish-btn"
-          onClick={() => {
-            handleFinishClick();
-          }}
-        >
+        <a onClick={onBackClick}>&larr;</a>
+        <a className="finish-btn" onClick={handleSave}>
           <span>FINE</span>
         </a>
       </div>
-      <div className="narrow-container">
-        <div className="detection-ui">
-          <div className="detection-scores">
-            <Container className="h-100 p-0">
-              <Row className="h-100">
-                <Col className="h-100">
-                  <div className="scores-list-wrapper">
-                    <div className="scores-list" ref={listRef}>
-                      <header className="font-s-label">Ultime osservazioni</header>
-                      {scores.length === 0 && <div>Nessuna osservazione ancora registrata</div>}
-                      {scores.map((entry, index) => (
-                        <div key={index} className="score-entry">
-                          <span className="txt new-score-entry">
-                            <span>#{index + 1}</span> — <span>{entry.score}</span>
-                          </span>
+      <div className="narrow-container my-5">
+        <h3 className="mb-4 text-center">Aggiungi punti di osservazione</h3>
+        <div className="buttons-wrapper mt-3 text-center">
+          <button
+            className={`trnt_btn ${activeDataTab === "list" ? "primary" : "secondary"}`}
+            onClick={() => setActiveDataTab("list")}
+          >
+            Dati
+          </button>
+          <button
+            className={`trnt_btn ms-2 ${activeDataTab === "map" ? "primary" : "secondary"}`}
+            onClick={() => setActiveDataTab("map")}
+          >
+            Mappa
+          </button>
+        </div>    
+        <div className="detection-ui mb-4">
+          {activeDataTab === "map" && (
+              <Fragment>
+                <DetectionFormMapPosition sourceType={source} onMarkerChange={handleMarkerChange} />
+              </Fragment>
+            )
+          } 
+          {activeDataTab === "list" && (
+            <Fragment>
+              {observationType.observationType === "range" && (
+                <div className="detection-scores">
+                  <Container className="h-100 p-0">
+                    <Row className="h-100">
+                      <Col className="h-100">
+                        <div className="scores-list-wrapper">
+                          <div className="scores-list">
+                            <header className="font-s-label">Ultime osservazioni</header>
+                            {scorePoints.length === 0 && (
+                              <div>Nessuna osservazione ancora registrata</div>
+                            )}
+                            {scorePoints.map((entry: any, index: number) => (
+                              <div key={index} className="score-entry">
+                                <span className="txt new-score-entry">
+                                  <span>#{index + 1}</span> — <span>{entry.data.rangeValue}</span>
+                                </span>
+                              </div>
+                            ))}
+                          </div>
                         </div>
-                      ))}
-                      {/* <div ref={endRef} /> invisible anchor */}
-                    </div>
-                  </div>
-                </Col>
-                <Col className="h-100">
-                  <header className="font-s-label">Piante colpite</header>
-                  <div className="font-xl mt-1 mb-3">{getStat(scores, "pianteColpite")}</div>
-                  <header className="font-s-label">Intensità media</header>
-                  <div className="font-xl mt-1 mb-3">{getStat(scores, "intensitaMedia")}</div>
-                  <CameraCapture
-                    open={cameraOpen}
-                    onClose={() => setCameraOpen(false)}
-                    onCapture={(file) => onPhotosChange?.([...pendingPhotos, file])}
-                  />
-                </Col>
-              </Row>
-            </Container>
-          </div>
+                      </Col>
+                      <Col className="h-100">
+                        <header className="font-s-label">Piante colpite</header>
+                        <div className="font-xl mt-1 mb-3">{getStat("pianteColpite")}</div>
+                        <header className="font-s-label">Intensità media</header>
+                        <div className="font-xl mt-1 mb-3">{getStat("intensitaMedia")}</div>
+                        <button className="trnt_btn primary mt-5" onClick={() => setCameraOpen(true)}>
+                          + Foto
+                        </button>
+                      </Col>
+                    </Row>
+                  </Container>
+                </div>
+              )}
+            </Fragment>
+          )}
           <div className="detection-inputs">
             <div className="mt-2 mb-3">
-              <div className="font-s-label">Osservazione #{scores.length + 1}</div>
-              <div className="font-l mt-1">Valuta l'intensità del problema</div>
+              <div className="font-s-label">Osservazione #{scorePoints.length + 1}</div>
+              <div className="font-l mt-1">Valuta l'intensità del sintomo</div>
             </div>
-            <ScoreBtnRow score={0} label="Assente" />
-            <ScoreBtnRow score={1} label="Basso" />
-            <ScoreBtnRow score={2} label="Limitato" />
-            <ScoreBtnRow score={3} label="Cospicuo" />
-            <ScoreBtnRow score={4} label="Alto" />
-            <ScoreBtnRow score={5} label="Molto Alto" />
+            {observationType.observationType === "range" && (
+              <Fragment>
+                <ScoreBtnRow score={0} label="Assente" />
+                {Array.from({ length: rangeLength }, (_, i) => i + 1).map((v, index) => {
+                  const labels = ["Basso", "Limitato", "Cospicuo", "Alto", "Molto Alto"];
+                  console.log(observationType, v)
+                  if (v > 5) {
+                    return <ScoreBtnRow key={index} score={v} label="Molto Alto" />;
+                  } else {
+                    return <ScoreBtnRow key={index} score={v} label={labels[v - 1]} />;
+                  }
+                })}
+              </Fragment>
+            )}
           </div>
         </div>
       </div>
