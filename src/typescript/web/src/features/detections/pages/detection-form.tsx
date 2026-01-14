@@ -9,7 +9,6 @@ import {
   DetectionText,
   FilesApi,
   FileInfo,
-  ObservationData,
 } from "@tornatura/coreapis";
 import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
@@ -41,6 +40,7 @@ import {
 import { gpsStore } from "../../../providers/gps-providers";
 import { getCoreApiConfiguration } from "../../../services/utils";
 import doneIcon from '../../../assets/images/icon-large-done.svg'
+import { bbchs } from "./bbch";
 
 const markerOptions = { color: "#EAFF00" };
 
@@ -1518,14 +1518,30 @@ function DetectionStepGuide({
   detectionText,
   onNextClick,
 }: DetectionProps & { detectionText?: DetectionText }) {
+  const guideValue = detectionText?.locationAndScoreInstructions?.trim() ?? "";
+  const isGuideUrl = /^https?:\/\//i.test(guideValue);
   return (
     <div className="narrow-container my-5 text-center">
       <h3 className="mb-4">Guida all'osservazione</h3>
       {detectionText ? (
         <Fragment>
           <div className="mb-3">
-            <strong>Istruzioni posizione e punteggio</strong>
-            <p>{detectionText.locationAndScoreInstructions}</p>
+            {isGuideUrl ? (
+              <div className="mt-3">
+                <iframe
+                  title="Guida osservazione"
+                  src={guideValue}
+                  style={{ width: "100%", height: "70vh", border: "0" }}
+                />
+                <div className="mt-2">
+                  <a href={guideValue} target="_blank" rel="noreferrer">
+                    Apri in una nuova finestra
+                  </a>
+                </div>
+              </div>
+            ) : (
+              <p>{detectionText.locationAndScoreInstructions}</p>
+            )}
           </div>
         </Fragment>
       ) : (
@@ -1541,48 +1557,53 @@ function DetectionStepGuide({
 }
 
 function DetectionStepBbch({ formData, onNextClick }: DetectionProps) {
-  const [bbch, setBbch] = React.useState(formData?.detectionData?.bbch ?? "");
-  const [notes, setNotes] = React.useState(formData?.detectionData?.notes ?? "");
+  const [bbch, setBbch] = React.useState(formData.detectionData.bbch ?? "");
 
   React.useEffect(() => {
     setBbch(formData?.detectionData?.bbch ?? "");
-    setNotes(formData?.detectionData?.notes ?? "");
   }, [formData]);
+
+  const handleBbchSelection = (value: string) => {
+    setBbch(value)
+    onNextClick({ bbch })
+  }
+
+  let items: AccordionItem[] = [];
+  items = Object.keys(bbchs).map((key: string, index: number) => {
+    let iconNameAccItem = bbchs[key].icon ?? null;
+    return {
+      id: index.toString(),
+      title: bbchs[key].name,
+      content: (
+        <Fragment>
+          {Object.keys(bbchs[key].items).map((itemKey: string, itemIndex) => {
+            let iconNameBtn = bbchs[key].icon ?? null;
+            if (bbchs[key].items[itemKey].icon) {
+              iconNameBtn = bbchs[key].items[itemKey].icon;
+            }
+            if (bbchs[key].items[itemKey].icon === false) {
+              iconNameBtn = null;
+            }
+            return (
+              <CozyButton
+                key={itemIndex}
+                iconName={iconNameBtn}
+                content={bbchs[key].items[itemKey].name}
+                onClick={() => handleBbchSelection(bbchs[key].items[itemKey].value)}
+                arrow={true}
+              />
+            );
+          })}
+        </Fragment>
+      ),
+      icon: iconNameAccItem,
+    };
+  });
 
   return (
     <div className="narrow-container my-5">
       <h3 className="mb-4 text-center">Seleziona BBCH</h3>
-      <div className="input-row">
-        <label>
-          BBCH
-          <input
-            id="bbch"
-            name="bbch"
-            type="text"
-            placeholder="BBCH"
-            onChange={(event) => setBbch(event.target.value)}
-            value={bbch}
-          />
-        </label>
-      </div>
-      <div className="input-row">
-        <label>
-          Note
-          <textarea
-            id="notes"
-            name="notes"
-            placeholder=""
-            rows={6}
-            onChange={(event) => setNotes(event.target.value)}
-            value={notes}
-          ></textarea>
-        </label>
-      </div>
-      <div className="buttons-wrapper mt-4 text-center">
-        <button className="trnt_btn primary" onClick={() => onNextClick({ bbch, notes })}>
-          Avanti
-        </button>
-      </div>
+      <Accordion items={items} />
     </div>
   );
 }
