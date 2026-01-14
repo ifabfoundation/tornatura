@@ -41,6 +41,7 @@ import { gpsStore } from "../../../providers/gps-providers";
 import { getCoreApiConfiguration } from "../../../services/utils";
 import doneIcon from '../../../assets/images/icon-large-done.svg'
 import { bbchs } from "./bbch";
+import { number, string } from "yup";
 
 const markerOptions = { color: "#EAFF00" };
 
@@ -86,6 +87,46 @@ type DetectionStepPointsData = {
   photos?: File[];
   notes?: string;
 };
+
+type ButtonGroupItem = {
+  label: string;
+  onClick?: () => void;
+};
+
+function ButtonGroupGrid({
+  label,
+  value,
+  buttons,
+}: {
+  label: string;
+  value: number | string;
+  buttons: ButtonGroupItem[];
+}) {
+  const items = buttons.slice(0, 4);
+  return (
+    <div className="button-group-grid">
+      <div className="font-s-label mb-2">
+        {label}: <span>{value}</span>
+      </div>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+          gap: "8px",
+        }}
+      >
+        {items.map((item, index) => (
+          <CozyButton
+            key={`${item.label}-${index}`}
+            btnSize="small"
+            content={item.label}
+            onClick={item.onClick}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
 
 function CameraCapture({
   open,
@@ -1763,7 +1804,7 @@ function DetectionStepObservationPoints({
     handleAddPoints(newPoints);
   };
 
-  const scoreDots = (dotsNum = 5, score = 0) => {
+  const scoreDots = (dotsNum = rangeLength + 1, score = 0) => {
     const dots = Array.from({ length: dotsNum }, (_, i) => {
       const circleType = i < score ? "circlefull" : "circleempty";
       return <Icon key={i} iconName={circleType} color="black" />;
@@ -1774,13 +1815,13 @@ function DetectionStepObservationPoints({
   const btnCnt = (score: number, label: string) => {
     return (
       <div className="d-inline-flex align-items-center mt-1">
-        {scoreDots(5, score)}
+        {scoreDots(rangeLength + 1, score)}
         <div>{label}</div>
       </div>
     );
   };
 
-  const getStat = (stat: string) => {
+  const getScoreStat = (stat: string) => {
     if (scorePoints.length === 0) return "-";
     if (stat === "pianteColpite") {
       const infectedCount = scorePoints.filter((entry: any) => entry.data.rangeValue > 0).length;
@@ -1789,7 +1830,7 @@ function DetectionStepObservationPoints({
     }
     if (stat === "intensitaMedia") {
       const totalScores = scorePoints.reduce(
-        (acc: number, entry: any) => acc + entry.data.rangeValue / 5,
+        (acc: number, entry: any) => acc + entry.data.rangeValue / (rangeLength + 1),
         0
       );
       const avgScore = totalScores / scorePoints.length;
@@ -1823,6 +1864,67 @@ function DetectionStepObservationPoints({
         <p>Nessun tipo di osservazione disponibile per questa tipologia e metodo.</p>
       </div>
     );
+  }
+
+  const getCountersStat = (stat: string) => {
+    if (points.length === 0) return "-";
+    if (stat === "pianteColpite") {
+      const infectedCount = points.map((entry: ObservationPoint) => {
+        let accumulator = 0;
+        entry.data.counters?.forEach((v: any) => {
+          accumulator += v.counterValue;
+        });
+        return accumulator;
+      }).filter((entry: any) => entry > 0).length;
+      const percent = ((infectedCount / points.length) * 100).toFixed(1);
+      return `${percent}%`;
+    }
+    if (stat === "intensitaMedia") {
+      return `--`;
+    }
+    return "-";
+  };
+
+  const handleCounterOptionClick = (counterName: string, value: number) => {
+    const newValue = +counterValues[counterName] + value;
+    setCounterValues((prev) => {
+      let newCounters: Record<string, string> = {};
+      Object.assign(newCounters, prev);
+      newCounters[counterName] = newValue.toString();
+      return newCounters;
+    })
+  }
+
+  const handleResetCounterClick = (counterName: string) => {
+    const newValue = 0;
+    setCounterValues((prev) => {
+      let newCounters: Record<string, string> = {};
+      Object.assign(newCounters, prev);
+      newCounters[counterName] = newValue.toString();
+      return newCounters;
+    })
+  }
+
+  const handleAddCounterValuesClick = () => {
+    const counters = Object.keys(counterValues).map((key, _) => {
+      return {
+        counterName: key,
+        counterValue: +counterValues[key]
+      }
+    })
+
+    const point: ObservationPoint = {
+      position: {
+        lng: currentPosition.lng,
+        lat: currentPosition.lat,
+      },
+      data: {
+        rangeValue: 0,
+        counters: counters,
+      },
+    }
+
+    handleAddPoints([point]);
   }
 
   return (
@@ -1918,9 +2020,9 @@ function DetectionStepObservationPoints({
                       </Col>
                       <Col className="h-100">
                         <header className="font-s-label">Piante colpite</header>
-                        <div className="font-xl mt-1 mb-3">{getStat("pianteColpite")}</div>
+                        <div className="font-xl mt-1 mb-3">{getScoreStat("pianteColpite")}</div>
                         <header className="font-s-label">Intensità media</header>
-                        <div className="font-xl mt-1 mb-3">{getStat("intensitaMedia")}</div>
+                        <div className="font-xl mt-1 mb-3">{getScoreStat("intensitaMedia")}</div>
                         <div className="buttons-wrapper mt-5 text-center">
                           <button className="trnt_btn primary" onClick={() => setCameraOpen(true)}>
                             + Foto
@@ -1937,6 +2039,48 @@ function DetectionStepObservationPoints({
                   </Container>
                 </div>
               )}
+              {observationType.observationType === "counters" && 
+                <div className="detection-scores">
+                  <Container className="h-100 p-0">
+                    <Row className="h-100">
+                      <Col className="h-100">
+                        <div className="scores-list-wrapper">
+                          <div className="scores-list">
+                            <header className="font-s-label">Ultime osservazioni</header>
+                            {points.length === 0 && (
+                              <div>Nessuna osservazione ancora registrata</div>
+                            )}
+                            {points.map((entry: any, index: number) => (
+                              <div key={index} className="score-entry">
+                                <span className="txt new-score-entry">
+                                <span>#{index + 1}</span> — {entry.data.counters.map((counter: any, keyIndex: number) => (<span className="ms-2" key={keyIndex}>{counter.counterName}: {counter.counterValue}</span>))}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </Col>
+                      <Col className="h-100">
+                        <header className="font-s-label">Piante colpite</header>
+                        <div className="font-xl mt-1 mb-3">{getCountersStat("pianteColpite")}</div>
+                        <header className="font-s-label">Intensità media</header>
+                        <div className="font-xl mt-1 mb-3">{getCountersStat("intensitaMedia")}</div>
+                        <div className="buttons-wrapper mt-5 text-center">
+                          <button className="trnt_btn primary" onClick={() => setCameraOpen(true)}>
+                            + Foto
+                          </button>
+                          <button
+                            className="trnt_btn primary ms-2"
+                            onClick={handleOpenNoteModal}
+                          >
+                            + Nota
+                          </button>
+                        </div>
+                      </Col>
+                    </Row>
+                  </Container>
+                </div>
+              }
             </Fragment>
           )}
           <div className="detection-inputs">
@@ -1947,9 +2091,8 @@ function DetectionStepObservationPoints({
             {observationType.observationType === "range" && (
               <Fragment>
                 <ScoreBtnRow score={0} label="Assente" />
-                {Array.from({ length: rangeLength }, (_, i) => i + 1).map((v, index) => {
+                {Array.from({ length: rangeLength + 1 }, (_, i) => i + 1).map((v, index) => {
                   const labels = ["Basso", "Limitato", "Cospicuo", "Alto", "Molto Alto"];
-                  console.log(observationType, v)
                   if (v > 5) {
                     return <ScoreBtnRow key={index} score={v} label="Molto Alto" />;
                   } else {
@@ -1958,6 +2101,46 @@ function DetectionStepObservationPoints({
                 })}
               </Fragment>
             )}
+            {observationType.observationType === "counters" && (
+              <Fragment>
+                <Row>
+                  {Object.keys(counterValues).map((label, index) => {
+                    return (
+                      <Col key={index}>
+                        <ButtonGroupGrid 
+                          value={+counterValues[label]}
+                          label={label}
+                          buttons={[{
+                              label: "Reset",
+                              onClick: () => handleResetCounterClick(label)
+                            },
+                            {
+                              label: "+1",
+                              onClick: () => handleCounterOptionClick(label, 1)
+                            },
+                            {
+                              label: "+5",
+                              onClick: () => handleCounterOptionClick(label, 5)
+                            },
+                            {
+                              label: "+10",
+                              onClick: () => handleCounterOptionClick(label, 10)
+                            }
+                          ]}
+                        />
+                      </Col>
+                    )}
+                  )}
+                </Row>
+                <div className="mt-3">
+                  <CozyButton
+                    btnSize="small"
+                    content="Aggiungi Osservazione"
+                    onClick={() => handleAddCounterValuesClick()}
+                  />
+                </div>
+              </Fragment>)
+            }
           </div>
         </div>
       </div>
