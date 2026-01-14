@@ -21,6 +21,7 @@ import { fieldsSelectors } from "../../fields/state/fields-slice";
 import mapboxgl, { LngLatLike, Marker } from "mapbox-gl";
 import { Point } from "@tornatura/coreapis";
 import * as turf from "@turf/turf";
+import Modal from "../../../components/Modal";
 import { ModalConfirm } from "../../../components/ModalConfirm";
 import { Accordion, AccordionItem } from "../../../components/Accordion";
 import CozyButton from "../../../components/CozyButton";
@@ -83,6 +84,7 @@ type DetectionStepBbchData = {
 type DetectionStepPointsData = {
   points: ObservationPoint[];
   photos?: File[];
+  notes?: string;
 };
 
 function CameraCapture({
@@ -1607,9 +1609,13 @@ function DetectionStepObservationPoints({
   const [modalOpen, setModalOpen] = React.useState(false);
   const [modal, setModal] = React.useState<any>({});
   const [activeDataTab, setActiveDataTab] = React.useState<"map" | "list">("list");
+  const [noteValue, setNoteValue] = React.useState(formData.detectionData.notes ?? "");
+  const [noteDraft, setNoteDraft] = React.useState(noteValue);
+  const [noteModalOpen, setNoteModalOpen] = React.useState(false);
 
   React.useEffect(() => {
     setPoints(formData.detectionData.points ?? []);
+    setNoteValue(formData.detectionData.notes ?? "");
   }, [formData]);
 
   React.useEffect(() => {
@@ -1710,7 +1716,12 @@ function DetectionStepObservationPoints({
       setModalOpen(true);
       return;
     }
-    onNextClick({ points, photos: pendingPhotos });
+    onNextClick({ points, photos: pendingPhotos, notes: noteValue });
+  };
+
+  const handleOpenNoteModal = () => {
+    setNoteDraft(noteValue);
+    setNoteModalOpen(true);
   };
 
   const scorePoints = points.filter(
@@ -1796,6 +1807,37 @@ function DetectionStepObservationPoints({
   return (
     <Fragment>
       {modalOpen && <modal.component {...modal.componentProps} />}
+      {noteModalOpen && (
+        <Modal closeModal={() => setNoteModalOpen(false)} title="Nota">
+          <section>
+            <div className="input-row">
+              <label>
+                Nota
+                <textarea
+                  rows={6}
+                  value={noteDraft}
+                  onChange={(event) => setNoteDraft(event.target.value)}
+                />
+              </label>
+            </div>
+            <hr />
+            <div className="buttons-wrapper text-center">
+              <button className="trnt_btn secondary" onClick={() => setNoteModalOpen(false)}>
+                Annulla
+              </button>
+              <button
+                className="trnt_btn primary"
+                onClick={() => {
+                  setNoteValue(noteDraft);
+                  setNoteModalOpen(false);
+                }}
+              >
+                Salva
+              </button>
+            </div>
+          </section>
+        </Modal>
+      )}
       <CameraCapture
         open={cameraOpen}
         onClose={() => setCameraOpen(false)}
@@ -1858,9 +1900,17 @@ function DetectionStepObservationPoints({
                         <div className="font-xl mt-1 mb-3">{getStat("pianteColpite")}</div>
                         <header className="font-s-label">Intensità media</header>
                         <div className="font-xl mt-1 mb-3">{getStat("intensitaMedia")}</div>
-                        <button className="trnt_btn primary mt-5" onClick={() => setCameraOpen(true)}>
-                          + Foto
-                        </button>
+                        <div className="buttons-wrapper mt-5 text-center">
+                          <button className="trnt_btn primary" onClick={() => setCameraOpen(true)}>
+                            + Foto
+                          </button>
+                          <button
+                            className="trnt_btn primary ms-2"
+                            onClick={handleOpenNoteModal}
+                          >
+                            + Nota
+                          </button>
+                        </div>
                       </Col>
                     </Row>
                   </Container>
@@ -1903,7 +1953,6 @@ function DetectionStepDone() {
       <img src={doneIcon} />
       <div className="my-4"></div>
       <h3 className="mb-4">Rilevamento salvato con successo!</h3>
-      <p className="mb-4 color-grey">{"(storage to be implemented)"}</p>
       <button
         className="trnt_btn"
         onClick={() => {
@@ -1992,10 +2041,10 @@ export function DetectionForm() {
   }, [detectionTypes, hasPreselection, preselectedMethod, preselectedTypology]);
 
   const steps = useShortFlow
-    ? ["bbch", "points", "complete"]
+    ? ["bbch", "points", "done"]
     : hasPreselection
-    ? ["bbch", "points", "complete"]
-    : ["typology", "method", "guide", "bbch", "points", "complete"];
+    ? ["bbch", "points", "done"]
+    : ["typology", "method", "guide", "bbch", "points", "done"];
 
   const currentStepKey = steps[stepIndex];
 
@@ -2092,6 +2141,7 @@ export function DetectionForm() {
     }
     if (currentStepKey === "points") {
       const pointsData = data as DetectionStepPointsData;
+      const notesToSave = pointsData.notes ?? formData.detectionData.notes ?? "";
       let detectionTypeId = formData.detectionTypeId;
       if (!detectionTypeId && companyId && fieldId) {
         try {
@@ -2138,6 +2188,7 @@ export function DetectionForm() {
         detectionTypeId: detectionTypeId,
         detectionData: {
           ...formData.detectionData,
+          notes: notesToSave,
           points: pointsData.points ?? [],
           photos: uploadedPhotos,
         },

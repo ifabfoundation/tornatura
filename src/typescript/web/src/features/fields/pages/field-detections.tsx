@@ -67,6 +67,8 @@ export function FieldDetections() {
   );
   console.log("detectionTypes", detectionTypes);
 
+  console.log("detections: ", detections);
+
   const detectionTypeById = React.useMemo(() => {
     return new Map(detectionTypes.map((item) => [item.id, item]));
   }, [detectionTypes]);
