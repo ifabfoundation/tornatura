@@ -14,7 +14,7 @@ import { useLocation, useNavigate, useParams, useSearchParams } from "react-rout
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { headerbarActions } from "../../headerbar/state/headerbar-slice";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { detectionsActions } from "../state/detections-slice";
+import { detectionsActions, detectionsSelectors } from "../state/detections-slice";
 import { fieldsSelectors } from "../../fields/state/fields-slice";
 // import { SearchBox } from "@mapbox/search-js-react";
 import mapboxgl, { LngLatLike, Marker } from "mapbox-gl";
@@ -1662,6 +1662,8 @@ function DetectionStepObservationPoints({
     fieldsSelectors.selectFieldbyId(state, fieldId ?? "default")
   );
   const currentPosition = React.useContext(gpsStore);
+  // lista delle ultime detections per la mappa
+  const latestDetections = useAppSelector((state) => detectionsSelectors.selectDetectionsByTypologyAndMethod(state, observationType?.typology ?? "", observationType?.method ?? ""));
   const [source, setSource] = React.useState<string>("current");
   const [markerPosition, setMarkerPosition] = React.useState<Point>();
   const [rangeLength, setRangeLength] = React.useState<number>(0);

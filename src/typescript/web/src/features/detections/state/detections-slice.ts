@@ -10,6 +10,7 @@ import { getCoreApiConfiguration } from "../../../services/utils";
 import { AuxState } from "../../../hooks";
 import { RootState } from "../../../store";
 import { fieldsSelectors } from "../../fields/state/fields-slice";
+import { detectionTypesSelectors } from "../../detection-types/state/detection-types-slice";
 
 
 const detectionsAdapter = createEntityAdapter<Detection, string>({
@@ -169,6 +170,29 @@ export const detectionsSelectors = {
       (state, orgId) => fieldsSelectors.selectFieldsByOrgId(state, orgId)
     ],
     (detections, fields) => detections.filter((item: Detection) => fields.map(f => f.id).includes(item.agrifieldId))
+  ),
+  selectDetectionByTypeId: createSelector(
+    [
+      selectors.selectAll,
+      (_, detectionTypeId) => detectionTypeId,
+    ],
+    (detections, detectionTypeId) =>
+      detections.filter((item: Detection) => item.detectionTypeId === detectionTypeId)
+  ),
+  selectDetectionsByTypologyAndMethod: createSelector(
+    [
+      selectors.selectAll,
+      (state, typology: string, method: string) =>
+        detectionTypesSelectors.selectDetectionTypesByTypologyAndMethod(
+          state,
+          typology,
+          method
+        ),
+    ],
+    (detections, detectionTypes) => {
+      const detectionTypeIds = new Set(detectionTypes.map((item) => item.id));
+      return detections.filter((item: Detection) => detectionTypeIds.has(item.detectionTypeId));
+    }
   )
 };
 
