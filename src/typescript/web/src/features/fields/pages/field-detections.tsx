@@ -201,7 +201,7 @@ export function FieldDetections() {
                   </header>
 
                   <div className="small-texts d-flex justify-content-between align-items-center mt-4 mb-2">
-                    <div className="label">{`${detections.length} RILEVAMENTI`}</div>
+                    <div className="label">{`${group.items.length} RILEVAMENTI`}</div>
                     <div className="label">{`AGGIORNATO IL ${lastDateString}`}</div>
                   </div>
 
