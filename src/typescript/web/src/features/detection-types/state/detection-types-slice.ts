@@ -154,6 +154,15 @@ export const detectionTypesSelectors = {
     [selectors.selectAll, (_: RootState, fieldId: string) => fieldId],
     (types, fieldId) => types.filter((item) => item.agrifieldId === fieldId)
   ),
+  selectDetectionTypesByTypologyAndMethod: createSelector(
+    [
+      selectors.selectAll,
+      (_: RootState, typology: string) => typology,
+      (_: RootState, _typology: string, method: string) => method,
+    ],
+    (types, typology, method) =>
+      types.filter((item) => item.typology === typology && item.method === method)
+  ),
 };
 
 export const detectionTypesActions = {
