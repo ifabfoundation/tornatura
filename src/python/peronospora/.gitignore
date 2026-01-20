@@ -1,0 +1,28 @@
+# Virtual environment
+venv/
+env/
+*.pyc
+__pycache__/
+
+# Cache and temporary files
+data/weather/cache/
+data/weather/temp_grib/
+data/phenology/phenology_csv/
+data/dataframe_inference/
+
+# Predictions history (grows large)
+predictions/history/
+
+# Logs
+*.log
+nohup.out
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db

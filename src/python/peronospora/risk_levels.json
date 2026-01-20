@@ -1,0 +1,34 @@
+{
+  "1": {
+    "label": "Nessun rischio rilevato",
+    "descrizione": "Condizioni sfavorevoli alla malattia; continuare i controlli di routine.",
+    "colore": "#00cc00"
+  },
+  "2": {
+    "label": "Sorveglianza",
+    "descrizione": "Presenza di alcuni fattori favorevoli; osservare regolarmente il vigneto.",
+    "colore": "#ffff00"
+  },
+  "3": {
+    "label": "Attenzione",
+    "descrizione": "Condizioni potenzialmente favorevoli; aumentare l'attenzione ai controlli.",
+    "colore": "#ffa500"
+  },
+  "4": {
+    "label": "Rischio elevato",
+    "descrizione": "Condizioni favorevoli; monitorare il vigneto con maggiore frequenza.",
+    "colore": "#ff6600"
+  },
+  "5": {
+    "label": "Rischio molto elevato",
+    "descrizione": "Condizioni molto favorevoli; massima attenzione e verificare gli aggiornamenti regionali.",
+    "colore": "#ff0000"
+  },
+  "_metadata": {
+    "versione": "2.0",
+    "data_aggiornamento": "2026-01-14",
+    "descrizione": "Livelli di rischio per peronospora della vite (Plasmopara viticola)",
+    "scala_rischio": "1-5 (da nessun rischio a rischio molto elevato)",
+    "note": "Versione semplificata con descrizioni concise per utilizzo in app"
+  }
+}
