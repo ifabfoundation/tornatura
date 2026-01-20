@@ -167,7 +167,7 @@ const familyRilevamenti = {
     },
     {
       text: "Cimice asiatica / Trappole",
-      state: "selected",
+      state: "",
       path: "/",
     },
   ],
@@ -175,7 +175,7 @@ const familyRilevamenti = {
 const familyModelli = {
   famIcon: "spark" as IconName,
   famText: "Modelli previsionali",
-  famState: "",
+  famState: "selected",
   famItems: [
     {
       text: "Peronospora",

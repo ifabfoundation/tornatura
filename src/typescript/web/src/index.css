@@ -15561,12 +15561,8 @@ body {
   color: #eaff00;
 }
 
-#app .sidebar ul.menu-items li.menu-item-family.selected {
-  background-color: rgba(234, 255, 0, 0.1);
-}
-
-#app .sidebar ul.menu-items li.menu-item-family.selected + .subitems-wrapper ul.menu-items {
-  background-color: rgba(234, 255, 0, 0.1) !important;
+#app .sidebar ul.menu-items li.menu-item-family .arrow-container img {
+  transition: transform 0.2s;
 }
 
 #app .sidebar ul.menu-items li.menu-item-family[data-open="true"] {
@@ -15579,13 +15575,22 @@ body {
   transform: rotate(180deg);
 }
 
+#app .sidebar ul.menu-items li.menu-item-family + .subitems-wrapper {
+  overflow: hidden;
+  margin: 0 -10px;
+  transition: max-height 0.3s ease;
+}
+
 #app .sidebar ul.menu-items li.menu-item-family + .subitems-wrapper ul.menu-items {
   background-color: rgba(255, 255, 255, 0.05);
   margin-top: 0;
-  margin: 0 -10px;
-  padding: 0 20px 10px 20px;
+  padding: 10px 20px 10px 20px;
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
+}
+
+#app .sidebar ul.menu-items li.menu-item-family + .subitems-wrapper ul.menu-items:last-child {
+  margin-bottom: 0px;
 }
 
 #app .sidebar ul.menu-items li.menu-item-family + .subitems-wrapper ul.menu-items .menu-item {
@@ -15596,13 +15601,33 @@ body {
   margin-left: 0;
 }
 
+#app .sidebar ul.menu-items li.menu-item-family.selected {
+  background-color: rgba(234, 255, 0, 0.1);
+}
+
+#app .sidebar ul.menu-items li.menu-item-family.selected + .subitems-wrapper ul.menu-items {
+  background-color: rgba(234, 255, 0, 0.1) !important;
+}
+
+#app .sidebar ul.menu-items li.menu-item-family.selected + .subitems-wrapper ul.menu-items li.menu-item {
+  background-color: rgba(234, 255, 0, 0.05) !important;
+}
+
+#app .sidebar ul.menu-items li.menu-item-family.selected + .subitems-wrapper ul.menu-items li.menu-item:hover {
+  background-color: rgba(234, 255, 0, 0.1) !important;
+}
+
+#app .sidebar ul.menu-items li.menu-item-family.selected + .subitems-wrapper ul.menu-items li.menu-item.selected {
+  background-color: rgba(234, 255, 0, 0.2) !important;
+}
+
 #app .sidebar ul.menu-items li.menu-item + li.menu-item,
 #app .sidebar ul.menu-items li.menu-item + li.menu-item-family,
 #app .sidebar ul.menu-items li.menu-item-family + li.menu-item,
 #app .sidebar ul.menu-items li.menu-item-family + li.menu-item-family,
 #app .sidebar ul.menu-items .subitems-wrapper + li.menu-item,
 #app .sidebar ul.menu-items .subitems-wrapper + li.menu-item-family {
-  margin-top: 3px;
+  margin-top: 5px;
 }
 
 #app .ui-right {

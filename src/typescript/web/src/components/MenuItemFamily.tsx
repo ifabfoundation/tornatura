@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useEffect, useState } from "react";
 import Icon, { IconName } from "../components/Icon";
 import { Link } from "react-router-dom";
 
@@ -29,11 +29,26 @@ function SubmenuItem({ text, state, path }: SubmenuItemProps) {
 }
 
 function MenuItemFamily({ famIcon, famText, famState, famItems }: MenuItemFamilyProps) {
+  const contentRef = useRef<HTMLDivElement | null>(null);
   const [isOpen, setIsOpen] = useState<boolean>(famState == "selected" ? true : false);
 
+  useEffect(() => {
+    if (contentRef.current) {
+      if (isOpen) {
+        // expand to content height
+        contentRef.current.style.maxHeight = contentRef.current.scrollHeight + "px";
+      } else {
+        // collapse to zero height
+        contentRef.current.style.maxHeight = "0px";
+      }
+    }
+  }, [isOpen]);
+
   const className = `menu-item-family ${famState}`;
-  const color = famState == "selected" ? "yellow" : "white";
-  const textClassName = famState == "selected" ? "color-accent" : "color-white";
+  const color = "white";
+  const textClassName = "color-white";
+  // const color = famState == "selected" ? "yellow" : "white";
+  // const textClassName = famState == "selected" ? "color-accent" : "color-white";
 
   return (
     <>
@@ -50,18 +65,14 @@ function MenuItemFamily({ famIcon, famText, famState, famItems }: MenuItemFamily
           <Icon iconName={"darrs"} color={color} />
         </span>
       </li>
-      {isOpen && (
-        <div className="subitems-wrapper">
-          <ul className="menu-items">
-            {famItems.map((item, i) => {
-              const state = item.state === "selected" ? "selected" : "normal";
-              const className = `menu-item ${famState}`;
-
-              return <SubmenuItem key={i} text={item.text} state={state} path={item.path} />;
-            })}
-          </ul>
-        </div>
-      )}
+      <div className="subitems-wrapper" data-open={isOpen ? "true" : "false"} ref={contentRef}>
+        <ul className="menu-items">
+          {famItems.map((item, i) => {
+            const state = item.state === "selected" ? "selected" : "normal";
+            return <SubmenuItem key={i} text={item.text} state={state} path={item.path} />;
+          })}
+        </ul>
+      </div>
     </>
   );
 }

@@ -60,7 +60,8 @@ const AccordionSection: React.FC<SectionProps> = ({ item, isOpen, onToggle }) =>
       <button className="accordion-header" onClick={onToggle}>
         <span className="accordion-header-left">
           {item.icon && <Icon iconName={item.icon} color={"black"} />}
-          {item.icon && <span>&nbsp;</span>}
+          {!item.icon && <span>&nbsp;</span>}
+          <span>&nbsp;</span>
           <span className="accordion-title">{item.title}</span>
         </span>
         <span className={`accordion-arrow ${isOpen ? "open" : ""}`}></span>

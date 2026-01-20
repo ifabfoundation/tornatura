@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from "react";
+import { useMemo, useRef } from "react";
 
 type Point = { x: number; y: number; color: string };
 
@@ -45,10 +45,10 @@ export function GradientLineChart({
       vbHeight -
       (typeof padding === "number" ? padding * 2 : (padding.top ?? 0) + (padding.bottom ?? 0));
     const xScale = (x: number) =>
-      (typeof padding === "number" ? padding : padding.left ?? 0) +
+      (typeof padding === "number" ? padding : (padding.left ?? 0)) +
       ((x - minX) / (maxX - minX || 1)) * innerW;
     const yScale = (y: number) =>
-      (typeof padding === "number" ? padding : padding.top ?? 0) +
+      (typeof padding === "number" ? padding : (padding.top ?? 0)) +
       (1 - (y - minY) / (maxY - minY || 1)) * innerH;
     return data.map((d) => ({ x: xScale(d.x), y: yScale(d.y), color: d.color }));
   }, [data, minX, maxX, minY, maxY, vbWidth, vbHeight, padding]);

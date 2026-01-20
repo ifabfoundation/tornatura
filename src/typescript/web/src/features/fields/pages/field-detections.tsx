@@ -1,8 +1,8 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
-import React, { Fragment, use } from "react";
+import React, { Fragment } from "react";
 import { headerbarActions } from "../../headerbar/state/headerbar-slice";
-import { Card, Col, Container, Row } from "react-bootstrap";
+import { Col, Container, Row } from "react-bootstrap";
 import { detectionsSelectors } from "../../detections/state/detections-slice";
 import { GradientLineChart } from "../../../components/GradientLineChart";
 import {
@@ -61,10 +61,10 @@ export function FieldDetections() {
   const navigate = useNavigate();
   const { fieldId, companyId } = useParams();
   const detections = useAppSelector((state) =>
-    detectionsSelectors.selectDetectionbyFieldId(state, fieldId ?? "default")
+    detectionsSelectors.selectDetectionbyFieldId(state, fieldId ?? "default"),
   );
   const detectionTypes = useAppSelector((state) =>
-    detectionTypesSelectors.selectDetectionTypesByField(state, fieldId ?? "default")
+    detectionTypesSelectors.selectDetectionTypesByField(state, fieldId ?? "default"),
   );
   console.log("detectionTypes", detectionTypes);
 
@@ -168,13 +168,17 @@ export function FieldDetections() {
             var graphData = group.items
               .map((detection, index) => {
                 return {
-                  x: detection.detectionTime,
-                  // x: index,
+                  // Linear time mapping
+                  // x: detection.detectionTime,
+
+                  // Sequential time mapping (better for debugging)
+                  x: index,
+
                   y: getDetectionStats(detection).pointsAvg,
                   color: getColor(
                     groupStats.groupMin,
                     groupStats.groupMax,
-                    getDetectionStats(detection).pointsAvg
+                    getDetectionStats(detection).pointsAvg,
                   ),
                 };
               })

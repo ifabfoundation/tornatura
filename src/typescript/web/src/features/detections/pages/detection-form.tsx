@@ -1687,7 +1687,7 @@ function DetectionStepObservationPoints({
   const [cameraOpen, setCameraOpen] = React.useState(false);
   const [modalOpen, setModalOpen] = React.useState(false);
   const [modal, setModal] = React.useState<any>({});
-  const [activeDataTab, setActiveDataTab] = React.useState<"map" | "list">("list");
+  const [activeDataTab, setActiveDataTab] = React.useState<"map" | "list">("map");
   const [noteValue, setNoteValue] = React.useState(formData.detectionData.notes ?? "");
   const [noteDraft, setNoteDraft] = React.useState(noteValue);
   const [noteModalOpen, setNoteModalOpen] = React.useState(false);
@@ -1905,7 +1905,8 @@ function DetectionStepObservationPoints({
   };
 
   const handleCounterOptionClick = (counterName: string, value: number) => {
-    const newValue = +counterValues[counterName] + value;
+    let newValue = +counterValues[counterName] + value;
+    newValue = Math.max(newValue, 0);
     setCounterValues((prev) => {
       let newCounters: Record<string, string> = {};
       Object.assign(newCounters, prev);
@@ -1995,16 +1996,16 @@ function DetectionStepObservationPoints({
         <h3 className="mb-4 text-center">Aggiungi punti di osservazione</h3>
         <div className="buttons-wrapper mt-3 text-center">
           <button
-            className={`trnt_btn ${activeDataTab === "list" ? "primary" : "secondary"}`}
-            onClick={() => setActiveDataTab("list")}
-          >
-            Dati
-          </button>
-          <button
             className={`trnt_btn ms-2 ${activeDataTab === "map" ? "primary" : "secondary"}`}
             onClick={() => setActiveDataTab("map")}
           >
             Mappa
+          </button>
+          <button
+            className={`trnt_btn ${activeDataTab === "list" ? "primary" : "secondary"}`}
+            onClick={() => setActiveDataTab("list")}
+          >
+            Dati
           </button>
         </div>
         <div className="detection-ui mb-4">
@@ -2041,14 +2042,6 @@ function DetectionStepObservationPoints({
                         <div className="font-xl mt-1 mb-3">{getScoreStat("pianteColpite")}</div>
                         <header className="font-s-label">Intensità media</header>
                         <div className="font-xl mt-1 mb-3">{getScoreStat("intensitaMedia")}</div>
-                        <div className="buttons-wrapper mt-5 text-center">
-                          <button className="trnt_btn primary" onClick={() => setCameraOpen(true)}>
-                            + Foto
-                          </button>
-                          <button className="trnt_btn primary ms-2" onClick={handleOpenNoteModal}>
-                            + Nota
-                          </button>
-                        </div>
                       </Col>
                     </Row>
                   </Container>
@@ -2085,14 +2078,6 @@ function DetectionStepObservationPoints({
                         <div className="font-xl mt-1 mb-3">{getCountersStat("pianteColpite")}</div>
                         <header className="font-s-label">Intensità media</header>
                         <div className="font-xl mt-1 mb-3">{getCountersStat("intensitaMedia")}</div>
-                        <div className="buttons-wrapper mt-5 text-center">
-                          <button className="trnt_btn primary" onClick={() => setCameraOpen(true)}>
-                            + Foto
-                          </button>
-                          <button className="trnt_btn primary ms-2" onClick={handleOpenNoteModal}>
-                            + Nota
-                          </button>
-                        </div>
                       </Col>
                     </Row>
                   </Container>
@@ -2100,6 +2085,16 @@ function DetectionStepObservationPoints({
               )}
             </Fragment>
           )}
+
+          <div className="buttons-wrapper mt-5 text-center">
+            <button className="trnt_btn primary" onClick={() => setCameraOpen(true)}>
+              + Foto
+            </button>
+            <button className="trnt_btn primary ms-2" onClick={handleOpenNoteModal}>
+              + Nota
+            </button>
+          </div>
+
           <div className="detection-inputs">
             <div className="mt-2 mb-3">
               <div className="font-s-label">Osservazione #{scorePoints.length + 1}</div>
@@ -2129,16 +2124,16 @@ function DetectionStepObservationPoints({
                           label={label}
                           buttons={[
                             {
-                              label: "Reset",
-                              onClick: () => handleResetCounterClick(label),
+                              label: "–1",
+                              onClick: () => handleCounterOptionClick(label, -1),
                             },
                             {
                               label: "+1",
                               onClick: () => handleCounterOptionClick(label, 1),
                             },
                             {
-                              label: "+5",
-                              onClick: () => handleCounterOptionClick(label, 5),
+                              label: "Reset",
+                              onClick: () => handleResetCounterClick(label),
                             },
                             {
                               label: "+10",
