@@ -47,12 +47,12 @@ export function CompaniesList() {
       //   text: "I miei inviti",
       //   path: "/invitations/me",
       // },
-      {
-        id: "user",
-        icon: "users",
-        text: "Profilo Utente",
-        path: "/profile",
-      },
+      // {
+      //   id: "user",
+      //   icon: "users",
+      //   text: "Profilo Utente fcl",
+      //   path: "/profile",
+      // },
     ];
 
     dispatch(SidebarActions.setMenuEntriesAction(menuEntries));

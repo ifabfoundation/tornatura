@@ -48,33 +48,33 @@ function MainApp() {
 
       if (currentUser.accountType === AccountTypeEnum.Admin) {
         menuEntries = [
-          {
-            id: "companies",
-            icon: "barn",
-            text: "Aziende",
-            path: "/admin/companies",
-          },
-          {
-            id: "users",
-            icon: "users",
-            text: "Utenti",
-            path: "/admin/users",
-          },
-          {
-            id: "feedbacks",
-            icon: "baloon",
-            text: "Feedbacks",
-            path: "/admin/feedbacks",
-          },
+          // {
+          //   id: "companies",
+          //   icon: "barn",
+          //   text: "Aziende",
+          //   path: "/admin/companies",
+          // },
+          // {
+          //   id: "users",
+          //   icon: "users",
+          //   text: "Utenti",
+          //   path: "/admin/users",
+          // },
+          // {
+          //   id: "feedbacks",
+          //   icon: "baloon",
+          //   text: "Feedbacks",
+          //   path: "/admin/feedbacks",
+          // },
         ];
 
         menuBottomEntries = [
-          {
-            id: "user",
-            icon: "users",
-            text: "Profilo Utente",
-            path: "/profile",
-          },
+          // {
+          //   id: "user",
+          //   icon: "users",
+          //   text: "Profilo Utente fck",
+          //   path: "/profile",
+          // },
         ];
         dispatch(SidebarActions.setMenuEntriesAction(menuEntries));
         dispatch(SidebarActions.setMenuBottomEntriesAction(menuBottomEntries));
@@ -149,7 +149,7 @@ function App() {
                 detectionsActions.fetchFieldDetectionsAction({
                   orgId: org.id,
                   fieldId: field.id,
-                })
+                }),
               );
             }
           }

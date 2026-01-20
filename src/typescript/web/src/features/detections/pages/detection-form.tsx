@@ -39,7 +39,7 @@ import {
 } from "../../detection-texts/state/detection-texts-slice";
 import { gpsStore } from "../../../providers/gps-providers";
 import { getCoreApiConfiguration } from "../../../services/utils";
-import doneIcon from '../../../assets/images/icon-large-done.svg'
+import doneIcon from "../../../assets/images/icon-large-done.svg";
 import { bbchs } from "./bbch";
 import { number, string } from "yup";
 
@@ -200,7 +200,7 @@ function CameraCapture({
         onClose();
       },
       "image/jpeg",
-      0.9
+      0.9,
     );
   };
 
@@ -882,7 +882,7 @@ interface DetectionFormMapProps {
 function DetectionFormMapPosition({ sourceType, onMarkerChange }: DetectionFormMapProps) {
   const { fieldId } = useParams();
   const currentField = useAppSelector((state) =>
-    fieldsSelectors.selectFieldbyId(state, fieldId ?? "default")
+    fieldsSelectors.selectFieldbyId(state, fieldId ?? "default"),
   );
   const mapContainerRef = React.useRef<HTMLDivElement>(null);
   const mapRef = React.useRef<any>(null);
@@ -1148,8 +1148,17 @@ function DetectionFormMapPosition({ sourceType, onMarkerChange }: DetectionFormM
             const polygon = turf.polygon([areaPoints]);
             const p = turf.point([lng, lat]);
 
+            // v1 with annoying useless type error
+            // const boundary = turf.polygonToLine(polygon);
+            // const nearest = turf.nearestPointOnLine(boundary, p);
+
+            // v2 without type error
             const boundary = turf.polygonToLine(polygon);
-            const nearest = turf.nearestPointOnLine(boundary, p);
+            const line =
+              boundary.type === "FeatureCollection"
+                ? boundary.features[0] // or merge them if needed
+                : boundary;
+            const nearest = turf.nearestPointOnLine(line, p);
 
             point = {
               lat: nearest.geometry.coordinates[1],
@@ -1387,7 +1396,7 @@ function DetectionStepPosizione({ action, onNextClick }: DetectionProps) {
   const [modal, setModal] = React.useState<any>({});
   const { fieldId } = useParams();
   const currentField = useAppSelector((state) =>
-    fieldsSelectors.selectFieldbyId(state, fieldId ?? "default")
+    fieldsSelectors.selectFieldbyId(state, fieldId ?? "default"),
   );
 
   const currentPosition = React.useContext(gpsStore);
@@ -1605,9 +1614,9 @@ function DetectionStepBbch({ formData, onNextClick }: DetectionProps) {
   }, [formData]);
 
   const handleBbchSelection = (value: string) => {
-    setBbch(value)
-    onNextClick({ bbch })
-  }
+    setBbch(value);
+    onNextClick({ bbch });
+  };
 
   let items: AccordionItem[] = [];
   items = Object.keys(bbchs).map((key: string, index: number) => {
@@ -1659,11 +1668,17 @@ function DetectionStepObservationPoints({
 }: DetectionProps & { observationType?: ObservationType }) {
   const { fieldId } = useParams();
   const currentField = useAppSelector((state) =>
-    fieldsSelectors.selectFieldbyId(state, fieldId ?? "default")
+    fieldsSelectors.selectFieldbyId(state, fieldId ?? "default"),
   );
   const currentPosition = React.useContext(gpsStore);
   // lista delle ultime detections per la mappa
-  const latestDetections = useAppSelector((state) => detectionsSelectors.selectDetectionsByTypologyAndMethod(state, observationType?.typology ?? "", observationType?.method ?? ""));
+  const latestDetections = useAppSelector((state) =>
+    detectionsSelectors.selectDetectionsByTypologyAndMethod(
+      state,
+      observationType?.typology ?? "",
+      observationType?.method ?? "",
+    ),
+  );
   const [source, setSource] = React.useState<string>("current");
   const [markerPosition, setMarkerPosition] = React.useState<Point>();
   const [rangeLength, setRangeLength] = React.useState<number>(0);
@@ -1693,7 +1708,11 @@ function DetectionStepObservationPoints({
       });
       setCounterValues(defaults);
     }
-    if (observationType.observationType === "range" && observationType.rangeMax && observationType.rangeMin) {
+    if (
+      observationType.observationType === "range" &&
+      observationType.rangeMax &&
+      observationType.rangeMin
+    ) {
       setRangeLength(observationType.rangeMax - observationType.rangeMin);
     }
   }, [observationType]);
@@ -1702,7 +1721,6 @@ function DetectionStepObservationPoints({
     setMarkerPosition(point);
     setSource("map");
   };
-
 
   const validatePointPosition = () => {
     if (!currentField) {
@@ -1742,15 +1760,14 @@ function DetectionStepObservationPoints({
       return;
     }
     const position = source === "current" ? currentPosition : markerPosition;
-    
+
     if (!position || !data.length) {
       return;
     }
     setPoints((prev) => {
-      return [...prev, ...data]
-    
+      return [...prev, ...data];
     });
-  
+
     if (
       observationType &&
       observationType.observationType === "counters" &&
@@ -1788,9 +1805,7 @@ function DetectionStepObservationPoints({
     setNoteModalOpen(true);
   };
 
-  const scorePoints = points.filter(
-    (point: any) => typeof point?.data?.rangeValue === "number"
-  );
+  const scorePoints = points.filter((point: any) => typeof point?.data?.rangeValue === "number");
 
   const handleScoreClick = (score: number, multiplier: number) => {
     const newPoints = Array.from({ length: multiplier }, () => ({
@@ -1833,7 +1848,7 @@ function DetectionStepObservationPoints({
     if (stat === "intensitaMedia") {
       const totalScores = scorePoints.reduce(
         (acc: number, entry: any) => acc + entry.data.rangeValue / (rangeLength + 1),
-        0
+        0,
       );
       const avgScore = totalScores / scorePoints.length;
       const percent = (avgScore * 100).toFixed(1);
@@ -1871,13 +1886,15 @@ function DetectionStepObservationPoints({
   const getCountersStat = (stat: string) => {
     if (points.length === 0) return "-";
     if (stat === "pianteColpite") {
-      const infectedCount = points.map((entry: ObservationPoint) => {
-        let accumulator = 0;
-        entry.data.counters?.forEach((v: any) => {
-          accumulator += v.counterValue;
-        });
-        return accumulator;
-      }).filter((entry: any) => entry > 0).length;
+      const infectedCount = points
+        .map((entry: ObservationPoint) => {
+          let accumulator = 0;
+          entry.data.counters?.forEach((v: any) => {
+            accumulator += v.counterValue;
+          });
+          return accumulator;
+        })
+        .filter((entry: any) => entry > 0).length;
       const percent = ((infectedCount / points.length) * 100).toFixed(1);
       return `${percent}%`;
     }
@@ -1894,8 +1911,8 @@ function DetectionStepObservationPoints({
       Object.assign(newCounters, prev);
       newCounters[counterName] = newValue.toString();
       return newCounters;
-    })
-  }
+    });
+  };
 
   const handleResetCounterClick = (counterName: string) => {
     const newValue = 0;
@@ -1904,16 +1921,16 @@ function DetectionStepObservationPoints({
       Object.assign(newCounters, prev);
       newCounters[counterName] = newValue.toString();
       return newCounters;
-    })
-  }
+    });
+  };
 
   const handleAddCounterValuesClick = () => {
     const counters = Object.keys(counterValues).map((key, _) => {
       return {
         counterName: key,
-        counterValue: +counterValues[key]
-      }
-    })
+        counterValue: +counterValues[key],
+      };
+    });
 
     const point: ObservationPoint = {
       position: {
@@ -1924,10 +1941,10 @@ function DetectionStepObservationPoints({
         rangeValue: 0,
         counters: counters,
       },
-    }
+    };
 
     handleAddPoints([point]);
-  }
+  };
 
   return (
     <Fragment>
@@ -1989,14 +2006,13 @@ function DetectionStepObservationPoints({
           >
             Mappa
           </button>
-        </div>    
+        </div>
         <div className="detection-ui mb-4">
           {activeDataTab === "map" && (
-              <Fragment>
-                <DetectionFormMapPosition sourceType={source} onMarkerChange={handleMarkerChange} />
-              </Fragment>
-            )
-          } 
+            <Fragment>
+              <DetectionFormMapPosition sourceType={source} onMarkerChange={handleMarkerChange} />
+            </Fragment>
+          )}
           {activeDataTab === "list" && (
             <Fragment>
               {observationType.observationType === "range" && (
@@ -2029,10 +2045,7 @@ function DetectionStepObservationPoints({
                           <button className="trnt_btn primary" onClick={() => setCameraOpen(true)}>
                             + Foto
                           </button>
-                          <button
-                            className="trnt_btn primary ms-2"
-                            onClick={handleOpenNoteModal}
-                          >
+                          <button className="trnt_btn primary ms-2" onClick={handleOpenNoteModal}>
                             + Nota
                           </button>
                         </div>
@@ -2041,7 +2054,7 @@ function DetectionStepObservationPoints({
                   </Container>
                 </div>
               )}
-              {observationType.observationType === "counters" && 
+              {observationType.observationType === "counters" && (
                 <div className="detection-scores">
                   <Container className="h-100 p-0">
                     <Row className="h-100">
@@ -2055,7 +2068,12 @@ function DetectionStepObservationPoints({
                             {points.map((entry: any, index: number) => (
                               <div key={index} className="score-entry">
                                 <span className="txt new-score-entry">
-                                <span>#{index + 1}</span> — {entry.data.counters.map((counter: any, keyIndex: number) => (<span className="ms-2" key={keyIndex}>{counter.counterName}: {counter.counterValue}</span>))}
+                                  <span>#{index + 1}</span> —{" "}
+                                  {entry.data.counters.map((counter: any, keyIndex: number) => (
+                                    <span className="ms-2" key={keyIndex}>
+                                      {counter.counterName}: {counter.counterValue}
+                                    </span>
+                                  ))}
                                 </span>
                               </div>
                             ))}
@@ -2071,10 +2089,7 @@ function DetectionStepObservationPoints({
                           <button className="trnt_btn primary" onClick={() => setCameraOpen(true)}>
                             + Foto
                           </button>
-                          <button
-                            className="trnt_btn primary ms-2"
-                            onClick={handleOpenNoteModal}
-                          >
+                          <button className="trnt_btn primary ms-2" onClick={handleOpenNoteModal}>
                             + Nota
                           </button>
                         </div>
@@ -2082,7 +2097,7 @@ function DetectionStepObservationPoints({
                     </Row>
                   </Container>
                 </div>
-              }
+              )}
             </Fragment>
           )}
           <div className="detection-inputs">
@@ -2109,30 +2124,31 @@ function DetectionStepObservationPoints({
                   {Object.keys(counterValues).map((label, index) => {
                     return (
                       <Col key={index}>
-                        <ButtonGroupGrid 
+                        <ButtonGroupGrid
                           value={+counterValues[label]}
                           label={label}
-                          buttons={[{
+                          buttons={[
+                            {
                               label: "Reset",
-                              onClick: () => handleResetCounterClick(label)
+                              onClick: () => handleResetCounterClick(label),
                             },
                             {
                               label: "+1",
-                              onClick: () => handleCounterOptionClick(label, 1)
+                              onClick: () => handleCounterOptionClick(label, 1),
                             },
                             {
                               label: "+5",
-                              onClick: () => handleCounterOptionClick(label, 5)
+                              onClick: () => handleCounterOptionClick(label, 5),
                             },
                             {
                               label: "+10",
-                              onClick: () => handleCounterOptionClick(label, 10)
-                            }
+                              onClick: () => handleCounterOptionClick(label, 10),
+                            },
                           ]}
                         />
                       </Col>
-                    )}
-                  )}
+                    );
+                  })}
                 </Row>
                 <div className="mt-3">
                   <CozyButton
@@ -2141,8 +2157,8 @@ function DetectionStepObservationPoints({
                     onClick={() => handleAddCounterValuesClick()}
                   />
                 </div>
-              </Fragment>)
-            }
+              </Fragment>
+            )}
           </div>
         </div>
       </div>
@@ -2197,21 +2213,21 @@ export function DetectionForm() {
   });
   const [pendingPhotos, setPendingPhotos] = React.useState<File[]>([]);
   const [selectedTypology, setSelectedTypology] = React.useState(() =>
-    hasPreselection ? preselectedTypology : ""
+    hasPreselection ? preselectedTypology : "",
   );
   const [selectedMethod, setSelectedMethod] = React.useState(() =>
-    hasPreselection ? preselectedMethod : ""
+    hasPreselection ? preselectedMethod : "",
   );
   const [useShortFlow, setUseShortFlow] = React.useState(false);
 
   const detectionTypes = useAppSelector((state) =>
-    detectionTypesSelectors.selectDetectionTypesByField(state, fieldId ?? "default")
+    detectionTypesSelectors.selectDetectionTypesByField(state, fieldId ?? "default"),
   );
   const detectionTexts = useAppSelector((state) =>
-    detectionTextsSelectors.selectDetectionTexts(state)
+    detectionTextsSelectors.selectDetectionTexts(state),
   );
   const observationTypes = useAppSelector((state) =>
-    observationTypesSelectors.selectObservationTypes(state)
+    observationTypesSelectors.selectObservationTypes(state),
   );
 
   React.useEffect(() => {
@@ -2229,7 +2245,7 @@ export function DetectionForm() {
   React.useEffect(() => {
     if (hasPreselection) {
       const matchingType = detectionTypes.find(
-        (item) => item.typology === preselectedTypology && item.method === preselectedMethod
+        (item) => item.typology === preselectedTypology && item.method === preselectedMethod,
       );
       if (matchingType) {
         setFormData((prev) => ({
@@ -2249,8 +2265,8 @@ export function DetectionForm() {
   const steps = useShortFlow
     ? ["bbch", "points", "done"]
     : hasPreselection
-    ? ["bbch", "points", "done"]
-    : ["typology", "method", "guide", "bbch", "points", "done"];
+      ? ["bbch", "points", "done"]
+      : ["typology", "method", "guide", "bbch", "points", "done"];
 
   const currentStepKey = steps[stepIndex];
 
@@ -2275,16 +2291,16 @@ export function DetectionForm() {
     detectionTextsSelectors.selectDetectionTextsByTypologyAndMethod(
       state,
       selectedTypology,
-      selectedMethod
-    )
+      selectedMethod,
+    ),
   )[0];
 
   const observationType = useAppSelector((state) =>
     observationTypesSelectors.selectObservationTypesByTypologyAndMethod(
       state,
       selectedTypology,
-      selectedMethod
-    )
+      selectedMethod,
+    ),
   )[0];
 
   const createDetectionAction = async (payload: DetectionMutationPayload) => {
@@ -2295,9 +2311,8 @@ export function DetectionForm() {
             orgId: companyId,
             fieldId: fieldId,
             body: payload,
-          })
-        )
-
+          }),
+        );
       } catch (reason) {
         console.error("Error creating detection with reason: ", reason);
       }
@@ -2359,7 +2374,7 @@ export function DetectionForm() {
                 typology: selectedTypology,
                 method: selectedMethod,
               },
-            })
+            }),
           ).then(unwrapResult);
           detectionTypeId = created.id;
           setFormData((prev) => ({
@@ -2454,9 +2469,7 @@ export function DetectionForm() {
             onPhotosChange={setPendingPhotos}
           />
         )}
-        {currentStepKey === "done" && (
-          <DetectionStepDone />
-        )}
+        {currentStepKey === "done" && <DetectionStepDone />}
       </div>
     </Fragment>
   );

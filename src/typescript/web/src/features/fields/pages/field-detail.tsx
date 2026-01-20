@@ -23,26 +23,26 @@ export function FieldDetail() {
         text: "Dashboard campo",
         path: `/companies/${companyId}/fields/${fieldId}`,
       },
-      {
-        id: "detections",
-        icon: "checklist",
-        text: "Rilevamenti campo",
-        path: `/companies/${companyId}/fields/${fieldId}/detections`,
-      },
-      {
-        id: "mappa",
-        icon: "pin",
-        text: "Mappa",
-        path: `/companies/${companyId}/fields/${fieldId}/map`,
-      },
+      // {
+      //   id: "detections",
+      //   icon: "checklist",
+      //   text: "Rilevamenti campo",
+      //   path: `/companies/${companyId}/fields/${fieldId}/detections`,
+      // },
+      // {
+      //   id: "mappa",
+      //   icon: "pin",
+      //   text: "Mappa",
+      //   path: `/companies/${companyId}/fields/${fieldId}/map`,
+      // },
+    ];
+    menuBottomEntries = [
       {
         id: "impostazioni",
         icon: "cog",
         text: "Impostazioni campo",
         path: `/companies/${companyId}/fields/${fieldId}/settings`,
       },
-    ];
-    menuBottomEntries = [
       {
         id: "feedback",
         icon: "baloon",
@@ -55,12 +55,12 @@ export function FieldDetail() {
       //   text: "I miei inviti",
       //   path: `/companies/${companyId}/fields/${fieldId}/invitations/me`,
       // },
-      {
-        id: "user",
-        icon: "users",
-        text: "Profilo Utente",
-        path: `/companies/${companyId}/fields/${fieldId}/profile`,
-      },
+      // {
+      //   id: "user",
+      //   icon: "users",
+      //   text: "Profilo Utente fch",
+      //   path: `/companies/${companyId}/fields/${fieldId}/profile`,
+      // },
     ];
     dispatch(SidebarActions.setMenuEntriesAction(menuEntries));
     dispatch(SidebarActions.setMenuBottomEntriesAction(menuBottomEntries));

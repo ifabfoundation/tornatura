@@ -37,14 +37,14 @@ export function CompanyDetail() {
           text: "Gestione inviti azienda",
           path: `/companies/${companyId}/invitations`,
         },
+      ];
+      menuBottomEntries = [
         {
           id: "settings",
           icon: "cog",
-          text: "Impostazioni",
+          text: "Impostazioni Azienda",
           path: `/companies/${companyId}/settings`,
         },
-      ];
-      menuBottomEntries = [
         {
           id: "feedback",
           icon: "baloon",
@@ -57,12 +57,12 @@ export function CompanyDetail() {
         //   text: "I miei inviti",
         //   path: `/companies/${companyId}/invitations/me`,
         // },
-        {
-          id: "user",
-          icon: "users",
-          text: "Profilo Utente",
-          path: `/companies/${companyId}/profile`,
-        },
+        // {
+        //   id: "user",
+        //   icon: "users",
+        //   text: "Profilo Utente fcj",
+        //   path: `/companies/${companyId}/profile`,
+        // },
       ];
       dispatch(SidebarActions.setMenuEntriesAction(menuEntries));
       dispatch(SidebarActions.setMenuBottomEntriesAction(menuBottomEntries));
