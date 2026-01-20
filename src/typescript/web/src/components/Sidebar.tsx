@@ -1,6 +1,7 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import React, { useState, Fragment, useRef } from "react";
 import MenuItem from "./MenuItem";
+import MenuItemFamily from "./MenuItemFamily";
 import logo from "../assets/images/logo-full-white-color.svg";
 import { IconName } from "./Icon";
 import { useAppDispatch, useAppSelector } from "../hooks";
@@ -68,7 +69,7 @@ function CompanySelector() {
       <div ref={ref} className="context-selector-options-list">
         {companies.map((company) => {
           const fields = useAppSelector((state) =>
-            fieldsSelectors.selectFieldsByOrgId(state, company.orgId)
+            fieldsSelectors.selectFieldsByOrgId(state, company.orgId),
           );
           const selected = company.orgId === companyId;
           return (
@@ -154,6 +155,51 @@ function FieldSelector() {
   );
 }
 
+const familyRilevamenti = {
+  famIcon: "checklist" as IconName,
+  famText: "Rilevamenti",
+  famState: "",
+  famItems: [
+    {
+      text: "Peronospora / Foglia",
+      state: "",
+      path: "/",
+    },
+    {
+      text: "Cimice asiatica / Trappole",
+      state: "selected",
+      path: "/",
+    },
+  ],
+};
+const familyModelli = {
+  famIcon: "spark" as IconName,
+  famText: "Modelli previsionali",
+  famState: "",
+  famItems: [
+    {
+      text: "Peronospora",
+      state: "",
+      path: "/modelli/peronospora",
+    },
+    {
+      text: "Cimice asiatica",
+      state: "selected",
+      path: "/modelli/cimice-asiatica",
+    },
+    {
+      text: "Flavescenza dorata",
+      state: "",
+      path: "/modelli/flavescenza-dorata",
+    },
+    {
+      text: "Diabrotica",
+      state: "",
+      path: "/modelli/diabrotica",
+    },
+  ],
+};
+
 export default function SideBar() {
   const navigate = useNavigate();
   let location = useLocation();
@@ -219,8 +265,30 @@ export default function SideBar() {
                   />
                 );
               })}
+
+              <MenuItemFamily
+                famIcon={familyRilevamenti.famIcon}
+                famText={familyRilevamenti.famText}
+                famState={familyRilevamenti.famState}
+                famItems={familyRilevamenti.famItems}
+              />
+
+              <MenuItemFamily
+                famIcon={familyModelli.famIcon}
+                famText={familyModelli.famText}
+                famState={familyModelli.famState}
+                famItems={familyModelli.famItems}
+              />
             </ul>
           </div>
+
+          {/* <MenuItemFamily
+            famIcon={testFamily.famIcon}
+            famText={testFamily.famText}
+            famState={"selected"}
+            famItems={testFamily.famItems}
+          /> */}
+
           <ul className="menu-items">
             {menuBottomEntries.map((item, i) => {
               const state = currentEntry === item.id ? "selected" : "normal";
