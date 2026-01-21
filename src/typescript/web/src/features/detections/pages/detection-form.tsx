@@ -2696,13 +2696,13 @@ export function DetectionForm() {
     }
   };
 
+  const stepperItems = useShortFlow
+    ? ["BBCH", "Rilevamento"]
+    : ["Tipologia", "Metodo", "Guida", "BBCH", "Rilevamento"];
+
   return (
     <Fragment>
-      <Stepper
-        items={["Tipologia", "Metodo", "Guida", "BBCH", "Rilevamento"]}
-        currentStep={stepIndex}
-        handleBackClick={handleBackClick}
-      />
+      <Stepper items={stepperItems} currentStep={stepIndex} handleBackClick={handleBackClick} />
 
       <div>
         {currentStepKey === "typology" && (
