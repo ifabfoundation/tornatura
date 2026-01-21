@@ -547,6 +547,26 @@ body {
     }
   }
 
+  .fixed-bottom {
+    position: fixed;
+    background-color: #fff;
+    bottom: 0;
+    left: 0;
+    @include media-breakpoint-up(lg) {
+      left: 320px;
+    }
+    right: 0;
+    @media screen and (min-width: 1800px) {
+      max-width: calc(1600px - 320px);
+      left: calc((100% - 1600px) / 2 + 320px);
+    }
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    box-shadow: 0 -20px 0px rgba(0, 0, 0, 0.1);
+  }
+
   .form-section {
     max-width: $cont-w;
     margin-left: auto;

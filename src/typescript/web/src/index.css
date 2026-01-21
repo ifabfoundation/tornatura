@@ -13784,6 +13784,32 @@ body {
   justify-content: center;
 }
 
+#app .fixed-bottom {
+  position: fixed;
+  background-color: #fff;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  box-shadow: 0 -20px 0px rgba(0, 0, 0, 0.1);
+}
+
+@media (min-width: 992px) {
+  #app .fixed-bottom {
+    left: 320px;
+  }
+}
+
+@media screen and (min-width: 1800px) {
+  #app .fixed-bottom {
+    max-width: calc(1600px - 320px);
+    left: calc((100% - 1600px) / 2 + 320px);
+  }
+}
+
 #app .form-section {
   max-width: 800px;
   margin-left: auto;

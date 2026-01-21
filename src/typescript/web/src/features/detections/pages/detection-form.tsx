@@ -1829,7 +1829,7 @@ function DetectionStepGuide({
       ) : (
         <div>Nessuna guida disponibile per questa tipologia e metodo.</div>
       )}
-      <div className="buttons-wrapper mt-4 text-center">
+      <div className="fixed-bottom mt-4 text-center">
         <button className="trnt_btn primary" onClick={() => onNextClick({})}>
           Avanti
         </button>
