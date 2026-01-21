@@ -115,6 +115,10 @@ class PeronospotaPredictor:
         results['prec'] = df['prec'].round(1)
         results['rh'] = df['rh'].round(1)
         results['lw'] = df['lw'].round(0).astype(int)
+        
+        # Fenologia                                                                                                              
+        results['bbch_code'] = df['bbch_code'].round(0).astype(int)                                                              
+        results['plant_susceptibility'] = df['plant_susceptibility'].round(2)  
 
         return results
 

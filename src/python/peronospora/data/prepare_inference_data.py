@@ -40,14 +40,19 @@ warnings.filterwarnings('ignore')
 # CONFIGURATION
 # =============================================================================
 
-SCRIPT_DIR = Path(__file__).parent
-WEATHER_DIR = SCRIPT_DIR / "weather"
-CACHE_DIR = WEATHER_DIR / "cache"
-CACHE_HOURLY_DIR = CACHE_DIR / "hourly"
-CACHE_DAILY_DIR = CACHE_DIR / "daily"
-PHENOLOGY_CSV_DIR = SCRIPT_DIR / "phenology" / "phenology_csv"
-INFERENCE_DIR = SCRIPT_DIR / "dataframe_inference"
-TEMP_DIR = WEATHER_DIR / "temp_grib"
+PACKAGE_ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(PACKAGE_ROOT))
+
+from peronospora import paths
+
+SCRIPT_DIR = paths.DATA_DIR
+WEATHER_DIR = paths.WEATHER_DIR
+CACHE_DIR = paths.CACHE_DIR
+CACHE_HOURLY_DIR = paths.CACHE_HOURLY_DIR
+CACHE_DAILY_DIR = paths.CACHE_DAILY_DIR
+PHENOLOGY_CSV_DIR = paths.PHENOLOGY_CSV_DIR
+INFERENCE_DIR = paths.INFERENCE_DIR
+TEMP_DIR = paths.TEMP_DIR
 
 S3_BUCKET = 'ecmwf-data-forecast'
 
@@ -444,13 +449,13 @@ def calculate_phenology_from_jan1(province_name, df_daily, df_hourly):
     """
     Calculate phenology and infections from January 1st.
     """
-    from dormancy import Dormancy
-    from forcing import Forcing
-    from infections.rule310 import Rule310
-    from infections.misfits import Misfits
-    from infections.dmcast import DMCast
-    from data_structures import InputDaily, Input, Output
-    from readers import ParametersReader
+    from peronospora.data.phenology.dormancy import Dormancy
+    from peronospora.data.phenology.forcing import Forcing
+    from peronospora.data.phenology.infections.rule310 import Rule310
+    from peronospora.data.phenology.infections.misfits import Misfits
+    from peronospora.data.phenology.infections.dmcast import DMCast
+    from peronospora.data.phenology.data_structures import InputDaily, Input, Output
+    from peronospora.data.phenology.readers import ParametersReader
 
     # Load parameters
     params_file = str(PHENOLOGY_DIR / "parameters" / "octoPusParameters.csv")

@@ -38,12 +38,17 @@ Version: 2.0
 
 import os
 import sys
-import subprocess
 import logging
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from apscheduler.schedulers.blocking import BlockingScheduler
 from apscheduler.triggers.cron import CronTrigger
+
+PACKAGE_ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(PACKAGE_ROOT))
+
+from peronospora.inference_service import run_inference_pipeline as run_pipeline
+from peronospora import paths
 
 
 # =============================================================================
@@ -55,12 +60,7 @@ from apscheduler.triggers.cron import CronTrigger
 # Percorsi file
 SCRIPT_DIR = Path(__file__).parent.resolve()      # Directory dello scheduler
 PIPELINE_SCRIPT = SCRIPT_DIR / "run_inference_pipeline.py"  # Script principale
-LOG_DIR = SCRIPT_DIR / "logs"                      # Directory per i log
-
-# Percorso Python del virtual environment
-# NOTA: Cerca prima nella directory corrente, poi nella parent
-VENV_PYTHON = SCRIPT_DIR / "venv" / "bin" / "python"
-VENV_PYTHON_ALT = SCRIPT_DIR.parent / "venv" / "bin" / "python"
+LOG_DIR = paths.RUNTIME_DIR / "logs"               # Directory per i log
 
 # Configurazione orario esecuzione
 SCHEDULE_HOUR = 9       # Ora di esecuzione (09:00)
@@ -185,26 +185,6 @@ def check_todays_data_available():
 # Funzioni per eseguire la pipeline di inferenza come sottoprocesso.
 # Include gestione errori, timeout, e logging dettagliato.
 
-def get_python_executable():
-    """
-    Determina quale eseguibile Python usare.
-    
-    Priorità:
-    1. venv nella directory corrente (./venv/bin/python)
-    2. venv nella directory parent (../venv/bin/python)
-    3. Python corrente del sistema (sys.executable)
-    
-    Returns:
-        str: Percorso all'eseguibile Python
-    """
-    if VENV_PYTHON.exists():
-        return str(VENV_PYTHON)
-    elif VENV_PYTHON_ALT.exists():
-        return str(VENV_PYTHON_ALT)
-    else:
-        return sys.executable
-
-
 def run_inference_pipeline():
     """
     Esegue la pipeline di inferenza completa.
@@ -238,49 +218,13 @@ def run_inference_pipeline():
         logger.warning("Dati di oggi non ancora disponibili. "
                       "Esecuzione comunque (userà cache + dati disponibili)")
 
-    # Step 2: Verifica esistenza script pipeline
-    if not PIPELINE_SCRIPT.exists():
-        logger.error(f"Script pipeline non trovato: {PIPELINE_SCRIPT}")
-        return False
-
-    # Step 3: Determina Python da usare
-    python_exec = get_python_executable()
-    logger.info(f"Python: {python_exec}")
-
-    # Step 4: Esegue pipeline
+    # Step 2: Esegue pipeline in-process
     try:
-        logger.info(f"Esecuzione: {PIPELINE_SCRIPT}")
-
-        result = subprocess.run(
-            [python_exec, str(PIPELINE_SCRIPT)],
-            cwd=str(SCRIPT_DIR),
-            capture_output=True,
-            text=True,
-            timeout=PIPELINE_TIMEOUT
-        )
-
-        # Step 5: Log output pipeline
-        if result.stdout:
-            for line in result.stdout.strip().split('\n'):
-                logger.info(f"[PIPELINE] {line}")
-
-        if result.stderr:
-            for line in result.stderr.strip().split('\n'):
-                if line.strip():
-                    logger.warning(f"[PIPELINE STDERR] {line}")
-
-        # Step 6: Verifica risultato
-        if result.returncode == 0:
-            elapsed = datetime.now() - start_time
-            logger.info(f"Pipeline completata con successo in {elapsed.total_seconds():.1f}s")
-            return True
-        else:
-            logger.error(f"Pipeline fallita con codice: {result.returncode}")
-            return False
-
-    except subprocess.TimeoutExpired:
-        logger.error(f"Pipeline timeout dopo {PIPELINE_TIMEOUT // 60} minuti")
-        return False
+        logger.info("Esecuzione pipeline (in-process)")
+        run_pipeline()
+        elapsed = datetime.now() - start_time
+        logger.info(f"Pipeline completata con successo in {elapsed.total_seconds():.1f}s")
+        return True
     except Exception as e:
         logger.error(f"Errore esecuzione pipeline: {str(e)}")
         return False

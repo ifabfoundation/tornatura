@@ -24,10 +24,10 @@ from pathlib import Path
 import warnings
 warnings.filterwarnings('ignore')
 
-from data_structures import InputDaily, Output
-from parameters_loader import load_parameters
-from dormancy import Dormancy
-from forcing import Forcing
+from peronospora.data.phenology.data_structures import InputDaily, Output
+from peronospora.data.phenology.parameters_loader import load_parameters
+from peronospora.data.phenology.dormancy import Dormancy
+from peronospora.data.phenology.forcing import Forcing
 
 
 def extract_daily_temperatures(ds: xr.Dataset) -> pd.DataFrame:

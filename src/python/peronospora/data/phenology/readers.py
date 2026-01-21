@@ -12,7 +12,7 @@ from typing import Dict, List, Tuple
 import sys
 import os
 
-from data_structures import (
+from peronospora.data.phenology.data_structures import (
     Parameters, PhenologyParameters, BBCHParameter, BBCHSusceptibilityParameter,
     Rule310Parameters, LaoreParameters, MisfitsParameters, DMCastParameters,
     EPIParameters, IPIParameters, MagareyParameters, UCSCParameters, InputDaily, Input

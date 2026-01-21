@@ -13,8 +13,15 @@ import warnings
 warnings.filterwarnings('ignore')
 
 
+import sys
+
+PACKAGE_ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(PACKAGE_ROOT))
+
+from peronospora import paths
+
 # Load risk levels configuration
-SCRIPT_DIR = Path(__file__).parent
+SCRIPT_DIR = paths.PACKAGE_DIR
 with open(SCRIPT_DIR / "risk_levels.json", 'r', encoding='utf-8') as f:
     RISK_CONFIG = json.load(f)
 
@@ -42,9 +49,11 @@ def get_label_from_level(level: int) -> str:
     return RISK_CONFIG.get(str(level), {}).get("label", "Unknown")
 
 
-def load_all_predictions(predictions_dir='predictions'):
+def load_all_predictions(predictions_dir=None):
     """Carica le predizioni per tutti i lead (0, 1)"""
     all_predictions = {}
+    if predictions_dir is None:
+        predictions_dir = paths.PREDICTIONS_DIR
 
     for lead in [0, 1]:
         file_path = Path(predictions_dir) / f'lead_{lead}.csv'
@@ -82,9 +91,13 @@ def load_all_predictions(predictions_dir='predictions'):
 
 def load_emilia_romagna_shapefile():
     """Carica shapefile province italiane e filtra Emilia-Romagna."""
-    local_shapefile = Path('data/weather/shapefiles/province_emilia_romagna.shp')
+    static_shapefile = paths.STATIC_DATA_DIR / "weather" / "shapefiles" / "province_emilia_romagna.shp"
+    local_shapefile = paths.WEATHER_DIR / "shapefiles" / "province_emilia_romagna.shp"
 
-    if local_shapefile.exists():
+    if static_shapefile.exists():
+        gdf = gpd.read_file(static_shapefile)
+        print(f"✓ Loaded shapefile from {static_shapefile}")
+    elif local_shapefile.exists():
         gdf = gpd.read_file(local_shapefile)
         print(f"✓ Loaded shapefile from {local_shapefile}")
     else:
@@ -205,7 +218,9 @@ def create_legend_html():
     return html
 
 
-def create_satellite_map_all_weeks(all_predictions, gdf, output_file='risk_map_satellite.html'):
+def create_satellite_map_all_weeks(all_predictions, gdf, output_file=None):
+    if output_file is None:
+        output_file = str(paths.RISK_MAP_PATH)
     """Crea mappa interattiva con satellite imagery e navigazione tra settimane"""
 
     center_lat = 44.5

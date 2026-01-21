@@ -1,4 +1,4 @@
-from data_structures import InputDaily, Parameters, Output
+from peronospora.data.phenology.data_structures import InputDaily, Parameters, Output
 
 class Dormancy:
     """

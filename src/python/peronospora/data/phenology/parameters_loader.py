@@ -8,7 +8,7 @@ Loads parameters from CSV files:
 
 import os
 import pandas as pd
-from data_structures import (
+from peronospora.data.phenology.data_structures import (
     Parameters, BBCHParameter, BBCHSusceptibilityParameter,
     Rule310Parameters, LaoreParameters, MisfitsParameters,
     DMCastParameters, EPIParameters, IPIParameters,
