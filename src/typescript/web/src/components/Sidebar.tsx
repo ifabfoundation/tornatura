@@ -239,7 +239,7 @@ export default function SideBar() {
           <div className="flex-grow-1 mt-1">
             <img
               src={logo}
-              className="logo"
+              className="logo pointer"
               alt="logo"
               width="135px"
               onClick={() => navigate("/")}

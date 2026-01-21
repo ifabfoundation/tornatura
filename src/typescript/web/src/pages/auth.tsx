@@ -1,7 +1,14 @@
 import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { AccountTypeEnum, Configuration, InvitationPublic, InvitationValidateResponse, UserCreatePayload, UsersApi } from "@tornatura/coreapis";
+import {
+  AccountTypeEnum,
+  Configuration,
+  InvitationPublic,
+  InvitationValidateResponse,
+  UserCreatePayload,
+  UsersApi,
+} from "@tornatura/coreapis";
 import { useNavigate } from "react-router-dom";
 import { Button, Col, Container, Row } from "react-bootstrap";
 import keycloakInstance from "../providers/keycloak";
@@ -9,9 +16,10 @@ import TopHeader from "../components/TopHeader";
 import { invitationsActions } from "../features/invitations/state/invitations-slice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useAppDispatch } from "../hooks";
+import Stepper from "../components/Stepper";
 
-
-const PhoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
+const PhoneRegExp =
+  /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 const PivaRegExp = /^\d{11}$/;
 
 interface SignupProps {
@@ -100,9 +108,13 @@ function SignupStep3({ formData, action, onBackClick, onNextClick }: SignupProps
     },
     validationSchema: Yup.object({
       name: Yup.string().required("Campo obbligatorio"),
-      piva: Yup.string().matches(PivaRegExp, "Partita IVA non valida").required("Campo obbligatorio"),
+      piva: Yup.string()
+        .matches(PivaRegExp, "Partita IVA non valida")
+        .required("Campo obbligatorio"),
       email: Yup.string().email("Email non valida").required("Campo obbligatorio"),
-      phone: Yup.string().matches(PhoneRegExp, "Telefono non valido").required("Campo obbligatorio"),
+      phone: Yup.string()
+        .matches(PhoneRegExp, "Telefono non valido")
+        .required("Campo obbligatorio"),
     }),
     onSubmit: (values, { setSubmitting, resetForm }) => {
       onNextClick(values)
@@ -118,7 +130,7 @@ function SignupStep3({ formData, action, onBackClick, onNextClick }: SignupProps
     },
   });
 
-  React.useEffect(() => { 
+  React.useEffect(() => {
     formik.setValues({
       name: formData.organization?.name || "",
       piva: formData.organization?.piva || "",
@@ -215,14 +227,16 @@ function SignupStep2({ formData, action, onBackClick, onNextClick }: SignupProps
       lastName: "",
       email: "",
       piva: "",
-      phone: ""
+      phone: "",
     },
     validationSchema: Yup.object({
       firstName: Yup.string().required("Campo obbligatorio"),
       lastName: Yup.string().required("Campo obbligatorio"),
       email: Yup.string().email("Email non valida").required("Campo obbligatorio"),
-      phone: Yup.string().matches(PhoneRegExp, "Telefono non valido").required("Campo obbligatorio"),
-      piva: Yup.string().matches(PivaRegExp, "Partita IVA non valida")
+      phone: Yup.string()
+        .matches(PhoneRegExp, "Telefono non valido")
+        .required("Campo obbligatorio"),
+      piva: Yup.string().matches(PivaRegExp, "Partita IVA non valida"),
     }),
     onSubmit: (values, { setSubmitting, setErrors }) => {
       if (!values.piva && formData.accountType === AccountTypeEnum.Agronomist) {
@@ -240,7 +254,7 @@ function SignupStep2({ formData, action, onBackClick, onNextClick }: SignupProps
       lastName: formData.lastName || "",
       email: formData.email || "",
       piva: formData.piva || "",
-      phone: formData.phone || ""
+      phone: formData.phone || "",
     });
   }, [formData]);
 
@@ -396,7 +410,7 @@ export function Signup() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [step, setStep] = React.useState(1);
-  const [flow, setFlow] = React.useState<string>("Standard")
+  const [flow, setFlow] = React.useState<string>("Standard");
   const [invitation, setInvitation] = React.useState<InvitationPublic>();
   const [invitationToken, setInvitationToken] = React.useState<string>();
   const [formData, setFormData] = React.useState<UserCreatePayload>({
@@ -408,7 +422,6 @@ export function Signup() {
     phone: "",
   });
 
-
   React.useEffect(() => {
     const session = sessionStorage.getItem("pending_invitation_token");
     let token = undefined;
@@ -416,38 +429,41 @@ export function Signup() {
       const invitation_token = JSON.parse(session);
       if (invitation_token.has_pending_invitation) {
         token = invitation_token.pending_invitation_token;
-        console.log(token, invitation_token)
-        setInvitationToken(token)
+        console.log(token, invitation_token);
+        setInvitationToken(token);
         dispatch(invitationsActions.validateInvitationTokenAction(token))
-        .then(unwrapResult)
-        .then((response: InvitationValidateResponse) => {
-          if (response.valid) {
-            setInvitation(response.invitation);
-            if (response.invitation) {
-              setFormData(v => {
-                let r = v;
-                if (response.invitation?.email) {
-                  r = {...v, email: response.invitation?.email}
-                }
-                if (response.invitation?.role === "agronomist-access") {
-                  r = {...r, accountType: AccountTypeEnum.Agronomist}
-                } else {
-                  r = {...r, accountType: AccountTypeEnum.Standard}
-                }
-                return r;
-              });
-            } 
-          } else {
-            sessionStorage.removeItem("pending_invitation_token");
-          }
-        })
+          .then(unwrapResult)
+          .then((response: InvitationValidateResponse) => {
+            if (response.valid) {
+              setInvitation(response.invitation);
+              if (response.invitation) {
+                setFormData((v) => {
+                  let r = v;
+                  if (response.invitation?.email) {
+                    r = { ...v, email: response.invitation?.email };
+                  }
+                  if (response.invitation?.role === "agronomist-access") {
+                    r = { ...r, accountType: AccountTypeEnum.Agronomist };
+                  } else {
+                    r = { ...r, accountType: AccountTypeEnum.Standard };
+                  }
+                  return r;
+                });
+              }
+            } else {
+              sessionStorage.removeItem("pending_invitation_token");
+            }
+          });
       }
     }
   }, []);
 
   React.useEffect(() => {
-    if (invitation) {  
-      if (invitation.role === "company-standard-access" || invitation.role === "company-manager-access") {
+    if (invitation) {
+      if (
+        invitation.role === "company-standard-access" ||
+        invitation.role === "company-manager-access"
+      ) {
         setFlow("Simple");
       }
     }
@@ -457,7 +473,7 @@ export function Signup() {
     const apiConfig = new Configuration({ basePath: `${COREAPIS_BASE_PATH}` });
     const usersApi = new UsersApi(apiConfig);
     const response = await usersApi.registerUser(payload);
-    
+
     if (response.status === 201) {
       if (flow === "Standard") {
         setStep(5);
@@ -522,7 +538,7 @@ export function Signup() {
         };
         setFormData(payload);
         setStep(step + 1);
-      }  else if (step === 2) {
+      } else if (step === 2) {
         await createAccountAction(formData);
       }
     }
@@ -552,7 +568,7 @@ export function Signup() {
     // If there's an invitation token, redirect to accept page after login
     if (invitationToken) {
       const redirectUri = `${window.location.origin}/invitations/accept?token=${invitationToken}`;
-      await keycloakInstance.login({ redirectUri: redirectUri});
+      await keycloakInstance.login({ redirectUri: redirectUri });
     } else {
       await keycloakInstance.login({ redirectUri: window.location.origin });
     }
@@ -565,47 +581,10 @@ export function Signup() {
           <TopHeader />
           <div className="content-area">
             <div className="content">
-              {/* <Container>
-                <Row>
-                  <Col></Col>
-                  <Col md={auto}> */}
-              <ol className="stepper" data-steps={5}>
-                <li
-                  data-step-num="1"
-                  data-done={step > 1 ? "true" : "false"}
-                  data-current={step == 1 ? "true" : "false"}
-                >
-                  <span>Profilo</span>
-                </li>
-                <li
-                  data-step-num="2"
-                  data-done={step > 2 ? "true" : "false"}
-                  data-current={step == 2 ? "true" : "false"}
-                >
-                  <span>Dati Personali</span>
-                </li>
-                <li
-                  data-step-num="3"
-                  data-done={step > 3 ? "true" : "false"}
-                  data-current={step == 3 ? "true" : "false"}
-                >
-                  <span>Dati Aziendali</span>
-                </li>
-                <li
-                  data-step-num="4"
-                  data-done={step > 4 ? "true" : "false"}
-                  data-current={step == 4 ? "true" : "false"}
-                >
-                  <span>Consensi</span>
-                </li>
-                <li
-                  data-step-num="5"
-                  data-done={step > 5 ? "true" : "false"}
-                  data-current={step == 5 ? "true" : "false"}
-                >
-                  <span>Esito</span>
-                </li>
-              </ol>
+              <Stepper
+                items={["Profilo", "Dati Personali", "Dati Aziendali", "Consensi", "Esito"]}
+                currentStep={step}
+              />
               <div className="form-wrapper">
                 {step === 1 && (
                   <SignupStep1
@@ -646,7 +625,10 @@ export function Signup() {
                       <Col md="auto" className="text-center">
                         <h1 className="mb-3">Registrazione</h1>
                         <div className="bg-white p-4 rounded">
-                          <div className="spacer d-none d-md-block" style={{ width: "320px" }}></div>
+                          <div
+                            className="spacer d-none d-md-block"
+                            style={{ width: "320px" }}
+                          ></div>
                           <p className="my-3">
                             Registrazione Avvenuta con successo. Riceverai una email di conferma
                             dell'avvenuta registrazione
@@ -677,33 +659,8 @@ export function Signup() {
           <TopHeader />
           <div className="content-area">
             <div className="content">
-              {/* <Container>
-                <Row>
-                  <Col></Col>
-                  <Col md={auto}> */}
-              <ol className="stepper" data-steps={3}>
-                <li
-                  data-step-num="1"
-                  data-done={step > 1 ? "true" : "false"}
-                  data-current={step == 1 ? "true" : "false"}
-                >
-                  <span>Dati Personali</span>
-                </li>
-                <li
-                  data-step-num="2"
-                  data-done={step > 2 ? "true" : "false"}
-                  data-current={step == 2 ? "true" : "false"}
-                >
-                  <span>Consensi</span>
-                </li>
-                <li
-                  data-step-num="3"
-                  data-done={step > 3 ? "true" : "false"}
-                  data-current={step == 3 ? "true" : "false"}
-                >
-                  <span>Esito</span>
-                </li>
-              </ol>
+              <Stepper items={["Dati Personali", "Consensi", "Esito"]} currentStep={step} />
+
               <div className="form-wrapper">
                 {step === 1 && (
                   <SignupStep2
@@ -728,7 +685,10 @@ export function Signup() {
                       <Col md="auto" className="text-center">
                         <h1 className="mb-3">Registrazione</h1>
                         <div className="bg-white p-4 rounded">
-                          <div className="spacer d-none d-md-block" style={{ width: "320px" }}></div>
+                          <div
+                            className="spacer d-none d-md-block"
+                            style={{ width: "320px" }}
+                          ></div>
                           <p className="my-3">
                             Registrazione Avvenuta con successo. Riceverai una email di conferma
                             dell'avvenuta registrazione

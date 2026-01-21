@@ -64,7 +64,9 @@ const AccordionSection: React.FC<SectionProps> = ({ item, isOpen, onToggle }) =>
           <span>&nbsp;</span>
           <span className="accordion-title">{item.title}</span>
         </span>
-        <span className={`accordion-arrow ${isOpen ? "open" : ""}`}></span>
+        <span className={`accordion-arrow ${isOpen ? "open" : ""}`}>
+          <Icon iconName={"darrs"} color={"black"} />
+        </span>
       </button>
 
       {/* ---------------------- PART 8: Animated Container ---------------------- */}

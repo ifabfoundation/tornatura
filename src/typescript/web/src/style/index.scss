@@ -150,6 +150,12 @@ $ms-sidebar-transition: 100ms;
   -ms-user-select: none; /* Internet Explorer/Edge Legacy */
   user-select: none; /* Standard property */
 }
+
+.rounded {
+  border-radius: $r * 2;
+  overflow: hidden;
+}
+
 // --------------------------------------------------------------------------------------------------
 // Outside App
 // --------------------------------------------------------------------------------------------------
@@ -919,12 +925,14 @@ body {
   $acc-h: 54px;
   .accordion {
     .accordion-section {
-      border-radius: $acc-h/2;
-      margin-bottom: 8px;
+      // border-radius: $acc-h/2;
+      border-radius: 10px;
+      margin-bottom: 4px;
       background-color: rgba(255, 255, 255, 0.5);
       button.accordion-header {
         height: $acc-h;
-        border-radius: $acc-h/2;
+        // border-radius: $acc-h/2;
+        border-radius: 10px;
         overflow: hidden;
         background-color: white;
         border: 1px solid #c5c5c5;
@@ -948,18 +956,25 @@ body {
           }
         }
         .accordion-arrow {
-          &::after {
-            content: "▼";
-            content: "⊕";
-            content: "×";
-            content: "✗";
-            @include font-m-600;
-            display: inline-block;
-            transition: transform 0.3s;
-            transform: rotate(45deg);
-          }
-          &.open::after {
-            transform: rotate(0deg);
+          transition: transform 0.3s;
+          transform: rotate(0deg);
+          // &::after {
+          //   content: "⊕";
+          //   content: "×";
+          //   content: "✗";
+          //   content: "▼";
+          //   @include font-m-600;
+          //   display: inline-block;
+          //   transition: transform 0.3s;
+          //   transform: rotate(0deg);
+          //   // transform: scaleY(1);
+          // }
+          &.open {
+            transform: rotate(180deg);
+            // &::after {
+            //   transform: rotate(180deg);
+            //   // transform: scaleY(-1);
+            // }
           }
         }
       }
@@ -988,7 +1003,7 @@ body {
   .cozy-button {
     display: flex;
     margin: 0;
-    height: $acc-h + 10px;
+    height: $acc-h;
     border: 1px solid #c5c5c5;
     position: relative;
     background-color: white;
@@ -1222,12 +1237,16 @@ body {
 
   .stepper-wrapper {
     position: relative;
+    margin: 0 10px;
     @include media-breakpoint-down(sm) {
-      margin-top: -11px;
+      margin-top: -10px;
+      ol.stepper {
+        border-radius: 0px !important;
+      }
     }
 
     @include media-breakpoint-between(sm, md) {
-      margin: -21px -10px 0px -10px;
+      margin: -20px -10px 0px -10px;
     }
 
     button.stepper-back-button {
@@ -1249,22 +1268,30 @@ body {
       background-color: transparent;
     }
 
+    $neg-margin: 7px;
     ol.stepper {
       display: flex;
       height: 60px;
       width: 100%;
       overflow: hidden;
+      border-radius: $r * 2;
+      // &::after {
+      //   content: var(--steps-num);
+      //   position: relative;
+      // }
       li {
         height: 100%;
         display: flex;
         align-items: center;
         justify-content: center;
-        border: 1px solid $c-bg;
+        transition: background-color 0.3s;
         flex-grow: 1;
-        background-color: rgba(white, 0.3);
-        width: 33.33%;
-        border-radius: $r;
-        margin: 0 -6px;
+        background-color: $c-grey_3;
+        // width: 33.33%;
+        width: calc(100% / var(--steps-num) + #{$neg-margin * 2});
+        max-width: calc(100% / var(--steps-num) + #{$neg-margin * 2});
+        min-width: calc(100% / var(--steps-num) + #{$neg-margin * 2});
+        margin: 0px #{-$neg-margin};
 
         clip-path: polygon(
           15px 50%,
@@ -1301,32 +1328,49 @@ body {
         &[data-done="true"] {
           background-color: $c-dark;
           color: white;
-          &::before {
-            content: "✓";
-            background-color: white;
-            color: $c-dark;
+          cursor: pointer;
+          &:hover {
+            background-color: darken($c-dark, 5%);
           }
+          // &::before {
+          //   content: "✓";
+          //   background-color: white;
+          //   color: $c-dark;
+          // }
         }
         &[data-current="true"] {
           background-color: $c-yelo_dark;
           color: $c-yelo;
-          &::before {
-            content: attr(data-step-num);
-            background-color: $c-yelo;
-            color: $c-dark;
-          }
+          // &::before {
+          //   content: attr(data-step-num);
+          //   background-color: $c-yelo;
+          //   color: $c-dark;
+          // }
         }
-        &[data-current="false"] {
-          @include media-breakpoint-down(md) {
-            width: 0px;
-            &:first-child,
-            &:last-child {
-              width: 0px;
-            }
-            flex-grow: 0;
-            span {
-              display: none;
-            }
+        @include media-breakpoint-down(md) {
+          &[data-current="true"] {
+            width: 100%;
+            min-width: 100%;
+            max-width: 100%;
+            margin: 0px;
+            clip-path: none;
+          }
+          &[data-current="false"] {
+            display: none;
+            // width: 0px;
+            // min-width: 0px;
+            // max-width: 0px;
+            // margin: 0px;
+            // &:first-child,
+            // &:last-child {
+            //   width: 0px;
+            //   min-width: 0px;
+            //   max-width: 0px;
+            // }
+            // flex-grow: 0;
+            // span {
+            //   display: none;
+            // }
           }
         }
       }
@@ -1447,7 +1491,7 @@ body {
     .level-1 {
       z-index: 2;
       position: absolute; // fixed
-      overflow-y: scroll;
+      overflow-y: auto;
       top: $header-h;
       left: 0;
       bottom: 0;
@@ -1692,7 +1736,7 @@ body {
     background-color: $c-bg;
     height: 100vh;
     height: 100dvh;
-    overflow-x: scroll;
+    overflow-x: auto;
     .headerbar {
       z-index: 2;
       background-color: darken($c-grey_6, 3%);
@@ -1782,7 +1826,7 @@ body {
     .content-area {
       transition: background-color $ms-sidebar-transition;
       flex-grow: 1;
-      overflow-y: scroll;
+      overflow-y: auto;
       .content {
         padding: 20px 10px;
         @include media-breakpoint-up(xl) {
@@ -1804,7 +1848,7 @@ body {
     height: calc(100vh - #{$header-h});
 
     &.map-detection-form {
-      height: calc(100vh - 360px);
+      height: calc(100vh - 560px);
     }
 
     // implement better way to remove padding from content in some cases like the map
@@ -1844,6 +1888,35 @@ ul.list-group {
     }
     &:hover {
       background-color: rgba(white, 0.6);
+    }
+  }
+}
+
+.button-group-grid {
+  .button-grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0px;
+    height: 120px;
+    // aspect-ratio: 1 / 1;
+  }
+  button {
+    margin: 0 !important;
+    border-radius: 0 !important;
+    height: 100% !important;
+    justify-content: center;
+    &:nth-child(1) {
+      border-top-left-radius: $r * 2 !important;
+    }
+    &:nth-child(2) {
+      border-top-right-radius: $r * 2 !important;
+    }
+    &:nth-child(3) {
+      border-bottom-left-radius: $r * 2 !important;
+    }
+    &:nth-child(4) {
+      border-bottom-right-radius: $r * 2 !important;
     }
   }
 }

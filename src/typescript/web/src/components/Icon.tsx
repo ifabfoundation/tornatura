@@ -52,6 +52,14 @@ import home_y from "../assets/images/icons/home-y.svg";
 import larr_b from "../assets/images/icons/larr-b.svg";
 import larr_w from "../assets/images/icons/larr-w.svg";
 import larr_y from "../assets/images/icons/larr-y.svg";
+
+import pencil_b from "../assets/images/icons/pencil-b.svg";
+import pencil_w from "../assets/images/icons/pencil-w.svg";
+import pencil_y from "../assets/images/icons/pencil-y.svg";
+import pic_b from "../assets/images/icons/pic-b.svg";
+import pic_w from "../assets/images/icons/pic-w.svg";
+import pic_y from "../assets/images/icons/pic-y.svg";
+
 import pin_b from "../assets/images/icons/pin-b.svg";
 import pin_w from "../assets/images/icons/pin-w.svg";
 import pin_y from "../assets/images/icons/pin-y.svg";
@@ -102,6 +110,8 @@ const icons = {
   grid: { white: grid_w, black: grid_b, yellow: grid_y },
   home: { white: home_w, black: home_b, yellow: home_y },
   larr: { white: larr_w, black: larr_b, yellow: larr_y },
+  pencil: { white: pencil_w, black: pencil_b, yellow: pencil_y },
+  pic: { white: pic_w, black: pic_b, yellow: pic_y },
   pin: { white: pin_w, black: pin_b, yellow: pin_y },
   size: { white: size_w, black: size_b, yellow: size_y },
   spark: { white: spark_w, black: spark_b, yellow: spark_y },

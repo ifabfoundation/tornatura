@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="30px" height="30px" viewBox="0 0 30 30" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>pencil-b</title>
+    <g id="pencil-b" stroke="none" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
+        <polygon id="Rectangle" stroke="#131415" transform="translate(13.0619, 16.3936) rotate(45) translate(-13.0619, -16.3936)" points="10.3119385 9.15646568 15.8119385 9.15646568 15.8119385 19.9100547 13.0619385 23.6306442 10.3119385 19.9100547"></polygon>
+        <path d="M19.8451416,7.2545433 C21.3639247,7.2545433 22.5951416,8.48576024 22.5951416,10.0045433 L22.5951416,11.9661604 L22.5951416,11.9661604 L17.0951416,11.9661604 L17.0951416,10.0045433 C17.0951416,8.48576024 18.3263586,7.2545433 19.8451416,7.2545433 Z" id="Rectangle-Copy" stroke="#131415" transform="translate(19.8451, 9.6104) rotate(45) translate(-19.8451, -9.6104)"></path>
+    </g>
+</svg>

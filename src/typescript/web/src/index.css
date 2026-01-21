@@ -13053,6 +13053,11 @@ strong {
   text-align: right;
 }
 
+.rounded {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
 body {
   font-family: "Inter", sans-serif;
   font-size: 15px;
@@ -14408,14 +14413,14 @@ body {
 }
 
 #app .accordion .accordion-section {
-  border-radius: 27px;
-  margin-bottom: 8px;
+  border-radius: 10px;
+  margin-bottom: 4px;
   background-color: rgba(255, 255, 255, 0.5);
 }
 
 #app .accordion .accordion-section button.accordion-header {
   height: 54px;
-  border-radius: 27px;
+  border-radius: 10px;
   overflow: hidden;
   background-color: white;
   border: 1px solid #c5c5c5;
@@ -14471,51 +14476,13 @@ body {
   }
 }
 
-#app .accordion .accordion-section button.accordion-header .accordion-arrow::after {
-  content: "▼";
-  content: "⊕";
-  content: "×";
-  content: "✗";
-  font-family: "Inter", sans-serif;
-  font-size: 15px;
-  letter-spacing: 0.02em;
-  line-height: 1.3em;
-  font-weight: 400;
-  font-style: normal;
-  font-stretch: normal;
-  font-optical-sizing: auto;
-  font-weight: 600 !important;
-  display: inline-block;
+#app .accordion .accordion-section button.accordion-header .accordion-arrow {
   transition: transform 0.3s;
-  transform: rotate(45deg);
-}
-
-@media (min-width: 576px) {
-  #app .accordion .accordion-section button.accordion-header .accordion-arrow::after {
-    font-size: 15px;
-  }
-}
-
-@media (min-width: 768px) {
-  #app .accordion .accordion-section button.accordion-header .accordion-arrow::after {
-    font-size: 15px;
-  }
-}
-
-@media (min-width: 992px) {
-  #app .accordion .accordion-section button.accordion-header .accordion-arrow::after {
-    font-size: 15px;
-  }
-}
-
-@media (min-width: 1200px) {
-  #app .accordion .accordion-section button.accordion-header .accordion-arrow::after {
-    font-size: 15px;
-  }
-}
-
-#app .accordion .accordion-section button.accordion-header .accordion-arrow.open::after {
   transform: rotate(0deg);
+}
+
+#app .accordion .accordion-section button.accordion-header .accordion-arrow.open {
+  transform: rotate(180deg);
 }
 
 #app .accordion .accordion-section .accordion-animated {
@@ -14545,7 +14512,7 @@ body {
 #app .cozy-button {
   display: flex;
   margin: 0;
-  height: 64px;
+  height: 54px;
   border: 1px solid #c5c5c5;
   position: relative;
   background-color: white;
@@ -14929,17 +14896,21 @@ body {
 
 #app .stepper-wrapper {
   position: relative;
+  margin: 0 10px;
 }
 
 @media (max-width: 575.98px) {
   #app .stepper-wrapper {
-    margin-top: -11px;
+    margin-top: -10px;
+  }
+  #app .stepper-wrapper ol.stepper {
+    border-radius: 0px !important;
   }
 }
 
 @media (min-width: 576px) and (max-width: 767.98px) {
   #app .stepper-wrapper {
-    margin: -21px -10px 0px -10px;
+    margin: -20px -10px 0px -10px;
   }
 }
 
@@ -15000,6 +14971,7 @@ body {
   height: 60px;
   width: 100%;
   overflow: hidden;
+  border-radius: 10px;
 }
 
 #app .stepper-wrapper ol.stepper li {
@@ -15007,12 +14979,13 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid #d8d8d8;
+  transition: background-color 0.3s;
   flex-grow: 1;
-  background-color: rgba(255, 255, 255, 0.3);
-  width: 33.33%;
-  border-radius: 5px;
-  margin: 0 -6px;
+  background-color: #bbbbbb;
+  width: calc(100% / var(--steps-num) + 14px);
+  max-width: calc(100% / var(--steps-num) + 14px);
+  min-width: calc(100% / var(--steps-num) + 14px);
+  margin: 0px -7px;
   clip-path: polygon(15px 50%, 0% 0%, calc(100% - 15px) 0%, 100% 50%, calc(100% - 15px) 100%, 0% 100%);
   font-family: "Inter", sans-serif;
   font-size: 15px;
@@ -15104,12 +15077,11 @@ body {
 #app .stepper-wrapper ol.stepper li[data-done="true"] {
   background-color: #1f1f1f;
   color: white;
+  cursor: pointer;
 }
 
-#app .stepper-wrapper ol.stepper li[data-done="true"]::before {
-  content: "✓";
-  background-color: white;
-  color: #1f1f1f;
+#app .stepper-wrapper ol.stepper li[data-done="true"]:hover {
+  background-color: #121212;
 }
 
 #app .stepper-wrapper ol.stepper li[data-current="true"] {
@@ -15117,21 +15089,15 @@ body {
   color: #eaff00;
 }
 
-#app .stepper-wrapper ol.stepper li[data-current="true"]::before {
-  content: attr(data-step-num);
-  background-color: #eaff00;
-  color: #1f1f1f;
-}
-
 @media (max-width: 767.98px) {
+  #app .stepper-wrapper ol.stepper li[data-current="true"] {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+    margin: 0px;
+    clip-path: none;
+  }
   #app .stepper-wrapper ol.stepper li[data-current="false"] {
-    width: 0px;
-    flex-grow: 0;
-  }
-  #app .stepper-wrapper ol.stepper li[data-current="false"]:first-child, #app .stepper-wrapper ol.stepper li[data-current="false"]:last-child {
-    width: 0px;
-  }
-  #app .stepper-wrapper ol.stepper li[data-current="false"] span {
     display: none;
   }
 }
@@ -15290,7 +15256,7 @@ body {
 #app .sidebar .level-1 {
   z-index: 2;
   position: absolute;
-  overflow-y: scroll;
+  overflow-y: auto;
   top: 60px;
   left: 0;
   bottom: 0;
@@ -15637,7 +15603,7 @@ body {
   background-color: #d8d8d8;
   height: 100vh;
   height: 100dvh;
-  overflow-x: scroll;
+  overflow-x: auto;
 }
 
 #app .ui-right .headerbar {
@@ -15835,7 +15801,7 @@ body {
 #app .ui-right .content-area {
   transition: background-color 100ms;
   flex-grow: 1;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 #app .ui-right .content-area .content {
@@ -15858,7 +15824,7 @@ body {
 }
 
 #app #map.map-detection-form {
-  height: calc(100vh - 360px);
+  height: calc(100vh - 560px);
 }
 
 ul.list-group li.list-group-item {
@@ -15894,6 +15860,37 @@ ul.list-group li.list-group-item:last-child {
 
 ul.list-group li.list-group-item:hover {
   background-color: rgba(255, 255, 255, 0.6);
+}
+
+.button-group-grid .button-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0px;
+  height: 120px;
+}
+
+.button-group-grid button {
+  margin: 0 !important;
+  border-radius: 0 !important;
+  height: 100% !important;
+  justify-content: center;
+}
+
+.button-group-grid button:nth-child(1) {
+  border-top-left-radius: 10px !important;
+}
+
+.button-group-grid button:nth-child(2) {
+  border-top-right-radius: 10px !important;
+}
+
+.button-group-grid button:nth-child(3) {
+  border-bottom-left-radius: 10px !important;
+}
+
+.button-group-grid button:nth-child(4) {
+  border-bottom-right-radius: 10px !important;
 }
 
 .component-table-cozy {

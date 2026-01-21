@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect, useRef } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 // import { useFormik } from "formik";
 // import * as Yup from "yup";
@@ -42,6 +42,7 @@ import { getCoreApiConfiguration } from "../../../services/utils";
 import doneIcon from "../../../assets/images/icon-large-done.svg";
 import { bbchs } from "./bbch";
 import { number, string } from "yup";
+import Stepper from "../../../components/Stepper";
 
 const markerOptions = { color: "#EAFF00" };
 
@@ -108,13 +109,7 @@ function ButtonGroupGrid({
       <div className="font-s-label mb-2">
         {label}: <span>{value}</span>
       </div>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-          gap: "8px",
-        }}
-      >
+      <div className="button-grid">
         {items.map((item, index) => (
           <CozyButton
             key={`${item.label}-${index}`}
@@ -877,9 +872,57 @@ function isPointInsideField(pointLon: number, pointLat: number, areaPoints: numb
 interface DetectionFormMapProps {
   sourceType: string;
   onMarkerChange: (p: Point) => Promise<void>;
+  mapPoints?: mapPoint[];
 }
 
-function DetectionFormMapPosition({ sourceType, onMarkerChange }: DetectionFormMapProps) {
+interface mapPoint {
+  lng: number;
+  lat: number;
+  size?: number;
+  color?: string;
+}
+
+function getRangePointColor(v: number): string {
+  let c = "#43C318";
+  if (v > 0.25) c = "#FFB291";
+  if (v > 0.5) c = "#FF4D4E";
+  if (v > 0.75) c = "#A10406";
+  return c;
+}
+function testData(
+  aroundLon: number,
+  aroundLat: number,
+  radiusMeters: number,
+  numPoints: number,
+): mapPoint[] {
+  const points: mapPoint[] = [];
+  for (let i = 0; i < numPoints; i++) {
+    const angle = Math.random() * 2 * Math.PI;
+    const distance = Math.random() * radiusMeters;
+    const dx = distance * Math.cos(angle);
+    const dy = distance * Math.sin(angle);
+
+    // Approximate conversion from meters to degrees
+    const deltaLng = dx / 111320 / Math.cos(aroundLat * (Math.PI / 180));
+    const deltaLat = dy / 110540;
+
+    const point = {
+      lng: aroundLon + deltaLng,
+      lat: aroundLat + deltaLat,
+      size: 8,
+      color: getRangePointColor(Math.random()),
+    };
+
+    points.push(point);
+  }
+  return points;
+}
+
+function DetectionFormMapPosition({
+  sourceType,
+  onMarkerChange,
+  mapPoints,
+}: DetectionFormMapProps) {
   const { fieldId } = useParams();
   const currentField = useAppSelector((state) =>
     fieldsSelectors.selectFieldbyId(state, fieldId ?? "default"),
@@ -1006,6 +1049,25 @@ function DetectionFormMapPosition({ sourceType, onMarkerChange }: DetectionFormM
         console.log("••• bbox", fieldShapeBbox);
       }
 
+      let fullGlobeSource = {
+        type: "geojson",
+        data: {
+          type: "Feature",
+          geometry: {
+            type: "Polygon",
+            coordinates: [
+              [
+                [-180, -85],
+                [180, -85],
+                [180, 85],
+                [-180, 85],
+                [-180, -85],
+              ],
+            ],
+          },
+        },
+      };
+
       mapRef.current = new mapboxgl.Map({
         container: mapContainerRef.current,
         style: "mapbox://styles/mapbox/satellite-streets-v12",
@@ -1015,6 +1077,19 @@ function DetectionFormMapPosition({ sourceType, onMarkerChange }: DetectionFormM
 
       mapRef.current.on("load", () => {
         console.log("map loaded", mapRef);
+
+        // darken base layer
+        // mapRef.current.setPaintProperty("satellite", "raster-brightness-min", 0);
+        // mapRef.current.setPaintProperty("satellite", "raster-brightness-max", 0.5); // darker
+        // mapRef.current.setPaintProperty("satellite", "raster-contrast", -0.3);
+        mapRef.current.addLayer({
+          id: "global-darken",
+          type: "fill",
+          source: fullGlobeSource,
+          paint: {
+            "fill-color": "rgba(0, 0, 0, 0.5)",
+          },
+        });
 
         const source = mapRef.current.getSource("fieldShape");
         if (!source) {
@@ -1037,7 +1112,7 @@ function DetectionFormMapPosition({ sourceType, onMarkerChange }: DetectionFormM
           layout: {},
           paint: {
             "fill-color": "#fff",
-            "fill-opacity": 0.5,
+            "fill-opacity": 0.3,
           },
         });
         mapRef.current.addLayer({
@@ -1047,13 +1122,77 @@ function DetectionFormMapPosition({ sourceType, onMarkerChange }: DetectionFormM
           layout: {},
           paint: {
             "line-color": "#fff",
-            "line-width": 2,
+            "line-width": 1.5,
             "line-opacity": 1.0, // outline opacity
           },
         });
 
         mapRef.current.fitBounds(fieldShapeBbox, {
-          padding: { top: 10, bottom: 10, left: 10, right: 10 },
+          padding: { top: 50, bottom: 50, left: 50, right: 50 },
+        });
+
+        // --------------------------------------------------
+        // Add source + layer for data (points)
+        const safePoints1 = mapPoints || [];
+
+        const safePoints3 = testData(currentPosition.lng, currentPosition.lat, 500, 20);
+
+        const pointsGeoJSON = {
+          type: "FeatureCollection",
+          features: safePoints1.map((pt) => ({
+            type: "Feature",
+            geometry: {
+              type: "Point",
+              coordinates: [pt.lng, pt.lat],
+            },
+            properties: {
+              size: pt.size,
+              color: pt.color,
+            },
+          })),
+        };
+        const lineGeoJSON = {
+          type: "Feature",
+          geometry: {
+            type: "LineString",
+            coordinates: safePoints1.map((pt) => [pt.lng, pt.lat]),
+          },
+          properties: {},
+        };
+        console.log("••• pointsGeoJSON", JSON.stringify(pointsGeoJSON));
+        mapRef.current!.addSource("dataPointsPath", {
+          type: "geojson",
+          data: lineGeoJSON,
+        });
+        mapRef.current!.addLayer({
+          id: "dataPoints",
+          type: "line",
+          source: "dataPointsPath",
+          paint: {
+            "line-color": "#fff",
+            "line-opacity": 0.5,
+            "line-width": 3,
+            "line-dasharray": [1, 1.5], // ← dashed line
+          },
+        });
+
+        mapRef.current!.addSource("dataPoints", {
+          type: "geojson",
+          data: pointsGeoJSON,
+        });
+
+        mapRef.current!.addLayer({
+          id: "dataPointsDots",
+          type: "circle",
+          source: "dataPoints",
+          paint: {
+            "circle-radius": ["get", "size"],
+            "circle-color": ["get", "color"],
+            "circle-opacity": 0.8,
+            "circle-stroke-color": "#fff",
+            "circle-stroke-opacity": 0.8,
+            "circle-stroke-width": 1.5,
+          },
         });
 
         // --------------------------------------------------
@@ -1147,19 +1286,12 @@ function DetectionFormMapPosition({ sourceType, onMarkerChange }: DetectionFormM
             turf.polygon([areaPoints]);
             const polygon = turf.polygon([areaPoints]);
             const p = turf.point([lng, lat]);
-
-            // v1 with annoying useless type error
-            // const boundary = turf.polygonToLine(polygon);
-            // const nearest = turf.nearestPointOnLine(boundary, p);
-
-            // v2 without type error
             const boundary = turf.polygonToLine(polygon);
-            const line =
+            const safeBoundary =
               boundary.type === "FeatureCollection"
                 ? boundary.features[0] // or merge them if needed
                 : boundary;
-            const nearest = turf.nearestPointOnLine(line, p);
-
+            const nearest = turf.nearestPointOnLine(safeBoundary, p);
             point = {
               lat: nearest.geometry.coordinates[1],
               lng: nearest.geometry.coordinates[0],
@@ -1217,6 +1349,44 @@ function DetectionFormMapPosition({ sourceType, onMarkerChange }: DetectionFormM
     // mapRef.current!.setCenter([lng, lat]);
     // ----------------------------------
   }, [mapLoaded, currentPosition]);
+
+  React.useEffect(() => {
+    if (!mapRef.current?.getSource("dataPoints")) return;
+    if (!mapRef.current?.getSource("dataPointsPath")) return;
+
+    const safePoints1 = mapPoints || [];
+    const pointsGeoJSON = {
+      type: "FeatureCollection",
+      features: safePoints1.map((pt) => ({
+        type: "Feature",
+        geometry: {
+          type: "Point",
+          coordinates: [pt.lng, pt.lat],
+        },
+        properties: {
+          size: pt.size,
+          color: pt.color,
+        },
+      })),
+    };
+    const lineGeoJSON = {
+      type: "Feature",
+      geometry: {
+        type: "LineString",
+        coordinates: safePoints1.map((pt) => [pt.lng, pt.lat]),
+      },
+      properties: {},
+    };
+    console.log("••• pointsGeoJSON", JSON.stringify(pointsGeoJSON));
+
+    // const pointsDS = {
+    //   type: "FeatureCollection",
+    //   features: pointsGeoJSON,
+    // };
+
+    mapRef.current.getSource("dataPoints").setData(pointsGeoJSON);
+    mapRef.current.getSource("dataPointsPath").setData(lineGeoJSON);
+  }, [mapPoints]);
 
   return (
     <div>
@@ -1390,137 +1560,137 @@ function AccordionTipologia({ onSelect }: AccordionTipologiaProps) {
   );
 }
 
-function DetectionStepPosizione({ action, onNextClick }: DetectionProps) {
-  const [source, setSource] = React.useState<string>("current");
-  const [modalOpen, setModalOpen] = React.useState(false);
-  const [modal, setModal] = React.useState<any>({});
-  const { fieldId } = useParams();
-  const currentField = useAppSelector((state) =>
-    fieldsSelectors.selectFieldbyId(state, fieldId ?? "default"),
-  );
+// function DetectionStepPosizione({ action, onNextClick }: DetectionProps) {
+//   const [source, setSource] = React.useState<string>("current");
+//   const [modalOpen, setModalOpen] = React.useState(false);
+//   const [modal, setModal] = React.useState<any>({});
+//   const { fieldId } = useParams();
+//   const currentField = useAppSelector((state) =>
+//     fieldsSelectors.selectFieldbyId(state, fieldId ?? "default"),
+//   );
 
-  const currentPosition = React.useContext(gpsStore);
-  const [hasGeolocation, setHasGeolocation] = React.useState<boolean>(false);
-  const [markerPosition, setMarkerPosition] = React.useState<Point>();
+//   const currentPosition = React.useContext(gpsStore);
+//   const [hasGeolocation, setHasGeolocation] = React.useState<boolean>(false);
+//   const [markerPosition, setMarkerPosition] = React.useState<Point>();
 
-  React.useEffect(() => {
-    if (navigator.geolocation) {
-      setHasGeolocation(true);
-    }
-  }, []);
+//   React.useEffect(() => {
+//     if (navigator.geolocation) {
+//       setHasGeolocation(true);
+//     }
+//   }, []);
 
-  const handleSourceChange = (value: string) => {
-    setSource(value);
-  };
+//   const handleSourceChange = (value: string) => {
+//     setSource(value);
+//   };
 
-  const handleMarkerChange = async (point: Point) => {
-    setMarkerPosition(point);
-    setSource("map");
-  };
+//   const handleMarkerChange = async (point: Point) => {
+//     setMarkerPosition(point);
+//     setSource("map");
+//   };
 
-  const handleNextClick = async () => {
-    if (source === "current" && !hasGeolocation) {
-      setModal({
-        component: ModalConfirm,
-        componentProps: {
-          title: "Rilevamento",
-          content:
-            "Non è possibile utilizzare la posizione corrente perché il browser non supporta la geolocalizzazione.",
-          action: "Ok",
-          handleCancel: () => setModalOpen(false),
-          handleConfirm: () => {
-            setModalOpen(false);
-          },
-        },
-      });
-      setModalOpen(true);
-      return;
-    }
+//   const handleNextClick = async () => {
+//     if (source === "current" && !hasGeolocation) {
+//       setModal({
+//         component: ModalConfirm,
+//         componentProps: {
+//           title: "Rilevamento",
+//           content:
+//             "Non è possibile utilizzare la posizione corrente perché il browser non supporta la geolocalizzazione.",
+//           action: "Ok",
+//           handleCancel: () => setModalOpen(false),
+//           handleConfirm: () => {
+//             setModalOpen(false);
+//           },
+//         },
+//       });
+//       setModalOpen(true);
+//       return;
+//     }
 
-    if (source === "map" && !markerPosition) {
-      setModal({
-        component: ModalConfirm,
-        componentProps: {
-          title: "Rilevamento",
-          content: "Devi selezionare un punto sulla mappa.",
-          action: "Ok",
-          handleCancel: () => setModalOpen(false),
-          handleConfirm: () => {
-            setModalOpen(false);
-          },
-        },
-      });
-      setModalOpen(true);
-      return;
-    }
+//     if (source === "map" && !markerPosition) {
+//       setModal({
+//         component: ModalConfirm,
+//         componentProps: {
+//           title: "Rilevamento",
+//           content: "Devi selezionare un punto sulla mappa.",
+//           action: "Ok",
+//           handleCancel: () => setModalOpen(false),
+//           handleConfirm: () => {
+//             setModalOpen(false);
+//           },
+//         },
+//       });
+//       setModalOpen(true);
+//       return;
+//     }
 
-    if (source === "current" && hasGeolocation) {
-      let data: number[][] = [];
-      currentField.map.forEach((point: Point) => {
-        data.push([point.lng, point.lat]);
-      });
-      if (data.length > 2) {
-        const polygon = turf.polygon([data]);
-        if (!hasGeolocation) {
-          console.log("No Geolocation data");
-          return;
-        } else {
-          const point = turf.point([currentPosition.lng, currentPosition.lat]);
-          const geolocationValid = turf.booleanContains(polygon, point);
-          console.log("Geolocation valid?", geolocationValid);
-          if (!geolocationValid) {
-            setModal({
-              component: ModalConfirm,
-              componentProps: {
-                title: "Rilevamento",
-                content:
-                  "La tua posizione corrente risulta fuori dall'area del campo. Scegli un altro punto cliccando sulla mappa.",
-                action: "Ok",
-                handleCancel: () => setModalOpen(false),
-                handleConfirm: () => {
-                  setSource("map");
-                  setModalOpen(false);
-                },
-              },
-            });
-            setModalOpen(true);
-            return;
-          }
-        }
-      }
-    }
+//     if (source === "current" && hasGeolocation) {
+//       let data: number[][] = [];
+//       currentField.map.forEach((point: Point) => {
+//         data.push([point.lng, point.lat]);
+//       });
+//       if (data.length > 2) {
+//         const polygon = turf.polygon([data]);
+//         if (!hasGeolocation) {
+//           console.log("No Geolocation data");
+//           return;
+//         } else {
+//           const point = turf.point([currentPosition.lng, currentPosition.lat]);
+//           const geolocationValid = turf.booleanContains(polygon, point);
+//           console.log("Geolocation valid?", geolocationValid);
+//           if (!geolocationValid) {
+//             setModal({
+//               component: ModalConfirm,
+//               componentProps: {
+//                 title: "Rilevamento",
+//                 content:
+//                   "La tua posizione corrente risulta fuori dall'area del campo. Scegli un altro punto cliccando sulla mappa.",
+//                 action: "Ok",
+//                 handleCancel: () => setModalOpen(false),
+//                 handleConfirm: () => {
+//                   setSource("map");
+//                   setModalOpen(false);
+//                 },
+//               },
+//             });
+//             setModalOpen(true);
+//             return;
+//           }
+//         }
+//       }
+//     }
 
-    const data = {
-      latitude: source === "current" ? currentPosition.lat : markerPosition?.lat,
-      longitude: source === "current" ? currentPosition.lng : markerPosition?.lng,
-    };
+//     const data = {
+//       latitude: source === "current" ? currentPosition.lat : markerPosition?.lat,
+//       longitude: source === "current" ? currentPosition.lng : markerPosition?.lng,
+//     };
 
-    onNextClick(data);
-  };
+//     onNextClick(data);
+//   };
 
-  return (
-    <Fragment>
-      {modalOpen && <modal.component {...modal.componentProps} />}
-      {/* <h4 className="mt-4">La tua posizione</h4> */}
-      <div className="input-row">
-        <label>
-          <select name="source" onChange={(e) => handleSourceChange(e.target.value)} value={source}>
-            <option value="current">Usa posizione corrente</option>
-            <option value="map">Seleziona un punto sulla mappa</option>
-            <option value="map">Rilevamento per l'intero campo</option>
-          </select>
-        </label>
-      </div>
-      <DetectionFormMapPosition sourceType={source} onMarkerChange={handleMarkerChange} />
-      {/* <hr /> */}
-      <div className="buttons-wrapper mt-4 text-center">
-        <button className="trnt_btn primary" onClick={handleNextClick}>
-          {action}
-        </button>
-      </div>
-    </Fragment>
-  );
-}
+//   return (
+//     <Fragment>
+//       {modalOpen && <modal.component {...modal.componentProps} />}
+//       {/* <h4 className="mt-4">La tua posizione</h4> */}
+//       <div className="input-row">
+//         <label>
+//           <select name="source" onChange={(e) => handleSourceChange(e.target.value)} value={source}>
+//             <option value="current">Usa posizione corrente</option>
+//             <option value="map">Seleziona un punto sulla mappa</option>
+//             <option value="map">Rilevamento per l'intero campo</option>
+//           </select>
+//         </label>
+//       </div>
+//       <DetectionFormMapPosition sourceType={source} onMarkerChange={handleMarkerChange} />
+//       {/* <hr /> */}
+//       <div className="buttons-wrapper mt-4 text-center">
+//         <button className="trnt_btn primary" onClick={handleNextClick}>
+//           {action}
+//         </button>
+//       </div>
+//     </Fragment>
+//   );
+// }
 
 function DetectionStepTipologia({
   typologies,
@@ -1564,6 +1734,66 @@ function DetectionStepMetodo({
   );
 }
 
+// -----------------------------------------------------------------------------
+// via chat-gpt
+interface AutoHeightIframeProps {
+  src: string;
+  className?: string;
+}
+export function AutoHeightIframe({ src, className }: AutoHeightIframeProps) {
+  const iframeRef = useRef<HTMLIFrameElement | null>(null);
+
+  // Resize on initial load (same‑origin only)
+  useEffect(() => {
+    const iframe = iframeRef.current;
+    if (!iframe) return;
+
+    const handleLoad = () => {
+      try {
+        const doc = iframe.contentDocument || iframe.contentWindow?.document;
+        if (!doc) return;
+
+        const height = doc.documentElement.scrollHeight;
+        iframe.style.height = `${height}px`;
+      } catch {
+        // Cross-origin → cannot access height
+      }
+    };
+
+    iframe.addEventListener("load", handleLoad);
+    return () => iframe.removeEventListener("load", handleLoad);
+  }, []);
+
+  // Listen for postMessage height updates (for dynamic content)
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      const data = event.data as { iframeHeight?: number };
+      if (typeof data?.iframeHeight === "number") {
+        if (iframeRef.current) {
+          iframeRef.current.style.height = `${data.iframeHeight}px`;
+        }
+      }
+    };
+
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
+  }, []);
+
+  return (
+    <iframe
+      ref={iframeRef}
+      src={src}
+      className={className}
+      style={{
+        width: "100%",
+        border: "none",
+        display: "block",
+      }}
+      scrolling="no"
+    />
+  );
+} // -----------------------------------------------------------------------------
+
 function DetectionStepGuide({
   detectionText,
   onNextClick,
@@ -1571,28 +1801,30 @@ function DetectionStepGuide({
   const guideValue = detectionText?.locationAndScoreInstructions?.trim() ?? "";
   const isGuideUrl = /^https?:\/\//i.test(guideValue);
   return (
-    <div className="narrow-container my-5 text-center">
-      <h3 className="mb-4">Guida all'osservazione</h3>
+    <div className="my-5 text-center">
+      <h3 className="mb-4">Indicazioni per effettuare il rilevamento</h3>
       {detectionText ? (
         <Fragment>
-          <div className="mb-3">
-            {isGuideUrl ? (
-              <div className="mt-3">
-                <iframe
-                  title="Guida osservazione"
-                  src={guideValue}
-                  style={{ width: "100%", height: "70vh", border: "0" }}
-                />
-                <div className="mt-2">
-                  <a href={guideValue} target="_blank" rel="noreferrer">
-                    Apri in una nuova finestra
-                  </a>
-                </div>
-              </div>
-            ) : (
-              <p>{detectionText.locationAndScoreInstructions}</p>
-            )}
-          </div>
+          {isGuideUrl ? (
+            <Container fluid>
+              <Row>
+                <Col>
+                  <div className="mt-3">
+                    <div className="rounded">
+                      <AutoHeightIframe src={guideValue} />
+                    </div>
+                    <div className="mt-2">
+                      <a href={guideValue} target="_blank" rel="noreferrer">
+                        Apri in una nuova finestra
+                      </a>
+                    </div>
+                  </div>
+                </Col>
+              </Row>
+            </Container>
+          ) : (
+            <p>{detectionText.locationAndScoreInstructions}</p>
+          )}
         </Fragment>
       ) : (
         <div>Nessuna guida disponibile per questa tipologia e metodo.</div>
@@ -1652,7 +1884,7 @@ function DetectionStepBbch({ formData, onNextClick }: DetectionProps) {
 
   return (
     <div className="narrow-container my-5">
-      <h3 className="mb-4 text-center">Seleziona BBCH</h3>
+      <h3 className="mb-4 text-center">{"Seleziona la fase fenologica (BBCH)"}</h3>
       <Accordion items={items} />
     </div>
   );
@@ -1723,6 +1955,10 @@ function DetectionStepObservationPoints({
   };
 
   const validatePointPosition = () => {
+    console.log(">>> validatePointPosition source", source);
+    console.log(">>> validatePointPosition currentPosition", currentPosition);
+    console.log(">>> validatePointPosition markerPosition", markerPosition);
+
     if (!currentField) {
       return "Campo non trovato.";
     }
@@ -1733,6 +1969,8 @@ function DetectionStepObservationPoints({
       return "Devi selezionare un punto sulla mappa.";
     }
     const point = source === "current" ? currentPosition : markerPosition;
+    console.log(">>> validatePointPosition point", point);
+
     if (!point) {
       return "Posizione non valida.";
     }
@@ -1743,7 +1981,10 @@ function DetectionStepObservationPoints({
     return null;
   };
 
-  const handleAddPoints = (data: ObservationPoint[]) => {
+  const handleAddPoint = (point: ObservationPoint) => {
+    console.log(">>> handleAddPoint source", source);
+    console.log(">>> handleAddPoint data", point);
+
     const error = validatePointPosition();
     if (error) {
       setModal({
@@ -1759,13 +2000,16 @@ function DetectionStepObservationPoints({
       setModalOpen(true);
       return;
     }
-    const position = source === "current" ? currentPosition : markerPosition;
+    // const position = source === "current" ? currentPosition : markerPosition;
 
-    if (!position || !data.length) {
+    // if (!position || !point) {
+    if (!point) {
       return;
     }
     setPoints((prev) => {
-      return [...prev, ...data];
+      const newPoints = [...prev, point];
+      console.log(">>> points updated", newPoints);
+      return newPoints;
     });
 
     if (
@@ -1807,18 +2051,19 @@ function DetectionStepObservationPoints({
 
   const scorePoints = points.filter((point: any) => typeof point?.data?.rangeValue === "number");
 
-  const handleScoreClick = (score: number, multiplier: number) => {
-    const newPoints = Array.from({ length: multiplier }, () => ({
+  const handleScoreClick = (score: number) => {
+    const position = source === "current" ? currentPosition : markerPosition;
+    const newPoint = {
       position: {
-        lng: currentPosition.lng,
-        lat: currentPosition.lat,
+        lng: position ? position.lng : 0,
+        lat: position ? position.lat : 0,
       },
       data: {
         rangeValue: score,
         counters: [],
       },
-    }));
-    handleAddPoints(newPoints);
+    };
+    handleAddPoint(newPoint);
   };
 
   const scoreDots = (dotsNum = rangeLength + 1, score = 0) => {
@@ -1859,17 +2104,19 @@ function DetectionStepObservationPoints({
 
   function ScoreBtnRow({ score, label }: { score: number; label: string }) {
     return (
-      <div className="d-flex" style={{ gap: "4px", marginBottom: "4px" }}>
-        <div style={{ width: "90%" }}>
+      <div className="d-flex" style={{ marginBottom: "4px" }}>
+        <div style={{ width: "100%" }}>
           <CozyButton
             btnSize="small"
             content={btnCnt(score, label)}
-            onClick={() => handleScoreClick(score, 1)}
+            onClick={() => handleScoreClick(score)}
           />
         </div>
+        {/*  
         <div style={{ width: "63px" }}>
           <CozyButton btnSize="small" content={"×5"} onClick={() => handleScoreClick(score, 5)} />
         </div>
+        */}
       </div>
     );
   }
@@ -1933,10 +2180,11 @@ function DetectionStepObservationPoints({
       };
     });
 
+    const position = source === "current" ? currentPosition : markerPosition;
     const point: ObservationPoint = {
       position: {
-        lng: currentPosition.lng,
-        lat: currentPosition.lat,
+        lng: position ? position.lng : 0,
+        lat: position ? position.lat : 0,
       },
       data: {
         rangeValue: 0,
@@ -1944,8 +2192,32 @@ function DetectionStepObservationPoints({
       },
     };
 
-    handleAddPoints([point]);
+    handleAddPoint(point);
   };
+
+  console.log("points---", points);
+  const mapPoints = points.map((point: ObservationPoint) => {
+    const num = point.data.rangeValue || 0;
+    const type = observationType ? observationType.observationType : "null";
+
+    let color: string = "black";
+    if (type == "range") {
+      const rangeMax = observationType
+        ? observationType.rangeMax
+          ? observationType.rangeMax
+          : 5
+        : 5;
+      color = getRangePointColor(num / rangeMax);
+    }
+
+    console.log("observationType", observationType);
+    return {
+      lng: point.position.lng,
+      lat: point.position.lat,
+      size: 10,
+      color: color,
+    };
+  });
 
   return (
     <Fragment>
@@ -2011,7 +2283,11 @@ function DetectionStepObservationPoints({
         <div className="detection-ui mb-4">
           {activeDataTab === "map" && (
             <Fragment>
-              <DetectionFormMapPosition sourceType={source} onMarkerChange={handleMarkerChange} />
+              <DetectionFormMapPosition
+                sourceType={source}
+                onMarkerChange={handleMarkerChange}
+                mapPoints={mapPoints}
+              />
             </Fragment>
           )}
           {activeDataTab === "list" && (
@@ -2422,6 +2698,12 @@ export function DetectionForm() {
 
   return (
     <Fragment>
+      <Stepper
+        items={["Tipologia", "Metodo", "Guida", "BBCH", "Rilevamento"]}
+        currentStep={stepIndex}
+        handleBackClick={handleBackClick}
+      />
+
       <div>
         {currentStepKey === "typology" && (
           <DetectionStepTipologia
