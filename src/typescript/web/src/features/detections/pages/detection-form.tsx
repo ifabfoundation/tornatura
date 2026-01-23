@@ -2969,7 +2969,7 @@ export function DetectionForm() {
 
   return (
     <Fragment>
-      {currentStepKey !== "points" && (
+      {currentStepKey !== "points" && currentStepKey !== "done" && (
         <Stepper items={stepperItems} currentStep={stepIndex} handleBackClick={handleBackClick} />
       )}
 
