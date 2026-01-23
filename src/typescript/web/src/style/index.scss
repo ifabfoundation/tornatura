@@ -311,6 +311,18 @@ body {
       }
       text-decoration: none;
     }
+    &.accent-stronger {
+      background-color: $c-yelo;
+      color: black;
+      &:hover {
+        background-color: darken($c-yelo, 3%);
+      }
+      &:active,
+      .active {
+        background-color: darken($c-yelo, 6%);
+      }
+      text-decoration: none;
+    }
     &.primary {
       background-color: $c-dark;
       color: white;
@@ -1256,6 +1268,9 @@ body {
     }
   }
 
+  // ---------------------------------------------------------------------------
+  // Detection Observations UI
+  // ---------------------------------------------------------------------------
   .remove-content-padding-y {
     margin: -10px 0;
     @include media-breakpoint-up(sm) {
@@ -1264,7 +1279,7 @@ body {
   }
   .detection-observation-ui-container {
     container-type: size;
-    // container-name: detection;
+    container-name: detection;
     position: relative;
     display: flex;
     flex-flow: column nowrap;
@@ -1273,31 +1288,38 @@ body {
     width: 100%;
     height: calc(100dvh - 60px);
     .header {
-      border: 5px solid grey;
+      // border: 0.5px solid grey; /* DEBUG DET-UI */
       height: 60px;
       display: flex;
       align-items: center;
-      justify-content: center;
+      justify-content: space-between;
     }
     .body {
-      border: 5px solid red;
+      position: relative;
+      // border: 0.5px solid red; /* DEBUG DET-UI */
       flex-grow: 1;
       display: flex;
       align-items: stretch;
       flex-flow: column nowrap;
       justify-content: stretch;
-      background-color: #646464;
+      min-height: 0;
+      // background-color: #646464; /* DEBUG DET-UI */
       .half {
-        border: 5px solid rgb(129, 129, 244);
+        position: relative;
+        width: 50%;
+        height: 100%;
+        // border: 0.5px solid rgb(129, 129, 244); /* DEBUG DET-UI */
         flex-grow: 1;
         display: flex;
         align-items: stretch;
         flex-flow: row nowrap;
         justify-content: stretch;
         .quarter {
-          border: 5px solid rgb(110, 233, 137);
-          flex-grow: 1;
           position: relative;
+          // border: 0.5px solid rgb(110, 233, 137); /* DEBUG DET-UI */
+          flex-grow: 1;
+          width: 50%;
+          height: 100%;
           .tabs {
             z-index: 2;
             position: absolute;
@@ -1313,33 +1335,61 @@ body {
       }
     }
   }
-  /* Portrait: height > width */
-  @container (aspect-ratio > 1 / 1) {
+  /* Landscape: width > height */
+  @container detection (aspect-ratio > 1 / 1) {
     .detection-observation-ui-container {
       .body {
+        // background-color: #eceed5; /* DEBUG DET-UI */
         flex-flow: row nowrap;
         .half {
+          width: 50%;
+          height: 100%;
           flex-flow: column nowrap;
+          .quarter {
+            width: 100%;
+            height: 50%;
+          }
         }
       }
     }
   }
   /* Portrait: height > width */
-  @container (aspect-ratio < 1 / 1) {
+  @container detection (aspect-ratio < 1 / 1) {
     .detection-observation-ui-container {
       .body {
+        // background-color: #ebd2d2; /* DEBUG DET-UI */
         flex-flow: column nowrap;
         .half {
+          width: 100%;
+          height: 50%;
           flex-flow: row nowrap;
+          .quarter {
+            width: 50%;
+            height: 100%;
+          }
+        }
+      }
+    }
+    @include media-breakpoint-only(xs) {
+      .detection-observation-ui-container {
+        .body {
+          // background-color: #ffacac; /* DEBUG DET-UI */
+          .half {
+            flex-flow: column nowrap;
+            .quarter {
+              width: 100%;
+              height: 50%;
+            }
+          }
         }
       }
     }
   }
-  @include media-breakpoint-down(xs) {
-    .detection-observation-ui-container .body .half {
-      flex-flow: column nowrap !important;
-    }
+  #map-observations {
+    width: 100%;
+    height: 100%;
   }
+  // ---------------------------------------------------------------------------
 
   .stepper-wrapper {
     position: relative;

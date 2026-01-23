@@ -874,6 +874,7 @@ interface DetectionFormMapProps {
   sourceType: string;
   onMarkerChange: (p: Point) => Promise<void>;
   mapPoints?: mapPoint[];
+  debugString?: string;
 }
 
 interface mapPoint {
@@ -923,6 +924,7 @@ function DetectionFormMapPosition({
   sourceType,
   onMarkerChange,
   mapPoints,
+  debugString,
 }: DetectionFormMapProps) {
   const { fieldId } = useParams();
   const currentField = useAppSelector((state) =>
@@ -1389,11 +1391,7 @@ function DetectionFormMapPosition({
     mapRef.current.getSource("dataPointsPath").setData(lineGeoJSON);
   }, [mapPoints]);
 
-  return (
-    <div>
-      <div ref={mapContainerRef} id="map" className="map-detection-form"></div>
-    </div>
-  );
+  return <div ref={mapContainerRef} id="map-observations" data-debug={debugString}></div>;
 }
 
 const categorie: any = {
@@ -2220,7 +2218,8 @@ function DetectionStepObservationPoints({
     };
   });
 
-  const isMobile = useMediaQuery("(max-width: 768px)");
+  // const isMobile = useMediaQuery("(max-width: 768px)");
+  const isMobile = useMediaQuery("(max-width: 576px)");
 
   return (
     <Fragment>
@@ -2490,34 +2489,42 @@ function DetectionStepObservationPoints({
       />
       <div className="detection-observation-ui-container remove-content-padding-y">
         <div className="header">
-          {`Fotografie     Note     ✓Fine`}
-          <div className="buttons-wrapper mt-5 text-center">
-            <button className="trnt_btn primary" onClick={() => setCameraOpen(true)}>
+          {/* {`Fotografie     Note     ✓Fine`} */}
+          <div className="">
+            <a onClick={onBackClick}>&larr;</a>
+          </div>
+          <div className="buttons-wrapper text-center">
+            <button
+              className="trnt_btn small narrow-x slim-y primary"
+              onClick={() => setCameraOpen(true)}
+            >
               + Foto
             </button>
-            <button className="trnt_btn primary ms-2" onClick={handleOpenNoteModal}>
+            <button
+              className="trnt_btn small narrow-x slim-y primary ms-2"
+              onClick={handleOpenNoteModal}
+            >
               + Nota
             </button>
           </div>
           <div>
-            <a onClick={onBackClick}>&larr;</a>
-            <a className="finish-btn" onClick={handleSave}>
-              <span>FINE</span>
+            <a className="button narrow-x slim-y accent-stronger" onClick={handleSave}>
+              <span>✓ FINE</span>
             </a>
           </div>
         </div>
         <div className="body">
           {!isMobile && (
-            <div className="half">
-              {"Map A"}
+            <div className="half" data-note="MAP A">
               <DetectionFormMapPosition
                 sourceType={source}
                 onMarkerChange={handleMarkerChange}
                 mapPoints={mapPoints}
+                debugString="(map A)"
               />
             </div>
           )}
-          <div className="half">
+          <div className="half split">
             <div className="quarter">
               {/* Observations-list or map */}
               {isMobile && (
@@ -2617,14 +2624,12 @@ function DetectionStepObservationPoints({
                 </Fragment>
               )}
               {isMobile && activeDataTab === "map" && (
-                <div>
-                  {"Map B"}
-                  <DetectionFormMapPosition
-                    sourceType={source}
-                    onMarkerChange={handleMarkerChange}
-                    mapPoints={mapPoints}
-                  />
-                </div>
+                <DetectionFormMapPosition
+                  sourceType={source}
+                  onMarkerChange={handleMarkerChange}
+                  mapPoints={mapPoints}
+                  debugString="(map B)"
+                />
               )}
             </div>
             <div className="quarter">
