@@ -13148,6 +13148,8 @@ body {
   transition: color 100ms;
   margin-left: auto;
   margin-right: auto;
+  /* Portrait: height > width */
+  /* Portrait: height > width */
 }
 
 @media (min-width: 576px) {
@@ -13761,6 +13763,7 @@ body {
 
 #app .modal-bg .mod-scrollable .modal .mod-content section {
   padding: 0 30px;
+  padding: 5px;
   margin-bottom: 30px;
 }
 
@@ -14918,6 +14921,94 @@ body {
   flex: 0 0 auto;
   /* takes only the height it needs */
   border-radius: 5px;
+}
+
+#app .remove-content-padding-y {
+  margin: -10px 0;
+}
+
+@media (min-width: 576px) {
+  #app .remove-content-padding-y {
+    margin: -20px -0px;
+  }
+}
+
+#app .detection-observation-ui-container {
+  container-type: size;
+  position: relative;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: stretch;
+  justify-content: stretch;
+  width: 100%;
+  height: calc(100dvh - 60px);
+}
+
+#app .detection-observation-ui-container .header {
+  border: 5px solid grey;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#app .detection-observation-ui-container .body {
+  border: 5px solid red;
+  flex-grow: 1;
+  display: flex;
+  align-items: stretch;
+  flex-flow: column nowrap;
+  justify-content: stretch;
+  background-color: #646464;
+}
+
+#app .detection-observation-ui-container .body .half {
+  border: 5px solid #8181f4;
+  flex-grow: 1;
+  display: flex;
+  align-items: stretch;
+  flex-flow: row nowrap;
+  justify-content: stretch;
+}
+
+#app .detection-observation-ui-container .body .half .quarter {
+  border: 5px solid #6ee989;
+  flex-grow: 1;
+  position: relative;
+}
+
+#app .detection-observation-ui-container .body .half .quarter .tabs {
+  z-index: 2;
+  position: absolute;
+  top: 10px;
+  left: 0;
+  right: 0;
+  height: 40px;
+  background-color: rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: center;
+}
+
+@container (aspect-ratio > 1 / 1) {
+  #app .detection-observation-ui-container .body {
+    flex-flow: row nowrap;
+  }
+  #app .detection-observation-ui-container .body .half {
+    flex-flow: column nowrap;
+  }
+}
+
+@container (aspect-ratio < 1 / 1) {
+  #app .detection-observation-ui-container .body {
+    flex-flow: column nowrap;
+  }
+  #app .detection-observation-ui-container .body .half {
+    flex-flow: row nowrap;
+  }
+}
+
+#app .detection-observation-ui-container .body .half {
+  flex-flow: column nowrap !important;
 }
 
 #app .stepper-wrapper {

@@ -515,6 +515,7 @@ body {
         .mod-content {
           section {
             padding: 0 $space;
+            padding: 5px;
             margin-bottom: $space;
             &:first-of-type {
               margin-top: $space;
@@ -1252,6 +1253,91 @@ body {
       flex: 0 0 auto; /* takes only the height it needs */
       // background-color: #ddd;
       border-radius: 5px;
+    }
+  }
+
+  .remove-content-padding-y {
+    margin: -10px 0;
+    @include media-breakpoint-up(sm) {
+      margin: -20px -0px;
+    }
+  }
+  .detection-observation-ui-container {
+    container-type: size;
+    // container-name: detection;
+    position: relative;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: stretch;
+    justify-content: stretch;
+    width: 100%;
+    height: calc(100dvh - 60px);
+    .header {
+      border: 5px solid grey;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .body {
+      border: 5px solid red;
+      flex-grow: 1;
+      display: flex;
+      align-items: stretch;
+      flex-flow: column nowrap;
+      justify-content: stretch;
+      background-color: #646464;
+      .half {
+        border: 5px solid rgb(129, 129, 244);
+        flex-grow: 1;
+        display: flex;
+        align-items: stretch;
+        flex-flow: row nowrap;
+        justify-content: stretch;
+        .quarter {
+          border: 5px solid rgb(110, 233, 137);
+          flex-grow: 1;
+          position: relative;
+          .tabs {
+            z-index: 2;
+            position: absolute;
+            top: 10px;
+            left: 0;
+            right: 0;
+            height: 40px;
+            background-color: rgba(black, 0.2);
+            display: flex;
+            justify-content: center;
+          }
+        }
+      }
+    }
+  }
+  /* Portrait: height > width */
+  @container (aspect-ratio > 1 / 1) {
+    .detection-observation-ui-container {
+      .body {
+        flex-flow: row nowrap;
+        .half {
+          flex-flow: column nowrap;
+        }
+      }
+    }
+  }
+  /* Portrait: height > width */
+  @container (aspect-ratio < 1 / 1) {
+    .detection-observation-ui-container {
+      .body {
+        flex-flow: column nowrap;
+        .half {
+          flex-flow: row nowrap;
+        }
+      }
+    }
+  }
+  @include media-breakpoint-down(xs) {
+    .detection-observation-ui-container .body .half {
+      flex-flow: column nowrap !important;
     }
   }
 

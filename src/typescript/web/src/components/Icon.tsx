@@ -13,6 +13,9 @@ import baloon_y from "../assets/images/icons/baloon-y.svg";
 import barn_b from "../assets/images/icons/barn-b.svg";
 import barn_w from "../assets/images/icons/barn-w.svg";
 import barn_y from "../assets/images/icons/barn-y.svg";
+import bin_b from "../assets/images/icons/bin-b.svg";
+import bin_w from "../assets/images/icons/bin-w.svg";
+import bin_y from "../assets/images/icons/bin-y.svg";
 import bug_b from "../assets/images/icons/bug-b.svg";
 import bug_w from "../assets/images/icons/bug-w.svg";
 import bug_y from "../assets/images/icons/bug-y.svg";
@@ -52,14 +55,12 @@ import home_y from "../assets/images/icons/home-y.svg";
 import larr_b from "../assets/images/icons/larr-b.svg";
 import larr_w from "../assets/images/icons/larr-w.svg";
 import larr_y from "../assets/images/icons/larr-y.svg";
-
 import pencil_b from "../assets/images/icons/pencil-b.svg";
 import pencil_w from "../assets/images/icons/pencil-w.svg";
 import pencil_y from "../assets/images/icons/pencil-y.svg";
 import pic_b from "../assets/images/icons/pic-b.svg";
 import pic_w from "../assets/images/icons/pic-w.svg";
 import pic_y from "../assets/images/icons/pic-y.svg";
-
 import pin_b from "../assets/images/icons/pin-b.svg";
 import pin_w from "../assets/images/icons/pin-w.svg";
 import pin_y from "../assets/images/icons/pin-y.svg";
@@ -97,6 +98,7 @@ const icons = {
   bacteria: { white: bacteria_w, black: bacteria_b, yellow: bacteria_y },
   baloon: { white: baloon_w, black: baloon_b, yellow: baloon_y },
   barn: { white: barn_w, black: barn_b, yellow: barn_y },
+  bin: { white: bin_w, black: bin_b, yellow: bin_y },
   bug: { white: bug_w, black: bug_b, yellow: bug_y },
   checklist: { white: checklist_w, black: checklist_b, yellow: checklist_y },
   circleempty: { white: circleempty_w, black: circleempty_b, yellow: circleempty_y },

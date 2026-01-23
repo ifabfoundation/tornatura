@@ -43,6 +43,7 @@ import doneIcon from "../../../assets/images/icon-large-done.svg";
 import { bbchs } from "./bbch";
 import { number, string } from "yup";
 import Stepper from "../../../components/Stepper";
+import { useMediaQuery } from "../../users/utils";
 
 const markerOptions = { color: "#EAFF00" };
 
@@ -2219,8 +2220,236 @@ function DetectionStepObservationPoints({
     };
   });
 
+  const isMobile = useMediaQuery("(max-width: 768px)");
+
   return (
     <Fragment>
+      {/* GOOD STUFF
+      <Fragment>
+        // ADDED -------------------
+        {modalOpen && <modal.component {...modal.componentProps} />}
+        {noteModalOpen && (
+          <Modal closeModal={() => setNoteModalOpen(false)} title="Nota">
+            <section>
+              <div className="input-row">
+                <label>
+                  Nota
+                  <textarea
+                    rows={6}
+                    value={noteDraft}
+                    onChange={(event) => setNoteDraft(event.target.value)}
+                  />
+                </label>
+              </div>
+              <hr />
+              <div className="buttons-wrapper text-center">
+                <button className="trnt_btn secondary" onClick={() => setNoteModalOpen(false)}>
+                  Annulla
+                </button>
+                <button
+                  className="trnt_btn primary"
+                  onClick={() => {
+                    setNoteValue(noteDraft);
+                    setNoteModalOpen(false);
+                  }}
+                >
+                  Salva
+                </button>
+              </div>
+            </section>
+          </Modal>
+        )}
+        // ADDED -------------------
+        <CameraCapture
+          open={cameraOpen}
+          onClose={() => setCameraOpen(false)}
+          onCapture={(file) => onPhotosChange?.([...pendingPhotos, file])}
+        />
+        // NO NEED -------------------
+        <div className="hacky-header-cover">
+          <a onClick={onBackClick}>&larr;</a>
+          <a className="finish-btn" onClick={handleSave}>
+            <span>FINE</span>
+          </a>
+        </div>
+        <div className="narrow-container my-5">
+          <h3 className="mb-4 text-center">Aggiungi punti di osservazione</h3>
+          <div className="buttons-wrapper mt-3 text-center">
+            <button
+              className={`trnt_btn ms-2 ${activeDataTab === "map" ? "primary" : "secondary"}`}
+              onClick={() => setActiveDataTab("map")}
+            >
+              Mappa
+            </button>
+            <button
+              className={`trnt_btn ${activeDataTab === "list" ? "primary" : "secondary"}`}
+              onClick={() => setActiveDataTab("list")}
+            >
+              Dati
+            </button>
+          </div>
+          <div className="detection-ui mb-4">
+            // ADDED -------------------
+            {activeDataTab === "map" && (
+              <Fragment>
+                <DetectionFormMapPosition
+                  sourceType={source}
+                  onMarkerChange={handleMarkerChange}
+                  mapPoints={mapPoints}
+                />
+              </Fragment>
+            )}
+            // ADDED -------------------
+            {activeDataTab === "list" && (
+              <Fragment>
+                {observationType.observationType === "range" && (
+                  <div className="detection-scores">
+                    <Container className="h-100 p-0">
+                      <Row className="h-100">
+                        <Col className="h-100">
+                          <div className="scores-list-wrapper">
+                            <div className="scores-list">
+                              <header className="font-s-label">Ultime osservazioni</header>
+                              {scorePoints.length === 0 && (
+                                <div>Nessuna osservazione ancora registrata</div>
+                              )}
+                              {scorePoints.map((entry: any, index: number) => (
+                                <div key={index} className="score-entry">
+                                  <span className="txt new-score-entry">
+                                    <span>#{index + 1}</span> — <span>{entry.data.rangeValue}</span>
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </Col>
+                        <Col className="h-100">
+                          <header className="font-s-label">Piante colpite</header>
+                          <div className="font-xl mt-1 mb-3">{getScoreStat("pianteColpite")}</div>
+                          <header className="font-s-label">Intensità media</header>
+                          <div className="font-xl mt-1 mb-3">{getScoreStat("intensitaMedia")}</div>
+                        </Col>
+                      </Row>
+                    </Container>
+                  </div>
+                )}
+                {observationType.observationType === "counters" && (
+                  // ADDED -------------------
+                  <div className="detection-scores">
+                    <Container className="h-100 p-0">
+                      <Row className="h-100">
+                        <Col className="h-100">
+                          <div className="scores-list-wrapper">
+                            <div className="scores-list">
+                              <header className="font-s-label">Ultime osservazioni</header>
+                              {points.length === 0 && (
+                                <div>Nessuna osservazione ancora registrata</div>
+                              )}
+                              {points.map((entry: any, index: number) => (
+                                <div key={index} className="score-entry">
+                                  <span className="txt new-score-entry">
+                                    <span>#{index + 1}</span> —{" "}
+                                    {entry.data.counters.map((counter: any, keyIndex: number) => (
+                                      <span className="ms-2" key={keyIndex}>
+                                        {counter.counterName}: {counter.counterValue}
+                                      </span>
+                                    ))}
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </Col>
+                        <Col className="h-100">
+                          <header className="font-s-label">Piante colpite</header>
+                          <div className="font-xl mt-1 mb-3">{getCountersStat("pianteColpite")}</div>
+                          <header className="font-s-label">Intensità media</header>
+                          <div className="font-xl mt-1 mb-3">{getCountersStat("intensitaMedia")}</div>
+                        </Col>
+                      </Row>
+                    </Container>
+                  </div>
+                )}
+              </Fragment>
+            )}
+            
+            // ADDED -------------------
+            <div className="buttons-wrapper mt-5 text-center">
+              <button className="trnt_btn primary" onClick={() => setCameraOpen(true)}>
+                + Foto
+              </button>
+              <button className="trnt_btn primary ms-2" onClick={handleOpenNoteModal}>
+                + Nota
+              </button>
+            </div>
+
+            <div className="detection-inputs">
+              <div className="mt-2 mb-3">
+                <div className="font-s-label">Osservazione #{scorePoints.length + 1}</div>
+                <div className="font-l mt-1">Valuta l'intensità del sintomo</div>
+              </div>
+              {observationType.observationType === "range" && (
+                <Fragment>
+                  <ScoreBtnRow score={0} label="Assente" />
+                  {Array.from({ length: rangeLength + 1 }, (_, i) => i + 1).map((v, index) => {
+                    const labels = ["Basso", "Limitato", "Cospicuo", "Alto", "Molto Alto"];
+                    if (v > 5) {
+                      return <ScoreBtnRow key={index} score={v} label="Molto Alto" />;
+                    } else {
+                      return <ScoreBtnRow key={index} score={v} label={labels[v - 1]} />;
+                    }
+                  })}
+                </Fragment>
+              )}
+              {observationType.observationType === "counters" && (
+                <Fragment>
+                  <Row>
+                    {Object.keys(counterValues).map((label, index) => {
+                      return (
+                        <Col key={index}>
+                          <ButtonGroupGrid
+                            value={+counterValues[label]}
+                            label={label}
+                            buttons={[
+                              {
+                                label: "–1",
+                                onClick: () => handleCounterOptionClick(label, -1),
+                              },
+                              {
+                                label: "+1",
+                                onClick: () => handleCounterOptionClick(label, 1),
+                              },
+                              {
+                                label: "Reset",
+                                onClick: () => handleResetCounterClick(label),
+                              },
+                              {
+                                label: "+10",
+                                onClick: () => handleCounterOptionClick(label, 10),
+                              },
+                            ]}
+                          />
+                        </Col>
+                      );
+                    })}
+                  </Row>
+                  <div className="mt-3">
+                    <CozyButton
+                      btnSize="small"
+                      content="Aggiungi Osservazione"
+                      onClick={() => handleAddCounterValuesClick()}
+                    />
+                  </div>
+                </Fragment>
+              )}
+            </div>
+          </div>
+        </div>
+
+      </Fragment>
+      */}
+
+      {/*  */}
       {modalOpen && <modal.component {...modal.componentProps} />}
       {noteModalOpen && (
         <Modal closeModal={() => setNoteModalOpen(false)} title="Nota">
@@ -2258,110 +2487,9 @@ function DetectionStepObservationPoints({
         onClose={() => setCameraOpen(false)}
         onCapture={(file) => onPhotosChange?.([...pendingPhotos, file])}
       />
-      <div className="hacky-header-cover">
-        <a onClick={onBackClick}>&larr;</a>
-        <a className="finish-btn" onClick={handleSave}>
-          <span>FINE</span>
-        </a>
-      </div>
-      <div className="narrow-container my-5">
-        <h3 className="mb-4 text-center">Aggiungi punti di osservazione</h3>
-        <div className="buttons-wrapper mt-3 text-center">
-          <button
-            className={`trnt_btn ms-2 ${activeDataTab === "map" ? "primary" : "secondary"}`}
-            onClick={() => setActiveDataTab("map")}
-          >
-            Mappa
-          </button>
-          <button
-            className={`trnt_btn ${activeDataTab === "list" ? "primary" : "secondary"}`}
-            onClick={() => setActiveDataTab("list")}
-          >
-            Dati
-          </button>
-        </div>
-        <div className="detection-ui mb-4">
-          {activeDataTab === "map" && (
-            <Fragment>
-              <DetectionFormMapPosition
-                sourceType={source}
-                onMarkerChange={handleMarkerChange}
-                mapPoints={mapPoints}
-              />
-            </Fragment>
-          )}
-          {activeDataTab === "list" && (
-            <Fragment>
-              {observationType.observationType === "range" && (
-                <div className="detection-scores">
-                  <Container className="h-100 p-0">
-                    <Row className="h-100">
-                      <Col className="h-100">
-                        <div className="scores-list-wrapper">
-                          <div className="scores-list">
-                            <header className="font-s-label">Ultime osservazioni</header>
-                            {scorePoints.length === 0 && (
-                              <div>Nessuna osservazione ancora registrata</div>
-                            )}
-                            {scorePoints.map((entry: any, index: number) => (
-                              <div key={index} className="score-entry">
-                                <span className="txt new-score-entry">
-                                  <span>#{index + 1}</span> — <span>{entry.data.rangeValue}</span>
-                                </span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </Col>
-                      <Col className="h-100">
-                        <header className="font-s-label">Piante colpite</header>
-                        <div className="font-xl mt-1 mb-3">{getScoreStat("pianteColpite")}</div>
-                        <header className="font-s-label">Intensità media</header>
-                        <div className="font-xl mt-1 mb-3">{getScoreStat("intensitaMedia")}</div>
-                      </Col>
-                    </Row>
-                  </Container>
-                </div>
-              )}
-              {observationType.observationType === "counters" && (
-                <div className="detection-scores">
-                  <Container className="h-100 p-0">
-                    <Row className="h-100">
-                      <Col className="h-100">
-                        <div className="scores-list-wrapper">
-                          <div className="scores-list">
-                            <header className="font-s-label">Ultime osservazioni</header>
-                            {points.length === 0 && (
-                              <div>Nessuna osservazione ancora registrata</div>
-                            )}
-                            {points.map((entry: any, index: number) => (
-                              <div key={index} className="score-entry">
-                                <span className="txt new-score-entry">
-                                  <span>#{index + 1}</span> —{" "}
-                                  {entry.data.counters.map((counter: any, keyIndex: number) => (
-                                    <span className="ms-2" key={keyIndex}>
-                                      {counter.counterName}: {counter.counterValue}
-                                    </span>
-                                  ))}
-                                </span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </Col>
-                      <Col className="h-100">
-                        <header className="font-s-label">Piante colpite</header>
-                        <div className="font-xl mt-1 mb-3">{getCountersStat("pianteColpite")}</div>
-                        <header className="font-s-label">Intensità media</header>
-                        <div className="font-xl mt-1 mb-3">{getCountersStat("intensitaMedia")}</div>
-                      </Col>
-                    </Row>
-                  </Container>
-                </div>
-              )}
-            </Fragment>
-          )}
-
+      <div className="detection-observation-ui-container remove-content-padding-y">
+        <div className="header">
+          {`Fotografie     Note     ✓Fine`}
           <div className="buttons-wrapper mt-5 text-center">
             <button className="trnt_btn primary" onClick={() => setCameraOpen(true)}>
               + Foto
@@ -2370,66 +2498,192 @@ function DetectionStepObservationPoints({
               + Nota
             </button>
           </div>
-
-          <div className="detection-inputs">
-            <div className="mt-2 mb-3">
-              <div className="font-s-label">Osservazione #{scorePoints.length + 1}</div>
-              <div className="font-l mt-1">Valuta l'intensità del sintomo</div>
+        </div>
+        <div className="body">
+          {!isMobile && (
+            <div className="half">
+              {"Map A"}
+              <DetectionFormMapPosition
+                sourceType={source}
+                onMarkerChange={handleMarkerChange}
+                mapPoints={mapPoints}
+              />
             </div>
-            {observationType.observationType === "range" && (
-              <Fragment>
-                <ScoreBtnRow score={0} label="Assente" />
-                {Array.from({ length: rangeLength + 1 }, (_, i) => i + 1).map((v, index) => {
-                  const labels = ["Basso", "Limitato", "Cospicuo", "Alto", "Molto Alto"];
-                  if (v > 5) {
-                    return <ScoreBtnRow key={index} score={v} label="Molto Alto" />;
-                  } else {
-                    return <ScoreBtnRow key={index} score={v} label={labels[v - 1]} />;
-                  }
-                })}
-              </Fragment>
-            )}
-            {observationType.observationType === "counters" && (
-              <Fragment>
-                <Row>
-                  {Object.keys(counterValues).map((label, index) => {
-                    return (
-                      <Col key={index}>
-                        <ButtonGroupGrid
-                          value={+counterValues[label]}
-                          label={label}
-                          buttons={[
-                            {
-                              label: "–1",
-                              onClick: () => handleCounterOptionClick(label, -1),
-                            },
-                            {
-                              label: "+1",
-                              onClick: () => handleCounterOptionClick(label, 1),
-                            },
-                            {
-                              label: "Reset",
-                              onClick: () => handleResetCounterClick(label),
-                            },
-                            {
-                              label: "+10",
-                              onClick: () => handleCounterOptionClick(label, 10),
-                            },
-                          ]}
-                        />
-                      </Col>
-                    );
-                  })}
-                </Row>
-                <div className="mt-3">
-                  <CozyButton
-                    btnSize="small"
-                    content="Aggiungi Osservazione"
-                    onClick={() => handleAddCounterValuesClick()}
+          )}
+          <div className="half">
+            <div className="quarter">
+              {/* Observations-list or map */}
+              {isMobile && (
+                <div className="tabs">
+                  <button
+                    className={`trnt_btn ms-2 ${activeDataTab === "map" ? "primary" : "secondary"}`}
+                    onClick={() => setActiveDataTab("map")}
+                  >
+                    Mappa
+                  </button>
+                  <button
+                    className={`trnt_btn ${activeDataTab === "list" ? "primary" : "secondary"}`}
+                    onClick={() => setActiveDataTab("list")}
+                  >
+                    Dati
+                  </button>
+                </div>
+              )}
+
+              {(!isMobile || activeDataTab === "list") && (
+                <Fragment>
+                  {observationType.observationType === "range" && (
+                    <div className="detection-scores">
+                      <Container className="h-100 p-0">
+                        <Row className="h-100">
+                          <Col className="h-100">
+                            <div className="scores-list-wrapper">
+                              <div className="scores-list">
+                                <header className="font-s-label">Ultime osservazioni</header>
+                                {scorePoints.length === 0 && (
+                                  <div>Nessuna osservazione ancora registrata</div>
+                                )}
+                                {scorePoints.map((entry: any, index: number) => (
+                                  <div key={index} className="score-entry">
+                                    <span className="txt new-score-entry">
+                                      <span>#{index + 1}</span> —{" "}
+                                      <span>{entry.data.rangeValue}</span>
+                                    </span>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </Col>
+                          <Col className="h-100">
+                            <header className="font-s-label">Piante colpite</header>
+                            <div className="font-xl mt-1 mb-3">{getScoreStat("pianteColpite")}</div>
+                            <header className="font-s-label">Intensità media</header>
+                            <div className="font-xl mt-1 mb-3">
+                              {getScoreStat("intensitaMedia")}
+                            </div>
+                          </Col>
+                        </Row>
+                      </Container>
+                    </div>
+                  )}
+                  {observationType.observationType === "counters" && (
+                    // ADDED -------------------
+                    <div className="detection-scores">
+                      <Container className="h-100 p-0">
+                        <Row className="h-100">
+                          <Col className="h-100">
+                            <div className="scores-list-wrapper">
+                              <div className="scores-list">
+                                <header className="font-s-label">Ultime osservazioni</header>
+                                {points.length === 0 && (
+                                  <div>Nessuna osservazione ancora registrata</div>
+                                )}
+                                {points.map((entry: any, index: number) => (
+                                  <div key={index} className="score-entry">
+                                    <span className="txt new-score-entry">
+                                      <span>#{index + 1}</span> —{" "}
+                                      {entry.data.counters.map((counter: any, keyIndex: number) => (
+                                        <span className="ms-2" key={keyIndex}>
+                                          {counter.counterName}: {counter.counterValue}
+                                        </span>
+                                      ))}
+                                    </span>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </Col>
+                          <Col className="h-100">
+                            <header className="font-s-label">Piante colpite</header>
+                            <div className="font-xl mt-1 mb-3">
+                              {getCountersStat("pianteColpite")}
+                            </div>
+                            <header className="font-s-label">Intensità media</header>
+                            <div className="font-xl mt-1 mb-3">
+                              {getCountersStat("intensitaMedia")}
+                            </div>
+                          </Col>
+                        </Row>
+                      </Container>
+                    </div>
+                  )}
+                </Fragment>
+              )}
+              {isMobile && activeDataTab === "map" && (
+                <div>
+                  {"Map B"}
+                  <DetectionFormMapPosition
+                    sourceType={source}
+                    onMarkerChange={handleMarkerChange}
+                    mapPoints={mapPoints}
                   />
                 </div>
-              </Fragment>
-            )}
+              )}
+            </div>
+            <div className="quarter">
+              {"Buttons"}
+
+              <div className="detection-inputs">
+                <div className="mt-2 mb-3">
+                  <div className="font-s-label">Osservazione #{scorePoints.length + 1}</div>
+                  <div className="font-l mt-1">Valuta l'intensità del sintomo</div>
+                </div>
+                {observationType.observationType === "range" && (
+                  <Fragment>
+                    <ScoreBtnRow score={0} label="Assente" />
+                    {Array.from({ length: rangeLength + 1 }, (_, i) => i + 1).map((v, index) => {
+                      const labels = ["Basso", "Limitato", "Cospicuo", "Alto", "Molto Alto"];
+                      if (v > 5) {
+                        return <ScoreBtnRow key={index} score={v} label="Molto Alto" />;
+                      } else {
+                        return <ScoreBtnRow key={index} score={v} label={labels[v - 1]} />;
+                      }
+                    })}
+                  </Fragment>
+                )}
+                {observationType.observationType === "counters" && (
+                  <Fragment>
+                    <Row>
+                      {Object.keys(counterValues).map((label, index) => {
+                        return (
+                          <Col key={index}>
+                            <ButtonGroupGrid
+                              value={+counterValues[label]}
+                              label={label}
+                              buttons={[
+                                {
+                                  label: "–1",
+                                  onClick: () => handleCounterOptionClick(label, -1),
+                                },
+                                {
+                                  label: "+1",
+                                  onClick: () => handleCounterOptionClick(label, 1),
+                                },
+                                {
+                                  label: "Reset",
+                                  onClick: () => handleResetCounterClick(label),
+                                },
+                                {
+                                  label: "+10",
+                                  onClick: () => handleCounterOptionClick(label, 10),
+                                },
+                              ]}
+                            />
+                          </Col>
+                        );
+                      })}
+                    </Row>
+                    <div className="mt-3">
+                      <CozyButton
+                        btnSize="small"
+                        content="Aggiungi Osservazione"
+                        onClick={() => handleAddCounterValuesClick()}
+                      />
+                    </div>
+                  </Fragment>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -2696,13 +2950,16 @@ export function DetectionForm() {
     }
   };
 
+  // const stepperItems = ["Tipologia", "Metodo", "Guida", "BBCH", "Rilevamento"];
   const stepperItems = useShortFlow
     ? ["BBCH", "Rilevamento"]
     : ["Tipologia", "Metodo", "Guida", "BBCH", "Rilevamento"];
 
   return (
     <Fragment>
-      <Stepper items={stepperItems} currentStep={stepIndex} handleBackClick={handleBackClick} />
+      {currentStepKey !== "points" && (
+        <Stepper items={stepperItems} currentStep={stepIndex} handleBackClick={handleBackClick} />
+      )}
 
       <div>
         {currentStepKey === "typology" && (
