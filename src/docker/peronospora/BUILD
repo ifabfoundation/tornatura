@@ -1,0 +1,9 @@
+docker_image(
+    name="docker",
+    repository="darkform/tornatura.peronospora",
+    image_tags=["latest"],
+    dependencies=[
+        "src/python/peronospora:scheduler",
+        "src/python/peronospora:api"
+    ],
+)

@@ -37,17 +37,17 @@ Version: 2.0
 """
 
 import os
+import subprocess
 import sys
 import logging
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from apscheduler.schedulers.blocking import BlockingScheduler
 from apscheduler.triggers.cron import CronTrigger
+import boto3
 
 PACKAGE_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PACKAGE_ROOT))
-
-from peronospora.inference_service import run_inference_pipeline as run_pipeline
 from peronospora import paths
 
 
@@ -184,7 +184,6 @@ def check_todays_data_available():
 # =============================================================================
 # Funzioni per eseguire la pipeline di inferenza come sottoprocesso.
 # Include gestione errori, timeout, e logging dettagliato.
-
 def run_inference_pipeline():
     """
     Esegue la pipeline di inferenza completa.
@@ -218,13 +217,51 @@ def run_inference_pipeline():
         logger.warning("Dati di oggi non ancora disponibili. "
                       "Esecuzione comunque (userà cache + dati disponibili)")
 
-    # Step 2: Esegue pipeline in-process
+    # Step 2: Verifica esistenza script pipeline
+    if not PIPELINE_SCRIPT.exists():
+        logger.error(f"Script pipeline non trovato: {PIPELINE_SCRIPT}")
+        return False
+
+    # Step 3: Determina Python da usare
+    python_exec = sys.executable
+    env = os.environ.copy()
+    env["PERONOSPORA_RUNTIME_DIR"] = paths.RUNTIME_DIR
+
+    # Step 4: Esegue pipeline
     try:
-        logger.info("Esecuzione pipeline (in-process)")
-        run_pipeline()
-        elapsed = datetime.now() - start_time
-        logger.info(f"Pipeline completata con successo in {elapsed.total_seconds():.1f}s")
-        return True
+        logger.info(f"Esecuzione: {PIPELINE_SCRIPT}")
+
+        result = subprocess.run(
+            [python_exec, str(PIPELINE_SCRIPT)],
+            cwd=str(SCRIPT_DIR),
+            capture_output=True,
+            text=True,
+            env=env,
+            timeout=PIPELINE_TIMEOUT
+        )
+
+        # Step 5: Log output pipeline
+        if result.stdout:
+            for line in result.stdout.strip().split('\n'):
+                logger.info(f"[PIPELINE] {line}")
+
+        if result.stderr:
+            for line in result.stderr.strip().split('\n'):
+                if line.strip():
+                    logger.warning(f"[PIPELINE STDERR] {line}")
+
+        # Step 6: Verifica risultato
+        if result.returncode == 0:
+            elapsed = datetime.now() - start_time
+            logger.info(f"Pipeline completata con successo in {elapsed.total_seconds():.1f}s")
+            return True
+        else:
+            logger.error(f"Pipeline fallita con codice: {result.returncode}")
+            return False
+
+    except subprocess.TimeoutExpired:
+        logger.error(f"Pipeline timeout dopo {PIPELINE_TIMEOUT // 60} minuti")
+        return False
     except Exception as e:
         logger.error(f"Errore esecuzione pipeline: {str(e)}")
         return False

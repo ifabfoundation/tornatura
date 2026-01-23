@@ -7,11 +7,10 @@ import pandas as pd
 import numpy as np
 import xgboost as xgb
 from datetime import datetime
-
+from peronospora import paths
 
 # Load risk levels configuration
-SCRIPT_DIR = Path(__file__).parent
-with open(SCRIPT_DIR / "risk_levels.json", 'r', encoding='utf-8') as f:
+with open(paths.PACKAGE_DIR / "risk_levels.json", 'r', encoding='utf-8') as f:
     RISK_LEVELS = json.load(f)
 
 
@@ -209,7 +208,7 @@ def main():
                         help='Directory containing inference data files')
     parser.add_argument('--model_dir', type=str, default='model',
                         help='Directory containing trained models')
-    parser.add_argument('--output_dir', type=str, default='predictions',
+    parser.add_argument('--output_dir', type=str, default=paths.PREDICTIONS_DIR,
                         help='Directory for output predictions')
     parser.add_argument('--horizon', type=str, choices=['near_term', 'medium_term'],
                         default='near_term', help='Forecast horizon')
@@ -218,7 +217,10 @@ def main():
 
     args = parser.parse_args()
 
-    os.makedirs(args.output_dir, exist_ok=True)
+    output_dir = Path(args.output_dir)
+    if not output_dir.is_absolute():
+        output_dir = paths.RUNTIME_DIR / output_dir
+    output_dir.mkdir(parents=True, exist_ok=True)
 
     predictor = PeronospotaPredictor(model_dir=args.model_dir, verbose=True)
 

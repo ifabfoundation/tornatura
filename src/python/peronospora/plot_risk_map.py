@@ -394,9 +394,9 @@ def main():
     import argparse
 
     parser = argparse.ArgumentParser(description='Generate Peronospora Risk Map')
-    parser.add_argument('--output', type=str, default='risk_map_satellite.html',
+    parser.add_argument('--output', type=str, default=paths.RISK_MAP_PATH,
                        help='Output HTML file name')
-    parser.add_argument('--predictions_dir', type=str, default='predictions',
+    parser.add_argument('--predictions_dir', type=str, default=paths.PREDICTIONS_DIR,
                        help='Directory containing prediction CSV files')
 
     args = parser.parse_args()
