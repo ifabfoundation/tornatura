@@ -5,8 +5,8 @@ env/
 __pycache__/
 
 # Cache and temporary files
-data/weather/cache/
-data/weather/temp_grib/
+weather/cache/
+weather/temp_grib/
 data/phenology/phenology_csv/
 data/dataframe_inference/
 

@@ -1,17 +1,20 @@
 import logging
 import os
+import re
 import threading
+import unicodedata
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 from zoneinfo import ZoneInfo
 
 from fastapi import BackgroundTasks, FastAPI, HTTPException, Query
 from fastapi.responses import FileResponse
+import geopandas as gpd
 import pandas as pd
 from pydantic import BaseModel, Field, conint
+from shapely.geometry import Point
 import uvicorn
 
-from peronospora.inference_service import run_inference_pipeline
 from peronospora import paths
 
 
@@ -19,9 +22,10 @@ logger = logging.getLogger("peronospora_api")
 logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s")
 
 app = FastAPI(title="Peronospora Inference API", version="1.0.0")
+_PROVINCE_GDF: Optional[gpd.GeoDataFrame] = None
 
 
-@app.get("/health")
+@app.get("/v1/health")
 def health() -> Dict[str, str]:
     return {"status": "ok"}
 
@@ -51,7 +55,51 @@ def _format_predictions(df: pd.DataFrame) -> Dict[str, Any]:
 
 
 def _normalize_province(value: str) -> str:
-    return value.strip().lower().replace(" ", "_")
+    normalized = unicodedata.normalize("NFKD", value)
+    normalized = normalized.encode("ascii", "ignore").decode("ascii")
+    normalized = normalized.lower()
+    normalized = re.sub(r"[^a-z0-9]+", "_", normalized).strip("_")
+    return normalized
+
+
+def _load_emilia_romagna_shapefile() -> gpd.GeoDataFrame:
+    global _PROVINCE_GDF
+    if _PROVINCE_GDF is not None:
+        return _PROVINCE_GDF
+
+    static_shapefile = paths.STATIC_DATA_DIR / "weather" / "shapefiles" / "province_emilia_romagna.shp"
+    local_shapefile = paths.WEATHER_DIR / "shapefiles" / "province_emilia_romagna.shp"
+
+    if static_shapefile.exists():
+        gdf = gpd.read_file(static_shapefile)
+    elif local_shapefile.exists():
+        gdf = gpd.read_file(local_shapefile)
+    else:
+        raise HTTPException(status_code=500, detail="Province shapefile not found")
+
+    if "prov_name" in gdf.columns:
+        gdf = gdf.rename(columns={"prov_name": "province_name"})
+    elif "DEN_UTS" in gdf.columns:
+        gdf = gdf.rename(columns={"DEN_UTS": "province_name"})
+
+    if "province_name" not in gdf.columns:
+        raise HTTPException(status_code=500, detail="Province shapefile missing province_name column")
+
+    if gdf.crs != "EPSG:4326":
+        gdf = gdf.to_crs("EPSG:4326")
+
+    _PROVINCE_GDF = gdf
+    return gdf
+
+
+def _province_from_point(lat: float, lng: float) -> Optional[str]:
+    gdf = _load_emilia_romagna_shapefile()
+    point = Point(lng, lat)
+    matches = gdf[gdf.geometry.intersects(point)]
+    if matches.empty:
+        return None
+    province_name = str(matches.iloc[0]["province_name"])
+    return _normalize_province(province_name)
 
 
 def _load_predictions(lead: int) -> pd.DataFrame:
@@ -61,23 +109,19 @@ def _load_predictions(lead: int) -> pd.DataFrame:
     return pd.read_csv(path)
 
 
-@app.get("/api/risk/current")
+@app.get("/v1/peronospora/risk/current")
 def risk_current() -> Dict[str, Any]:
     df = _load_predictions(0)
     return _format_predictions(df)
 
 
-@app.get("/api/risk/forecast")
+@app.get("/v1/peronospora/risk/forecast")
 def risk_forecast() -> Dict[str, Any]:
     df = _load_predictions(1)
     return _format_predictions(df)
 
 
-@app.get("/api/risk/province/{province}")
-def risk_by_province(
-    province: str,
-    lead: int = Query(default=0, ge=0, le=1),
-) -> Dict[str, Any]:
+def _risk_by_province(province: str, lead: int) -> Dict[str, Any]:
     df = _load_predictions(lead)
     normalized = _normalize_province(province)
     df = df[df["NUTS_3"].astype(str).str.lower() == normalized]
@@ -86,11 +130,20 @@ def risk_by_province(
 
     payload = _format_predictions(df)
     payload["province"] = normalized
-    payload["lead"] = lead
     return payload
 
 
-@app.get("/api/risk/history")
+@app.get("/v1/peronospora/risk/province/{province}/current")
+def risk_by_province_current(province: str) -> Dict[str, Any]:
+    return _risk_by_province(province, lead=0)
+
+
+@app.get("/v1/peronospora/risk/province/{province}/forecast")
+def risk_by_province_forecast(province: str) -> Dict[str, Any]:
+    return _risk_by_province(province, lead=1)
+
+
+@app.get("/v1/peronospora/risk/history")
 def risk_history(
     start: Optional[str] = Query(default=None),
     end: Optional[str] = Query(default=None),
@@ -131,15 +184,63 @@ def risk_history(
     return {"results": results}
 
 
-@app.get("/api/weather/forecast/{province}")
-def weather_forecast(province: str) -> FileResponse:
-    file_path = paths.FORECAST_DIR / f"{province}_forecast.csv"
+@app.get("/v1/weather/forecast/{province}")
+def weather_forecast(province: str) -> Dict[str, Any]:
+    normalized = _normalize_province(province)
+    file_path = paths.FORECAST_DIR / f"{normalized}_forecast.csv"
     if not file_path.exists():
         raise HTTPException(status_code=404, detail=f"Forecast not found: {file_path}")
-    return FileResponse(file_path, media_type="text/csv")
+
+    df = pd.read_csv(file_path)
+    df = df.where(pd.notnull(df), None)
+    forecast_base = df["forecast_base"].iloc[0] if not df.empty else None
+    return {
+        "province": normalized,
+        "forecast_base": forecast_base,
+        "data": df.to_dict(orient="records"),
+    }
 
 
-@app.get("/api/map")
+def _risk_by_location(lat: float, lng: float, lead: int) -> Dict[str, Any]:
+    province = _province_from_point(lat, lng)
+    if not province:
+        raise HTTPException(status_code=404, detail="Location not in Emilia-Romagna province")
+
+    df = _load_predictions(lead)
+    df = df[df["NUTS_3"].astype(str).str.lower() == province]
+    if df.empty:
+        raise HTTPException(status_code=404, detail=f"Prediction not found for province: {province}")
+
+    row = df.where(pd.notnull(df), None).to_dict(orient="records")[0]
+    return {
+        "forecast_date": row.get("forecast_base"),
+        "target_week": {
+            "start": row.get("target_period_start"),
+            "end": row.get("target_period_end"),
+        },
+        "detail": row,
+        "location": {"lat": lat, "lng": lng},
+        "province": province,
+    }
+
+
+@app.get("/v1/peronospora/risk/location/current")
+def risk_location_current(
+    lat: float = Query(..., ge=-90, le=90),
+    lng: float = Query(..., ge=-180, le=180),
+) -> Dict[str, Any]:
+    return _risk_by_location(lat, lng, lead=0)
+
+
+@app.get("/v1/peronospora/risk/location/forecast")
+def risk_location_forecast(
+    lat: float = Query(..., ge=-90, le=90),
+    lng: float = Query(..., ge=-180, le=180),
+) -> Dict[str, Any]:
+    return _risk_by_location(lat, lng, lead=1)
+
+
+@app.get("/v1/peronospora/risk/map")
 def risk_map() -> FileResponse:
     if not paths.RISK_MAP_PATH.exists():
         raise HTTPException(status_code=404, detail=f"Map not found: {paths.RISK_MAP_PATH}")

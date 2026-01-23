@@ -532,20 +532,35 @@ predictor.save_predictions(
 **Endpoint suggeriti**:
 
 ```
-GET /api/risk/current
-→ Restituisce predictions/lead_0.csv
+GET /v1/peronospora/risk/current
+→ Restituisce predictions/lead_0.csv (JSON)
 
-GET /api/risk/forecast
-→ Restituisce predictions/lead_1.csv
+GET /v1/peronospora/risk/forecast
+→ Restituisce predictions/lead_1.csv (JSON)
 
-GET /api/risk/history?start=2026-01-01&end=2026-01-14
-→ Restituisce range da predictions/history/
+GET /v1/peronospora/risk/history?start=2026-01-01&end=2026-01-14
+→ Restituisce range da predictions/history/ (JSON)
 
-GET /api/weather/forecast/{province}
-→ Restituisce data/weather/forecast/{province}_forecast.csv
+GET /v1/peronospora/risk/province/{province}/current
+→ Restituisce la prediction per provincia (lead 0)
 
-GET /api/map
+GET /v1/peronospora/risk/province/{province}/forecast
+→ Restituisce la prediction per provincia (lead 1)
+
+GET /v1/peronospora/risk/location/current?lat=44.4949&lng=11.3426
+→ Restituisce la prediction della provincia in cui cade la posizione (lead 0)
+
+GET /v1/peronospora/risk/location/forecast?lat=44.4949&lng=11.3426
+→ Restituisce la prediction della provincia in cui cade la posizione (lead 1)
+
+GET /v1/peronospora/risk/map
 → Restituisce risk_map_satellite.html
+
+GET /v1/weather/forecast/{province}
+→ Restituisce JSON con `data` dal forecast per provincia
+
+GET /v1/health
+→ Health check
 ```
 
 ### 5.3 Formato JSON per App
@@ -567,6 +582,62 @@ output = {
 
 with open('api_response.json', 'w') as f:
     json.dump(output, f, indent=2)
+```
+
+Esempi di risposta:
+
+**Weather forecast**
+```json
+{
+  "province": "bologna",
+  "forecast_base": "2026-01-20",
+  "data": [
+    {
+      "date": "2026-01-20",
+      "temp_mean": 1.70,
+      "temp_min": -1.44,
+      "temp_max": 3.46,
+      "prec_sum": 0.68,
+      "rh_mean": 78.89,
+      "lw_hours": 0,
+      "site": "bologna",
+      "forecast_base": "2026-01-20"
+    }
+  ]
+}
+```
+
+**Risk location (current/forecast)**
+```json
+{
+  "forecast_date": "2026-01-20",
+  "target_week": { "start": "2026-01-19", "end": "2026-01-25" },
+  "detail": {
+    "NUTS_3": "bologna",
+    "risk_score": 1.23,
+    "risk_level": 1,
+    "risk_label": "Nessun rischio rilevato"
+  },
+  "location": { "lat": 44.4949, "lng": 11.3426 },
+  "province": "bologna"
+}
+```
+
+**Risk province (current/forecast)**
+```json
+{
+  "forecast_date": "2026-01-20",
+  "target_week": { "start": "2026-01-19", "end": "2026-01-25" },
+  "province": "bologna",
+  "provinces": [
+    {
+      "NUTS_3": "bologna",
+      "risk_score": 1.23,
+      "risk_level": 1,
+      "risk_label": "Nessun rischio rilevato"
+    }
+  ]
+}
 ```
 
 ---
