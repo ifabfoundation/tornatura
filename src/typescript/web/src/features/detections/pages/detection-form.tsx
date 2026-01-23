@@ -2498,7 +2498,7 @@ function DetectionStepObservationPoints({
               className="trnt_btn small narrow-x slim-y primary"
               onClick={() => setCameraOpen(true)}
             >
-              + Foto
+              {`+ Foto ${pendingPhotos.length}`}
             </button>
             <button
               className="trnt_btn small narrow-x slim-y primary ms-2"
@@ -2969,7 +2969,7 @@ export function DetectionForm() {
 
   return (
     <Fragment>
-      {currentStepKey !== "points" && currentStepKey !== "done" && (
+      {!["points", "done"].includes(currentStepKey) && (
         <Stepper items={stepperItems} currentStep={stepIndex} handleBackClick={handleBackClick} />
       )}
 

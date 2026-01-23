@@ -1,3 +1,17 @@
+// const data = {
+//   vite: {
+//     baseUrl: "/bbch/",
+//     data: bbchsVite,
+//   },
+//   barbabietola: {
+//     baseUrl: "/bbch/barbabietola/",
+//     data: bbchsVite,
+//   },
+//   mais: {
+//     baseUrl: "/bbch/mais/",
+//     data: bbchsVite,
+// };
+
 export const bbchs: any = {
   bbch_0: {
     icon: false,

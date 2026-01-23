@@ -32,10 +32,10 @@ export function CompanyFields() {
   const navigate = useNavigate();
   const { companyId } = useParams();
   const currentCompany = useAppSelector((state) =>
-    companiesSelectors.selectCompanybyId(state, companyId ?? "default")
+    companiesSelectors.selectCompanybyId(state, companyId ?? "default"),
   );
   const fields = useAppSelector((state) =>
-    fieldsSelectors.selectFieldsByOrgId(state, currentCompany.orgId)
+    fieldsSelectors.selectFieldsByOrgId(state, currentCompany.orgId),
   );
   // sort by name
   fields
@@ -71,8 +71,8 @@ export function CompanyFields() {
                 <Card.Img
                   variant="top"
                   src={`https://api.mapbox.com/styles/v1/mapbox/satellite-v9/static/geojson(${JSON.stringify(
-                    getFieldMapGeoJson(field)
-                  )})/auto/640x480?access_token=${process.env.REACT_APP_MAPBOX_API_TOKEN}`}
+                    getFieldMapGeoJson(field),
+                  )})/auto/640x480?access_token=${process.env.REACT_APP_MAPBOX_API_TOKEN}`} ///padding=50
                 />
                 <div className="llist-group">
                   <div className="llist-group-item">
