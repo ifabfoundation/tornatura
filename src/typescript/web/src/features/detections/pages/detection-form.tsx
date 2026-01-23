@@ -2265,7 +2265,7 @@ function DetectionStepObservationPoints({
           onClose={() => setCameraOpen(false)}
           onCapture={(file) => onPhotosChange?.([...pendingPhotos, file])}
         />
-        // NO NEED -------------------
+        // ADDED -------------------
         <div className="hacky-header-cover">
           <a onClick={onBackClick}>&larr;</a>
           <a className="finish-btn" onClick={handleSave}>
@@ -2383,6 +2383,7 @@ function DetectionStepObservationPoints({
               </button>
             </div>
 
+            // ADDED -------------------
             <div className="detection-inputs">
               <div className="mt-2 mb-3">
                 <div className="font-s-label">Osservazione #{scorePoints.length + 1}</div>
@@ -2497,6 +2498,12 @@ function DetectionStepObservationPoints({
             <button className="trnt_btn primary ms-2" onClick={handleOpenNoteModal}>
               + Nota
             </button>
+          </div>
+          <div>
+            <a onClick={onBackClick}>&larr;</a>
+            <a className="finish-btn" onClick={handleSave}>
+              <span>FINE</span>
+            </a>
           </div>
         </div>
         <div className="body">
