@@ -8,7 +8,7 @@ import { dateToString } from "../../../services/utils";
 import { GradientLineChart } from "../../../components/GradientLineChart";
 
 function getColor(min: number, max: number, value: number): string {
-  console.log("getColor", { min, max, value });
+  // console.log("getColor", { min, max, value });
   const colors = ["#42C318", "#FFB290", "#FF4D4D", "#A10505"];
   const range = max - min;
   const segment = range / colors.length;
@@ -40,18 +40,15 @@ function getDetectionStats(detection: Detection) {
   return detectionStats;
 }
 
-
-
 interface DetectionTypeCardProps {
-  companyId: string
-  fieldId: string
-  typeId: string
+  companyId: string;
+  fieldId: string;
+  typeId: string;
 }
-
 
 export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeCardProps) {
   const navigate = useNavigate();
- 
+
   const detections = useAppSelector((state) =>
     detectionsSelectors.selectDetectionByTypeId(state, typeId ?? "default"),
   );
@@ -67,7 +64,7 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
     groupMin: Infinity,
     groupMax: -Infinity,
   };
-  
+
   detections.forEach((detection) => {
     const ds = getDetectionStats(detection);
     groupStats.groupMin = Math.min(groupStats.groupMin, ds.pointsMin);
@@ -75,22 +72,23 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
     // console.log("ds", ds);
   });
 
-  const graphData = detections.map((detection, index) => {
-    return {
-      // Linear time mapping
-      // x: detection.detectionTime,
-      // Sequential time mapping (better for debugging)
-      x: index,
+  const graphData = detections
+    .map((detection, index) => {
+      return {
+        // Linear time mapping
+        // x: detection.detectionTime,
+        // Sequential time mapping (better for debugging)
+        x: index,
 
-      y: getDetectionStats(detection).pointsAvg,
-      color: getColor(
-        groupStats.groupMin,
-        groupStats.groupMax,
-        getDetectionStats(detection).pointsAvg,
-      ),
-    };
-  })
-  .sort((a, b) => a.x - b.x);
+        y: getDetectionStats(detection).pointsAvg,
+        color: getColor(
+          groupStats.groupMin,
+          groupStats.groupMax,
+          getDetectionStats(detection).pointsAvg,
+        ),
+      };
+    })
+    .sort((a, b) => a.x - b.x);
 
   const lastDate = detections
     .map((e) => e.detectionTime)
@@ -100,9 +98,23 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
 
   return (
     <div className="detection-card">
-      <header>
-        <div className="label py-1">Rilevamenti di</div>
-        <div className="value">{`${observationType.typology}  ›  ${observationType.method}`}</div>
+      <header className="d-flex align-items-start justify-content-between">
+        <div>
+          <div className="label py-1">Rilevamenti di</div>
+          <div className="value">{`${observationType.typology}  ›  ${observationType.method}`}</div>
+        </div>
+        <button
+          className="trnt_btn slim-y outlined narrow-x"
+          data-type="rounded"
+          onClick={() =>
+            navigate(`/companies/${companyId}/fields/${fieldId}/type/${detectionType.id}`, {
+              // navigate(`/companies/${companyId}/fields/${fieldId}/new-detection`, {
+              state: { typeId: typeId },
+            })
+          }
+        >
+          Detail
+        </button>
       </header>
 
       <div className="small-texts d-flex justify-content-between align-items-center mt-4 mb-2">
@@ -124,7 +136,7 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
           data-type="round"
           onClick={() =>
             navigate(`/companies/${companyId}/fields/${fieldId}/new-detection`, {
-              state: { typeId:  typeId},
+              state: { typeId: typeId },
             })
           }
         >
@@ -133,5 +145,4 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
       </div>
     </div>
   );
-
 }

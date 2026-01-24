@@ -1,13 +1,88 @@
 import React from "react";
+import { Detection } from "@tornatura/coreapis";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
-import { observationTypesActions, observationTypesSelectors } from "../../observation-types/state/observation-types-slice";
+import {
+  observationTypesActions,
+  observationTypesSelectors,
+} from "../../observation-types/state/observation-types-slice";
 import { detectionTypesActions, detectionTypesSelectors } from "../state/detection-types-slice";
 import { detectionsSelectors } from "../../detections/state/detections-slice";
 import { Container, Row, Col } from "react-bootstrap";
 import { headerbarActions } from "../../headerbar/state/headerbar-slice";
 import TableCozy, { TableColumn, TableOptions } from "../../../components/TableCozy";
+import { fieldsSelectors } from "../../fields/state/fields-slice";
+import { FieldMap } from "../../../components/FieldMap";
+
+import { GradientLineChart } from "../../../components/GradientLineChart";
+
+interface HorizontalPhotoStackProps {
+  photos: string[];
+}
+
+function HorizontalPhotoStack({ photos }: HorizontalPhotoStackProps) {
+  const maxPhotosToShow = 5;
+  return (
+    <div className="d-flex flex-row">
+      {photos.slice(0, maxPhotosToShow).map((photoUrl, index) => (
+        <div
+          key={index}
+          className="me-2"
+          style={{
+            width: "80px",
+            height: "80px",
+            backgroundImage: `url(${photoUrl})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            borderRadius: "8px",
+            boxShadow: "0 2px 6px rgba(0, 0, 0, 0.2)",
+          }}
+        ></div>
+      ))}
+      {photos.length > maxPhotosToShow && (
+        <div
+          className="d-flex align-items-center justify-content-center"
+          style={{
+            width: "80px",
+            height: "80px",
+            borderRadius: "8px",
+            backgroundColor: "#f0f0f0",
+            boxShadow: "0 2px 6px rgba(0, 0, 0, 0.2)",
+            fontSize: "16px",
+            color: "#555",
+          }}
+        >
+          +{photos.length - maxPhotosToShow}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function getDetectionStats(detection: Detection) {
+  // calculate stats for each detection
+  let detectionStats = {
+    pointsCount: 0,
+    pointsSum: 0,
+    pointsMin: Infinity,
+    pointsMax: -Infinity,
+    pointsAvg: 0,
+  };
+  detection.detectionData.points.forEach((point) => {
+    const v = point.data.rangeValue;
+    const isValidPoint = v !== undefined && v !== null;
+    if (isValidPoint) {
+      detectionStats.pointsCount++;
+      detectionStats.pointsSum += v;
+      detectionStats.pointsMin = Math.min(detectionStats.pointsMin, v);
+      detectionStats.pointsMax = Math.max(detectionStats.pointsMax, v);
+    }
+  });
+  detectionStats.pointsAvg =
+    detectionStats.pointsCount > 0 ? detectionStats.pointsSum / detectionStats.pointsCount : 0;
+  return detectionStats;
+}
 
 export function DetectionTypeDetail() {
   const dispatch = useAppDispatch();
@@ -20,11 +95,19 @@ export function DetectionTypeDetail() {
   );
 
   const observationType = useAppSelector((state) =>
-    observationTypesSelectors.selectObservationTypeById(state, detectionType?.observationTypeId ?? "default"),
+    observationTypesSelectors.selectObservationTypeById(
+      state,
+      detectionType?.observationTypeId ?? "default",
+    ),
   );
 
   const detections = useAppSelector((state) =>
     detectionsSelectors.selectDetectionByTypeId(state, typeId ?? "default"),
+  );
+  console.log("detections", detections);
+
+  const currentField = useAppSelector((state) =>
+    fieldsSelectors.selectFieldbyId(state, fieldId ?? "default"),
   );
 
   React.useEffect(() => {
@@ -38,18 +121,16 @@ export function DetectionTypeDetail() {
     dispatch(observationTypesActions.fetchObservationTypesAction({}));
   }, [companyId, fieldId]);
 
-  
-
   const notes = [];
   detections.forEach((detection) => {
-    console.log("detection", detection);
+    // console.log("detection", detection);
     // @ts-ignore
     if (detection.detectionData.notes && detection.detectionData.notes != "") {
       // @ts-ignore
       notes.push(detection.detectionData.notes);
     }
   });
-  const photos = [];
+  const photos: string[] = [];
   detections.forEach((detection) => {
     // @ts-ignore
     if (detection.detectionData.photos && detection.detectionData.photos.length > 0) {
@@ -133,6 +214,45 @@ export function DetectionTypeDetail() {
     return <TableCozy columns={tableColumns} data={tableData} options={tableOptions} />;
   }
 
+  function getColor(min: number, max: number, value: number): string {
+    // console.log("getColor", { min, max, value });
+    const colors = ["#42C318", "#FFB290", "#FF4D4D", "#A10505"];
+    const range = max - min;
+    const segment = range / colors.length;
+    const index = Math.min(colors.length - 1, Math.floor((value - min) / segment));
+    return colors[index];
+  }
+
+  const groupStats = {
+    groupMin: Infinity,
+    groupMax: -Infinity,
+  };
+
+  detections.forEach((detection) => {
+    const ds = getDetectionStats(detection);
+    groupStats.groupMin = Math.min(groupStats.groupMin, ds.pointsMin);
+    groupStats.groupMax = Math.max(groupStats.groupMax, ds.pointsMax);
+    // console.log("ds", ds);
+  });
+
+  const graphData = detections
+    .map((detection, index) => {
+      return {
+        // Linear time mapping
+        // x: detection.detectionTime,
+        // Sequential time mapping (better for debugging)
+        x: index,
+
+        y: getDetectionStats(detection).pointsAvg,
+        color: getColor(
+          groupStats.groupMin,
+          groupStats.groupMax,
+          getDetectionStats(detection).pointsAvg,
+        ),
+      };
+    })
+    .sort((a, b) => a.x - b.x);
+
   return (
     <div>
       <Container>
@@ -177,7 +297,10 @@ export function DetectionTypeDetail() {
                     </Col>
                     <Col md={3}>
                       <p className="font-s-label upper">Fotografie</p>
-                      <div className="font-l-600">{photos.length}</div>
+                      <div className="font-l-600">
+                        {photos.length}
+                        <HorizontalPhotoStack photos={photos} />
+                      </div>
                     </Col>
                     <Col md={3}>
                       <p className="font-s-label upper">Note</p>
@@ -195,10 +318,21 @@ export function DetectionTypeDetail() {
             <section className="soft">
               <Row>
                 <Col lg={6}>
-                  <h4>Detections</h4>
+                  <h4>Graph title</h4>
+                  <p>Legend</p>
+
+                  <GradientLineChart
+                    height={100}
+                    padding={{ top: 0, bottom: 0, left: 40, right: 40 }}
+                    strokeWidth={20}
+                    dotSize={14}
+                    data={graphData}
+                  />
                 </Col>
                 <Col lg={6}>
                   <h4>Map</h4>
+                  {/* <FieldMap currentField={currentField} /> */}
+                  <FieldMap />
                 </Col>
               </Row>
             </section>

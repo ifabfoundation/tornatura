@@ -1386,7 +1386,7 @@ function DetectionFormMapPosition({
     mapRef.current.getSource("dataPointsPath").setData(lineGeoJSON);
   }, [mapPoints]);
 
-  return <div ref={mapContainerRef} id="map-observations" data-debug={debugString}></div>;
+  return <div ref={mapContainerRef} id="map-observations-form" data-debug={debugString}></div>;
 }
 
 const categorie: any = {
@@ -1899,10 +1899,7 @@ function DetectionStepObservationPoints({
   const currentPosition = React.useContext(gpsStore);
   // lista delle ultime detections per la mappa
   const latestDetections = useAppSelector((state) =>
-    detectionsSelectors.selectDetectionByTypeId(
-      state,
-      formData.detectionTypeId
-    ),
+    detectionsSelectors.selectDetectionByTypeId(state, formData.detectionTypeId),
   );
   const [source, setSource] = React.useState<string>("current");
   const [markerPosition, setMarkerPosition] = React.useState<Point>();
@@ -2725,9 +2722,7 @@ export function DetectionForm() {
   const { companyId, fieldId } = useParams();
   const preselectedState = location.state as { typeId?: string } | null;
   const preselectedTypeId = (preselectedState?.typeId ?? searchParams.get("typeId") ?? "").trim();
-  const preselectedTypology = (
-    searchParams.get("typology") ?? ""
-  ).trim();
+  const preselectedTypology = (searchParams.get("typology") ?? "").trim();
   const preselectedMethod = (searchParams.get("method") ?? "").trim();
   const hasTypeIdPreselection = preselectedTypeId !== "";
   const hasTypologyMethodPreselection = preselectedTypology !== "" && preselectedMethod !== "";
@@ -2762,6 +2757,15 @@ export function DetectionForm() {
   React.useEffect(() => {
     dispatch(headerbarActions.setTitle({ title: "Nuovo Rilevamento", subtitle: "Subtitle" }));
   }, []);
+
+  React.useEffect(() => {
+    const title = selectedTypology
+      ? selectedMethod
+        ? `${selectedTypology} / ${selectedMethod}`
+        : `Rilevamento ${selectedTypology}`
+      : "Nuovo Rilevamento";
+    dispatch(headerbarActions.setTitle({ title: title, subtitle: "Subtitle" }));
+  }, [selectedTypology, selectedMethod]);
 
   React.useEffect(() => {
     if (companyId && fieldId) {

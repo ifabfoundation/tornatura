@@ -252,7 +252,7 @@ export default function SideBar() {
         for (let observationType of observationsTypes) {
           if (detectionType.observationTypeId === observationType.id) {
             familyRilevamenti.famItems.push({
-              text: `${observationType.typology} /${observationType.method}`,
+              text: `${observationType.typology} / ${observationType.method}`,
               state: "",
               path: `/companies/${params.companyId}/fields/${params.fieldId}/type/${detectionType.id}`,
             });

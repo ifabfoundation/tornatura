@@ -15088,9 +15088,15 @@ body {
   }
 }
 
-#app #map-observations {
+#app #map-observations-form {
   width: 100%;
   height: 100%;
+}
+
+#app .map-observations {
+  width: 100%;
+  height: 100%;
+  min-height: 200px;
 }
 
 #app .stepper-wrapper {
