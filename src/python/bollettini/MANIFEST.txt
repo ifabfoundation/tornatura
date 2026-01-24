@@ -1,0 +1,33 @@
+RAG Bollettini - Transfer Package
+=================================
+
+Package: rag_bollettini_20260121
+Created: 2026-01-21 17:43:37
+Total Files: 209
+Total Size: 295M
+
+Contents:
+---------
+✓ Python scripts (run_pipeline.py, scheduler.py)
+✓ Modules (download, process, cimice, flavescenza, normativa)
+✓ Bollettini PDF (181 files)
+✓ ChromaDB (vector database pre-indicizzato)
+✓ Documentation (CLAUDE.md, REPORT.md)
+✓ Requirements.txt
+✓ Setup script
+✓ .env (API keys configurate)
+
+NOT Included:
+-------------
+✗ venv/ (create with: ./setup.sh)
+✗ Generated reports (will be created on first run)
+
+Instructions:
+-------------
+1. Extract this package on target server
+2. Run ./setup.sh
+3. Configure .env with OPENAI_API_KEY
+4. Test: python run_pipeline.py --query-only
+5. Production: python scheduler.py
+
+Documentation: CLAUDE.md

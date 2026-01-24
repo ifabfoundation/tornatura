@@ -12,3 +12,9 @@ python_requirements(
     source="peronospora-requirements.txt",
     resolve="peronospora"
 )
+
+python_requirements(
+    name="bollettini",
+    source="bollettini-requirements.txt",
+    resolve="bollettini"
+)
