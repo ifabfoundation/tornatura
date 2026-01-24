@@ -8,6 +8,7 @@ import {
   ObservationType,
   FilesApi,
   FileInfo,
+  DetectionType,
 } from "@tornatura/coreapis";
 import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
@@ -2759,6 +2760,8 @@ export function DetectionForm() {
     observationTypesSelectors.selectObservationTypes(state),
   );
 
+  const [detectionType, setDetectectionType] = React.useState<DetectionType>();
+
   React.useEffect(() => {
     dispatch(headerbarActions.setTitle({ title: "Nuovo Rilevamento", subtitle: "Subtitle" }));
   }, []);
@@ -2849,15 +2852,20 @@ export function DetectionForm() {
       selectedMethod,
     ),
   )[0];
-  const detectionType = useAppSelector((state) =>
-    detectionTypesSelectors.selectDetectionTypesByObservationTypeId(
-      state,
-      observationType?.id ?? "",
-    ),
-  )[0];
 
   React.useEffect(() => {
-    if (!detectionType?.id) {
+    if (observationType) {
+      for (let d of detectionTypes) {
+        if (d.observationTypeId == observationType.id) {
+          setDetectectionType(d);
+          break;
+        }
+      }
+    }
+  }, [detectionTypes, observationType]);
+
+  React.useEffect(() => {
+    if (!detectionType) {
       if (!hasTypeIdPreselection) {
         setFormData((prev) => ({
           ...prev,
@@ -2870,7 +2878,7 @@ export function DetectionForm() {
       ...prev,
       detectionTypeId: detectionType.id,
     }));
-  }, [detectionType?.id, hasTypeIdPreselection]);
+  }, [detectionType, hasTypeIdPreselection]);
 
   const createDetectionAction = async (payload: DetectionMutationPayload) => {
     if (companyId && fieldId) {
@@ -2909,6 +2917,16 @@ export function DetectionForm() {
     if (currentStepKey === "method") {
       const methodData = data as DetectionStepMethodData;
       setSelectedMethod(methodData.method);
+      const matchingObservationType = observationTypes.find(
+        (item) => item.typology === selectedTypology && item.method === methodData.method,
+      );
+      const matchingDetectionType = detectionTypes.find(
+        (item) => item.observationTypeId === matchingObservationType?.id,
+      );
+      setFormData((prev) => ({
+        ...prev,
+        detectionTypeId: matchingDetectionType?.id ?? "",
+      }));
       setStepIndex(stepIndex + 1);
       return;
     }
@@ -2933,6 +2951,13 @@ export function DetectionForm() {
       const pointsData = data as DetectionStepPointsData;
       const notesToSave = pointsData.notes ?? formData.detectionData.notes ?? "";
       let detectionTypeId = formData.detectionTypeId;
+      if (!detectionTypeId && detectionType?.id) {
+        detectionTypeId = detectionType.id;
+        setFormData((prev) => ({
+          ...prev,
+          detectionTypeId: detectionType.id,
+        }));
+      }
       if (!detectionTypeId && companyId && fieldId) {
         try {
           if (!observationType?.id) {
