@@ -1,9 +1,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
-import { observationTypesSelectors } from "../../observation-types/state/observation-types-slice";
-import { detectionTypesSelectors } from "../state/detection-types-slice";
+import { observationTypesActions, observationTypesSelectors } from "../../observation-types/state/observation-types-slice";
+import { detectionTypesActions, detectionTypesSelectors } from "../state/detection-types-slice";
 import { detectionsSelectors } from "../../detections/state/detections-slice";
 import { Container, Row, Col } from "react-bootstrap";
 import { headerbarActions } from "../../headerbar/state/headerbar-slice";
@@ -11,7 +11,7 @@ import TableCozy, { TableColumn, TableOptions } from "../../../components/TableC
 
 export function DetectionTypeDetail() {
   const dispatch = useAppDispatch();
-  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const [tableIsOpen, setTableIsOpen] = React.useState<boolean>(false);
   const { companyId, fieldId, typeId } = useParams();
 
@@ -20,17 +20,25 @@ export function DetectionTypeDetail() {
   );
 
   const observationType = useAppSelector((state) =>
-    observationTypesSelectors.selectObservationTypeById(state, detectionType.observationTypeId),
+    observationTypesSelectors.selectObservationTypeById(state, detectionType?.observationTypeId ?? "default"),
   );
 
   const detections = useAppSelector((state) =>
     detectionsSelectors.selectDetectionByTypeId(state, typeId ?? "default"),
   );
+
   React.useEffect(() => {
     dispatch(headerbarActions.setTitle({ title: "Focus Rilevamento", subtitle: "Subtitle" }));
   }, []);
 
-  const navigate = useNavigate();
+  React.useEffect(() => {
+    if (companyId && fieldId) {
+      dispatch(detectionTypesActions.fetchDetectionTypesAction({ orgId: companyId, fieldId }));
+    }
+    dispatch(observationTypesActions.fetchObservationTypesAction({}));
+  }, [companyId, fieldId]);
+
+  
 
   const notes = [];
   detections.forEach((detection) => {
@@ -127,11 +135,6 @@ export function DetectionTypeDetail() {
 
   return (
     <div>
-      <p>
-        pagina per {observationType.typology} / {observationType.method} con numero{" "}
-        {detections.length} detections
-      </p>
-
       <Container>
         <Row className="mt-4">
           <Col xl={12}>
@@ -140,7 +143,7 @@ export function DetectionTypeDetail() {
                 <Container className="px-0">
                   <Row>
                     <Col md={6} xl={9}>
-                      <div className="font-l-600">{`${observationType.typology}  ›  ${observationType.method}`}</div>
+                      <div className="font-l-600">{`${observationType?.typology}  ›  ${observationType?.method}`}</div>
                     </Col>
                     <Col md={6} xl={3}>
                       <button
@@ -152,7 +155,7 @@ export function DetectionTypeDetail() {
                           })
                         }
                       >
-                        + Rilevamento {observationType.typology}
+                        + Rilevamento {observationType?.typology}
                       </button>
                     </Col>
                   </Row>
