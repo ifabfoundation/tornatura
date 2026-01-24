@@ -18,6 +18,8 @@ export function CompanyDetail() {
           icon: "sprout",
           text: "Campi",
           path: `/companies/${companyId}/fields`,
+          type: 'single',
+        familyItems: []
         },
         // {
         //   id: "detections",
@@ -30,12 +32,16 @@ export function CompanyDetail() {
           icon: "user",
           text: "Membri",
           path: `/companies/${companyId}/members`,
+          type: 'single',
+          familyItems: []
         },
         {
           id: "invitations",
           icon: "baloon",
           text: "Gestione inviti azienda",
           path: `/companies/${companyId}/invitations`,
+          type: 'single',
+          familyItems: []
         },
       ];
       menuBottomEntries = [
@@ -44,12 +50,16 @@ export function CompanyDetail() {
           icon: "cog",
           text: "Impostazioni Azienda",
           path: `/companies/${companyId}/settings`,
+          type: 'single',
+          familyItems: []
         },
         {
           id: "feedback",
           icon: "baloon",
           text: "Invia Feedback",
           path: `/companies/${companyId}/new-feedback`,
+          type: 'single',
+          familyItems: []
         },
         // {
         //   id: "my-invitations",

@@ -31,6 +31,8 @@ export function CompaniesList() {
         icon: "barn",
         text: "Aziende gestite",
         path: "/companies",
+        type: 'single',
+        familyItems: []
       },
     ];
 
@@ -40,6 +42,8 @@ export function CompaniesList() {
         icon: "baloon",
         text: "Invia Feedback",
         path: "/new-feedback",
+        type: 'single',
+        familyItems: []
       },
       // {
       //   id: "my-invitations",
