@@ -42,6 +42,24 @@ export interface ObservationType {
      * @type {string}
      * @memberof ObservationType
      */
+    category: string;
+
+    /**
+     * @type {string}
+     * @memberof ObservationType
+     */
+    locationAndScoreInstructions: string;
+
+    /**
+     * @type {string}
+     * @memberof ObservationType
+     */
+    bchInstructions: string;
+
+    /**
+     * @type {string}
+     * @memberof ObservationType
+     */
     observationType: string;
 
     /**

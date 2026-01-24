@@ -8,6 +8,9 @@ import { detectionsSelectors } from "../../detections/state/detections-slice";
 import { getFieldMapGeoJson } from "../../companies/pages/company-fields";
 import _ from "lodash";
 import { GradientLineChart } from "../../../components/GradientLineChart";
+import { detectionTypesActions, detectionTypesSelectors } from "../../detection-types/state/detection-types-slice";
+import { observationTypesActions } from "../../observation-types/state/observation-types-slice";
+import { DetectionTypeCard } from "../../detection-types/components/detection-type-card";
 
 function valOrEmpty(value: any, fallback: string = "–") {
   if (value === null || value === undefined || (typeof value === "string" && value.trim() === "")) {
@@ -35,11 +38,23 @@ export function FieldDashboard() {
     detectionsSelectors.selectDetectionbyFieldId(state, fieldId ?? "default")
   );
 
+  const detectionTypes = useAppSelector((state) =>
+    detectionTypesSelectors.selectDetectionTypesByField(state, fieldId ?? "default"),
+  );
+
   React.useEffect(() => {
     dispatch(
       headerbarActions.setTitle({ title: "Dashboard " + currentField?.name, subtitle: "Subtitle" })
     );
   }, []);
+
+  React.useEffect(() => {
+    if (companyId && fieldId) {
+      dispatch(detectionTypesActions.fetchDetectionTypesAction({ orgId: companyId, fieldId }));
+    }
+    dispatch(observationTypesActions.fetchObservationTypesAction({}));
+  }, [companyId, fieldId]);
+
 
   return (
     <Fragment>
@@ -238,6 +253,17 @@ export function FieldDashboard() {
             </Card>
           </Col>
         </Row>
+        {companyId && fieldId && <Row className="mt-4">
+          {detectionTypes.map((value, index) => 
+            <Col key={index} xl={6}>
+              <DetectionTypeCard 
+                companyId={companyId}
+                fieldId={fieldId}
+                typeId={value.id}
+              />
+            </Col>
+          )}
+        </Row>}
       </Container>
     </Fragment>
   );

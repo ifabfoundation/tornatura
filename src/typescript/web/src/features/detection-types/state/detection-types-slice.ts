@@ -154,14 +154,13 @@ export const detectionTypesSelectors = {
     [selectors.selectAll, (_: RootState, fieldId: string) => fieldId],
     (types, fieldId) => types.filter((item) => item.agrifieldId === fieldId)
   ),
-  selectDetectionTypesByTypologyAndMethod: createSelector(
+  selectDetectionTypesByObservationTypeId: createSelector(
     [
       selectors.selectAll,
-      (_: RootState, typology: string) => typology,
-      (_: RootState, _typology: string, method: string) => method,
+      (_: RootState, observationTypeId: string) => observationTypeId,
     ],
-    (types, typology, method) =>
-      types.filter((item) => item.typology === typology && item.method === method)
+    (types, observationTypeId) =>
+      types.filter((item) => item.observationTypeId === observationTypeId)
   ),
 };
 

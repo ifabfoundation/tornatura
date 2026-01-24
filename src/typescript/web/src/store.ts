@@ -9,7 +9,6 @@ import { detectionsReducer } from "./features/detections/state/detections-slice"
 import { userMenuReducer } from "./features/userMenu/state/userMenu-slice";
 import { invitationsReducer } from "./features/invitations/state/invitations-slice";
 import { detectionTypesReducer } from "./features/detection-types/state/detection-types-slice";
-import { detectionTextsReducer } from "./features/detection-texts/state/detection-texts-slice";
 import { observationTypesReducer } from "./features/observation-types/state/observation-types-slice";
 
 const store = configureStore({
@@ -22,7 +21,6 @@ const store = configureStore({
     fields: fieldsReducer,
     detections: detectionsReducer,
     detectionTypes: detectionTypesReducer,
-    detectionTexts: detectionTextsReducer,
     observationTypes: observationTypesReducer,
     userMenu: userMenuReducer,
     invitations: invitationsReducer,

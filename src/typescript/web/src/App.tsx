@@ -20,6 +20,7 @@ import { detectionsActions } from "./features/detections/state/detections-slice"
 import { SidebarActions } from "./features/sidebar/state/sidebar-slice";
 import Loading from "./components/Loading";
 import { invitationsActions } from "./features/invitations/state/invitations-slice";
+import { observationTypesActions } from "./features/observation-types/state/observation-types-slice";
 
 export function RouteApp() {
   const currentUser = useAppSelector(userSelectors.selectCurrentUser);
@@ -113,7 +114,7 @@ function App() {
     const profile = await getUserInfo();
     if (profile) {
       await dispatch(userActions.setCurrentUserAction(profile));
-
+      await dispatch(observationTypesActions.fetchObservationTypesAction({page: 1, limit: 1000}));
       const session = sessionStorage.getItem("pending_invitation_token");
       let invitationToken = undefined;
       if (session) {

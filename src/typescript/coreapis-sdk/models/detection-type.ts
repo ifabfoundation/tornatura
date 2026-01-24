@@ -36,13 +36,7 @@ export interface DetectionType {
      * @type {string}
      * @memberof DetectionType
      */
-    typology: string;
-
-    /**
-     * @type {string}
-     * @memberof DetectionType
-     */
-    method: string;
+    observationTypeId: string;
 
     /**
      * @type {number}

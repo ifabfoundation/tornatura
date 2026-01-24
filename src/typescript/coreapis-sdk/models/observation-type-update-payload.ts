@@ -36,6 +36,24 @@ export interface ObservationTypeUpdatePayload {
      * @type {string}
      * @memberof ObservationTypeUpdatePayload
      */
+    category?: string | null;
+
+    /**
+     * @type {string}
+     * @memberof ObservationTypeUpdatePayload
+     */
+    locationAndScoreInstructions?: string | null;
+
+    /**
+     * @type {string}
+     * @memberof ObservationTypeUpdatePayload
+     */
+    bchInstructions?: string | null;
+
+    /**
+     * @type {string}
+     * @memberof ObservationTypeUpdatePayload
+     */
     observationType?: string | null;
 
     /**

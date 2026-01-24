@@ -1422,259 +1422,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-  /v1/detection-texts:
-    get:
-      tags:
-      - DetectionTexts
-      summary: List Detection Texts
-      operationId: list_detection_texts
-      security:
-      - SecurityChecker: []
-      parameters:
-      - name: page
-        in: query
-        required: false
-        schema:
-          type: integer
-          minimum: 1
-          description: Page number
-          default: 1
-          title: Page
-        description: Page number
-      - name: limit
-        in: query
-        required: false
-        schema:
-          type: integer
-          maximum: 1000
-          minimum: 1
-          description: Items per page
-          default: 25
-          title: Limit
-        description: Items per page
-      responses:
-        '200':
-          description: List of detection texts
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedResponse'
-        '401':
-          description: Unauthorized to access this resource
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '403':
-          description: Unauthorized to access this resource
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '422':
-          description: Validation error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-    post:
-      tags:
-      - DetectionTexts
-      summary: Create Detection Text
-      operationId: create_detection_text
-      security:
-      - SecurityChecker: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/DetectionTextCreatePayload'
-      responses:
-        '200':
-          description: Detection text detail
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DetectionText'
-        '401':
-          description: Unauthorized to access this resource
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '403':
-          description: Unauthorized to access this resource
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '422':
-          description: Validation error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-  /v1/detection-texts/{detection_text_id}:
-    get:
-      tags:
-      - DetectionTexts
-      summary: Get Detection Text
-      operationId: get_detection_text
-      security:
-      - SecurityChecker: []
-      parameters:
-      - name: detection_text_id
-        in: path
-        required: true
-        schema:
-          type: string
-          description: Detection Text ID
-          title: Detection Text Id
-        description: Detection Text ID
-      responses:
-        '200':
-          description: Detection text detail
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DetectionText'
-        '401':
-          description: Unauthorized to access this resource
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '403':
-          description: Unauthorized to access this resource
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '422':
-          description: Validation error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-    put:
-      tags:
-      - DetectionTexts
-      summary: Update Detection Text
-      operationId: update_detection_text
-      security:
-      - SecurityChecker: []
-      parameters:
-      - name: detection_text_id
-        in: path
-        required: true
-        schema:
-          type: string
-          description: Detection Text ID
-          title: Detection Text Id
-        description: Detection Text ID
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/DetectionTextUpdatePayload'
-      responses:
-        '200':
-          description: Updated detection text detail
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DetectionText'
-        '401':
-          description: Unauthorized to access this resource
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '403':
-          description: Unauthorized to access this resource
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '422':
-          description: Validation error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-    delete:
-      tags:
-      - DetectionTexts
-      summary: Delete Detection Text
-      operationId: delete_detection_text
-      security:
-      - SecurityChecker: []
-      parameters:
-      - name: detection_text_id
-        in: path
-        required: true
-        schema:
-          type: string
-          description: Detection Text ID
-          title: Detection Text Id
-        description: Detection Text ID
-      responses:
-        '200':
-          description: Deletion status
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/StatusResponse'
-        '401':
-          description: Unauthorized to access this resource
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '403':
-          description: Unauthorized to access this resource
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '422':
-          description: Validation error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
   /v1/users:
     get:
       tags:
@@ -2739,12 +2486,9 @@ components:
         agrifieldId:
           type: string
           title: Agrifieldid
-        typology:
+        observationTypeId:
           type: string
-          title: Typology
-        method:
-          type: string
-          title: Method
+          title: Observationtypeid
         creationTime:
           type: integer
           title: Creationtime
@@ -2752,32 +2496,23 @@ components:
       required:
       - id
       - agrifieldId
-      - typology
-      - method
+      - observationTypeId
       - creationTime
       title: DetectionType
     DetectionTypeCreatePayload:
       properties:
-        typology:
+        observationTypeId:
           type: string
-          title: Typology
-        method:
-          type: string
-          title: Method
+          title: Observationtypeid
       type: object
       required:
-      - typology
-      - method
+      - observationTypeId
       title: DetectionTypeCreatePayload
     DetectionTypeUpdatePayload:
       properties:
-        typology:
+        observationTypeId:
           type: string
-          title: Typology
-          nullable: true
-        method:
-          type: string
-          title: Method
+          title: Observationtypeid
           nullable: true
       type: object
       title: DetectionTypeUpdatePayload
@@ -2792,6 +2527,15 @@ components:
         method:
           type: string
           title: Method
+        category:
+          type: string
+          title: Category
+        locationAndScoreInstructions:
+          type: string
+          title: Locationandscoreinstructions
+        bchInstructions:
+          type: string
+          title: Bchinstructions
         observationType:
           type: string
           title: Observationtype
@@ -2816,6 +2560,9 @@ components:
       - id
       - typology
       - method
+      - category
+      - locationAndScoreInstructions
+      - bchInstructions
       - observationType
       - creationTime
       title: ObservationType
@@ -2827,6 +2574,15 @@ components:
         method:
           type: string
           title: Method
+        category:
+          type: string
+          title: Category
+        locationAndScoreInstructions:
+          type: string
+          title: Locationandscoreinstructions
+        bchInstructions:
+          type: string
+          title: Bchinstructions
         observationType:
           type: string
           title: Observationtype
@@ -2847,6 +2603,9 @@ components:
       required:
       - typology
       - method
+      - category
+      - locationAndScoreInstructions
+      - bchInstructions
       - observationType
       title: ObservationTypeCreatePayload
     ObservationTypeUpdatePayload:
@@ -2858,6 +2617,18 @@ components:
         method:
           type: string
           title: Method
+          nullable: true
+        category:
+          type: string
+          title: Category
+          nullable: true
+        locationAndScoreInstructions:
+          type: string
+          title: Locationandscoreinstructions
+          nullable: true
+        bchInstructions:
+          type: string
+          title: Bchinstructions
           nullable: true
         observationType:
           type: string
@@ -2879,76 +2650,6 @@ components:
           nullable: true
       type: object
       title: ObservationTypeUpdatePayload
-    DetectionText:
-      properties:
-        id:
-          type: string
-          title: Id
-        typology:
-          type: string
-          title: Typology
-        method:
-          type: string
-          title: Method
-        locationAndScoreInstructions:
-          type: string
-          title: Locationandscoreinstructions
-        bbchInstructions:
-          type: string
-          title: Bbchinstructions
-        creationTime:
-          type: integer
-          title: Creationtime
-      type: object
-      required:
-      - id
-      - typology
-      - method
-      - locationAndScoreInstructions
-      - bbchInstructions
-      - creationTime
-      title: DetectionText
-    DetectionTextCreatePayload:
-      properties:
-        typology:
-          type: string
-          title: Typology
-        method:
-          type: string
-          title: Method
-        locationAndScoreInstructions:
-          type: string
-          title: Locationandscoreinstructions
-        bbchInstructions:
-          type: string
-          title: Bbchinstructions
-      type: object
-      required:
-      - typology
-      - method
-      - locationAndScoreInstructions
-      - bbchInstructions
-      title: DetectionTextCreatePayload
-    DetectionTextUpdatePayload:
-      properties:
-        typology:
-          type: string
-          title: Typology
-          nullable: true
-        method:
-          type: string
-          title: Method
-          nullable: true
-        locationAndScoreInstructions:
-          type: string
-          title: Locationandscoreinstructions
-          nullable: true
-        bbchInstructions:
-          type: string
-          title: Bbchinstructions
-          nullable: true
-      type: object
-      title: DetectionTextUpdatePayload
     ErrorResponse:
       properties:
         status:

@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 export * from './apis/agri-fields-api';
-export * from './apis/detection-texts-api';
 export * from './apis/detection-types-api';
 export * from './apis/detections-api';
 export * from './apis/feedbacks-api';

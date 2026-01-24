@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Migrate DetectionType documents to use observationTypeId and
-backfill ObservationType fields from legacy detection_texts.
+Migrate DetectionType documents to use observationTypeId, remove legacy typology/method,
+and backfill ObservationType fields from legacy detection_texts.
 """
 from __future__ import annotations
 
@@ -49,26 +49,42 @@ def migrate_detection_types(dry_run: bool) -> int:
     detection_collection = db["detection_type"]
 
     for det in detection_collection.find({}):
-        if det.get("observationTypeId"):
-            skipped += 1
-            continue
+        updates_set = {}
+        updates_unset = {}
 
+        has_observation_type = bool(det.get("observationTypeId"))
         typology = det.get("typology")
         method = det.get("method")
-        if not typology or not method:
-            skipped += 1
-            continue
 
-        matches = mapping.get((typology, method), [])
-        if len(matches) != 1:
-            ambiguous += 1
+        if not has_observation_type:
+            if not typology or not method:
+                skipped += 1
+                continue
+
+            matches = mapping.get((typology.lower(), method.lower()), [])
+            if len(matches) != 1:
+                ambiguous += 1
+                continue
+
+            updates_set["observationTypeId"] = str(matches[0].id)
+
+        if (has_observation_type or updates_set) and (typology is not None or method is not None):
+            if typology is not None:
+                updates_unset["typology"] = ""
+            if method is not None:
+                updates_unset["method"] = ""
+
+        if not updates_set and not updates_unset:
+            skipped += 1
             continue
 
         if not dry_run:
-            detection_collection.update_one(
-                {"_id": det["_id"]},
-                {"$set": {"observationTypeId": str(matches[0].id)}},
-            )
+            update = {}
+            if updates_set:
+                update["$set"] = updates_set
+            if updates_unset:
+                update["$unset"] = updates_unset
+            detection_collection.update_one({"_id": det["_id"]}, update)
         updated += 1
 
     print(

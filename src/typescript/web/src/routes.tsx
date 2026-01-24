@@ -14,7 +14,6 @@ import { FieldDetail } from "./features/fields/pages/field-detail";
 import { FieldDashboard } from "./features/fields/pages/field-dashboard";
 import { CompanyDetections } from "./features/companies/pages/company-detections";
 import { CompanyMembers } from "./features/companies/pages/company-members";
-import { FieldDetections } from "./features/fields/pages/field-detections";
 import { FieldMap } from "./features/fields/pages/field-map";
 import { DetectionForm } from "./features/detections/pages/detection-form";
 import { FieldSettings } from "./features/fields/pages/field-settings";
@@ -25,6 +24,7 @@ import { SendInvitation } from "./features/invitations/pages/send-invitation";
 import { InvitationAccept } from "./features/invitations/pages/invitation-accept";
 import { MyInvitations } from "./features/invitations/pages/my-invitations";
 import { InviteCompanyOwner } from "./features/invitations/pages/invite-company-owner";
+import { DetectionTypeDetail } from "./features/detection-types/pages/detection-type-detail";
 
 
 
@@ -126,10 +126,6 @@ const routesInitials: RouteObject[] = [
                 element: <FieldDashboard />
               },
               {
-                path: "detections",
-                element: <FieldDetections />
-              },
-              {
                 path: "map",
                 element: <FieldMap />
               },
@@ -152,6 +148,10 @@ const routesInitials: RouteObject[] = [
               {
                 path: "invitations/me",
                 element: <MyInvitations />
+              },
+              {
+                path: "type/:typeId",
+                element: <DetectionTypeDetail />
               },
             ]
           }

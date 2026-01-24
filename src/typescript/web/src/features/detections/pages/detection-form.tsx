@@ -6,7 +6,6 @@ import {
   DetectionMutationPayload,
   ObservationPoint,
   ObservationType,
-  DetectionText,
   FilesApi,
   FileInfo,
 } from "@tornatura/coreapis";
@@ -33,10 +32,6 @@ import {
   observationTypesActions,
   observationTypesSelectors,
 } from "../../observation-types/state/observation-types-slice";
-import {
-  detectionTextsActions,
-  detectionTextsSelectors,
-} from "../../detection-texts/state/detection-texts-slice";
 import { gpsStore } from "../../../providers/gps-providers";
 import { getCoreApiConfiguration } from "../../../services/utils";
 import doneIcon from "../../../assets/images/icon-large-done.svg";
@@ -1794,15 +1789,15 @@ export function AutoHeightIframe({ src, className }: AutoHeightIframeProps) {
 } // -----------------------------------------------------------------------------
 
 function DetectionStepGuide({
-  detectionText,
+  observationType,
   onNextClick,
-}: DetectionProps & { detectionText?: DetectionText }) {
-  const guideValue = detectionText?.locationAndScoreInstructions?.trim() ?? "";
+}: DetectionProps & { observationType?: ObservationType }) {
+  const guideValue = observationType?.locationAndScoreInstructions?.trim() ?? "";
   const isGuideUrl = /^https?:\/\//i.test(guideValue);
   return (
     <div className="my-5 text-center">
       <h3 className="mb-4">Indicazioni per effettuare il rilevamento</h3>
-      {detectionText ? (
+      {observationType ? (
         <Fragment>
           {isGuideUrl ? (
             <Container fluid>
@@ -1822,7 +1817,7 @@ function DetectionStepGuide({
               </Row>
             </Container>
           ) : (
-            <p>{detectionText.locationAndScoreInstructions}</p>
+            <p>{observationType.locationAndScoreInstructions}</p>
           )}
         </Fragment>
       ) : (
@@ -1904,10 +1899,9 @@ function DetectionStepObservationPoints({
   const currentPosition = React.useContext(gpsStore);
   // lista delle ultime detections per la mappa
   const latestDetections = useAppSelector((state) =>
-    detectionsSelectors.selectDetectionsByTypologyAndMethod(
+    detectionsSelectors.selectDetectionByTypeId(
       state,
-      observationType?.typology ?? "",
-      observationType?.method ?? "",
+      formData.detectionTypeId
     ),
   );
   const [source, setSource] = React.useState<string>("current");
@@ -2729,14 +2723,15 @@ export function DetectionForm() {
   const location = useLocation();
   const [searchParams] = useSearchParams();
   const { companyId, fieldId } = useParams();
-  const preselectedState = location.state as { typology?: string; method?: string } | null;
+  const preselectedState = location.state as { typeId?: string } | null;
+  const preselectedTypeId = (preselectedState?.typeId ?? searchParams.get("typeId") ?? "").trim();
   const preselectedTypology = (
-    preselectedState?.typology ??
-    searchParams.get("typology") ??
-    ""
+    searchParams.get("typology") ?? ""
   ).trim();
-  const preselectedMethod = (preselectedState?.method ?? searchParams.get("method") ?? "").trim();
-  const hasPreselection = preselectedTypology !== "" && preselectedMethod !== "";
+  const preselectedMethod = (searchParams.get("method") ?? "").trim();
+  const hasTypeIdPreselection = preselectedTypeId !== "";
+  const hasTypologyMethodPreselection = preselectedTypology !== "" && preselectedMethod !== "";
+  const hasPreselection = hasTypeIdPreselection || hasTypologyMethodPreselection;
   const [stepIndex, setStepIndex] = React.useState(0);
   const [formData, setFormData] = React.useState<DetectionMutationPayload>({
     detectionTime: new Date().getTime(),
@@ -2760,9 +2755,6 @@ export function DetectionForm() {
   const detectionTypes = useAppSelector((state) =>
     detectionTypesSelectors.selectDetectionTypesByField(state, fieldId ?? "default"),
   );
-  const detectionTexts = useAppSelector((state) =>
-    detectionTextsSelectors.selectDetectionTexts(state),
-  );
   const observationTypes = useAppSelector((state) =>
     observationTypesSelectors.selectObservationTypes(state),
   );
@@ -2775,29 +2767,60 @@ export function DetectionForm() {
     if (companyId && fieldId) {
       dispatch(detectionTypesActions.fetchDetectionTypesAction({ orgId: companyId, fieldId }));
     }
-    dispatch(detectionTextsActions.fetchDetectionTextsAction({}));
     dispatch(observationTypesActions.fetchObservationTypesAction({}));
   }, [companyId, fieldId, dispatch]);
 
   React.useEffect(() => {
-    if (hasPreselection) {
-      const matchingType = detectionTypes.find(
-        (item) => item.typology === preselectedTypology && item.method === preselectedMethod,
-      );
-      if (matchingType) {
+    if (hasTypeIdPreselection) {
+      const matchingDetectionType = detectionTypes.find((item) => item.id === preselectedTypeId);
+      if (matchingDetectionType) {
+        const matchingObservationType = observationTypes.find(
+          (item) => item.id === matchingDetectionType.observationTypeId,
+        );
+        if (matchingObservationType) {
+          setSelectedTypology(matchingObservationType.typology);
+          setSelectedMethod(matchingObservationType.method);
+        }
         setFormData((prev) => ({
           ...prev,
-          detectionTypeId: matchingType.id,
+          detectionTypeId: matchingDetectionType.id,
         }));
         setUseShortFlow(true);
       } else {
         setUseShortFlow(false);
       }
       return;
-    } else {
-      setUseShortFlow(false);
     }
-  }, [detectionTypes, hasPreselection, preselectedMethod, preselectedTypology]);
+
+    if (hasTypologyMethodPreselection) {
+      const matchingObservationType = observationTypes.find(
+        (item) => item.typology === preselectedTypology && item.method === preselectedMethod,
+      );
+      const matchingDetectionType = detectionTypes.find(
+        (item) => item.observationTypeId === matchingObservationType?.id,
+      );
+      if (matchingDetectionType) {
+        setFormData((prev) => ({
+          ...prev,
+          detectionTypeId: matchingDetectionType.id,
+        }));
+        setUseShortFlow(true);
+      } else {
+        setUseShortFlow(false);
+      }
+      return;
+    }
+
+    setUseShortFlow(false);
+  }, [
+    detectionTypes,
+    hasTypeIdPreselection,
+    hasTypologyMethodPreselection,
+    observationTypes,
+    preselectedMethod,
+    preselectedTypology,
+    preselectedTypeId,
+  ]);
 
   const steps = useShortFlow
     ? ["bbch", "points", "done"]
@@ -2808,29 +2831,16 @@ export function DetectionForm() {
   const currentStepKey = steps[stepIndex];
 
   const typologyOptions = React.useMemo(() => {
-    const values = detectionTexts.length
-      ? detectionTexts.map((item) => item.typology)
-      : observationTypes.map((item) => item.typology);
+    const values = observationTypes.map((item) => item.typology);
     return Array.from(new Set(values));
-  }, [detectionTexts, observationTypes]);
+  }, [observationTypes]);
 
   const methodOptions = React.useMemo(() => {
-    const texts = detectionTexts.filter((item) => item.typology === selectedTypology);
-    const values = texts.length
-      ? texts.map((item) => item.method)
-      : observationTypes
-          .filter((item) => item.typology === selectedTypology)
-          .map((item) => item.method);
+    const values = observationTypes
+      .filter((item) => item.typology === selectedTypology)
+      .map((item) => item.method);
     return Array.from(new Set(values));
-  }, [detectionTexts, observationTypes, selectedTypology]);
-
-  const detectionText = useAppSelector((state) =>
-    detectionTextsSelectors.selectDetectionTextsByTypologyAndMethod(
-      state,
-      selectedTypology,
-      selectedMethod,
-    ),
-  )[0];
+  }, [observationTypes, selectedTypology]);
 
   const observationType = useAppSelector((state) =>
     observationTypesSelectors.selectObservationTypesByTypologyAndMethod(
@@ -2839,6 +2849,28 @@ export function DetectionForm() {
       selectedMethod,
     ),
   )[0];
+  const detectionType = useAppSelector((state) =>
+    detectionTypesSelectors.selectDetectionTypesByObservationTypeId(
+      state,
+      observationType?.id ?? "",
+    ),
+  )[0];
+
+  React.useEffect(() => {
+    if (!detectionType?.id) {
+      if (!hasTypeIdPreselection) {
+        setFormData((prev) => ({
+          ...prev,
+          detectionTypeId: "",
+        }));
+      }
+      return;
+    }
+    setFormData((prev) => ({
+      ...prev,
+      detectionTypeId: detectionType.id,
+    }));
+  }, [detectionType?.id, hasTypeIdPreselection]);
 
   const createDetectionAction = async (payload: DetectionMutationPayload) => {
     if (companyId && fieldId) {
@@ -2903,13 +2935,16 @@ export function DetectionForm() {
       let detectionTypeId = formData.detectionTypeId;
       if (!detectionTypeId && companyId && fieldId) {
         try {
+          if (!observationType?.id) {
+            console.error("Missing observation type for detection creation.");
+            return;
+          }
           const created = await dispatch(
             detectionTypesActions.addDetectionTypeAction({
               orgId: companyId,
               fieldId,
               body: {
-                typology: selectedTypology,
-                method: selectedMethod,
+                observationTypeId: observationType.id,
               },
             }),
           ).then(unwrapResult);
@@ -2994,7 +3029,7 @@ export function DetectionForm() {
           <DetectionStepGuide
             formData={formData}
             onBackClick={handleBackClick}
-            detectionText={detectionText}
+            observationType={observationType}
             onNextClick={handleNextClick}
           />
         )}

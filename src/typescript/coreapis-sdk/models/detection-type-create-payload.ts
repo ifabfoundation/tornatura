@@ -24,11 +24,5 @@ export interface DetectionTypeCreatePayload {
      * @type {string}
      * @memberof DetectionTypeCreatePayload
      */
-    typology: string;
-
-    /**
-     * @type {string}
-     * @memberof DetectionTypeCreatePayload
-     */
-    method: string;
+    observationTypeId: string;
 }

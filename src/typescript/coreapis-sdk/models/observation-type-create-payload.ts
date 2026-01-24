@@ -36,6 +36,24 @@ export interface ObservationTypeCreatePayload {
      * @type {string}
      * @memberof ObservationTypeCreatePayload
      */
+    category: string;
+
+    /**
+     * @type {string}
+     * @memberof ObservationTypeCreatePayload
+     */
+    locationAndScoreInstructions: string;
+
+    /**
+     * @type {string}
+     * @memberof ObservationTypeCreatePayload
+     */
+    bchInstructions: string;
+
+    /**
+     * @type {string}
+     * @memberof ObservationTypeCreatePayload
+     */
     observationType: string;
 
     /**

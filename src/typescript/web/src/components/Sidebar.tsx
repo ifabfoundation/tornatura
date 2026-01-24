@@ -10,6 +10,8 @@ import "./Sidebar.css";
 import { companiesSelectors } from "../features/companies/state/companies-slice";
 import { fieldsSelectors } from "../features/fields/state/fields-slice";
 import Icon from "../components/Icon";
+import { observationTypesSelectors } from "../features/observation-types/state/observation-types-slice";
+import { detectionTypesSelectors } from "../features/detection-types/state/detection-types-slice";
 
 export interface MenuItemEntry {
   id: string;
@@ -172,6 +174,7 @@ const familyRilevamenti = {
     },
   ],
 };
+
 const familyModelli = {
   famIcon: "spark" as IconName,
   famText: "Modelli previsionali",
@@ -208,6 +211,9 @@ export default function SideBar() {
   const { menuEntries, menuBottomEntries } = useAppSelector(SidebarSelectors.selectMenuEntries);
   const [currentEntry, setCurrentEntry] = React.useState<string>("companies");
   const mobileOpen = useAppSelector((state) => state.sidebar.mobileOpen);
+  const observationsTypes = useAppSelector(observationTypesSelectors.selectObservationTypes)
+  const detectionTypes = useAppSelector( state => detectionTypesSelectors.selectDetectionTypesByField(state, params.fieldId ?? ""));
+
 
   React.useEffect(() => {
     let entry;
@@ -231,6 +237,38 @@ export default function SideBar() {
       dispatch(SidebarActions.setMenuMobileOpen(false));
     }
   }, [location, menuEntries, menuBottomEntries]);
+
+
+  const getFamilyDetections = () => {
+
+    let familyRilevamenti: any = {
+      famIcon: "checklist" as IconName,
+      famText: "Rilevamenti",
+      famState: "selected",
+      famItems: [
+      ]
+    };
+
+    if (params.companyId && params.fieldId) {
+      for(let detectionType of detectionTypes) {
+        for (let observationType of observationsTypes) {
+          if (detectionType.observationTypeId === observationType.id) {
+            familyRilevamenti.famItems.push(
+              {
+                text: `${observationType.typology} /${observationType.method}`,
+                state: "",
+                path: `/companies/${params.companyId}/fields/${params.fieldId}/type/${detectionType.id}`,
+              }
+            )
+          }
+        }
+      }
+    }
+
+    return familyRilevamenti;
+  }
+
+  const familyDetections = getFamilyDetections();
 
   return (
     <Fragment>
@@ -266,12 +304,12 @@ export default function SideBar() {
                 );
               })}
 
-              <MenuItemFamily
-                famIcon={familyRilevamenti.famIcon}
-                famText={familyRilevamenti.famText}
-                famState={familyRilevamenti.famState}
-                famItems={familyRilevamenti.famItems}
-              />
+              {familyDetections.famItems.length &&<MenuItemFamily
+                famIcon={familyDetections.famIcon}
+                famText={familyDetections.famText}
+                famState={familyDetections.famState}
+                famItems={familyDetections.famItems}
+              />}
 
               <MenuItemFamily
                 famIcon={familyModelli.famIcon}

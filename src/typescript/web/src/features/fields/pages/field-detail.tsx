@@ -64,6 +64,8 @@ export function FieldDetail() {
     ];
     dispatch(SidebarActions.setMenuEntriesAction(menuEntries));
     dispatch(SidebarActions.setMenuBottomEntriesAction(menuBottomEntries));
+
+    
   }, [companyId, fieldId]);
 
   return <Outlet />;

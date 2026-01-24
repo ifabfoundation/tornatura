@@ -24,11 +24,5 @@ export interface DetectionTypeUpdatePayload {
      * @type {string}
      * @memberof DetectionTypeUpdatePayload
      */
-    typology?: string | null;
-
-    /**
-     * @type {string}
-     * @memberof DetectionTypeUpdatePayload
-     */
-    method?: string | null;
+    observationTypeId?: string | null;
 }

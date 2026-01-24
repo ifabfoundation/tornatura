@@ -10,7 +10,6 @@ import { getCoreApiConfiguration } from "../../../services/utils";
 import { AuxState } from "../../../hooks";
 import { RootState } from "../../../store";
 import { fieldsSelectors } from "../../fields/state/fields-slice";
-import { detectionTypesSelectors } from "../../detection-types/state/detection-types-slice";
 
 
 const detectionsAdapter = createEntityAdapter<Detection, string>({
@@ -84,27 +83,6 @@ export const addNewDetection = createAsyncThunk(
 );
 
 
-interface IUpdateDetectionPayload {
-  orgId: string;
-  fieldId: string;
-  detectionId: string;
-  body: DetectionMutationPayload
-}
-
-export const updateDetection = createAsyncThunk(
-  "detections/updateDetection",
-  async ({orgId, fieldId, detectionId, body}: IUpdateDetectionPayload, { rejectWithValue }) => {
-    const apiConfig = await getCoreApiConfiguration()
-    const apiInstance = new DetectionsApi(apiConfig);
-    try {
-      const response = await apiInstance.updateDetection(body, orgId, fieldId, detectionId);
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error);
-    }
-  }
-);
-
 const detectionsSlice = createSlice({
   name: "detections",
   initialState,
@@ -144,10 +122,6 @@ const detectionsSlice = createSlice({
     builder.addCase(addNewDetection.fulfilled, (state, action) => {
       detectionsAdapter.upsertOne(state, action.payload as Detection);
     });
-
-    builder.addCase(updateDetection.fulfilled, (state, action) => {
-      detectionsAdapter.upsertOne(state, action.payload as Detection);
-    });
   },
 });
 
@@ -178,21 +152,6 @@ export const detectionsSelectors = {
     ],
     (detections, detectionTypeId) =>
       detections.filter((item: Detection) => item.detectionTypeId === detectionTypeId)
-  ),
-  selectDetectionsByTypologyAndMethod: createSelector(
-    [
-      selectors.selectAll,
-      (state, typology: string, method: string) =>
-        detectionTypesSelectors.selectDetectionTypesByTypologyAndMethod(
-          state,
-          typology,
-          method
-        ),
-    ],
-    (detections, detectionTypes) => {
-      const detectionTypeIds = new Set(detectionTypes.map((item) => item.id));
-      return detections.filter((item: Detection) => detectionTypeIds.has(item.detectionTypeId));
-    }
   )
 };
 
@@ -200,7 +159,6 @@ export const detectionsActions = {
   fetchFieldDetectionsAction: fetchFieldDetections,
   fetchDetectionsByTypeAction: fetchDetectionsByType,
   addNewDetectionAction: addNewDetection,
-  updateDetectionAction: updateDetection,
 };
 
 
