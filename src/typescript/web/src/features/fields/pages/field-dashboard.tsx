@@ -2,13 +2,16 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import React, { Fragment } from "react";
 import { headerbarActions } from "../../headerbar/state/headerbar-slice";
-import { Card, Col, Container, Row} from "react-bootstrap";
+import { Card, Col, Container, Row } from "react-bootstrap";
 import { fieldsSelectors } from "../state/fields-slice";
 import { detectionsSelectors } from "../../detections/state/detections-slice";
 import { getFieldMapGeoJson } from "../../companies/pages/company-fields";
 import _ from "lodash";
 import { GradientLineChart } from "../../../components/GradientLineChart";
-import { detectionTypesActions, detectionTypesSelectors } from "../../detection-types/state/detection-types-slice";
+import {
+  detectionTypesActions,
+  detectionTypesSelectors,
+} from "../../detection-types/state/detection-types-slice";
 import { observationTypesActions } from "../../observation-types/state/observation-types-slice";
 import { DetectionTypeCard } from "../../detection-types/components/detection-type-card";
 
@@ -22,7 +25,7 @@ function valOrEmpty(value: any, fallback: string = "–") {
 function toTitleCase(str: string): string {
   return str.replace(
     /\w\S*/g,
-    (text) => text.charAt(0).toUpperCase() + text.substring(1).toLowerCase()
+    (text) => text.charAt(0).toUpperCase() + text.substring(1).toLowerCase(),
   );
 }
 
@@ -31,11 +34,11 @@ export function FieldDashboard() {
   const navigate = useNavigate();
   const { companyId, fieldId } = useParams();
   const currentField = useAppSelector((state) =>
-    fieldsSelectors.selectFieldbyId(state, fieldId ?? "default")
+    fieldsSelectors.selectFieldbyId(state, fieldId ?? "default"),
   );
   console.log(">>> Current Field:", currentField);
   const detections = useAppSelector((state) =>
-    detectionsSelectors.selectDetectionbyFieldId(state, fieldId ?? "default")
+    detectionsSelectors.selectDetectionbyFieldId(state, fieldId ?? "default"),
   );
 
   const detectionTypes = useAppSelector((state) =>
@@ -44,7 +47,7 @@ export function FieldDashboard() {
 
   React.useEffect(() => {
     dispatch(
-      headerbarActions.setTitle({ title: "Dashboard " + currentField?.name, subtitle: "Subtitle" })
+      headerbarActions.setTitle({ title: "Dashboard " + currentField?.name, subtitle: "Subtitle" }),
     );
   }, []);
 
@@ -54,7 +57,6 @@ export function FieldDashboard() {
     }
     dispatch(observationTypesActions.fetchObservationTypesAction({}));
   }, [companyId, fieldId]);
-
 
   return (
     <Fragment>
@@ -201,6 +203,16 @@ export function FieldDashboard() {
        */}
 
       <Container>
+        {companyId && fieldId && (
+          <Row className="mt-4">
+            {detectionTypes.map((value, index) => (
+              <Col key={index} xl={6}>
+                <DetectionTypeCard companyId={companyId} fieldId={fieldId} typeId={value.id} />
+              </Col>
+            ))}
+          </Row>
+        )}
+
         <Row className="mt-5">
           <Col xl={6}>
             <Card>
@@ -216,7 +228,7 @@ export function FieldDashboard() {
               <Card.Img
                 variant="top"
                 src={`https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v12/static/geojson(${JSON.stringify(
-                  getFieldMapGeoJson(currentField)
+                  getFieldMapGeoJson(currentField),
                 )})/auto/1024x768?access_token=${process.env.REACT_APP_MAPBOX_API_TOKEN}`}
               />
             </Card>
@@ -253,17 +265,6 @@ export function FieldDashboard() {
             </Card>
           </Col>
         </Row>
-        {companyId && fieldId && <Row className="mt-4">
-          {detectionTypes.map((value, index) => 
-            <Col key={index} xl={6}>
-              <DetectionTypeCard 
-                companyId={companyId}
-                fieldId={fieldId}
-                typeId={value.id}
-              />
-            </Col>
-          )}
-        </Row>}
       </Container>
     </Fragment>
   );

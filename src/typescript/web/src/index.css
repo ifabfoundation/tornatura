@@ -13053,6 +13053,10 @@ strong {
   text-align: right;
 }
 
+.text-transform-none {
+  text-transform: none !important;
+}
+
 .rounded {
   border-radius: 10px;
   overflow: hidden;
@@ -13410,6 +13414,30 @@ body {
   background-color: #bd2130;
 }
 
+#app a.button.outlined,
+#app input[type="submit"].outlined,
+#app button.trnt_btn.outlined {
+  background-color: transparent;
+  border: 1.5px solid black;
+  color: black;
+  text-decoration: none;
+}
+
+#app a.button.outlined:hover,
+#app input[type="submit"].outlined:hover,
+#app button.trnt_btn.outlined:hover {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#app a.button.outlined:active,
+#app a.button.outlined .active,
+#app input[type="submit"].outlined:active,
+#app input[type="submit"].outlined .active,
+#app button.trnt_btn.outlined:active,
+#app button.trnt_btn.outlined .active {
+  background-color: rgba(128, 128, 128, 0.1);
+}
+
 #app a.button.wider,
 #app input[type="submit"].wider,
 #app button.trnt_btn.wider {
@@ -13425,7 +13453,7 @@ body {
 #app a.button.slim-y,
 #app input[type="submit"].slim-y,
 #app button.trnt_btn.slim-y {
-  height: 30px;
+  height: 27px;
   font-family: "Inter", sans-serif;
   font-size: 11px;
   letter-spacing: 0.02em;
@@ -13523,6 +13551,12 @@ body {
 #app button.trnt_btn.narrow-x {
   width: auto;
   min-width: auto;
+}
+
+#app section.soft {
+  border-radius: 20px;
+  background-color: #eee;
+  padding: 20px;
 }
 
 #app a.button,

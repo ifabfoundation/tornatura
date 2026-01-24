@@ -143,6 +143,9 @@ $ms-sidebar-transition: 100ms;
 .text-right {
   text-align: right;
 }
+.text-transform-none {
+  text-transform: none !important;
+}
 
 @mixin noselect {
   -webkit-user-select: none; /* Safari, Chrome (WebKit) */
@@ -371,6 +374,20 @@ body {
       }
       text-decoration: none;
     }
+    &.outlined {
+      background-color: transparent;
+      border: 1.5px solid black;
+      color: black;
+      &:hover {
+        background-color: rgba(128, 128, 128, 0.05);
+        // color: black;
+      }
+      &:active,
+      .active {
+        background-color: rgba(128, 128, 128, 0.1);
+      }
+      text-decoration: none;
+    }
     &.wider {
       min-width: 200px;
     }
@@ -378,7 +395,7 @@ body {
       width: 100%;
     }
     &.slim-y {
-      height: 30px;
+      height: 27px;
       @include font-s-label;
     }
     &.fat-y {
@@ -389,6 +406,12 @@ body {
       width: auto;
       min-width: auto;
     }
+  }
+
+  section.soft {
+    border-radius: 20px;
+    background-color: #eee;
+    padding: 20px;
   }
 
   // OLD

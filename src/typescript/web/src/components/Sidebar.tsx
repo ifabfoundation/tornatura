@@ -178,7 +178,7 @@ const familyRilevamenti = {
 const familyModelli = {
   famIcon: "spark" as IconName,
   famText: "Modelli previsionali",
-  famState: "selected",
+  famState: "",
   famItems: [
     {
       text: "Peronospora",
@@ -187,7 +187,7 @@ const familyModelli = {
     },
     {
       text: "Cimice asiatica",
-      state: "selected",
+      state: "",
       path: "/modelli/cimice-asiatica",
     },
     {
@@ -211,9 +211,10 @@ export default function SideBar() {
   const { menuEntries, menuBottomEntries } = useAppSelector(SidebarSelectors.selectMenuEntries);
   const [currentEntry, setCurrentEntry] = React.useState<string>("companies");
   const mobileOpen = useAppSelector((state) => state.sidebar.mobileOpen);
-  const observationsTypes = useAppSelector(observationTypesSelectors.selectObservationTypes)
-  const detectionTypes = useAppSelector( state => detectionTypesSelectors.selectDetectionTypesByField(state, params.fieldId ?? ""));
-
+  const observationsTypes = useAppSelector(observationTypesSelectors.selectObservationTypes);
+  const detectionTypes = useAppSelector((state) =>
+    detectionTypesSelectors.selectDetectionTypesByField(state, params.fieldId ?? ""),
+  );
 
   React.useEffect(() => {
     let entry;
@@ -238,35 +239,30 @@ export default function SideBar() {
     }
   }, [location, menuEntries, menuBottomEntries]);
 
-
   const getFamilyDetections = () => {
-
     let familyRilevamenti: any = {
       famIcon: "checklist" as IconName,
       famText: "Rilevamenti",
-      famState: "selected",
-      famItems: [
-      ]
+      famState: "",
+      famItems: [],
     };
 
     if (params.companyId && params.fieldId) {
-      for(let detectionType of detectionTypes) {
+      for (let detectionType of detectionTypes) {
         for (let observationType of observationsTypes) {
           if (detectionType.observationTypeId === observationType.id) {
-            familyRilevamenti.famItems.push(
-              {
-                text: `${observationType.typology} /${observationType.method}`,
-                state: "",
-                path: `/companies/${params.companyId}/fields/${params.fieldId}/type/${detectionType.id}`,
-              }
-            )
+            familyRilevamenti.famItems.push({
+              text: `${observationType.typology} /${observationType.method}`,
+              state: "",
+              path: `/companies/${params.companyId}/fields/${params.fieldId}/type/${detectionType.id}`,
+            });
           }
         }
       }
     }
 
     return familyRilevamenti;
-  }
+  };
 
   const familyDetections = getFamilyDetections();
 
@@ -304,12 +300,14 @@ export default function SideBar() {
                 );
               })}
 
-              {familyDetections.famItems.length &&<MenuItemFamily
-                famIcon={familyDetections.famIcon}
-                famText={familyDetections.famText}
-                famState={familyDetections.famState}
-                famItems={familyDetections.famItems}
-              />}
+              {familyDetections.famItems.length && (
+                <MenuItemFamily
+                  famIcon={familyDetections.famIcon}
+                  famText={familyDetections.famText}
+                  famState={familyDetections.famState}
+                  famItems={familyDetections.famItems}
+                />
+              )}
 
               <MenuItemFamily
                 famIcon={familyModelli.famIcon}
