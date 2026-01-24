@@ -27,6 +27,12 @@ root_patterns = [
 [python]
 interpreter_constraints = ["==3.12.*"]
 enable_resolves = true
+default_resolve = "default"
+
+[python.resolves]
+peronospora = "3rdparty/python/peronospora.lock"
+default = "3rdparty/python/default.lock"
+bollettini = "3rdparty/python/bollettini.lock"
 
 [python-infer]
 use_rust_parser = true

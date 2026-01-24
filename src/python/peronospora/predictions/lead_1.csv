@@ -1,0 +1,10 @@
+NUTS_3,forecast_base,target_period_start,target_period_end,lead_weeks,risk_score,risk_level,risk_label,temp,prec,rh,lw,bbch_code,plant_susceptibility
+bologna,2026-01-20,2026-01-26,2026-02-01,1,1.42,1,Nessun rischio rilevato,3.1,19.6,80.8,25,0,0.0
+ferrara,2026-01-20,2026-01-26,2026-02-01,1,1.36,1,Nessun rischio rilevato,4.4,17.9,78.9,17,0,0.0
+forli_cesena,2026-01-20,2026-01-26,2026-02-01,1,1.25,1,Nessun rischio rilevato,4.0,23.7,85.7,58,0,0.0
+modena,2026-01-20,2026-01-26,2026-02-01,1,1.37,1,Nessun rischio rilevato,2.4,21.1,82.6,40,0,0.0
+parma,2026-01-20,2026-01-26,2026-02-01,1,1.25,1,Nessun rischio rilevato,1.5,22.7,82.4,36,0,0.0
+piacenza,2026-01-20,2026-01-26,2026-02-01,1,1.32,1,Nessun rischio rilevato,1.4,24.7,80.7,29,0,0.0
+ravenna,2026-01-20,2026-01-26,2026-02-01,1,1.37,1,Nessun rischio rilevato,5.0,16.0,81.0,26,0,0.0
+reggio_nell_emilia,2026-01-20,2026-01-26,2026-02-01,1,1.37,1,Nessun rischio rilevato,2.3,17.0,81.9,31,0,0.0
+rimini,2026-01-20,2026-01-26,2026-02-01,1,1.42,1,Nessun rischio rilevato,5.9,20.6,82.6,57,0,0.0

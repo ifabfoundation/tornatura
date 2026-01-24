@@ -1,0 +1,33 @@
+Peronospora Inference Pipeline - Transfer Package
+=================================================
+
+Package: peronospora_inference_20260114
+Created: 2026-01-14 14:33:37
+Total Files: 56
+Total Size: 4.4M
+
+Contents:
+---------
+✓ Python scripts (6 files)
+✓ Trained models (Lead 0, Lead 1)
+✓ Phenology models + parameters
+✓ Province shapefiles
+✓ Documentation (DEVELOPER_GUIDE.md)
+✓ Requirements.txt
+✓ Setup script
+
+NOT Included (will be created on first run):
+--------------------------------------------
+✗ venv/ (create with: python3 -m venv venv)
+✗ Cache data (populated automatically)
+✗ Predictions history (generated daily)
+
+Instructions:
+-------------
+1. Extract this package on target server
+2. Read DEVELOPER_GUIDE.md
+3. Run setup.sh
+4. Configure AWS credentials
+5. Test: python run_inference_pipeline.py
+
+Support: [Contact info]

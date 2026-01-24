@@ -1,0 +1,30 @@
+# Environment
+.env
+venv/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Data (large files, generated)
+data/1_collections/bollettini/*.pdf
+data/chromadb/
+data/cache/
+data/output/
+logs/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Misc
+*.log
+run.txt
