@@ -2,7 +2,7 @@ import datetime
 from fastapi import HTTPException, status
 
 from core.decorators import catch_api_exception
-from core.models import DetectionType
+from core.models import DetectionType, ObservationType
 from core.serializers import DetectionType as DetectionTypeSerializer
 from core.serializers import DetectionTypeCreatePayload, DetectionTypeUpdatePayload
 
@@ -17,8 +17,7 @@ class DetectionTypeServices:
             return self.serializer(
                 id=str(item.id),
                 agrifieldId=item.agrifieldId,
-                typology=item.typology,
-                method=item.method,
+                observationTypeId=item.observationTypeId,
                 creationTime=item.creationTime,
             )
 
@@ -47,6 +46,12 @@ class DetectionTypeServices:
     def create(self, agrifield_id: str, payload: DetectionTypeCreatePayload):
         """Create detection type."""
         data = payload.model_dump()
+        observation_type = ObservationType.objects(id=data["observationTypeId"]).first()
+        if not observation_type:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Observation type not found"
+            )
         current_time = int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp() * 1000)
         data.update({
             "agrifieldId": agrifield_id,
@@ -65,10 +70,14 @@ class DetectionTypeServices:
                 detail="Detection type not found"
             )
 
-        if payload.typology is not None:
-            detection_type.typology = payload.typology
-        if payload.method is not None:
-            detection_type.method = payload.method
+        if payload.observationTypeId is not None:
+            observation_type = ObservationType.objects(id=payload.observationTypeId).first()
+            if not observation_type:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="Observation type not found"
+                )
+            detection_type.observationTypeId = payload.observationTypeId
         detection_type.save()
         return self._serialize(detection_type)
 

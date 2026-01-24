@@ -18,6 +18,9 @@ class ObservationTypeServices:
                 id=str(item.id),
                 typology=item.typology,
                 method=item.method,
+                category=item.category,
+                locationAndScoreInstructions=item.locationAndScoreInstructions,
+                bchInstructions=item.bchInstructions,
                 observationType=item.observationType,
                 rangeMin=item.rangeMin,
                 rangeMax=item.rangeMax,
@@ -71,6 +74,12 @@ class ObservationTypeServices:
             observation_type.typology = payload.typology
         if payload.method is not None:
             observation_type.method = payload.method
+        if payload.category is not None:
+            observation_type.category = payload.category
+        if payload.locationAndScoreInstructions is not None:
+            observation_type.locationAndScoreInstructions = payload.locationAndScoreInstructions
+        if payload.bchInstructions is not None:
+            observation_type.bchInstructions = payload.bchInstructions
         if payload.observationType is not None:
             observation_type.observationType = payload.observationType
         if payload.rangeMin is not None:

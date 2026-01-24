@@ -95,6 +95,9 @@ class ObservationType(Document):
     """The object Observation Type stored in the Database"""
     typology = StringField(required=True)
     method = StringField(required=True)
+    category = StringField(required=True)
+    locationAndScoreInstructions = StringField(required=True)
+    bchInstructions = StringField(required=True, default="")
     observationType = StringField(required=True, choices=("range", "counters"))
     rangeMin = FloatField(null=True)
     rangeMax = FloatField(null=True)
@@ -112,10 +115,8 @@ class ObservationType(Document):
 class DetectionType(Document):
     """The object Detection Type stored in the Database"""
     agrifieldId = StringField(required=True)
-    typology = StringField(required=True)
-    method = StringField(required=True)
+    observationTypeId = StringField(required=True)
     creationTime = IntField()
-
     meta = {
         'ordering': ['-creationTime']
     }
@@ -133,22 +134,6 @@ class DetectionModel(Document):
     deleted = BooleanField(default=False)
     creationTime = IntField()
     lastUpdateTime = IntField()
-
-    meta = {
-        'ordering': ['-creationTime']
-    }
-
-    def __str__(self):
-        return str(self.id)
-
-
-class DetectionText(Document):
-    """The object detection Text stored in the Database"""
-    typology = StringField(required=True)
-    method = StringField(required=True)
-    locationAndScoreInstructions = StringField(required=True)
-    bbchInstructions = StringField(required=True)
-    creationTime = IntField()
 
     meta = {
         'ordering': ['-creationTime']

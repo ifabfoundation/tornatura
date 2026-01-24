@@ -4,7 +4,6 @@ from core.api.v1.users import router as users_router
 from core.api.v1.organizations import router as organizations_router
 from core.api.v1.detections import router as detections_router
 from core.api.v1.detection_types import router as detection_types_router
-from core.api.v1.detection_texts import router as detection_texts_router
 from core.api.v1.files import router as files_router
 from core.api.v1.feedback import router as feedbacks_router
 from core.api.v1.invitations import router as invitations_router
@@ -50,11 +49,6 @@ router.include_router(
     tags=["ObservationTypes"]
 )
 
-router.include_router(
-    detection_texts_router,
-    prefix="/detection-texts",
-    tags=["DetectionTexts"]
-)
 
 router.include_router(
     users_router,

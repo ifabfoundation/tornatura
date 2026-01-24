@@ -57,8 +57,7 @@ class Point(BaseModel):
 class DetectionType(BaseModel):
     id: str
     agrifieldId: str
-    typology: str
-    method: str
+    observationTypeId: str
     creationTime: int
 
 class ObservationCounter(BaseModel):
@@ -69,6 +68,9 @@ class ObservationType(BaseModel):
     id: str
     typology: str
     method: str
+    category: str
+    locationAndScoreInstructions: str
+    bchInstructions: str
     observationType: str
     rangeMin: Optional[float] = None
     rangeMax: Optional[float] = None
@@ -96,16 +98,17 @@ class DetectionDataPayload(BaseModel):
     points: List[ObservationPoint]
 
 class DetectionTypeCreatePayload(BaseModel):
-    typology: str
-    method: str
+    observationTypeId: str
 
 class DetectionTypeUpdatePayload(BaseModel):
-    typology: Optional[str] = None
-    method: Optional[str] = None
+    observationTypeId: Optional[str] = None
 
 class ObservationTypeCreatePayload(BaseModel):
     typology: str
     method: str
+    category: str
+    locationAndScoreInstructions: str
+    bchInstructions: str = ""
     observationType: str
     rangeMin: Optional[float] = None
     rangeMax: Optional[float] = None
@@ -114,30 +117,13 @@ class ObservationTypeCreatePayload(BaseModel):
 class ObservationTypeUpdatePayload(BaseModel):
     typology: Optional[str] = None
     method: Optional[str] = None
+    category: Optional[str] = None
+    locationAndScoreInstructions: Optional[str] = None
+    bchInstructions: Optional[str] = None
     observationType: Optional[str] = None
     rangeMin: Optional[float] = None
     rangeMax: Optional[float] = None
     counters: Optional[List[str]] = None
-
-class DetectionText(BaseModel):
-    id: str
-    typology: str
-    method: str
-    locationAndScoreInstructions: str
-    bbchInstructions: str
-    creationTime: int
-
-class DetectionTextCreatePayload(BaseModel):
-    typology: str
-    method: str
-    locationAndScoreInstructions: str
-    bbchInstructions: str
-
-class DetectionTextUpdatePayload(BaseModel):
-    typology: Optional[str] = None
-    method: Optional[str] = None
-    locationAndScoreInstructions: Optional[str] = None
-    bbchInstructions: Optional[str] = None
 
 class AgriField(BaseModel):
     id: str
