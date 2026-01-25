@@ -1221,7 +1221,7 @@ function DetectionFormMapPosition({
           type: "line",
           source: "dataPhantomPointsPath",
           paint: {
-            "line-color": "rgba(255, 255, 255, 0.5)",
+            "line-color": "rgba(255, 255, 255, 0.2)",
             "line-opacity": 0.5,
             "line-width": 3,
             "line-dasharray": [1, 0.5], // ← dashed line
@@ -2672,7 +2672,9 @@ function DetectionStepObservationPoints({
                                     </span>
                                   </div>
                                 ))}
-                                <button onClick={handleDeleteLastObservation}>delete last</button>
+                                {scorePoints.length > 0 && (
+                                  <button onClick={handleDeleteLastObservation}>delete last</button>
+                                )}
                               </div>
                             </div>
                           </Col>
@@ -2712,7 +2714,9 @@ function DetectionStepObservationPoints({
                                     </span>
                                   </div>
                                 ))}
-                                <button onClick={handleDeleteLastObservation}>delete last</button>
+                                {points.length > 0 && (
+                                  <button onClick={handleDeleteLastObservation}>delete last</button>
+                                )}
                               </div>
                             </div>
                           </Col>

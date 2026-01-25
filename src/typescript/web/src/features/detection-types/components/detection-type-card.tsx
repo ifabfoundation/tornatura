@@ -6,6 +6,7 @@ import { observationTypesSelectors } from "../../observation-types/state/observa
 import { detectionsSelectors } from "../../detections/state/detections-slice";
 import { dateToString } from "../../../services/utils";
 import { GradientLineChart } from "../../../components/GradientLineChart";
+import Icon, { IconName } from "../../../components/Icon";
 
 function getColor(min: number, max: number, value: number): string {
   // console.log("getColor", { min, max, value });
@@ -104,7 +105,7 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
           <div className="value">{`${observationType.typology}  ›  ${observationType.method}`}</div>
         </div>
         <button
-          className="trnt_btn slim-y outlined narrow-x"
+          className="trnt_btn slim-y primary narrow-x px-3"
           data-type="rounded"
           onClick={() =>
             navigate(`/companies/${companyId}/fields/${fieldId}/type/${detectionType.id}`, {
@@ -113,7 +114,8 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
             })
           }
         >
-          Detail
+          {/* <Icon iconName={"enlarge"} color={"white"} /> */}
+          Espandi
         </button>
       </header>
 

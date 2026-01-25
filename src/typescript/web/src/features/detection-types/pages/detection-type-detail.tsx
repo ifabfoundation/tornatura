@@ -16,6 +16,7 @@ import { fieldsSelectors } from "../../fields/state/fields-slice";
 import { FieldMap } from "../../../components/FieldMap";
 
 import { GradientLineChart } from "../../../components/GradientLineChart";
+import Icon from "../../../components/Icon";
 
 interface HorizontalPhotoStackProps {
   photos: string[];
@@ -202,6 +203,11 @@ export function DetectionTypeDetail() {
 
   function handleDeleteClick(detection: Detection) {
     console.log("Delete clicked for", detection);
+    // ... to be implemented
+  }
+  function handleHighlightDetection(detection: Detection) {
+    console.log("Highlight clicked for", detection);
+    // ... to be implemented
   }
 
   function DetectionsTable() {
@@ -263,11 +269,18 @@ export function DetectionTypeDetail() {
       {
         headerText: "Azioni",
         id: "actions",
-        // sortable: true,
         type: "button",
         style: "danger1",
-        buttonText: "delete",
+        buttonText: "Elimina",
         onButtonClick: handleDeleteClick,
+      },
+      {
+        headerText: "",
+        id: "actions",
+        type: "button",
+        style: "secondary",
+        buttonText: "Mostra",
+        onButtonClick: handleHighlightDetection,
       },
     ];
 
@@ -277,6 +290,8 @@ export function DetectionTypeDetail() {
       const ds = getDetectionStats(detection);
       console.log("detection stats", ds);
 
+      const diseaseIndexColor = getColor(0, 0.4, ds.diseaseIndex);
+
       return {
         detectionTime: new Date(detection.detectionTime).toLocaleDateString(),
         bbch: dd.bbch ?? "-",
@@ -284,7 +299,16 @@ export function DetectionTypeDetail() {
         infectedPercent: ds.infectedPercentStr,
         statIntensityAvg: ds.intensityAvgStr,
         photosNum: dd.photos ? dd.photos.length : 0,
-        diseaseIndex: ds.diseaseIndexStr,
+        diseaseIndex: (
+          <span>
+            <span
+              className="dot me-2"
+              data-size="12"
+              style={{ background: diseaseIndexColor }}
+            ></span>
+            {ds.diseaseIndexStr}
+          </span>
+        ),
       };
     });
     return <TableCozy columns={tableColumns} data={tableData} options={tableOptions} />;
@@ -368,7 +392,7 @@ export function DetectionTypeDetail() {
                           className="trnt_btn slim-y narrow-x outlined font-s-600 text-transform-none px-2"
                           data-type="rounded"
                           onClick={() => setTableIsOpen(!tableIsOpen)}
-                        >{` ${tableIsOpen ? "Nascondi" : "Espandi"} lista `}</button>
+                        >{` ${tableIsOpen ? "Nascondi" : "Vedi tutti"}`}</button>
                       </div>
                     </Col>
                     <Col md={3}>

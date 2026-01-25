@@ -13426,7 +13426,8 @@ body {
 #app a.button.outlined:hover,
 #app input[type="submit"].outlined:hover,
 #app button.trnt_btn.outlined:hover {
-  background-color: rgba(128, 128, 128, 0.05);
+  background-color: black;
+  color: white;
 }
 
 #app a.button.outlined:active,
@@ -13435,7 +13436,8 @@ body {
 #app input[type="submit"].outlined .active,
 #app button.trnt_btn.outlined:active,
 #app button.trnt_btn.outlined .active {
-  background-color: rgba(128, 128, 128, 0.1);
+  background-color: #111;
+  color: white;
 }
 
 #app a.button.wider,
@@ -13557,6 +13559,14 @@ body {
   border-radius: 20px;
   background-color: #eee;
   padding: 20px;
+}
+
+#app .dot {
+  --size: attr(data-size px);
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  display: inline-block;
 }
 
 #app a.button,

@@ -379,12 +379,13 @@ body {
       border: 1.5px solid black;
       color: black;
       &:hover {
-        background-color: rgba(128, 128, 128, 0.05);
-        // color: black;
+        background-color: black;
+        color: white;
       }
       &:active,
       .active {
-        background-color: rgba(128, 128, 128, 0.1);
+        background-color: #111;
+        color: white;
       }
       text-decoration: none;
     }
@@ -414,19 +415,15 @@ body {
     padding: 20px;
   }
 
-  // OLD
-  // a.button + a.button,
-  // a.button + input[type="submit"],
-  // a.button + button,
-  // input[type="submit"] + a.button,
-  // input[type="submit"] + input[type="submit"],
-  // input[type="submit"] + button,
-  // button + a.button,
-  // button + input[type="submit"],
-  // button + button {
-  //   margin-left: $space/3;
-  // }
-  // NEW
+  .dot {
+    // EG: <div class="dot" data-size="20" style="background: #3498db"></div>
+    --size: attr(data-size px);
+    width: var(--size);
+    height: var(--size);
+    border-radius: 50%;
+    display: inline-block;
+  }
+
   a.button,
   input[type="submit"],
   button {
