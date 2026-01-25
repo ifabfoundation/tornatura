@@ -57,6 +57,7 @@ export function FieldDetailForm({ field }: FieldDetailProps) {
       grassing: Yup.string().required("Campo necessario"),
     }),
     onSubmit: (values, { setSubmitting, setErrors }) => {
+      console.log("submit clicked!!!")
       if (values.areafrom === "map") {
         values.area = calcArea(field.map);
       }
@@ -406,13 +407,13 @@ export function FieldDetailForm({ field }: FieldDetailProps) {
             {/* <hr /> */}
           </div>
         </div>
+        <div className="buttons-wrapper mt-4 text-center">
+          <input type="submit" className="primary" value="Salva modifiche"/>
+          <button className="trnt_btn info danger1" onClick={handleFieldDelete}>
+            Elimina campo
+          </button>
+        </div>
       </form>
-      <div className="buttons-wrapper mt-4 text-center">
-        <input type="submit" className="primary" value="Salva modifiche" />
-        <button className="trnt_btn info danger1" onClick={handleFieldDelete}>
-          Elimina campo
-        </button>
-      </div>
       <div className="spacer my-5"></div>
     </Fragment>
   );
