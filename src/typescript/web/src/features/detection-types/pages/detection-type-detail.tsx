@@ -200,6 +200,10 @@ export function DetectionTypeDetail() {
     }
   });
 
+  function handleDeleteClick(detection: Detection) {
+    console.log("Delete clicked for", detection);
+  }
+
   function DetectionsTable() {
     const tableOptions: TableOptions = {
       defaultSortCol: "date",
@@ -255,6 +259,15 @@ export function DetectionTypeDetail() {
         sortable: true,
         style: "normal",
         type: "text",
+      },
+      {
+        headerText: "Azioni",
+        id: "actions",
+        // sortable: true,
+        type: "button",
+        style: "danger1",
+        buttonText: "delete",
+        onButtonClick: handleDeleteClick,
       },
     ];
 

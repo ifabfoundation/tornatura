@@ -21,9 +21,8 @@ export interface MenuItemEntry {
   icon: IconName;
   text: string;
   path: string;
-  type: 'single' | 'family';
+  type: "single" | "family";
   familyItems: MenuFamilyItem[];
-
 }
 
 function CompanySelector() {
@@ -163,7 +162,6 @@ function FieldSelector() {
   );
 }
 
-
 export default function SideBar() {
   const navigate = useNavigate();
   let location = useLocation();
@@ -173,17 +171,16 @@ export default function SideBar() {
   const [currentEntry, setCurrentEntry] = React.useState<string>("companies");
   const mobileOpen = useAppSelector((state) => state.sidebar.mobileOpen);
 
-
   React.useEffect(() => {
     let entry;
     for (let item of menuEntries) {
-      if (item.type === 'single' && location.pathname === item.path) {
+      if (item.type === "single" && location.pathname === item.path) {
         entry = item.id;
         setCurrentEntry(entry);
         break;
-      } 
-      
-      if (item.type === 'family' && location.pathname.startsWith(item.path)) {
+      }
+
+      if (item.type === "family" && location.pathname.startsWith(item.path)) {
         entry = item.id;
         setCurrentEntry(entry);
         break;
@@ -191,13 +188,13 @@ export default function SideBar() {
     }
 
     for (let item of menuBottomEntries) {
-      if (item.type === 'single' && location.pathname === item.path) {
+      if (item.type === "single" && location.pathname === item.path) {
         entry = item.id;
         setCurrentEntry(entry);
         break;
-      } 
-      
-      if (item.type === 'family' && location.pathname.startsWith(item.path)) {
+      }
+
+      if (item.type === "family" && location.pathname.startsWith(item.path)) {
         entry = item.id;
         setCurrentEntry(entry);
         break;
@@ -208,7 +205,6 @@ export default function SideBar() {
       dispatch(SidebarActions.setMenuMobileOpen(false));
     }
   }, [location, menuEntries, menuBottomEntries]);
-
 
   return (
     <Fragment>
@@ -233,20 +229,21 @@ export default function SideBar() {
             <ul className="menu-items">
               {menuEntries.map((item, i) => {
                 const state = currentEntry === item.id ? "selected" : "normal";
-                const isFamily = item.type === 'family' ? true : false;
+                const isFamily = item.type === "family" ? true : false;
 
                 if (isFamily) {
                   let subItems = [];
                   for (let sub of item.familyItems) {
                     subItems.push({
                       text: sub.text,
-                      state: location.pathname === sub.path ? 'selected' : 'normal',
-                      path: sub.path
-                    })
+                      state: location.pathname === sub.path ? "selected" : "normal",
+                      path: sub.path,
+                    });
                   }
 
                   return (
                     <MenuItemFamily
+                      key={i}
                       famIcon={item.icon}
                       famText={item.text}
                       famState={state}

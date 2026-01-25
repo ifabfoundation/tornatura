@@ -118,7 +118,7 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
       </header>
 
       <div className="small-texts d-flex justify-content-between align-items-center mt-4 mb-2">
-        <div className="label">{`${detections.length} RILEVAMENTI`}</div>
+        <div className="label">{`${detections.length} RILEVAMENT${detections.length !== 1 ? "I" : "O"}`}</div>
         <div className="label">{`AGGIORNATO IL ${lastDateString}`}</div>
       </div>
 

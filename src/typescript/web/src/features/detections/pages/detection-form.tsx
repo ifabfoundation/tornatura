@@ -10,6 +10,7 @@ import {
   FileInfo,
   DetectionType,
   AgriField,
+  Detection,
 } from "@tornatura/coreapis";
 import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
@@ -90,6 +91,32 @@ type DetectionStepPointsData = {
 type ButtonGroupItem = {
   label: string;
   onClick?: () => void;
+};
+
+const enrichedMapPoints = (points: ObservationPoint[], observationType: ObservationType) => {
+  const enrichedPoints = points.map((point: ObservationPoint) => {
+    const num = point.data.rangeValue || 0;
+    const type = observationType ? observationType.observationType : "null";
+
+    let color: string = "black";
+    if (type == "range") {
+      const rangeMax = observationType
+        ? observationType.rangeMax
+          ? observationType.rangeMax
+          : 5
+        : 5;
+      color = getRangePointColor(num / rangeMax);
+    }
+
+    console.log("observationType", observationType);
+    return {
+      lng: point.position.lng,
+      lat: point.position.lat,
+      size: 7,
+      color: color,
+    };
+  });
+  return enrichedPoints;
 };
 
 function ButtonGroupGrid({
@@ -872,6 +899,8 @@ interface DetectionFormMapProps {
   onMarkerChange: (p: Point) => Promise<void>;
   mapPoints?: mapPoint[];
   debugString?: string;
+  previewsDetections: Detection[];
+  observationType: ObservationType;
 }
 
 interface mapPoint {
@@ -922,6 +951,8 @@ function DetectionFormMapPosition({
   onMarkerChange,
   mapPoints,
   debugString,
+  previewsDetections,
+  observationType,
 }: DetectionFormMapProps) {
   const { fieldId } = useParams();
   const currentField = useAppSelector((state) =>
@@ -1049,25 +1080,6 @@ function DetectionFormMapPosition({
         console.log("••• bbox", fieldShapeBbox);
       }
 
-      let fullGlobeSource = {
-        type: "geojson",
-        data: {
-          type: "Feature",
-          geometry: {
-            type: "Polygon",
-            coordinates: [
-              [
-                [-180, -85],
-                [180, -85],
-                [180, 85],
-                [-180, 85],
-                [-180, -85],
-              ],
-            ],
-          },
-        },
-      };
-
       mapRef.current = new mapboxgl.Map({
         container: mapContainerRef.current,
         style: "mapbox://styles/mapbox/satellite-streets-v12",
@@ -1078,6 +1090,29 @@ function DetectionFormMapPosition({
       mapRef.current.on("load", () => {
         console.log("map loaded", mapRef);
 
+        // --------------------------------------------------
+        // Add source + layer for dark cover
+        // --------------------------------------------------
+
+        let fullGlobeSource = {
+          type: "geojson",
+          data: {
+            type: "Feature",
+            geometry: {
+              type: "Polygon",
+              coordinates: [
+                [
+                  [-180, -85],
+                  [180, -85],
+                  [180, 85],
+                  [-180, 85],
+                  [-180, -85],
+                ],
+              ],
+            },
+          },
+        };
+
         // darken base layer
         // mapRef.current.setPaintProperty("satellite", "raster-brightness-min", 0);
         // mapRef.current.setPaintProperty("satellite", "raster-brightness-max", 0.5); // darker
@@ -1087,9 +1122,13 @@ function DetectionFormMapPosition({
           type: "fill",
           source: fullGlobeSource,
           paint: {
-            "fill-color": "rgba(0, 0, 0, 0.5)",
+            "fill-color": "rgba(28, 28, 28, 0.7)",
           },
         });
+
+        // --------------------------------------------------
+        // Add source + layer for field shape
+        // --------------------------------------------------
 
         const source = mapRef.current.getSource("fieldShape");
         if (!source) {
@@ -1111,8 +1150,8 @@ function DetectionFormMapPosition({
           source: "fieldShape",
           layout: {},
           paint: {
-            "fill-color": "#fff",
-            "fill-opacity": 0.3,
+            "fill-color": "rgba(255, 255, 255, 0.2)", // fill color
+            "fill-opacity": 1.0, // fill opacity
           },
         });
         mapRef.current.addLayer({
@@ -1121,8 +1160,8 @@ function DetectionFormMapPosition({
           source: "fieldShape",
           layout: {},
           paint: {
-            "line-color": "#fff",
-            "line-width": 1.5,
+            "line-color": "rgba(255, 255, 255, 0.4)", // outline color
+            "line-width": 2,
             "line-opacity": 1.0, // outline opacity
           },
         });
@@ -1132,14 +1171,91 @@ function DetectionFormMapPosition({
         });
 
         // --------------------------------------------------
-        // Add source + layer for data (points)
-        const safePoints1 = mapPoints || [];
+        // Add source + layer for detection phantom
+        // --------------------------------------------------
 
-        const safePoints3 = testData(currentPosition.lng, currentPosition.lat, 500, 20);
+        // Access the oldest detection
+        console.log(previewsDetections);
+        const firstDetection = previewsDetections.reduce(
+          (oldest, detection) => {
+            return !oldest || detection.detectionTime < oldest.detectionTime ? detection : oldest;
+          },
+          null as Detection | null,
+        );
+        console.log("firstDetection", firstDetection);
+
+        const firstDetectionPoints = firstDetection?.detectionData.points || [];
+        const firstDetectionMapPoints = enrichedMapPoints(firstDetectionPoints, observationType);
+
+        console.log("firstDetectionPoints", firstDetectionPoints);
+        console.log("firstDetectionMapPoints", firstDetectionMapPoints);
+
+        const phantomPointsGeoJSON = {
+          type: "FeatureCollection",
+          features: firstDetectionMapPoints.map((pt) => ({
+            type: "Feature",
+            geometry: {
+              type: "Point",
+              coordinates: [pt.lng, pt.lat],
+            },
+            properties: {
+              size: pt.size,
+              color: pt.color,
+            },
+          })),
+        };
+        const phantomLineGeoJSON = {
+          type: "Feature",
+          geometry: {
+            type: "LineString",
+            coordinates: firstDetectionMapPoints.map((pt) => [pt.lng, pt.lat]),
+          },
+          properties: {},
+        };
+        mapRef.current!.addSource("dataPhantomPointsPath", {
+          type: "geojson",
+          data: phantomLineGeoJSON,
+        });
+        mapRef.current!.addLayer({
+          id: "dataPhantomPoints",
+          type: "line",
+          source: "dataPhantomPointsPath",
+          paint: {
+            "line-color": "rgba(255, 255, 255, 0.5)",
+            "line-opacity": 0.5,
+            "line-width": 3,
+            "line-dasharray": [1, 0.5], // ← dashed line
+          },
+        });
+
+        mapRef.current!.addSource("dataPhantomPoints", {
+          type: "geojson",
+          data: phantomPointsGeoJSON,
+        });
+
+        mapRef.current!.addLayer({
+          id: "dataPhantomPointsDots",
+          type: "circle",
+          source: "dataPhantomPoints",
+          paint: {
+            "circle-radius": ["get", "size"],
+            "circle-color": "rgba(255, 255, 255, 0.3)",
+            "circle-opacity": 0.8,
+            "circle-stroke-color": "rgba(255, 255, 255, 0.5)",
+            "circle-stroke-opacity": 0.8,
+            "circle-stroke-width": 3.5,
+          },
+        });
+
+        // --------------------------------------------------
+        // Add source + layer for data (points)
+        // --------------------------------------------------
+
+        const safePoints = mapPoints || [];
 
         const pointsGeoJSON = {
           type: "FeatureCollection",
-          features: safePoints1.map((pt) => ({
+          features: safePoints.map((pt) => ({
             type: "Feature",
             geometry: {
               type: "Point",
@@ -1155,7 +1271,7 @@ function DetectionFormMapPosition({
           type: "Feature",
           geometry: {
             type: "LineString",
-            coordinates: safePoints1.map((pt) => [pt.lng, pt.lat]),
+            coordinates: safePoints.map((pt) => [pt.lng, pt.lat]),
           },
           properties: {},
         };
@@ -1169,10 +1285,10 @@ function DetectionFormMapPosition({
           type: "line",
           source: "dataPointsPath",
           paint: {
-            "line-color": "#fff",
-            "line-opacity": 0.5,
+            "line-color": "rgba(255, 255, 255, 0.9)",
+            "line-opacity": 1.0,
             "line-width": 3,
-            "line-dasharray": [1, 1.5], // ← dashed line
+            "line-dasharray": [1, 0.5], // ← dashed line
           },
         });
 
@@ -1189,14 +1305,16 @@ function DetectionFormMapPosition({
             "circle-radius": ["get", "size"],
             "circle-color": ["get", "color"],
             "circle-opacity": 0.8,
-            "circle-stroke-color": "#fff",
-            "circle-stroke-opacity": 0.8,
-            "circle-stroke-width": 1.5,
+            "circle-stroke-color": "rgba(255, 255, 255, 0.9)",
+            "circle-stroke-opacity": 1.0,
+            "circle-stroke-width": 3.5,
           },
         });
 
         // --------------------------------------------------
         // Add source + layer for current location
+        // --------------------------------------------------
+
         mapRef.current!.addSource("current-location", {
           type: "geojson",
           data: {
@@ -1354,10 +1472,10 @@ function DetectionFormMapPosition({
     if (!mapRef.current?.getSource("dataPoints")) return;
     if (!mapRef.current?.getSource("dataPointsPath")) return;
 
-    const safePoints1 = mapPoints || [];
+    const safePoints = mapPoints || [];
     const pointsGeoJSON = {
       type: "FeatureCollection",
-      features: safePoints1.map((pt) => ({
+      features: safePoints.map((pt) => ({
         type: "Feature",
         geometry: {
           type: "Point",
@@ -1373,7 +1491,7 @@ function DetectionFormMapPosition({
       type: "Feature",
       geometry: {
         type: "LineString",
-        coordinates: safePoints1.map((pt) => [pt.lng, pt.lat]),
+        coordinates: safePoints.map((pt) => [pt.lng, pt.lat]),
       },
       properties: {},
     };
@@ -1834,7 +1952,11 @@ function DetectionStepGuide({
   );
 }
 
-function DetectionStepBbch({ formData, field, onNextClick }: DetectionProps & { field: AgriField }) {
+function DetectionStepBbch({
+  formData,
+  field,
+  onNextClick,
+}: DetectionProps & { field: AgriField }) {
   const [bbch, setBbch] = React.useState(formData.detectionData.bbch ?? "");
 
   React.useEffect(() => {
@@ -1849,8 +1971,8 @@ function DetectionStepBbch({ formData, field, onNextClick }: DetectionProps & { 
   let items: AccordionItem[] = [];
   const options = bbchs[field.harvest].data;
   const thumbnailBaseUrl = bbchs[field.harvest].baseUrl;
-  
-  console.log(field, options)
+
+  console.log(field, options);
 
   items = Object.keys(options).map((key: string, index: number) => {
     let iconNameAccItem = options[key].icon ?? null;
@@ -1905,7 +2027,7 @@ function DetectionStepObservationPoints({
   );
   const currentPosition = React.useContext(gpsStore);
   // lista delle ultime detections per la mappa
-  const latestDetections = useAppSelector((state) =>
+  const previewsDetections = useAppSelector((state) =>
     detectionsSelectors.selectDetectionByTypeId(state, formData.detectionTypeId),
   );
   const [source, setSource] = React.useState<string>("current");
@@ -2192,32 +2314,17 @@ function DetectionStepObservationPoints({
     handleAddPoint(point);
   };
 
-  console.log("points---", points);
-  const mapPoints = points.map((point: ObservationPoint) => {
-    const num = point.data.rangeValue || 0;
-    const type = observationType ? observationType.observationType : "null";
-
-    let color: string = "black";
-    if (type == "range") {
-      const rangeMax = observationType
-        ? observationType.rangeMax
-          ? observationType.rangeMax
-          : 5
-        : 5;
-      color = getRangePointColor(num / rangeMax);
-    }
-
-    console.log("observationType", observationType);
-    return {
-      lng: point.position.lng,
-      lat: point.position.lat,
-      size: 10,
-      color: color,
-    };
-  });
+  const mapPoints = enrichedMapPoints(points, observationType);
 
   // const isMobile = useMediaQuery("(max-width: 768px)");
   const isMobile = useMediaQuery("(max-width: 576px)");
+
+  function handleDeleteLastObservation() {
+    console.log(points);
+    if (points.length === 0) return;
+    const newPoints = points.slice(0, -1);
+    setPoints(newPoints);
+  }
 
   return (
     <Fragment>
@@ -2519,6 +2626,8 @@ function DetectionStepObservationPoints({
                 onMarkerChange={handleMarkerChange}
                 mapPoints={mapPoints}
                 debugString="(map A)"
+                previewsDetections={previewsDetections}
+                observationType={observationType}
               />
             </div>
           )}
@@ -2563,6 +2672,7 @@ function DetectionStepObservationPoints({
                                     </span>
                                   </div>
                                 ))}
+                                <button onClick={handleDeleteLastObservation}>delete last</button>
                               </div>
                             </div>
                           </Col>
@@ -2602,6 +2712,7 @@ function DetectionStepObservationPoints({
                                     </span>
                                   </div>
                                 ))}
+                                <button onClick={handleDeleteLastObservation}>delete last</button>
                               </div>
                             </div>
                           </Col>
@@ -2627,6 +2738,8 @@ function DetectionStepObservationPoints({
                   onMarkerChange={handleMarkerChange}
                   mapPoints={mapPoints}
                   debugString="(map B)"
+                  previewsDetections={previewsDetections}
+                  observationType={observationType}
                 />
               )}
             </div>
@@ -2727,7 +2840,9 @@ export function DetectionForm() {
   const location = useLocation();
   const [searchParams] = useSearchParams();
   const { companyId, fieldId } = useParams();
-  const currentField = useAppSelector(state => fieldsSelectors.selectFieldbyId(state, fieldId ?? "defauld"))
+  const currentField = useAppSelector((state) =>
+    fieldsSelectors.selectFieldbyId(state, fieldId ?? "defauld"),
+  );
   const preselectedState = location.state as { typeId?: string } | null;
   const preselectedTypeId = (preselectedState?.typeId ?? searchParams.get("typeId") ?? "").trim();
   const preselectedTypology = (searchParams.get("typology") ?? "").trim();

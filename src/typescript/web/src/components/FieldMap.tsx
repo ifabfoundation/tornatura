@@ -270,7 +270,7 @@ export const FieldMap = ({ detection, debugString }: FieldMapProps) => {
           const radius = radii[0];
           const opacity = opacities[0];
 
-          if (mapRef.current) {
+          if (mapRef.current && mapRef.current.setPaintProperty) {
             mapRef.current.setPaintProperty("current-location-pulse", "circle-radius", radius);
             mapRef.current.setPaintProperty("current-location-pulse", "circle-opacity", opacity);
           }
