@@ -247,6 +247,7 @@ export default function SideBar() {
 
                   return (
                     <MenuItemFamily
+                      key={i}
                       famIcon={item.icon}
                       famText={item.text}
                       famState={state}

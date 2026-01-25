@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any, Dict, Optional
 
 from fastapi import FastAPI, HTTPException, Query
+from fastapi.middleware.cors import CORSMiddleware
 import geopandas as gpd
 from shapely.geometry import Point
 import uvicorn
@@ -18,6 +19,14 @@ logger = logging.getLogger("bollettini_api")
 logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s")
 
 app = FastAPI(title="Bollettini API", version="1.0.0")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 _PROVINCE_GDF: Optional[gpd.GeoDataFrame] = None
 
