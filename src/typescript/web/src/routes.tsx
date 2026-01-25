@@ -25,6 +25,9 @@ import { InvitationAccept } from "./features/invitations/pages/invitation-accept
 import { MyInvitations } from "./features/invitations/pages/my-invitations";
 import { InviteCompanyOwner } from "./features/invitations/pages/invite-company-owner";
 import { DetectionTypeDetail } from "./features/detection-types/pages/detection-type-detail";
+import { FieldModelPeronospora } from "./features/fields/pages/field-model-peronospora";
+import { FieldModelCimice } from "./features/fields/pages/field-model-cimice";
+import { FieldModelFlavescenza } from "./features/fields/pages/field-model-flavescenza";
 
 
 
@@ -152,6 +155,18 @@ const routesInitials: RouteObject[] = [
               {
                 path: "type/:typeId",
                 element: <DetectionTypeDetail />
+              },
+              {
+                path: "models/peronospora",
+                element: <FieldModelPeronospora />
+              },
+              {
+                path: "models/cimice-asiatica",
+                element: <FieldModelCimice />
+              },
+              {
+                path: "models/flavescenza-dorata",
+                element: <FieldModelFlavescenza />
               },
             ]
           }

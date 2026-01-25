@@ -13,7 +13,7 @@
 //     "chromadb==1.2.2",
 //     "docling==2.58.0",
 //     "fastapi==0.115.11",
-//     "geopandas==0.14.0",
+//     "geopandas>=0.14.0",
 //     "markdown==3.10",
 //     "openai==2.6.1",
 //     "python-dotenv==1.2.1",
@@ -644,51 +644,6 @@
           "artifacts": [
             {
               "algorithm": "sha256",
-              "hash": "008d65743833ffc1f5417bf0e78e8d2c23aab04d9745ba817bd3e71b0feb6aa6",
-              "url": "https://files.pythonhosted.org/packages/3d/9a/2abecb28ae875e39c8cad711eb1186d8d14eab564705325e77e4e6ab9ae5/click_plugins-1.1.1.2-py2.py3-none-any.whl"
-            },
-            {
-              "algorithm": "sha256",
-              "hash": "d7af3984a99d243c131aa1a828331e7630f4a88a9741fd05c927b204bcf92261",
-              "url": "https://files.pythonhosted.org/packages/c3/a4/34847b59150da33690a36da3681d6bbc2ec14ee9a846bc30a6746e5984e4/click_plugins-1.1.1.2.tar.gz"
-            }
-          ],
-          "project_name": "click-plugins",
-          "requires_dists": [
-            "click>=4.0",
-            "coveralls; extra == \"dev\"",
-            "pytest-cov; extra == \"dev\"",
-            "pytest>=3.6; extra == \"dev\"",
-            "wheel; extra == \"dev\""
-          ],
-          "requires_python": null,
-          "version": "1.1.1.2"
-        },
-        {
-          "artifacts": [
-            {
-              "algorithm": "sha256",
-              "hash": "c1ca117dbce1fe20a5809dc96f01e1c2840f6dcc939b3ddbb1111bf330ba82df",
-              "url": "https://files.pythonhosted.org/packages/73/86/43fa9f15c5b9fb6e82620428827cd3c284aa933431405d1bcf5231ae3d3e/cligj-0.7.2-py3-none-any.whl"
-            },
-            {
-              "algorithm": "sha256",
-              "hash": "a4bc13d623356b373c2c27c53dbd9c68cae5d526270bfa71f6c6fa69669c6b27",
-              "url": "https://files.pythonhosted.org/packages/ea/0d/837dbd5d8430fd0f01ed72c4cfb2f548180f4c68c635df84ce87956cff32/cligj-0.7.2.tar.gz"
-            }
-          ],
-          "project_name": "cligj",
-          "requires_dists": [
-            "click>=4.0",
-            "pytest-cov; extra == \"test\""
-          ],
-          "requires_python": "!=3.0.*,!=3.1.*,!=3.2.*,<4,>=2.7",
-          "version": "0.7.2"
-        },
-        {
-          "artifacts": [
-            {
-              "algorithm": "sha256",
               "hash": "612ee75c546f53e92e70049c9dbfcc18c935a2b9a53b66085ce9ef6a6e5c0934",
               "url": "https://files.pythonhosted.org/packages/a7/06/3d6badcf13db419e25b07041d9c7b4a2c331d3f4e7134445ec5df57714cd/coloredlogs-15.0.1-py2.py3-none-any.whl"
             },
@@ -1127,51 +1082,6 @@
           "artifacts": [
             {
               "algorithm": "sha256",
-              "hash": "537872cbc9bda7fcdf73851c91bc5338fca2b502c4c17049ccecaa13cde1f18f",
-              "url": "https://files.pythonhosted.org/packages/dc/78/be204fb409b59876ef4658710a022794f16f779a3e9e7df654acc38b2104/fiona-1.10.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl"
-            },
-            {
-              "algorithm": "sha256",
-              "hash": "b00ae357669460c6491caba29c2022ff0acfcbde86a95361ea8ff5cd14a86b68",
-              "url": "https://files.pythonhosted.org/packages/51/e0/71b63839cc609e1d62cea2fc9774aa605ece7ea78af823ff7a8f1c560e72/fiona-1.10.1.tar.gz"
-            },
-            {
-              "algorithm": "sha256",
-              "hash": "7338b8c68beb7934bde4ec9f49eb5044e5e484b92d940bc3ec27defdb2b06c67",
-              "url": "https://files.pythonhosted.org/packages/73/ab/036c418d531afb74abe4ca9a8be487b863901fe7b42ddba1ba2fb0681d77/fiona-1.10.1-cp312-cp312-macosx_10_15_x86_64.whl"
-            },
-            {
-              "algorithm": "sha256",
-              "hash": "8c77fcfd3cdb0d3c97237965f8c60d1696a64923deeeb2d0b9810286cbe25911",
-              "url": "https://files.pythonhosted.org/packages/ba/45/693c1cca53023aaf6e3adc11422080f5fa427484e7b85e48f19c40d6357f/fiona-1.10.1-cp312-cp312-macosx_11_0_arm64.whl"
-            }
-          ],
-          "project_name": "fiona",
-          "requires_dists": [
-            "aiohttp; extra == \"test\"",
-            "attrs>=19.2.0",
-            "boto3>=1.3.1; extra == \"s3\"",
-            "certifi",
-            "click-plugins>=1.0",
-            "click~=8.0",
-            "cligj>=0.5",
-            "fiona[calc,s3,test]; extra == \"all\"",
-            "fiona[s3]; extra == \"test\"",
-            "fsspec; extra == \"test\"",
-            "importlib-metadata; python_version < \"3.10\"",
-            "pyparsing; extra == \"calc\"",
-            "pytest-cov; extra == \"test\"",
-            "pytest>=7; extra == \"test\"",
-            "pytz; extra == \"test\"",
-            "shapely; extra == \"calc\""
-          ],
-          "requires_python": ">=3.8",
-          "version": "1.10.1"
-        },
-        {
-          "artifacts": [
-            {
-              "algorithm": "sha256",
               "hash": "7634f50c427838bb021c2d66a3d1168e9d199b0607e6329399f04846d42e20b4",
               "url": "https://files.pythonhosted.org/packages/e8/2d/d2a548598be01649e2d46231d151a6c56d10b964d94043a335ae56ea2d92/flatbuffers-25.12.19-py2.py3-none-any.whl"
             }
@@ -1305,25 +1215,42 @@
           "artifacts": [
             {
               "algorithm": "sha256",
-              "hash": "a402a565e727642cb44a500c911f226eea26c1b1247c6586827031e3d7a9403a",
-              "url": "https://files.pythonhosted.org/packages/27/27/2687abaa2ac02b5814e2929a5033da1e5d132c19a904dc56f77f63fd6eb9/geopandas-0.14.0-py3-none-any.whl"
+              "hash": "2bb0b1052cb47378addb4ba54c47f8d4642dcbda9b61375638274f49d9f0bb0d",
+              "url": "https://files.pythonhosted.org/packages/54/e4/fac19dc34cb686c96011388b813ff7b858a70681e5ce6ce7698e5021b0f4/geopandas-1.1.2-py3-none-any.whl"
             },
             {
               "algorithm": "sha256",
-              "hash": "ea6c031889e1e1888aecaa6e182ca620d78f63551c49b3002a998bcbb280531f",
-              "url": "https://files.pythonhosted.org/packages/f1/02/5cf0414db0922448819a05c5cbca5cd70a5e3fd2e58f08f7484e5d09c393/geopandas-0.14.0.tar.gz"
+              "hash": "33f7b33565c46a45b8459a2ab699ec943fdbb5716e58e251b3c413cf7783106c",
+              "url": "https://files.pythonhosted.org/packages/8d/24/5eb5685d7bf89d64218919379f882d19a60f8219d66d833c83b1cf264c95/geopandas-1.1.2.tar.gz"
             }
           ],
           "project_name": "geopandas",
           "requires_dists": [
-            "fiona>=1.8.21",
+            "GeoAlchemy2; extra == \"all\"",
+            "SQLAlchemy>=2.0; extra == \"all\"",
+            "codecov; extra == \"dev\"",
+            "folium; extra == \"all\"",
+            "geopy; extra == \"all\"",
+            "mapclassify>=2.5; extra == \"all\"",
+            "matplotlib>=3.7; extra == \"all\"",
+            "numpy>=1.24",
             "packaging",
-            "pandas>=1.4.0",
-            "pyproj>=3.3.0",
-            "shapely>=1.8.0"
+            "pandas>=2.0.0",
+            "pre-commit; extra == \"dev\"",
+            "psycopg[binary]>=3.1.0; extra == \"all\"",
+            "pyarrow>=10.0.0; extra == \"all\"",
+            "pyogrio>=0.7.2",
+            "pyproj>=3.5.0",
+            "pytest-cov; extra == \"dev\"",
+            "pytest-xdist; extra == \"dev\"",
+            "pytest>=3.1.0; extra == \"dev\"",
+            "ruff; extra == \"dev\"",
+            "scipy; extra == \"all\"",
+            "shapely>=2.0.0",
+            "xyzservices; extra == \"all\""
           ],
-          "requires_python": ">=3.9",
-          "version": "0.14.0"
+          "requires_python": ">=3.10",
+          "version": "1.1.2"
         },
         {
           "artifacts": [
@@ -4203,6 +4130,53 @@
           "artifacts": [
             {
               "algorithm": "sha256",
+              "hash": "8b65be8c4258b27cc8f919b21929cecdadda4c353e3637fa30850339ef4d15c5",
+              "url": "https://files.pythonhosted.org/packages/36/f7/cf8bec9024625947e1a71441906f60a5fa6f9e4c441c4428037e73b1fcc8/pyogrio-0.12.1-cp312-cp312-manylinux_2_28_x86_64.whl"
+            },
+            {
+              "algorithm": "sha256",
+              "hash": "feaff42bbe8087ca0b30e33b09d1ce049ca55fe83ad83db1139ef37d1d04f30c",
+              "url": "https://files.pythonhosted.org/packages/14/78/313259e40da728bdb60106ffdc7ea8224d164498cb838ecb79b634aab967/pyogrio-0.12.1-cp312-cp312-macosx_12_0_x86_64.whl"
+            },
+            {
+              "algorithm": "sha256",
+              "hash": "e548ab705bb3e5383693717de1e6c76da97f3762ab92522cb310f93128a75ff1",
+              "url": "https://files.pythonhosted.org/packages/49/d4/12f86b1ed09721363da4c09622464b604c851a9223fc0c6b393fb2012208/pyogrio-0.12.1.tar.gz"
+            },
+            {
+              "algorithm": "sha256",
+              "hash": "81096a5139532de5a8003ef02b41d5d2444cb382a9aecd1165b447eb549180d3",
+              "url": "https://files.pythonhosted.org/packages/8f/ca/5368571a8b00b941ccfbe6ea29a5566aaffd45d4eb1553b956f7755af43e/pyogrio-0.12.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl"
+            },
+            {
+              "algorithm": "sha256",
+              "hash": "7a0d5ca39184030aec4cde30f4258f75b227a854530d2659babc8189d76e657d",
+              "url": "https://files.pythonhosted.org/packages/ad/e0/656b6536549d41b5aec57e0deca1f269b4f17532f0636836f587e581603a/pyogrio-0.12.1-cp312-cp312-macosx_12_0_arm64.whl"
+            },
+            {
+              "algorithm": "sha256",
+              "hash": "41b78863f782f7a113ed0d36a5dc74d59735bd3a82af53510899bb02a18b06bb",
+              "url": "https://files.pythonhosted.org/packages/ef/85/6eeb875f27bf498d657eb5dab9f58e4c48b36c9037122787abee9a1ba4ba/pyogrio-0.12.1-cp312-cp312-manylinux_2_28_aarch64.whl"
+            }
+          ],
+          "project_name": "pyogrio",
+          "requires_dists": [
+            "certifi",
+            "cython>=3.1; extra == \"dev\"",
+            "geopandas; extra == \"geopandas\"",
+            "numpy",
+            "packaging",
+            "pytest-benchmark; extra == \"benchmark\"",
+            "pytest-cov; extra == \"test\"",
+            "pytest; extra == \"test\""
+          ],
+          "requires_python": ">=3.10",
+          "version": "0.12.1"
+        },
+        {
+          "artifacts": [
+            {
+              "algorithm": "sha256",
               "hash": "f33bd79e7a09d5f7acca3b0b69ff6c8a488869a7fab48fdf400fec6e20b9c8be",
               "url": "https://files.pythonhosted.org/packages/7a/c4/9e62d03f414e0e3051c56d5943c3bf42aa9608ede4e19dc96438364e9e03/pypdfium2-4.30.0-py3-none-musllinux_1_1_x86_64.whl"
             },
@@ -4666,13 +4640,13 @@
           "artifacts": [
             {
               "algorithm": "sha256",
-              "hash": "76bc51fe2e57d2b1be1f96c524b890b816e334ab4c1e45888799bfaab0021edd",
-              "url": "https://files.pythonhosted.org/packages/25/7a/b0178788f8dc6cafce37a212c99565fa1fe7872c70c6c9c1e1a372d9d88f/rich-14.2.0-py3-none-any.whl"
+              "hash": "da750b1aebbff0b372557426fb3f35ba56de8ef954b3190315eb64076d6fb54e",
+              "url": "https://files.pythonhosted.org/packages/87/2a/a1810c8627b9ec8c57ec5ec325d306701ae7be50235e8fd81266e002a3cc/rich-14.3.1-py3-none-any.whl"
             },
             {
               "algorithm": "sha256",
-              "hash": "73ff50c7c0c1c77c8243079283f4edb376f0f6442433aecb8ce7e6d0b92d1fe4",
-              "url": "https://files.pythonhosted.org/packages/fb/d2/8920e102050a0de7bfabeb4c4614a49248cf8d5d7a8d01885fbb24dc767a/rich-14.2.0.tar.gz"
+              "hash": "b8c5f568a3a749f9290ec6bddedf835cec33696bfc1e48bcfecb276c7386e4b8",
+              "url": "https://files.pythonhosted.org/packages/a1/84/4831f881aa6ff3c976f6d6809b58cdfa350593ffc0dc3c58f5f6586780fb/rich-14.3.1.tar.gz"
             }
           ],
           "project_name": "rich",
@@ -4682,7 +4656,7 @@
             "pygments<3.0.0,>=2.13.0"
           ],
           "requires_python": ">=3.8.0",
-          "version": "14.2.0"
+          "version": "14.3.1"
         },
         {
           "artifacts": [
@@ -6817,7 +6791,7 @@
     "chromadb==1.2.2",
     "docling==2.58.0",
     "fastapi==0.115.11",
-    "geopandas==0.14.0",
+    "geopandas>=0.14.0",
     "markdown==3.10",
     "openai==2.6.1",
     "python-dotenv==1.2.1",
