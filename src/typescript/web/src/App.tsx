@@ -21,6 +21,7 @@ import { SidebarActions } from "./features/sidebar/state/sidebar-slice";
 import Loading from "./components/Loading";
 import { invitationsActions } from "./features/invitations/state/invitations-slice";
 import { observationTypesActions } from "./features/observation-types/state/observation-types-slice";
+import { detectionTypesActions } from "./features/detection-types/state/detection-types-slice";
 
 export function RouteApp() {
   const currentUser = useAppSelector(userSelectors.selectCurrentUser);
@@ -49,33 +50,41 @@ function MainApp() {
 
       if (currentUser.accountType === AccountTypeEnum.Admin) {
         menuEntries = [
-          // {
-          //   id: "companies",
-          //   icon: "barn",
-          //   text: "Aziende",
-          //   path: "/admin/companies",
-          // },
-          // {
-          //   id: "users",
-          //   icon: "users",
-          //   text: "Utenti",
-          //   path: "/admin/users",
-          // },
-          // {
-          //   id: "feedbacks",
-          //   icon: "baloon",
-          //   text: "Feedbacks",
-          //   path: "/admin/feedbacks",
-          // },
+          {
+            id: "companies",
+            icon: "barn",
+            text: "Aziende",
+            path: "/admin/companies",
+            type: 'single',
+            familyItems: []
+          },
+          {
+            id: "users",
+            icon: "users",
+            text: "Utenti",
+            path: "/admin/users",
+            type: 'single',
+            familyItems: []
+          },
+          {
+            id: "feedbacks",
+            icon: "baloon",
+            text: "Feedbacks",
+            path: "/admin/feedbacks",
+            type: 'single',
+            familyItems: []
+          },
         ];
 
         menuBottomEntries = [
-          // {
-          //   id: "user",
-          //   icon: "users",
-          //   text: "Profilo Utente fck",
-          //   path: "/profile",
-          // },
+          {
+            id: "user",
+            icon: "users",
+            text: "Profilo Utente fck",
+            path: "/profile",
+            type: 'single',
+            familyItems: []
+          },
         ];
         dispatch(SidebarActions.setMenuEntriesAction(menuEntries));
         dispatch(SidebarActions.setMenuBottomEntriesAction(menuBottomEntries));
@@ -152,6 +161,7 @@ function App() {
                   fieldId: field.id,
                 }),
               );
+              await dispatch(detectionTypesActions.fetchDetectionTypesAction({ orgId: org.id, fieldId: field.id}));
             }
           }
         }

@@ -8,6 +8,8 @@ import {
   ObservationType,
   FilesApi,
   FileInfo,
+  DetectionType,
+  AgriField,
 } from "@tornatura/coreapis";
 import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
@@ -1832,7 +1834,7 @@ function DetectionStepGuide({
   );
 }
 
-function DetectionStepBbch({ formData, onNextClick }: DetectionProps) {
+function DetectionStepBbch({ formData, field, onNextClick }: DetectionProps & { field: AgriField }) {
   const [bbch, setBbch] = React.useState(formData.detectionData.bbch ?? "");
 
   React.useEffect(() => {
@@ -1845,27 +1847,32 @@ function DetectionStepBbch({ formData, onNextClick }: DetectionProps) {
   };
 
   let items: AccordionItem[] = [];
-  items = Object.keys(bbchs).map((key: string, index: number) => {
-    let iconNameAccItem = bbchs[key].icon ?? null;
+  const options = bbchs[field.harvest].data;
+  const thumbnailBaseUrl = bbchs[field.harvest].baseUrl;
+  
+  console.log(field, options)
+
+  items = Object.keys(options).map((key: string, index: number) => {
+    let iconNameAccItem = options[key].icon ?? null;
     return {
       id: index.toString(),
-      title: bbchs[key].name,
+      title: options[key].name,
       content: (
         <Fragment>
-          {Object.keys(bbchs[key].items).map((itemKey: string, itemIndex) => {
-            let iconNameBtn = bbchs[key].icon ?? null;
-            if (bbchs[key].items[itemKey].icon) {
-              iconNameBtn = bbchs[key].items[itemKey].icon;
+          {Object.keys(options[key].items).map((itemKey: string, itemIndex) => {
+            let iconNameBtn = options[key].icon ?? null;
+            if (options[key].items[itemKey].icon) {
+              iconNameBtn = options[key].items[itemKey].icon;
             }
-            if (bbchs[key].items[itemKey].icon === false) {
+            if (options[key].items[itemKey].icon === false) {
               iconNameBtn = null;
             }
             return (
               <CozyButton
                 key={itemIndex}
                 iconName={iconNameBtn}
-                content={bbchs[key].items[itemKey].name}
-                onClick={() => handleBbchSelection(bbchs[key].items[itemKey].value)}
+                content={options[key].items[itemKey].name}
+                onClick={() => handleBbchSelection(options[key].items[itemKey].value)}
                 arrow={true}
               />
             );
@@ -2720,6 +2727,7 @@ export function DetectionForm() {
   const location = useLocation();
   const [searchParams] = useSearchParams();
   const { companyId, fieldId } = useParams();
+  const currentField = useAppSelector(state => fieldsSelectors.selectFieldbyId(state, fieldId ?? "defauld"))
   const preselectedState = location.state as { typeId?: string } | null;
   const preselectedTypeId = (preselectedState?.typeId ?? searchParams.get("typeId") ?? "").trim();
   const preselectedTypology = (searchParams.get("typology") ?? "").trim();
@@ -2753,6 +2761,8 @@ export function DetectionForm() {
   const observationTypes = useAppSelector((state) =>
     observationTypesSelectors.selectObservationTypes(state),
   );
+
+  const [detectionType, setDetectectionType] = React.useState<DetectionType>();
 
   React.useEffect(() => {
     dispatch(headerbarActions.setTitle({ title: "Nuovo Rilevamento", subtitle: "Subtitle" }));
@@ -2853,15 +2863,20 @@ export function DetectionForm() {
       selectedMethod,
     ),
   )[0];
-  const detectionType = useAppSelector((state) =>
-    detectionTypesSelectors.selectDetectionTypesByObservationTypeId(
-      state,
-      observationType?.id ?? "",
-    ),
-  )[0];
 
   React.useEffect(() => {
-    if (!detectionType?.id) {
+    if (observationType) {
+      for (let d of detectionTypes) {
+        if (d.observationTypeId == observationType.id) {
+          setDetectectionType(d);
+          break;
+        }
+      }
+    }
+  }, [detectionTypes, observationType]);
+
+  React.useEffect(() => {
+    if (!detectionType) {
       if (!hasTypeIdPreselection) {
         setFormData((prev) => ({
           ...prev,
@@ -2874,7 +2889,7 @@ export function DetectionForm() {
       ...prev,
       detectionTypeId: detectionType.id,
     }));
-  }, [detectionType?.id, hasTypeIdPreselection]);
+  }, [detectionType, hasTypeIdPreselection]);
 
   const createDetectionAction = async (payload: DetectionMutationPayload) => {
     if (companyId && fieldId) {
@@ -2913,6 +2928,16 @@ export function DetectionForm() {
     if (currentStepKey === "method") {
       const methodData = data as DetectionStepMethodData;
       setSelectedMethod(methodData.method);
+      const matchingObservationType = observationTypes.find(
+        (item) => item.typology === selectedTypology && item.method === methodData.method,
+      );
+      const matchingDetectionType = detectionTypes.find(
+        (item) => item.observationTypeId === matchingObservationType?.id,
+      );
+      setFormData((prev) => ({
+        ...prev,
+        detectionTypeId: matchingDetectionType?.id ?? "",
+      }));
       setStepIndex(stepIndex + 1);
       return;
     }
@@ -2937,6 +2962,13 @@ export function DetectionForm() {
       const pointsData = data as DetectionStepPointsData;
       const notesToSave = pointsData.notes ?? formData.detectionData.notes ?? "";
       let detectionTypeId = formData.detectionTypeId;
+      if (!detectionTypeId && detectionType?.id) {
+        detectionTypeId = detectionType.id;
+        setFormData((prev) => ({
+          ...prev,
+          detectionTypeId: detectionType.id,
+        }));
+      }
       if (!detectionTypeId && companyId && fieldId) {
         try {
           if (!observationType?.id) {
@@ -3040,6 +3072,7 @@ export function DetectionForm() {
         {currentStepKey === "bbch" && (
           <DetectionStepBbch
             formData={formData}
+            field={currentField}
             onBackClick={handleBackClick}
             onNextClick={handleNextClick}
           />

@@ -10,14 +10,20 @@ import "./Sidebar.css";
 import { companiesSelectors } from "../features/companies/state/companies-slice";
 import { fieldsSelectors } from "../features/fields/state/fields-slice";
 import Icon from "../components/Icon";
-import { observationTypesSelectors } from "../features/observation-types/state/observation-types-slice";
-import { detectionTypesSelectors } from "../features/detection-types/state/detection-types-slice";
+
+interface MenuFamilyItem {
+  text: string;
+  path: string;
+}
 
 export interface MenuItemEntry {
   id: string;
   icon: IconName;
   text: string;
   path: string;
+  type: 'single' | 'family';
+  familyItems: MenuFamilyItem[];
+
 }
 
 function CompanySelector() {
@@ -157,51 +163,6 @@ function FieldSelector() {
   );
 }
 
-const familyRilevamenti = {
-  famIcon: "checklist" as IconName,
-  famText: "Rilevamenti",
-  famState: "",
-  famItems: [
-    {
-      text: "Peronospora / Foglia",
-      state: "",
-      path: "/",
-    },
-    {
-      text: "Cimice asiatica / Trappole",
-      state: "",
-      path: "/",
-    },
-  ],
-};
-
-const familyModelli = {
-  famIcon: "spark" as IconName,
-  famText: "Modelli previsionali",
-  famState: "",
-  famItems: [
-    {
-      text: "Peronospora",
-      state: "",
-      path: "/modelli/peronospora",
-    },
-    {
-      text: "Cimice asiatica",
-      state: "",
-      path: "/modelli/cimice-asiatica",
-    },
-    {
-      text: "Flavescenza dorata",
-      state: "",
-      path: "/modelli/flavescenza-dorata",
-    },
-    {
-      text: "Diabrotica",
-      state: "",
-      path: "/modelli/diabrotica",
-    },
-  ],
-};
 
 export default function SideBar() {
   const navigate = useNavigate();
@@ -211,15 +172,18 @@ export default function SideBar() {
   const { menuEntries, menuBottomEntries } = useAppSelector(SidebarSelectors.selectMenuEntries);
   const [currentEntry, setCurrentEntry] = React.useState<string>("companies");
   const mobileOpen = useAppSelector((state) => state.sidebar.mobileOpen);
-  const observationsTypes = useAppSelector(observationTypesSelectors.selectObservationTypes);
-  const detectionTypes = useAppSelector((state) =>
-    detectionTypesSelectors.selectDetectionTypesByField(state, params.fieldId ?? ""),
-  );
+
 
   React.useEffect(() => {
     let entry;
     for (let item of menuEntries) {
-      if (location.pathname === item.path) {
+      if (item.type === 'single' && location.pathname === item.path) {
+        entry = item.id;
+        setCurrentEntry(entry);
+        break;
+      } 
+      
+      if (item.type === 'family' && location.pathname.startsWith(item.path)) {
         entry = item.id;
         setCurrentEntry(entry);
         break;
@@ -227,7 +191,13 @@ export default function SideBar() {
     }
 
     for (let item of menuBottomEntries) {
-      if (location.pathname === item.path) {
+      if (item.type === 'single' && location.pathname === item.path) {
+        entry = item.id;
+        setCurrentEntry(entry);
+        break;
+      } 
+      
+      if (item.type === 'family' && location.pathname.startsWith(item.path)) {
         entry = item.id;
         setCurrentEntry(entry);
         break;
@@ -239,32 +209,6 @@ export default function SideBar() {
     }
   }, [location, menuEntries, menuBottomEntries]);
 
-  const getFamilyDetections = () => {
-    let familyRilevamenti: any = {
-      famIcon: "checklist" as IconName,
-      famText: "Rilevamenti",
-      famState: "",
-      famItems: [],
-    };
-
-    if (params.companyId && params.fieldId) {
-      for (let detectionType of detectionTypes) {
-        for (let observationType of observationsTypes) {
-          if (detectionType.observationTypeId === observationType.id) {
-            familyRilevamenti.famItems.push({
-              text: `${observationType.typology} / ${observationType.method}`,
-              state: "",
-              path: `/companies/${params.companyId}/fields/${params.fieldId}/type/${detectionType.id}`,
-            });
-          }
-        }
-      }
-    }
-
-    return familyRilevamenti;
-  };
-
-  const familyDetections = getFamilyDetections();
 
   return (
     <Fragment>
@@ -289,41 +233,40 @@ export default function SideBar() {
             <ul className="menu-items">
               {menuEntries.map((item, i) => {
                 const state = currentEntry === item.id ? "selected" : "normal";
-                return (
-                  <MenuItem
-                    key={i}
-                    icon={item.icon}
-                    text={item.text}
-                    state={state}
-                    path={item.path}
-                  />
-                );
+                const isFamily = item.type === 'family' ? true : false;
+
+                if (isFamily) {
+                  let subItems = [];
+                  for (let sub of item.familyItems) {
+                    subItems.push({
+                      text: sub.text,
+                      state: location.pathname === sub.path ? 'selected' : 'normal',
+                      path: sub.path
+                    })
+                  }
+
+                  return (
+                    <MenuItemFamily
+                      famIcon={item.icon}
+                      famText={item.text}
+                      famState={state}
+                      famItems={subItems}
+                    />
+                  );
+                } else {
+                  return (
+                    <MenuItem
+                      key={i}
+                      icon={item.icon}
+                      text={item.text}
+                      state={state}
+                      path={item.path}
+                    />
+                  );
+                }
               })}
-
-              {familyDetections.famItems.length && (
-                <MenuItemFamily
-                  famIcon={familyDetections.famIcon}
-                  famText={familyDetections.famText}
-                  famState={familyDetections.famState}
-                  famItems={familyDetections.famItems}
-                />
-              )}
-
-              <MenuItemFamily
-                famIcon={familyModelli.famIcon}
-                famText={familyModelli.famText}
-                famState={familyModelli.famState}
-                famItems={familyModelli.famItems}
-              />
             </ul>
           </div>
-
-          {/* <MenuItemFamily
-            famIcon={testFamily.famIcon}
-            famText={testFamily.famText}
-            famState={"selected"}
-            famItems={testFamily.famItems}
-          /> */}
 
           <ul className="menu-items">
             {menuBottomEntries.map((item, i) => {

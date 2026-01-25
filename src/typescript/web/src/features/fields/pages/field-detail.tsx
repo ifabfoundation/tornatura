@@ -1,20 +1,38 @@
 import { Outlet, useParams } from "react-router-dom";
-import { useAppDispatch } from "../../../hooks";
+import { useAppDispatch, useAppSelector } from "../../../hooks";
 import React from "react";
 import { MenuItemEntry } from "../../../components/Sidebar";
 import { SidebarActions } from "../../sidebar/state/sidebar-slice";
+import { IconName } from "../../../components/Icon";
+import { detectionTypesActions, detectionTypesSelectors } from "../../detection-types/state/detection-types-slice";
+import { observationTypesSelectors } from "../../observation-types/state/observation-types-slice";
+import { detectionsActions } from "../../detections/state/detections-slice";
 
 export function FieldDetail() {
   const dispatch = useAppDispatch();
   const { companyId, fieldId } = useParams();
+  const detectionTypes = useAppSelector(state => detectionTypesSelectors.selectDetectionTypesByField(state, fieldId ?? "default"));
+  const observationsTypes = useAppSelector(observationTypesSelectors.selectObservationTypes);
 
   React.useEffect(() => {
     if (!companyId || !fieldId) {
       return;
     }
 
+    let detectionTypeFamilyItems = [];
     let menuEntries: MenuItemEntry[] = [];
     let menuBottomEntries: MenuItemEntry[] = [];
+
+    for (let detectionType of detectionTypes) {
+      for (let observationType of observationsTypes) {
+        if (detectionType.observationTypeId === observationType.id) {
+          detectionTypeFamilyItems.push({
+            text: `${observationType.typology}  ›  ${observationType.method}`,
+            path: `/companies/${companyId}/fields/${fieldId}/type/${detectionType.id}`,
+          });
+        }
+      }
+    }
 
     menuEntries = [
       {
@@ -22,19 +40,38 @@ export function FieldDetail() {
         icon: "grid",
         text: "Dashboard campo",
         path: `/companies/${companyId}/fields/${fieldId}`,
+        type: 'single',
+        familyItems: []
       },
-      // {
-      //   id: "detections",
-      //   icon: "checklist",
-      //   text: "Rilevamenti campo",
-      //   path: `/companies/${companyId}/fields/${fieldId}/detections`,
-      // },
-      // {
-      //   id: "mappa",
-      //   icon: "pin",
-      //   text: "Mappa",
-      //   path: `/companies/${companyId}/fields/${fieldId}/map`,
-      // },
+      {
+        id: "field-detections",
+        icon: "checklist" as IconName,
+        text: "Rilevamenti",
+        path: `/companies/${companyId}/fields/${fieldId}/type`,
+        type: 'family',
+        familyItems: detectionTypeFamilyItems
+      },
+      {
+        id: "field-models",
+        icon: "spark" as IconName,
+        text: "Modelli previsionali",
+        path: `/companies/${companyId}/fields/${fieldId}/models`,
+        type: 'family',
+        familyItems: [
+          {
+            text: "Peronospora",
+            path: `/companies/${companyId}/fields/${fieldId}/models/peronospora`,
+          },
+          {
+            text: "Cimice asiatica",
+            path: `/companies/${companyId}/fields/${fieldId}/models/cimice-asiatica`,
+          },
+          {
+            text: "Flavescenza dorata",
+            path: `/companies/${companyId}/fields/${fieldId}/models/flavescenza-dorata`
+          }
+        ]
+      },
     ];
     menuBottomEntries = [
       {
@@ -42,30 +79,30 @@ export function FieldDetail() {
         icon: "cog",
         text: "Impostazioni campo",
         path: `/companies/${companyId}/fields/${fieldId}/settings`,
+        type: 'single',
+        familyItems: []
       },
       {
         id: "feedback",
         icon: "baloon",
         text: "Invia Feedback",
         path: `/companies/${companyId}/fields/${fieldId}/new-feedback`,
-      },
-      // {
-      //   id: "my-invitations",
-      //   icon: "grid",
-      //   text: "I miei inviti",
-      //   path: `/companies/${companyId}/fields/${fieldId}/invitations/me`,
-      // },
-      // {
-      //   id: "user",
-      //   icon: "users",
-      //   text: "Profilo Utente fch",
-      //   path: `/companies/${companyId}/fields/${fieldId}/profile`,
-      // },
+        type: 'single',
+        familyItems: []
+      }
     ];
     dispatch(SidebarActions.setMenuEntriesAction(menuEntries));
     dispatch(SidebarActions.setMenuBottomEntriesAction(menuBottomEntries));
 
     
+  }, [companyId, fieldId, observationsTypes, detectionTypes]);
+
+
+  React.useEffect(() => {
+    if (companyId && fieldId) {
+      dispatch(detectionTypesActions.fetchDetectionTypesAction({ orgId: companyId, fieldId }));
+      dispatch(detectionsActions.fetchFieldDetectionsAction({orgId: companyId, fieldId: fieldId}));
+    }
   }, [companyId, fieldId]);
 
   return <Outlet />;

@@ -52,6 +52,15 @@ class DetectionTypeServices:
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Observation type not found"
             )
+        existing_type = self.model.objects(
+            agrifieldId=agrifield_id,
+            observationTypeId=data["observationTypeId"],
+        ).first()
+        if existing_type:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="Detection type already exists for this agrifield and observation type"
+            )
         current_time = int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp() * 1000)
         data.update({
             "agrifieldId": agrifield_id,
@@ -76,6 +85,16 @@ class DetectionTypeServices:
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
                     detail="Observation type not found"
+                )
+            existing_type = self.model.objects(
+                agrifieldId=detection_type.agrifieldId,
+                observationTypeId=payload.observationTypeId,
+                id__ne=detection_type_id,
+            ).first()
+            if existing_type:
+                raise HTTPException(
+                    status_code=status.HTTP_409_CONFLICT,
+                    detail="Detection type already exists for this agrifield and observation type"
                 )
             detection_type.observationTypeId = payload.observationTypeId
         detection_type.save()
