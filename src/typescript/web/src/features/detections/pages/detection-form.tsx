@@ -9,6 +9,7 @@ import {
   FilesApi,
   FileInfo,
   DetectionType,
+  AgriField,
 } from "@tornatura/coreapis";
 import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
@@ -1833,7 +1834,7 @@ function DetectionStepGuide({
   );
 }
 
-function DetectionStepBbch({ formData, onNextClick }: DetectionProps) {
+function DetectionStepBbch({ formData, field, onNextClick }: DetectionProps & { field: AgriField }) {
   const [bbch, setBbch] = React.useState(formData.detectionData.bbch ?? "");
 
   React.useEffect(() => {
@@ -1846,27 +1847,32 @@ function DetectionStepBbch({ formData, onNextClick }: DetectionProps) {
   };
 
   let items: AccordionItem[] = [];
-  items = Object.keys(bbchs).map((key: string, index: number) => {
-    let iconNameAccItem = bbchs[key].icon ?? null;
+  const options = bbchs[field.harvest].data;
+  const thumbnailBaseUrl = bbchs[field.harvest].baseUrl;
+  
+  console.log(field, options)
+
+  items = Object.keys(options).map((key: string, index: number) => {
+    let iconNameAccItem = options[key].icon ?? null;
     return {
       id: index.toString(),
-      title: bbchs[key].name,
+      title: options[key].name,
       content: (
         <Fragment>
-          {Object.keys(bbchs[key].items).map((itemKey: string, itemIndex) => {
-            let iconNameBtn = bbchs[key].icon ?? null;
-            if (bbchs[key].items[itemKey].icon) {
-              iconNameBtn = bbchs[key].items[itemKey].icon;
+          {Object.keys(options[key].items).map((itemKey: string, itemIndex) => {
+            let iconNameBtn = options[key].icon ?? null;
+            if (options[key].items[itemKey].icon) {
+              iconNameBtn = options[key].items[itemKey].icon;
             }
-            if (bbchs[key].items[itemKey].icon === false) {
+            if (options[key].items[itemKey].icon === false) {
               iconNameBtn = null;
             }
             return (
               <CozyButton
                 key={itemIndex}
                 iconName={iconNameBtn}
-                content={bbchs[key].items[itemKey].name}
-                onClick={() => handleBbchSelection(bbchs[key].items[itemKey].value)}
+                content={options[key].items[itemKey].name}
+                onClick={() => handleBbchSelection(options[key].items[itemKey].value)}
                 arrow={true}
               />
             );
@@ -2724,6 +2730,7 @@ export function DetectionForm() {
   const location = useLocation();
   const [searchParams] = useSearchParams();
   const { companyId, fieldId } = useParams();
+  const currentField = useAppSelector(state => fieldsSelectors.selectFieldbyId(state, fieldId ?? "defauld"))
   const preselectedState = location.state as { typeId?: string } | null;
   const preselectedTypeId = (preselectedState?.typeId ?? searchParams.get("typeId") ?? "").trim();
   const preselectedTypology = (
@@ -3061,6 +3068,7 @@ export function DetectionForm() {
         {currentStepKey === "bbch" && (
           <DetectionStepBbch
             formData={formData}
+            field={currentField}
             onBackClick={handleBackClick}
             onNextClick={handleNextClick}
           />
