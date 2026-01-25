@@ -2818,7 +2818,7 @@ function DetectionStepObservationPoints({
   );
 }
 
-function DetectionStepDone() {
+function DetectionStepDone({ detectionType }: { detectionType: string }) {
   const navigate = useNavigate();
   const { companyId, fieldId } = useParams();
   return (
@@ -2830,7 +2830,10 @@ function DetectionStepDone() {
       <button
         className="trnt_btn"
         onClick={() => {
-          navigate(`/companies/${companyId}/fields/${fieldId}`, { replace: true });
+          // navigate(`/companies/${companyId}/fields/${fieldId}`, { replace: true });
+          navigate(`/companies/${companyId}/fields/${fieldId}/type/${detectionType}`, {
+            replace: true,
+          });
         }}
       >
         Chiudi
@@ -3206,7 +3209,9 @@ export function DetectionForm() {
             onPhotosChange={setPendingPhotos}
           />
         )}
-        {currentStepKey === "done" && <DetectionStepDone />}
+        {currentStepKey === "done" && (
+          <DetectionStepDone detectionType={formData.detectionTypeId} />
+        )}
       </div>
     </Fragment>
   );
