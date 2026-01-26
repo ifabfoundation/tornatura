@@ -39,9 +39,10 @@ import { gpsStore } from "../../../providers/gps-providers";
 import { getCoreApiConfiguration } from "../../../services/utils";
 import doneIcon from "../../../assets/images/icon-large-done.svg";
 import { bbchs } from "./bbch";
-import { number, string } from "yup";
+// import { number, string } from "yup";
 import Stepper from "../../../components/Stepper";
-import { useMediaQuery, useIsMobile } from "../../../helpers/common";
+import { useIsMobile } from "../../../helpers/common";
+import { getRangePointColor } from "../../../helpers/detections";
 
 const markerOptions = { color: "#EAFF00" };
 
@@ -910,41 +911,34 @@ interface mapPoint {
   color?: string;
 }
 
-function getRangePointColor(v: number): string {
-  let c = "#43C318";
-  if (v > 0.25) c = "#FFB291";
-  if (v > 0.5) c = "#FF4D4E";
-  if (v > 0.75) c = "#A10406";
-  return c;
-}
-function testData(
-  aroundLon: number,
-  aroundLat: number,
-  radiusMeters: number,
-  numPoints: number,
-): mapPoint[] {
-  const points: mapPoint[] = [];
-  for (let i = 0; i < numPoints; i++) {
-    const angle = Math.random() * 2 * Math.PI;
-    const distance = Math.random() * radiusMeters;
-    const dx = distance * Math.cos(angle);
-    const dy = distance * Math.sin(angle);
+// function testData(
+//   aroundLon: number,
+//   aroundLat: number,
+//   radiusMeters: number,
+//   numPoints: number,
+// ): mapPoint[] {
+//   const points: mapPoint[] = [];
+//   for (let i = 0; i < numPoints; i++) {
+//     const angle = Math.random() * 2 * Math.PI;
+//     const distance = Math.random() * radiusMeters;
+//     const dx = distance * Math.cos(angle);
+//     const dy = distance * Math.sin(angle);
 
-    // Approximate conversion from meters to degrees
-    const deltaLng = dx / 111320 / Math.cos(aroundLat * (Math.PI / 180));
-    const deltaLat = dy / 110540;
+//     // Approximate conversion from meters to degrees
+//     const deltaLng = dx / 111320 / Math.cos(aroundLat * (Math.PI / 180));
+//     const deltaLat = dy / 110540;
 
-    const point = {
-      lng: aroundLon + deltaLng,
-      lat: aroundLat + deltaLat,
-      size: 8,
-      color: getRangePointColor(Math.random()),
-    };
+//     const point = {
+//       lng: aroundLon + deltaLng,
+//       lat: aroundLat + deltaLat,
+//       size: 8,
+//       color: getRangePointColor(Math.random()),
+//     };
 
-    points.push(point);
-  }
-  return points;
-}
+//     points.push(point);
+//   }
+//   return points;
+// }
 
 function DetectionFormMapPosition({
   sourceType,
@@ -1511,170 +1505,170 @@ function DetectionFormMapPosition({
   return <div ref={mapContainerRef} id="map-observations-form" data-debug={debugString}></div>;
 }
 
-const categorie: any = {
-  fungi: {
-    icon: "spots",
-    name: "Fungo e peronospora",
-    items: {
-      peronospora: {
-        name: "Peronospora",
-        icon: false,
-      },
-      other_fungi: {
-        name: "Altro fungo",
-        icon: false,
-      },
-    },
-  },
-  bacteria: {
-    icon: "bacteria",
-    name: "Batterio",
-    items: {
-      flavescenza: {
-        name: "Flavescenza",
-        icon: false,
-      },
-      other_bacteria: {
-        name: "Altro batterio",
-        icon: false,
-      },
-    },
-  },
-  insect: {
-    icon: "bug",
-    name: "Insetto",
-    items: {
-      scafoideo: {
-        name: "Scafoideo",
-        icon: false,
-      },
-      cimice: {
-        name: "Cimice",
-        // icon: "baloon",
-        icon: false,
-      },
-      diabrotica: {
-        name: "Diabrotica",
-        icon: false,
-      },
-      other_insect: {
-        name: "Altro insetto",
-        icon: false,
-      },
-    },
-  },
-};
+// const categorie: any = {
+//   fungi: {
+//     icon: "spots",
+//     name: "Fungo e peronospora",
+//     items: {
+//       peronospora: {
+//         name: "Peronospora",
+//         icon: false,
+//       },
+//       other_fungi: {
+//         name: "Altro fungo",
+//         icon: false,
+//       },
+//     },
+//   },
+//   bacteria: {
+//     icon: "bacteria",
+//     name: "Batterio",
+//     items: {
+//       flavescenza: {
+//         name: "Flavescenza",
+//         icon: false,
+//       },
+//       other_bacteria: {
+//         name: "Altro batterio",
+//         icon: false,
+//       },
+//     },
+//   },
+//   insect: {
+//     icon: "bug",
+//     name: "Insetto",
+//     items: {
+//       scafoideo: {
+//         name: "Scafoideo",
+//         icon: false,
+//       },
+//       cimice: {
+//         name: "Cimice",
+//         // icon: "baloon",
+//         icon: false,
+//       },
+//       diabrotica: {
+//         name: "Diabrotica",
+//         icon: false,
+//       },
+//       other_insect: {
+//         name: "Altro insetto",
+//         icon: false,
+//       },
+//     },
+//   },
+// };
 
-const methods: any = {
-  peronospora: {
-    title: (
-      <span>
-        Rilevamento di <strong>peronospora</strong> su…
-      </span>
-    ),
-    items: ["Foglia", "Frutto", "Tutta la pianta"],
-  },
-  other_fungi: {
-    title: (
-      <span>
-        Rilevamento di <strong>altro fungo</strong> su…
-      </span>
-    ),
-    items: ["Foglia", "Frutto", "Tutta la pianta"],
-  },
-  flavescenza: {
-    title: (
-      <span>
-        Rilevamento di <strong>flavescenza</strong> su…
-      </span>
-    ),
-    items: ["Foglia", "Frutto", "Tutta la pianta"],
-  },
-  other_bacteria: {
-    title: (
-      <span>
-        Rilevamento di <strong>altro batterio</strong> su…
-      </span>
-    ),
-    items: ["Foglia", "Frutto", "Tutta la pianta"],
-  },
-  cimice: {
-    title: (
-      <span>
-        Scegli un metodo di rilevamento della <strong>cimice</strong>
-      </span>
-    ),
-    items: ["Trappola", "Campo (Frappage – Visivo)"],
-  },
-  scafoideo: {
-    title: (
-      <span>
-        Scegli un focus di rilevamento dello <strong>scafoideo</strong>
-      </span>
-    ),
-    items: ["Foglie basali/polloni", "Chioma"],
-  },
-  diabrotica: {
-    title: (
-      <span>
-        Scegli un metodo di rilevamento della <strong>diabrotica</strong>
-      </span>
-    ),
-    items: [],
-  },
-  other_insect: {
-    title: (
-      <span>
-        Scegli un metodo di rilevamento di <strong>altro insetto</strong>
-      </span>
-    ),
-    items: ["Trappola", "Altro"],
-  },
-};
+// const methods: any = {
+//   peronospora: {
+//     title: (
+//       <span>
+//         Rilevamento di <strong>peronospora</strong> su…
+//       </span>
+//     ),
+//     items: ["Foglia", "Frutto", "Tutta la pianta"],
+//   },
+//   other_fungi: {
+//     title: (
+//       <span>
+//         Rilevamento di <strong>altro fungo</strong> su…
+//       </span>
+//     ),
+//     items: ["Foglia", "Frutto", "Tutta la pianta"],
+//   },
+//   flavescenza: {
+//     title: (
+//       <span>
+//         Rilevamento di <strong>flavescenza</strong> su…
+//       </span>
+//     ),
+//     items: ["Foglia", "Frutto", "Tutta la pianta"],
+//   },
+//   other_bacteria: {
+//     title: (
+//       <span>
+//         Rilevamento di <strong>altro batterio</strong> su…
+//       </span>
+//     ),
+//     items: ["Foglia", "Frutto", "Tutta la pianta"],
+//   },
+//   cimice: {
+//     title: (
+//       <span>
+//         Scegli un metodo di rilevamento della <strong>cimice</strong>
+//       </span>
+//     ),
+//     items: ["Trappola", "Campo (Frappage – Visivo)"],
+//   },
+//   scafoideo: {
+//     title: (
+//       <span>
+//         Scegli un focus di rilevamento dello <strong>scafoideo</strong>
+//       </span>
+//     ),
+//     items: ["Foglie basali/polloni", "Chioma"],
+//   },
+//   diabrotica: {
+//     title: (
+//       <span>
+//         Scegli un metodo di rilevamento della <strong>diabrotica</strong>
+//       </span>
+//     ),
+//     items: [],
+//   },
+//   other_insect: {
+//     title: (
+//       <span>
+//         Scegli un metodo di rilevamento di <strong>altro insetto</strong>
+//       </span>
+//     ),
+//     items: ["Trappola", "Altro"],
+//   },
+// };
 
-interface AccordionTipologiaProps {
-  onSelect: (selection: string) => void;
-}
+// interface AccordionTipologiaProps {
+//   onSelect: (selection: string) => void;
+// }
 
-function AccordionTipologia({ onSelect }: AccordionTipologiaProps) {
-  let items: AccordionItem[] = [];
-  items = Object.keys(categorie).map((key: string, index: number) => {
-    let iconNameAccItem = categorie[key].icon ?? null;
-    return {
-      id: index.toString(),
-      title: categorie[key].name,
-      content: (
-        <Fragment>
-          {Object.keys(categorie[key].items).map((itemKey: string, itemIndex) => {
-            let iconNameBtn = categorie[key].icon ?? null;
-            if (categorie[key].items[itemKey].icon) {
-              iconNameBtn = categorie[key].items[itemKey].icon;
-            }
-            if (categorie[key].items[itemKey].icon === false) {
-              iconNameBtn = null;
-            }
-            return (
-              <CozyButton
-                key={itemIndex}
-                iconName={iconNameBtn}
-                content={categorie[key].items[itemKey].name || "Altro"}
-                onClick={() => onSelect(itemKey)}
-                arrow={true}
-              />
-            );
-          })}
-        </Fragment>
-      ),
-      icon: iconNameAccItem,
-    };
-  });
-  return (
-    <div className="narrow-container my-5">
-      <h3 className="mb-4 text-center">Seleziona la tipologia di rilevamento</h3>
-      <Accordion items={items} />
-    </div>
-  );
-}
+// function AccordionTipologia({ onSelect }: AccordionTipologiaProps) {
+//   let items: AccordionItem[] = [];
+//   items = Object.keys(categorie).map((key: string, index: number) => {
+//     let iconNameAccItem = categorie[key].icon ?? null;
+//     return {
+//       id: index.toString(),
+//       title: categorie[key].name,
+//       content: (
+//         <Fragment>
+//           {Object.keys(categorie[key].items).map((itemKey: string, itemIndex) => {
+//             let iconNameBtn = categorie[key].icon ?? null;
+//             if (categorie[key].items[itemKey].icon) {
+//               iconNameBtn = categorie[key].items[itemKey].icon;
+//             }
+//             if (categorie[key].items[itemKey].icon === false) {
+//               iconNameBtn = null;
+//             }
+//             return (
+//               <CozyButton
+//                 key={itemIndex}
+//                 iconName={iconNameBtn}
+//                 content={categorie[key].items[itemKey].name || "Altro"}
+//                 onClick={() => onSelect(itemKey)}
+//                 arrow={true}
+//               />
+//             );
+//           })}
+//         </Fragment>
+//       ),
+//       icon: iconNameAccItem,
+//     };
+//   });
+//   return (
+//     <div className="narrow-container my-5">
+//       <h3 className="mb-4 text-center">Seleziona la tipologia di rilevamento</h3>
+//       <Accordion items={items} />
+//     </div>
+//   );
+// }
 
 // function DetectionStepPosizione({ action, onNextClick }: DetectionProps) {
 //   const [source, setSource] = React.useState<string>("current");
@@ -1976,29 +1970,47 @@ function DetectionStepBbch({
   const options = bbchs[field.harvest].data;
   const thumbnailBaseUrl = bbchs[field.harvest].baseUrl;
 
-  console.log(field, options);
+  console.log("XXXX options", options);
+  console.log("XXXX thumbnailBaseUrl", thumbnailBaseUrl);
 
   items = Object.keys(options).map((key: string, index: number) => {
-    let iconNameAccItem = options[key].icon ?? null;
+    const bbchCategory = options[key];
+    let iconNameAccItem = bbchCategory.icon ?? null;
     return {
       id: index.toString(),
-      title: options[key].name,
+      title: bbchCategory.name,
       content: (
         <Fragment>
-          {Object.keys(options[key].items).map((itemKey: string, itemIndex) => {
-            let iconNameBtn = options[key].icon ?? null;
-            if (options[key].items[itemKey].icon) {
-              iconNameBtn = options[key].items[itemKey].icon;
+          {Object.keys(bbchCategory.items).map((itemKey: string, itemIndex) => {
+            const bbchItem = bbchCategory.items[itemKey];
+            let iconNameBtn = bbchCategory.icon ?? null;
+            if (bbchItem.icon) {
+              iconNameBtn = bbchItem.icon;
             }
-            if (options[key].items[itemKey].icon === false) {
+            if (bbchItem.icon === false) {
               iconNameBtn = null;
+            }
+            let contentNode = <span>{bbchItem.name}</span>;
+            if (bbchItem.thumbnail) {
+              const thumbUrl = thumbnailBaseUrl + bbchItem.thumbnail;
+              console.log("XXXX thumbnail", thumbUrl);
+              contentNode = (
+                <div className="d-flex align-items-center justify-content-start">
+                  <img
+                    src={thumbUrl}
+                    alt={bbchItem.name}
+                    style={{ maxWidth: "40px", marginRight: "10px" }}
+                  />
+                  <span>{bbchItem.name}</span>
+                </div>
+              );
             }
             return (
               <CozyButton
                 key={itemIndex}
                 iconName={iconNameBtn}
-                content={options[key].items[itemKey].name}
-                onClick={() => handleBbchSelection(options[key].items[itemKey].value)}
+                content={contentNode}
+                onClick={() => handleBbchSelection(bbchItem.value)}
                 arrow={true}
               />
             );
@@ -2008,6 +2020,8 @@ function DetectionStepBbch({
       icon: iconNameAccItem,
     };
   });
+
+  console.log("XXXX items", items);
 
   return (
     <div className="narrow-container my-5">

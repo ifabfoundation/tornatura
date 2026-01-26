@@ -1,9 +1,9 @@
 import { useAppDispatch, useAppSelector } from "../../../hooks";
-import React, { Fragment } from "react";
+import React from "react";
 import { headerbarActions } from "../../headerbar/state/headerbar-slice";
 import _ from "lodash";
 import { fieldsSelectors } from "../state/fields-slice";
-import { SearchBox } from "@mapbox/search-js-react";
+// import { SearchBox } from "@mapbox/search-js-react";
 import mapboxgl, { LngLatLike } from "mapbox-gl";
 import { useParams } from "react-router-dom";
 import { Point } from "@tornatura/coreapis";

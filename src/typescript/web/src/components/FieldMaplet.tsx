@@ -6,9 +6,10 @@ import { useAppSelector } from "../hooks";
 import { fieldsSelectors } from "../features/fields/state/fields-slice";
 import { gpsStore } from "../providers/gps-providers";
 import { Point } from "@tornatura/coreapis";
+import { detectionsSelectors } from "../features/detections/state/detections-slice";
 
-interface FieldMapProps {
-  detection?: mapPoint[];
+interface FieldMapletProps {
+  detectionId?: string;
   debugString?: string;
 }
 
@@ -29,7 +30,7 @@ function isPointInsideField(pointLon: number, pointLat: number, areaPoints: numb
   return false;
 }
 
-export const FieldMap = ({ detection, debugString }: FieldMapProps) => {
+export const FieldMaplet = ({ detectionId, debugString }: FieldMapletProps) => {
   const { fieldId } = useParams();
   const currentField = useAppSelector((state) =>
     fieldsSelectors.selectFieldbyId(state, fieldId ?? "default"),
@@ -38,6 +39,12 @@ export const FieldMap = ({ detection, debugString }: FieldMapProps) => {
   const mapRef = React.useRef<any>(null);
   const [mapLoaded, setMapLoaded] = React.useState(false);
   const currentPosition = React.useContext(gpsStore);
+  const detections = useAppSelector((state) =>
+    detectionsSelectors.selectDetectionbyFieldId(state, fieldId ?? "default"),
+  );
+  const selectedDetection = detections.find((d) => d.id === detectionId);
+  const points = selectedDetection?.detectionData.points;
+  console.log("FieldMap points", points);
 
   React.useEffect(() => {
     if (mapContainerRef.current && currentField) {

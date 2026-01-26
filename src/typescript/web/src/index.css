@@ -13430,7 +13430,7 @@ body {
 #app input[type="submit"].outlined,
 #app button.trnt_btn.outlined {
   background-color: transparent;
-  border: 2px solid black;
+  border: 1.5px solid black;
   color: black;
   font-weight: 700 !important;
 }
@@ -13439,7 +13439,8 @@ body {
 #app input[type="submit"].outlined:hover,
 #app button.trnt_btn.outlined:hover {
   background-color: transparent;
-  border: 2px solid rgba(0, 0, 0, 0.8);
+  border: 1.5px solid rgba(0, 0, 0, 0.8);
+  box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.2);
 }
 
 #app a.button.outlined:active,
@@ -13588,6 +13589,26 @@ body {
   min-width: auto;
   padding-left: 10px;
   padding-right: 10px;
+}
+
+@media (min-width: 768px) {
+  #app .flex-infos {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 20px;
+  }
+}
+
+#app .flex-infos .flex-info-unit {
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  #app .flex-infos .flex-info-unit {
+    width: auto;
+    min-width: 140px;
+  }
 }
 
 #app .tabs-switch {

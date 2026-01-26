@@ -13,7 +13,7 @@ import { Container, Row, Col } from "react-bootstrap";
 import { headerbarActions } from "../../headerbar/state/headerbar-slice";
 import TableCozy, { TableColumn, TableOptions } from "../../../components/TableCozy";
 import { fieldsSelectors } from "../../fields/state/fields-slice";
-import { FieldMap } from "../../../components/FieldMap";
+import { FieldMaplet } from "../../../components/FieldMaplet";
 
 import { GradientLineChart } from "../../../components/GradientLineChart";
 import Icon from "../../../components/Icon";
@@ -204,7 +204,6 @@ export function DetectionTypeDetail() {
   const detections = useAppSelector((state) =>
     detectionsSelectors.selectDetectionByTypeId(state, typeId ?? "default"),
   );
-  console.log("detections", detections);
 
   const currentField = useAppSelector((state) =>
     fieldsSelectors.selectFieldbyId(state, fieldId ?? "default"),
@@ -223,7 +222,6 @@ export function DetectionTypeDetail() {
 
   const notes = [];
   detections.forEach((detection) => {
-    // console.log("detection", detection);
     // @ts-ignore
     if (detection.detectionData.notes && detection.detectionData.notes != "") {
       // @ts-ignore
@@ -326,12 +324,8 @@ export function DetectionTypeDetail() {
 
     const tableData = detections.map((detection) => {
       const dd = detection.detectionData;
-
       const ds = getDetectionStats(detection);
-      console.log("detection stats", ds);
-
       const diseaseIndexColor = getColor(0, 0.4, ds.diseaseIndex);
-
       return {
         detectionTime: new Date(detection.detectionTime).toLocaleDateString(),
         bbch: dd.bbch ?? "-",
@@ -422,7 +416,6 @@ export function DetectionTypeDetail() {
       flatDetectionsData.push(entry);
     });
   });
-  console.log("flatDetectionsData", flatDetectionsData);
 
   // debug CSV data view
   if (false) {
@@ -461,10 +454,10 @@ export function DetectionTypeDetail() {
               <div className="d-flex align-items-start justify-content-between">
                 <Container className="px-0">
                   <Row>
-                    <Col md={6} xl={9}>
+                    <Col md={6}>
                       <div className="font-l-600">{`${observationType?.typology}  ›  ${observationType?.method}`}</div>
                     </Col>
-                    <Col md={6} xl={3} className="text-end">
+                    <Col md={6} className="text-md-end">
                       <button
                         className="trnt_btn accent"
                         data-type="rounded"
@@ -483,8 +476,8 @@ export function DetectionTypeDetail() {
               <div className="mt-4">
                 <Container className="px-0">
                   <Row className="mt-4">
-                    <Col className="d-flex align-items-start justify-content-start gap-5">
-                      <div style={{ minWidth: "140px" }}>
+                    <Col className="flex-infos">
+                      <div className="flex-info-unit">
                         <p className="font-s-label upper mb-2">{detections.length} Rilevamenti</p>
                         <div className="font-l-600">
                           {/* <span className="me-1">{detections.length}</span> */}
@@ -496,14 +489,14 @@ export function DetectionTypeDetail() {
                           >{`  ${tableIsOpen ? "Nascondi" : "Mostra lista"}  `}</button>
                         </div>
                       </div>
-                      <div style={{ minWidth: "140px" }}>
+                      <div className="flex-info-unit">
                         <p className="font-s-label upper mb-2">{photos.length} Fotografie</p>
                         <div className="font-l-600">
                           {/* {photos.length} */}
                           <HorizontalPhotoStack photos={photos} />
                         </div>
                       </div>
-                      <div style={{ minWidth: "140px" }}>
+                      <div className="flex-info-unit">
                         <p className="font-s-label upper mb-2">Note</p>
                         <div className="font-l-600">{notes.length}</div>
                       </div>
@@ -552,8 +545,8 @@ export function DetectionTypeDetail() {
                 </Col>
                 <Col lg={6}>
                   {/* <h4>Map</h4> */}
-                  {/* <FieldMap currentField={currentField} /> */}
-                  <FieldMap />
+                  {/* <FieldMaplet currentField={currentField} /> */}
+                  <FieldMaplet detectionId={detections[0]?.id} />
                 </Col>
               </Row>
             </section>
