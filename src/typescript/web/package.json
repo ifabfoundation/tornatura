@@ -17,6 +17,7 @@
     "@tornatura/coreapis": "file:../libs/tornatura-coreapis-1.0.12.tgz",
     "@turf/turf": "^7.2.0",
     "@types/mapbox__mapbox-gl-draw": "^1.4.8",
+    "@visx/visx": "^4.0.1-alpha.0",
     "axios": "^1.8.4",
     "bootstrap": "^5.3.5",
     "formik": "^2.4.6",
