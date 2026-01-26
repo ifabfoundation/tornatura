@@ -14,9 +14,9 @@ import { headerbarActions } from "../../headerbar/state/headerbar-slice";
 import TableCozy, { TableColumn, TableOptions } from "../../../components/TableCozy";
 import { fieldsSelectors } from "../../fields/state/fields-slice";
 import { FieldMaplet } from "../../../components/FieldMaplet";
-
 import { GradientLineChart } from "../../../components/GradientLineChart";
 import Icon from "../../../components/Icon";
+import LineChartVisx from "../../../components/LineChartVisx";
 
 interface HorizontalPhotoStackProps {
   photos: string[];
@@ -332,7 +332,7 @@ export function DetectionTypeDetail() {
         pointsNum: dd.points.length ?? "-",
         infectedPercent: ds.infectedPercentStr,
         statIntensityAvg: ds.intensityAvgStr,
-        photosNum: dd.photos ? dd.photos.length : 0,
+        photosNum: dd.photos && dd.photos.length > 0 ? dd.photos.length : "–",
         diseaseIndex: (
           <span>
             <span
@@ -386,6 +386,8 @@ export function DetectionTypeDetail() {
       };
     })
     .sort((a, b) => a.x - b.x);
+
+  const graphDataVisx = graphData.map((d) => ({ x: new Date(d.x), y: d.y, color: d.color })); // adjust x to be Date for LineChartVisx
 
   const modelPaths = {
     Peronospora: `/companies/${companyId}/fields/${fieldId}/models/peronospora`,
@@ -490,15 +492,17 @@ export function DetectionTypeDetail() {
                         </div>
                       </div>
                       <div className="flex-info-unit">
-                        <p className="font-s-label upper mb-2">{photos.length} Fotografie</p>
+                        <p className="font-s-label upper mb-2">{`${photos.length ? photos.length + " " : ""}Fotografi${photos.length === 1 ? "a" : "e"}`}</p>
                         <div className="font-l-600">
-                          {/* {photos.length} */}
-                          <HorizontalPhotoStack photos={photos} />
+                          {photos.length > 0 && <HorizontalPhotoStack photos={photos} />}
+                          {photos.length === 0 && <div className="font-l-600">Nessuna</div>}
                         </div>
                       </div>
                       <div className="flex-info-unit">
                         <p className="font-s-label upper mb-2">Note</p>
-                        <div className="font-l-600">{notes.length}</div>
+                        <div className="font-l-600">
+                          {notes.length > 0 ? notes.length : "Nessuna"}
+                        </div>
                       </div>
                     </Col>
                   </Row>
@@ -541,6 +545,14 @@ export function DetectionTypeDetail() {
                     strokeWidth={20}
                     dotSize={14}
                     data={graphData}
+                  />
+                  <LineChartVisx
+                    width={500}
+                    height={100}
+                    data={graphDataVisx}
+                    onSelectPoint={(d) => {
+                      console.log(d);
+                    }}
                   />
                 </Col>
                 <Col lg={6}>

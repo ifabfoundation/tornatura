@@ -1957,6 +1957,8 @@ function DetectionStepBbch({
 }: DetectionProps & { field: AgriField }) {
   const [bbch, setBbch] = React.useState(formData.detectionData.bbch ?? "");
 
+  console.log("formData-----------------1", formData);
+
   React.useEffect(() => {
     setBbch(formData?.detectionData?.bbch ?? "");
   }, [formData]);
@@ -1970,8 +1972,8 @@ function DetectionStepBbch({
   const options = bbchs[field.harvest].data;
   const thumbnailBaseUrl = bbchs[field.harvest].baseUrl;
 
-  console.log("XXXX options", options);
-  console.log("XXXX thumbnailBaseUrl", thumbnailBaseUrl);
+  // console.log("XXXX options", options);
+  // console.log("XXXX thumbnailBaseUrl", thumbnailBaseUrl);
 
   items = Object.keys(options).map((key: string, index: number) => {
     const bbchCategory = options[key];
@@ -2062,6 +2064,8 @@ function DetectionStepObservationPoints({
   const [noteDraft, setNoteDraft] = React.useState(noteValue);
   const [noteModalOpen, setNoteModalOpen] = React.useState(false);
   const isMobile = useIsMobile();
+
+  console.log("formData-----------------2", formData);
 
   React.useEffect(() => {
     setPoints(formData.detectionData.points ?? []);
@@ -3137,6 +3141,7 @@ export function DetectionForm() {
       return;
     }
     if (currentStepKey === "bbch") {
+      console.log("~~~~~~~~~~~~~~~~~~~~~~BBCH data:", data); // qui non ci arriva mai.
       const bbchData = data as DetectionStepBbchData;
       setFormData((prev) => ({
         ...prev,
