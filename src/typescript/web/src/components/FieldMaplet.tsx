@@ -7,17 +7,13 @@ import { fieldsSelectors } from "../features/fields/state/fields-slice";
 import { gpsStore } from "../providers/gps-providers";
 import { Point } from "@tornatura/coreapis";
 import { detectionsSelectors } from "../features/detections/state/detections-slice";
+import { enrichedMapPoints } from "../helpers/detections";
+import { detectionTypesSelectors } from "../features/detection-types/state/detection-types-slice";
+import { observationTypesSelectors } from "../features/observation-types/state/observation-types-slice";
+import { useIsMobile } from "../helpers/common";
 
 interface FieldMapletProps {
   detectionId?: string;
-  debugString?: string;
-}
-
-interface mapPoint {
-  lng: number;
-  lat: number;
-  size?: number;
-  color?: string;
 }
 
 function isPointInsideField(pointLon: number, pointLat: number, areaPoints: number[][]) {
@@ -30,7 +26,8 @@ function isPointInsideField(pointLon: number, pointLat: number, areaPoints: numb
   return false;
 }
 
-export const FieldMaplet = ({ detectionId, debugString }: FieldMapletProps) => {
+export const FieldMaplet = ({ detectionId }: FieldMapletProps) => {
+  const isMobile = useIsMobile();
   const { fieldId } = useParams();
   const currentField = useAppSelector((state) =>
     fieldsSelectors.selectFieldbyId(state, fieldId ?? "default"),
@@ -39,12 +36,32 @@ export const FieldMaplet = ({ detectionId, debugString }: FieldMapletProps) => {
   const mapRef = React.useRef<any>(null);
   const [mapLoaded, setMapLoaded] = React.useState(false);
   const currentPosition = React.useContext(gpsStore);
-  const detections = useAppSelector((state) =>
-    detectionsSelectors.selectDetectionbyFieldId(state, fieldId ?? "default"),
+  const selectedDetection = useAppSelector((state) =>
+    detectionsSelectors.selectDetectionById(state, detectionId ?? "default"),
   );
-  const selectedDetection = detections.find((d) => d.id === detectionId);
-  const points = selectedDetection?.detectionData.points;
+  // const detections = useAppSelector((state) =>
+  //   detectionsSelectors.selectDetectionbyFieldId(state, fieldId ?? "default"),
+  // );
+  const detectionType = useAppSelector((state) =>
+    detectionTypesSelectors.selectDetectionTypeById(
+      state,
+      selectedDetection?.detectionTypeId ?? "default",
+    ),
+  );
+  const observationType = useAppSelector((state) =>
+    observationTypesSelectors.selectObservationTypeById(
+      state,
+      detectionType?.observationTypeId ?? "default",
+    ),
+  );
+
+  const points = selectedDetection?.detectionData?.points
+    ? selectedDetection.detectionData.points
+    : [];
   console.log("FieldMap points", points);
+
+  const selectedDetectionMapPoints = enrichedMapPoints(points, observationType);
+  console.log("••• selectedDetectionMapPoints", selectedDetectionMapPoints);
 
   React.useEffect(() => {
     if (mapContainerRef.current && currentField) {
@@ -69,25 +86,6 @@ export const FieldMaplet = ({ detectionId, debugString }: FieldMapletProps) => {
         console.log("••• bbox", fieldShapeBbox);
       }
 
-      let fullGlobeSource = {
-        type: "geojson",
-        data: {
-          type: "Feature",
-          geometry: {
-            type: "Polygon",
-            coordinates: [
-              [
-                [-180, -85],
-                [180, -85],
-                [180, 85],
-                [-180, 85],
-                [-180, -85],
-              ],
-            ],
-          },
-        },
-      };
-
       mapRef.current = new mapboxgl.Map({
         container: mapContainerRef.current,
         style: "mapbox://styles/mapbox/satellite-streets-v12",
@@ -98,6 +96,29 @@ export const FieldMaplet = ({ detectionId, debugString }: FieldMapletProps) => {
       mapRef.current.on("load", () => {
         console.log("map loaded", mapRef);
 
+        // --------------------------------------------------
+        // Add source + layer for dark cover
+        // --------------------------------------------------
+
+        let fullGlobeSource = {
+          type: "geojson",
+          data: {
+            type: "Feature",
+            geometry: {
+              type: "Polygon",
+              coordinates: [
+                [
+                  [-180, -85],
+                  [180, -85],
+                  [180, 85],
+                  [-180, 85],
+                  [-180, -85],
+                ],
+              ],
+            },
+          },
+        };
+
         // darken base layer
         // mapRef.current.setPaintProperty("satellite", "raster-brightness-min", 0);
         // mapRef.current.setPaintProperty("satellite", "raster-brightness-max", 0.5); // darker
@@ -107,9 +128,13 @@ export const FieldMaplet = ({ detectionId, debugString }: FieldMapletProps) => {
           type: "fill",
           source: fullGlobeSource,
           paint: {
-            "fill-color": "rgba(0, 0, 0, 0.5)",
+            "fill-color": "rgba(28, 28, 28, 0.7)",
           },
         });
+
+        // --------------------------------------------------
+        // Add source + layer for field shape
+        // --------------------------------------------------
 
         const source = mapRef.current.getSource("fieldShape");
         if (!source) {
@@ -131,8 +156,8 @@ export const FieldMaplet = ({ detectionId, debugString }: FieldMapletProps) => {
           source: "fieldShape",
           layout: {},
           paint: {
-            "fill-color": "#fff",
-            "fill-opacity": 0.3,
+            "fill-color": "rgba(255, 255, 255, 0.2)", // fill color
+            "fill-opacity": 1.0, // fill opacity
           },
         });
         mapRef.current.addLayer({
@@ -141,23 +166,28 @@ export const FieldMaplet = ({ detectionId, debugString }: FieldMapletProps) => {
           source: "fieldShape",
           layout: {},
           paint: {
-            "line-color": "#fff",
-            "line-width": 1.5,
+            "line-color": "rgba(255, 255, 255, 0.4)", // outline color
+            "line-width": 2,
             "line-opacity": 1.0, // outline opacity
           },
         });
 
+        const mapTopPadding = isMobile ? 70 : 50;
         mapRef.current.fitBounds(fieldShapeBbox, {
-          padding: { top: 50, bottom: 50, left: 50, right: 50 },
+          padding: { top: mapTopPadding, bottom: 50, left: 50, right: 50 },
         });
 
         // --------------------------------------------------
-        // Add source + layer for data (points)
-        const points: mapPoint[] = [];
+        // (Add source + layer for detection phantom)
+        // --------------------------------------------------
+
+        // --------------------------------------------------
+        // Add source + layer for selected detection
+        // --------------------------------------------------
 
         const pointsGeoJSON = {
           type: "FeatureCollection",
-          features: points.map((pt) => ({
+          features: selectedDetectionMapPoints.map((pt) => ({
             type: "Feature",
             geometry: {
               type: "Point",
@@ -173,7 +203,7 @@ export const FieldMaplet = ({ detectionId, debugString }: FieldMapletProps) => {
           type: "Feature",
           geometry: {
             type: "LineString",
-            coordinates: points.map((pt) => [pt.lng, pt.lat]),
+            coordinates: selectedDetectionMapPoints.map((pt) => [pt.lng, pt.lat]),
           },
           properties: {},
         };
@@ -187,10 +217,10 @@ export const FieldMaplet = ({ detectionId, debugString }: FieldMapletProps) => {
           type: "line",
           source: "dataPointsPath",
           paint: {
-            "line-color": "#fff",
-            "line-opacity": 0.5,
+            "line-color": "rgba(255, 255, 255, 0.9)",
+            "line-opacity": 1.0,
             "line-width": 3,
-            "line-dasharray": [1, 1.5], // ← dashed line
+            "line-dasharray": [1, 0.5], // ← dashed line
           },
         });
 
@@ -207,14 +237,16 @@ export const FieldMaplet = ({ detectionId, debugString }: FieldMapletProps) => {
             "circle-radius": ["get", "size"],
             "circle-color": ["get", "color"],
             "circle-opacity": 0.8,
-            "circle-stroke-color": "#fff",
-            "circle-stroke-opacity": 0.8,
-            "circle-stroke-width": 1.5,
+            "circle-stroke-color": "rgba(255, 255, 255, 0.9)",
+            "circle-stroke-opacity": 1.0,
+            "circle-stroke-width": 3.5,
           },
         });
 
         // --------------------------------------------------
         // Add source + layer for current location
+        // --------------------------------------------------
+
         mapRef.current!.addSource("current-location", {
           type: "geojson",
           data: {
@@ -326,7 +358,8 @@ export const FieldMaplet = ({ detectionId, debugString }: FieldMapletProps) => {
         mapRef.current.remove();
       };
     }
-  }, [mapContainerRef, currentField]);
+    // }, [mapContainerRef, currentField]);
+  }, []);
 
   React.useEffect(() => {
     // Update source data
@@ -347,5 +380,41 @@ export const FieldMaplet = ({ detectionId, debugString }: FieldMapletProps) => {
     // ----------------------------------
   }, [mapLoaded, currentPosition]);
 
-  return <div ref={mapContainerRef} className="map-observations" data-debug={debugString}></div>;
+  React.useEffect(() => {
+    const selectedDetectionMapPoints = enrichedMapPoints(points, observationType);
+
+    const sourcePath = mapRef.current!.getSource("dataPointsPath") as mapboxgl.GeoJSONSource;
+
+    const lineGeoJSON: GeoJSON.Feature = {
+      type: "Feature",
+      geometry: {
+        type: "LineString",
+        coordinates: selectedDetectionMapPoints.map((pt) => [pt.lng, pt.lat]),
+      },
+      properties: {},
+    };
+    sourcePath?.setData(lineGeoJSON);
+
+    const sourcePoints = mapRef.current!.getSource("dataPoints") as mapboxgl.GeoJSONSource;
+    const pointsGeoJSON: GeoJSON.FeatureCollection = {
+      type: "FeatureCollection",
+      features: selectedDetectionMapPoints.map((pt) => ({
+        type: "Feature",
+        geometry: {
+          type: "Point",
+          coordinates: [pt.lng, pt.lat],
+        },
+        properties: {
+          size: pt.size,
+          color: pt.color,
+        },
+      })),
+    };
+    sourcePoints?.setData(pointsGeoJSON);
+  }, [selectedDetection]);
+
+  if (!selectedDetection) {
+    return <div>Detection not found</div>;
+  }
+  return <div ref={mapContainerRef} className="map-observations"></div>;
 };

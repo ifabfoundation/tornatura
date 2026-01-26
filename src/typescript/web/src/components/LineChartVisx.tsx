@@ -1,10 +1,11 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { Group } from "@visx/group";
 import { scaleTime, scaleLinear } from "@visx/scale";
 import { LinePath, Circle } from "@visx/shape";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 
 export type TimeSeriesPoint = {
+  id: string;
   x: Date;
   y: number;
 };
@@ -13,6 +14,7 @@ export type InteractiveTimeSeriesChartProps = {
   width: number;
   height: number;
   data: TimeSeriesPoint[];
+  selectedId?: string;
   onSelectPoint?: (point: TimeSeriesPoint) => void;
   margin?: { top: number; right: number; bottom: number; left: number };
 };
@@ -22,6 +24,7 @@ export default function InteractiveTimeSeriesChart({
   height,
   data,
   onSelectPoint,
+  selectedId,
   margin = { top: 20, right: 20, bottom: 40, left: 50 },
 }: InteractiveTimeSeriesChartProps) {
   const innerWidth = width - margin.left - margin.right;
@@ -76,10 +79,10 @@ export default function InteractiveTimeSeriesChart({
               key={i}
               cx={cx}
               cy={cy}
-              r={5}
+              r={selectedId === d.id ? 7 : 5}
               fill="#4f83ff"
-              stroke="white"
-              strokeWidth={1.5}
+              stroke={selectedId === d.id ? "black" : "white"}
+              strokeWidth={selectedId === d.id ? 3 : 1.5}
               style={{ cursor: "pointer" }}
               onClick={() => onSelectPoint?.(d)}
             />

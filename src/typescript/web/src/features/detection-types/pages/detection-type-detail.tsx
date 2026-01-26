@@ -12,18 +12,18 @@ import { detectionsSelectors } from "../../detections/state/detections-slice";
 import { Container, Row, Col } from "react-bootstrap";
 import { headerbarActions } from "../../headerbar/state/headerbar-slice";
 import TableCozy, { TableColumn, TableOptions } from "../../../components/TableCozy";
-import { fieldsSelectors } from "../../fields/state/fields-slice";
 import { FieldMaplet } from "../../../components/FieldMaplet";
 import { GradientLineChart } from "../../../components/GradientLineChart";
 import Icon from "../../../components/Icon";
 import LineChartVisx from "../../../components/LineChartVisx";
+import { getDetectionStats } from "../../../helpers/detections";
 
 interface HorizontalPhotoStackProps {
   photos: string[];
 }
 
 function HorizontalPhotoStack({ photos }: HorizontalPhotoStackProps) {
-  const maxPhotosToShow = 5;
+  const maxPhotosToShow = 4;
   return (
     <div className="horizontal-photo-stack">
       {photos.slice(0, maxPhotosToShow).map((photoUrl, index) => (
@@ -34,89 +34,6 @@ function HorizontalPhotoStack({ photos }: HorizontalPhotoStackProps) {
       )}
     </div>
   );
-}
-
-function getDetectionStats(detection: Detection) {
-  // calculate stats for each detection
-  // FOR DATA OF TYPE "RANGE"
-  let detectionStats = {
-    pointsCount: 0,
-    pointsSum: 0,
-    pointsMin: Infinity,
-    pointsMax: -Infinity,
-    pointsAvg: 0,
-    infectedPercent: 0,
-    infectedPercentStr: "00%",
-    intensityAvg: 0,
-    intensityAvgStr: "00%",
-    diseaseIndex: 0,
-    diseaseIndexStr: "00%",
-  };
-  detection.detectionData.points.forEach((point) => {
-    const v = point.data.rangeValue;
-    const isValidPoint = v !== undefined && v !== null;
-    if (isValidPoint) {
-      detectionStats.pointsCount++;
-      detectionStats.pointsSum += v;
-      detectionStats.pointsMin = Math.min(detectionStats.pointsMin, v);
-      detectionStats.pointsMax = Math.max(detectionStats.pointsMax, v);
-    }
-  });
-  detectionStats.pointsAvg =
-    detectionStats.pointsCount > 0 ? detectionStats.pointsSum / detectionStats.pointsCount : 0;
-
-  // detection = {
-  //   agrifieldId: "685a5d40f2de7db5c17f177c",
-  //   creationTime: 1769275022455,
-  //   detectionData: {
-  //     bbch: "21",
-  //     notes: "Lorem ipsum…",
-  //     photos: ["https://placehold.co/600x400", "https://placehold.co/600x400"],
-  //     points: [{
-  //       data: {
-  //         counters: [],
-  //         rangeValue: 5,
-  //       },
-  //       position: {lng: 12.76965574474565, lat: 41.68182819504833}
-  //     }],
-  //   },
-  //   detectionTime: 1769275000458,
-  //   detectionTypeId: "6974fd8c388f508a98827411",
-  //   id: "6974fe8e388f508a98827415",
-  //   lastUpdateTime: 1769275022455,
-  // }
-
-  // calcolato qui sopra:
-  // detectionStats.pointsCount
-  // detectionStats.pointsSum
-  // detectionStats.pointsMin
-  // detectionStats.pointsMax
-  // detectionStats.pointsAvg
-
-  // pianteColpite
-  const infectedCount = detection.detectionData.points.filter(
-    (entry: any) => entry.data.rangeValue > 0,
-  ).length;
-  const infectedPercent = infectedCount / detection.detectionData.points.length;
-  detectionStats.infectedPercent = infectedPercent;
-  detectionStats.infectedPercentStr = `${(infectedPercent * 100).toFixed(1)}%`;
-
-  const tonyHelpGettingRangeMaxFromObservationType = 5; // TO REPLACE WITH REAL VALUE
-
-  // intensitaMedia
-  const totalScores = detection.detectionData.points.reduce((acc: number, entry: any) => {
-    const normalized = entry.data.rangeValue / tonyHelpGettingRangeMaxFromObservationType;
-    return acc + normalized;
-  }, 0);
-  const avgScore = totalScores / detection.detectionData.points.length;
-  const percent = avgScore;
-  detectionStats.intensityAvg = percent;
-  detectionStats.intensityAvgStr = `${(percent * 100).toFixed(1)}%`;
-
-  detectionStats.diseaseIndex = detectionStats.infectedPercent * detectionStats.intensityAvg;
-  detectionStats.diseaseIndexStr = `${(detectionStats.diseaseIndex * 100).toFixed(1)}%`;
-
-  return detectionStats;
 }
 
 type ExportFormat = "json" | "csv";
@@ -188,30 +105,36 @@ export function DetectionTypeDetail() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [tableIsOpen, setTableIsOpen] = React.useState<boolean>(false);
+  const [selectedDetectionId, setSelectedDetectionId] = React.useState<string | null>(null);
   const { companyId, fieldId, typeId } = useParams();
-
   const detectionType = useAppSelector((state) =>
     detectionTypesSelectors.selectDetectionTypeById(state, typeId ?? "default"),
   );
-
   const observationType = useAppSelector((state) =>
     observationTypesSelectors.selectObservationTypeById(
       state,
       detectionType?.observationTypeId ?? "default",
     ),
   );
-
   const detections = useAppSelector((state) =>
     detectionsSelectors.selectDetectionByTypeId(state, typeId ?? "default"),
   );
-
-  const currentField = useAppSelector((state) =>
-    fieldsSelectors.selectFieldbyId(state, fieldId ?? "default"),
-  );
-
   React.useEffect(() => {
     dispatch(headerbarActions.setTitle({ title: "Focus Rilevamento", subtitle: "Subtitle" }));
   }, []);
+
+  React.useEffect(() => {
+    if (detections.length > 0) {
+      const sortedDetections = [...detections].sort((a, b) => b.detectionTime - a.detectionTime);
+      setSelectedDetectionId(sortedDetections[0].id);
+    }
+  }, [detections]);
+
+  React.useEffect(() => {
+    console.log("selectedDetectionId changed:", selectedDetectionId);
+    const selectedDetection = detections.find((d) => d.id === selectedDetectionId);
+    console.log(`Observations: ${selectedDetection?.detectionData.points.length ?? 0}`);
+  }, [selectedDetectionId]);
 
   React.useEffect(() => {
     if (companyId && fieldId) {
@@ -246,6 +169,11 @@ export function DetectionTypeDetail() {
   function handleHighlightDetection(detection: Detection) {
     console.log("Highlight clicked for", detection);
     // ... to be implemented
+  }
+
+  function handleGraphPointClick(d: any) {
+    console.log(d);
+    setSelectedDetectionId(d?.detection.id);
   }
 
   function DetectionsTable() {
@@ -371,23 +299,30 @@ export function DetectionTypeDetail() {
 
   const graphData = detections
     .map((detection, index) => {
+      const ds = getDetectionStats(detection);
       return {
-        // Linear time mapping
-        // x: detection.detectionTime,
-        // Sequential time mapping (better for debugging)
-        x: index,
-
-        y: getDetectionStats(detection).pointsAvg,
-        color: getColor(
-          groupStats.groupMin,
-          groupStats.groupMax,
-          getDetectionStats(detection).pointsAvg,
-        ),
+        // x: detection.detectionTime, // Linear time mapping
+        x: index, // Sequential time mapping (better for debugging)
+        y: ds.pointsAvg,
+        color: getColor(groupStats.groupMin, groupStats.groupMax, ds.pointsAvg),
+        detection: detection,
       };
     })
     .sort((a, b) => a.x - b.x);
 
-  const graphDataVisx = graphData.map((d) => ({ x: new Date(d.x), y: d.y, color: d.color })); // adjust x to be Date for LineChartVisx
+  const graphDataVisx = detections
+    .map((detection) => {
+      const ds = getDetectionStats(detection);
+      return {
+        id: detection.id,
+        x: new Date(detection.detectionTime), // Linear time mapping
+        // x: index, // Sequential time mapping (better for debugging)
+        y: ds.pointsAvg,
+        color: getColor(groupStats.groupMin, groupStats.groupMax, ds.pointsAvg),
+        detection: detection,
+      };
+    })
+    .sort((a, b) => a.x.getTime() - b.x.getTime());
 
   const modelPaths = {
     Peronospora: `/companies/${companyId}/fields/${fieldId}/models/peronospora`,
@@ -406,7 +341,7 @@ export function DetectionTypeDetail() {
   detections.forEach((detection) => {
     const dd = detection.detectionData;
     const ds = getDetectionStats(detection);
-    const observations = dd.points.forEach((point, index) => {
+    dd.points.forEach((point, index) => {
       const dotValue = point.data.rangeValue;
       const entry = {
         detectionId: detection.id,
@@ -414,6 +349,7 @@ export function DetectionTypeDetail() {
         bbch: dd.bbch ?? "",
         observationNum: index + 1,
         dotValue: dotValue !== undefined && dotValue !== null ? dotValue : "",
+        diseaseIndex: ds.diseaseIndex,
       };
       flatDetectionsData.push(entry);
     });
@@ -429,7 +365,7 @@ export function DetectionTypeDetail() {
           {flatDetectionsData.length > 0 &&
             flatDetectionsData.slice(0, 1).map((row, rowIndex) => (
               <tr key={rowIndex}>
-                {Object.entries(row).map(([key, value]) => (
+                {Object.entries(row).map(([key]) => (
                   <th key={key}>{key}</th>
                 ))}
               </tr>
@@ -550,15 +486,12 @@ export function DetectionTypeDetail() {
                     width={500}
                     height={100}
                     data={graphDataVisx}
-                    onSelectPoint={(d) => {
-                      console.log(d);
-                    }}
+                    onSelectPoint={handleGraphPointClick}
+                    selectedId={selectedDetectionId ?? undefined}
                   />
                 </Col>
                 <Col lg={6}>
-                  {/* <h4>Map</h4> */}
-                  {/* <FieldMaplet currentField={currentField} /> */}
-                  <FieldMaplet detectionId={detections[0]?.id} />
+                  {selectedDetectionId && <FieldMaplet detectionId={selectedDetectionId} />}
                 </Col>
               </Row>
             </section>

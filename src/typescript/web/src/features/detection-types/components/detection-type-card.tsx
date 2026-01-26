@@ -1,4 +1,3 @@
-import { Detection } from "@tornatura/coreapis";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../../hooks";
 import { detectionTypesSelectors } from "../state/detection-types-slice";
@@ -6,39 +5,14 @@ import { observationTypesSelectors } from "../../observation-types/state/observa
 import { detectionsSelectors } from "../../detections/state/detections-slice";
 import { dateToString } from "../../../services/utils";
 import { GradientLineChart } from "../../../components/GradientLineChart";
-import Icon, { IconName } from "../../../components/Icon";
+import { getDetectionStats } from "../../../helpers/detections";
 
 function getColor(min: number, max: number, value: number): string {
-  // console.log("getColor", { min, max, value });
   const colors = ["#42C318", "#FFB290", "#FF4D4D", "#A10505"];
   const range = max - min;
   const segment = range / colors.length;
   const index = Math.min(colors.length - 1, Math.floor((value - min) / segment));
   return colors[index];
-}
-
-function getDetectionStats(detection: Detection) {
-  // calculate stats for each detection
-  let detectionStats = {
-    pointsCount: 0,
-    pointsSum: 0,
-    pointsMin: Infinity,
-    pointsMax: -Infinity,
-    pointsAvg: 0,
-  };
-  detection.detectionData.points.forEach((point) => {
-    const v = point.data.rangeValue;
-    const isValidPoint = v !== undefined && v !== null;
-    if (isValidPoint) {
-      detectionStats.pointsCount++;
-      detectionStats.pointsSum += v;
-      detectionStats.pointsMin = Math.min(detectionStats.pointsMin, v);
-      detectionStats.pointsMax = Math.max(detectionStats.pointsMax, v);
-    }
-  });
-  detectionStats.pointsAvg =
-    detectionStats.pointsCount > 0 ? detectionStats.pointsSum / detectionStats.pointsCount : 0;
-  return detectionStats;
 }
 
 interface DetectionTypeCardProps {
@@ -49,11 +23,9 @@ interface DetectionTypeCardProps {
 
 export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeCardProps) {
   const navigate = useNavigate();
-
   const detections = useAppSelector((state) =>
     detectionsSelectors.selectDetectionByTypeId(state, typeId ?? "default"),
   );
-
   const detectionType = useAppSelector((state) =>
     detectionTypesSelectors.selectDetectionTypeById(state, typeId ?? "default"),
   );
@@ -61,16 +33,16 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
     observationTypesSelectors.selectObservationTypeById(state, detectionType.observationTypeId),
   );
 
+  // --- Calculate group stats
+
   const groupStats = {
     groupMin: Infinity,
     groupMax: -Infinity,
   };
-
   detections.forEach((detection) => {
     const ds = getDetectionStats(detection);
     groupStats.groupMin = Math.min(groupStats.groupMin, ds.pointsMin);
     groupStats.groupMax = Math.max(groupStats.groupMax, ds.pointsMax);
-    // console.log("ds", ds);
   });
 
   const graphData = detections

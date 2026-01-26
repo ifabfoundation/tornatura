@@ -1,4 +1,3 @@
-
 import {
   createSlice,
   createAsyncThunk,
@@ -10,7 +9,6 @@ import { getCoreApiConfiguration } from "../../../services/utils";
 import { AuxState } from "../../../hooks";
 import { RootState } from "../../../store";
 import { fieldsSelectors } from "../../fields/state/fields-slice";
-
 
 const detectionsAdapter = createEntityAdapter<Detection, string>({
   selectId: (detection: Detection) => detection.id,
@@ -32,14 +30,16 @@ interface IFetchFieldDetections {
 
 export const fetchFieldDetections = createAsyncThunk(
   "detections/fetchFieldDetections",
-  async ({orgId, fieldId, page=1, limit=1000}: IFetchFieldDetections, ) => {
+  async ({ orgId, fieldId, page = 1, limit = 1000 }: IFetchFieldDetections) => {
     const apiConfig = await getCoreApiConfiguration();
     const detectionsApi = new DetectionsApi(apiConfig);
-    const data = detectionsApi.listDetections(orgId, fieldId, undefined, page, limit).then((response) => {
-      return response.data;
-    });
+    const data = detectionsApi
+      .listDetections(orgId, fieldId, undefined, page, limit)
+      .then((response) => {
+        return response.data;
+      });
     return data;
-  }
+  },
 );
 
 interface IFetchDetectionsByType {
@@ -59,19 +59,19 @@ export const fetchDetectionsByType = createAsyncThunk(
       .listDetections(orgId, fieldId, detectionTypeId, page, limit)
       .then((response) => response.data);
     return data;
-  }
+  },
 );
 
 interface IAddNewDetectionPayload {
   orgId: string;
   fieldId: string;
-  body: DetectionMutationPayload
+  body: DetectionMutationPayload;
 }
 
 export const addNewDetection = createAsyncThunk(
   "detections/addNewDetection",
-  async ({orgId, fieldId, body}: IAddNewDetectionPayload, { rejectWithValue }) => {
-    const apiConfig = await getCoreApiConfiguration()
+  async ({ orgId, fieldId, body }: IAddNewDetectionPayload, { rejectWithValue }) => {
+    const apiConfig = await getCoreApiConfiguration();
     const apiInstance = new DetectionsApi(apiConfig);
     try {
       const response = await apiInstance.createDetection(body, orgId, fieldId);
@@ -79,15 +79,13 @@ export const addNewDetection = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error);
     }
-  }
+  },
 );
-
 
 const detectionsSlice = createSlice({
   name: "detections",
   initialState,
-  reducers: {
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder.addCase(fetchFieldDetections.pending, (state) => {
       state.status = "pending";
@@ -125,34 +123,25 @@ const detectionsSlice = createSlice({
   },
 });
 
-const selectors = detectionsAdapter.getSelectors<RootState>(
-  (state) => state.detections
-);
+const selectors = detectionsAdapter.getSelectors<RootState>((state) => state.detections);
 
 export const detectionsSelectors = {
   selectDetections: selectors.selectAll,
+  selectDetectionById: selectors.selectById,
   selectDetectionbyFieldId: createSelector(
-    [
-      selectors.selectAll,
-      (_, fieldId) => fieldId
-    ],
-    (detections, fieldId) => detections.filter((item: Detection) => item.agrifieldId === fieldId)
+    [selectors.selectAll, (_, fieldId) => fieldId],
+    (detections, fieldId) => detections.filter((item: Detection) => item.agrifieldId === fieldId),
   ),
   selectDetectionbyOrgId: createSelector(
-    [
-      selectors.selectAll,
-      (state, orgId) => fieldsSelectors.selectFieldsByOrgId(state, orgId)
-    ],
-    (detections, fields) => detections.filter((item: Detection) => fields.map(f => f.id).includes(item.agrifieldId))
+    [selectors.selectAll, (state, orgId) => fieldsSelectors.selectFieldsByOrgId(state, orgId)],
+    (detections, fields) =>
+      detections.filter((item: Detection) => fields.map((f) => f.id).includes(item.agrifieldId)),
   ),
   selectDetectionByTypeId: createSelector(
-    [
-      selectors.selectAll,
-      (_, detectionTypeId) => detectionTypeId,
-    ],
+    [selectors.selectAll, (_, detectionTypeId) => detectionTypeId],
     (detections, detectionTypeId) =>
-      detections.filter((item: Detection) => item.detectionTypeId === detectionTypeId)
-  )
+      detections.filter((item: Detection) => item.detectionTypeId === detectionTypeId),
+  ),
 };
 
 export const detectionsActions = {
@@ -160,6 +149,5 @@ export const detectionsActions = {
   fetchDetectionsByTypeAction: fetchDetectionsByType,
   addNewDetectionAction: addNewDetection,
 };
-
 
 export const detectionsReducer = detectionsSlice.reducer;

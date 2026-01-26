@@ -42,7 +42,8 @@ import { bbchs } from "./bbch";
 // import { number, string } from "yup";
 import Stepper from "../../../components/Stepper";
 import { useIsMobile } from "../../../helpers/common";
-import { getRangePointColor } from "../../../helpers/detections";
+// import { getRangePointColor } from "../../../helpers/detections";
+import { enrichedMapPoints } from "../../../helpers/detections";
 
 const markerOptions = { color: "#EAFF00" };
 
@@ -94,31 +95,31 @@ type ButtonGroupItem = {
   onClick?: () => void;
 };
 
-const enrichedMapPoints = (points: ObservationPoint[], observationType: ObservationType) => {
-  const enrichedPoints = points.map((point: ObservationPoint) => {
-    const num = point.data.rangeValue || 0;
-    const type = observationType ? observationType.observationType : "null";
+// const enrichedMapPoints = (points: ObservationPoint[], observationType: ObservationType) => {
+//   const enrichedPoints = points.map((point: ObservationPoint) => {
+//     const num = point.data.rangeValue || 0;
+//     const type = observationType ? observationType.observationType : "null";
 
-    let color: string = "black";
-    if (type == "range") {
-      const rangeMax = observationType
-        ? observationType.rangeMax
-          ? observationType.rangeMax
-          : 5
-        : 5;
-      color = getRangePointColor(num / rangeMax);
-    }
+//     let color: string = "black";
+//     if (type == "range") {
+//       const rangeMax = observationType
+//         ? observationType.rangeMax
+//           ? observationType.rangeMax
+//           : 5
+//         : 5;
+//       color = getRangePointColor(num / rangeMax);
+//     }
 
-    console.log("observationType", observationType);
-    return {
-      lng: point.position.lng,
-      lat: point.position.lat,
-      size: 7,
-      color: color,
-    };
-  });
-  return enrichedPoints;
-};
+//     console.log("observationType", observationType);
+//     return {
+//       lng: point.position.lng,
+//       lat: point.position.lat,
+//       size: 7,
+//       color: color,
+//     };
+//   });
+//   return enrichedPoints;
+// };
 
 function ButtonGroupGrid({
   label,
@@ -939,6 +940,10 @@ interface mapPoint {
 //   }
 //   return points;
 // }
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// MAP COMPONENT
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 function DetectionFormMapPosition({
   sourceType,
@@ -3141,7 +3146,7 @@ export function DetectionForm() {
       return;
     }
     if (currentStepKey === "bbch") {
-      console.log("~~~~~~~~~~~~~~~~~~~~~~BBCH data:", data); // qui non ci arriva mai.
+      console.log("~ BBCH data:", data); // qui non ci arriva mai.
       const bbchData = data as DetectionStepBbchData;
       setFormData((prev) => ({
         ...prev,
