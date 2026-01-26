@@ -105,7 +105,7 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
           <div className="value">{`${observationType.typology}  ›  ${observationType.method}`}</div>
         </div>
         <button
-          className="trnt_btn slim-y primary narrow-x px-3"
+          className="trnt_btn slim-y primary outlined narrow-x px-3"
           data-type="rounded"
           onClick={() =>
             navigate(`/companies/${companyId}/fields/${fieldId}/type/${detectionType.id}`, {
@@ -114,8 +114,8 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
             })
           }
         >
-          {/* <Icon iconName={"enlarge"} color={"white"} /> */}
           Espandi
+          {/* <Icon iconName={"enlarge"} color={"black"} /> */}
         </button>
       </header>
 

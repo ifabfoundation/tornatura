@@ -25,37 +25,12 @@ interface HorizontalPhotoStackProps {
 function HorizontalPhotoStack({ photos }: HorizontalPhotoStackProps) {
   const maxPhotosToShow = 5;
   return (
-    <div className="d-flex flex-row">
+    <div className="horizontal-photo-stack">
       {photos.slice(0, maxPhotosToShow).map((photoUrl, index) => (
-        <div
-          key={index}
-          className="me-2"
-          style={{
-            width: "80px",
-            height: "80px",
-            backgroundImage: `url(${photoUrl})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            borderRadius: "8px",
-            boxShadow: "0 2px 6px rgba(0, 0, 0, 0.2)",
-          }}
-        ></div>
+        <div key={index} className="photo" style={{ backgroundImage: `url(${photoUrl})` }}></div>
       ))}
       {photos.length > maxPhotosToShow && (
-        <div
-          className="d-flex align-items-center justify-content-center"
-          style={{
-            width: "80px",
-            height: "80px",
-            borderRadius: "8px",
-            backgroundColor: "#f0f0f0",
-            boxShadow: "0 2px 6px rgba(0, 0, 0, 0.2)",
-            fontSize: "16px",
-            color: "#555",
-          }}
-        >
-          +{photos.length - maxPhotosToShow}
-        </div>
+        <div className="more-photos">+{photos.length - maxPhotosToShow}</div>
       )}
     </div>
   );
@@ -368,7 +343,7 @@ export function DetectionTypeDetail() {
   return (
     <div>
       <Container>
-        <Row className="mt-4">
+        <Row className="">
           <Col xl={12}>
             <section className="soft">
               <div className="d-flex align-items-start justify-content-between">
@@ -398,21 +373,21 @@ export function DetectionTypeDetail() {
                   <Row className="mt-4">
                     <Col className="d-flex align-items-start justify-content-start gap-5">
                       <div style={{ minWidth: "140px" }}>
-                        <p className="font-s-label upper mb-2">Rilevamenti</p>
+                        <p className="font-s-label upper mb-2">{detections.length} Rilevamenti</p>
                         <div className="font-l-600">
-                          {detections.length}
+                          {/* <span className="me-1">{detections.length}</span> */}
                           <button
-                            className="trnt_btn slim-y narrow-x outlined font-s-600 text-transform-none px-2 ms-2"
+                            className="trnt_btn slim-y narrow-x outlined font-s-600 text-transform-none px-2"
                             style={{ top: "-3px", position: "relative" }}
                             data-type="rounded"
                             onClick={() => setTableIsOpen(!tableIsOpen)}
-                          >{`  ${tableIsOpen ? "Nascondi" : "Vedi tutti"}  `}</button>
+                          >{`  ${tableIsOpen ? "Nascondi" : "Mostra lista"}  `}</button>
                         </div>
                       </div>
                       <div style={{ minWidth: "140px" }}>
-                        <p className="font-s-label upper mb-2">Fotografie</p>
+                        <p className="font-s-label upper mb-2">{photos.length} Fotografie</p>
                         <div className="font-l-600">
-                          {photos.length}
+                          {/* {photos.length} */}
                           <HorizontalPhotoStack photos={photos} />
                         </div>
                       </div>

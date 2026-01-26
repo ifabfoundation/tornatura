@@ -78,6 +78,15 @@ $ms-sidebar-transition: 100ms;
 .color-grey {
   color: gray;
 }
+.color-hover-black:hover {
+  color: black !important;
+}
+.opacity-05 {
+  opacity: 0.5 !important;
+}
+.opacity-hover-1:hover {
+  opacity: 1 !important;
+}
 @keyframes blinkk {
   50% {
     opacity: 0.3;
@@ -376,16 +385,16 @@ body {
     }
     &.outlined {
       background-color: transparent;
-      border: 1.5px solid black;
+      border: 2px solid black;
       color: black;
+      font-weight: 700 !important;
       &:hover {
-        background-color: black;
-        color: white;
+        background-color: transparent;
+        border: 2px solid rgba(0, 0, 0, 0.8);
       }
       &:active,
       .active {
-        background-color: #111;
-        color: white;
+        background-color: rgba(0, 0, 0, 0.1);
       }
       text-decoration: none;
     }
@@ -406,6 +415,34 @@ body {
     &.narrow-x {
       width: auto;
       min-width: auto;
+    }
+  }
+
+  .tabs-switch {
+    height: 36px;
+    padding: 4px;
+    position: relative;
+    background-color: black;
+    border-radius: 18px;
+    display: flex;
+    align-items: stretch;
+    justify-content: flex-start;
+    .tab {
+      display: inline-flex;
+      text-decoration: none;
+      align-items: center;
+      justify-content: center;
+      width: 50%;
+      color: rgba(white, 0.5);
+      border-radius: 18px;
+      &.hover {
+        background-color: rgba(white, 0.1);
+        // color: $c-yelo;
+      }
+      &.active {
+        background-color: $c-yelo_dark;
+        color: $c-yelo;
+      }
     }
   }
 
@@ -714,6 +751,27 @@ body {
     }
   }
 
+  .delete-observation-link {
+    cursor: pointer;
+    opacity: 0.5;
+    color: white;
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    margin-top: 5px;
+    left: -5px;
+    position: relative;
+    &:hover {
+      // text-decoration: underline;
+      opacity: 1;
+    }
+    @include media-breakpoint-only(xs) {
+      width: 120%;
+      scale: 0.8;
+      transform-origin: left;
+    }
+  }
+
   // .context-selector {
   //   height: 77px;
   //   background-color: rgba($c-grey_5, 0.5);
@@ -928,6 +986,41 @@ body {
   // --------------------------------------------------------------------------------------------------
   // Components
   // --------------------------------------------------------------------------------------------------
+
+  .horizontal-photo-stack {
+    background-color: rgba($color: grey, $alpha: 0.15);
+    padding: 5px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    $phw: 30px;
+    $phr: 4px;
+    gap: 3px;
+    .photo {
+      width: $phw;
+      height: $phw;
+      min-width: $phw;
+      min-height: $phw;
+      background-size: cover;
+      background-position: center;
+      border-radius: $phr;
+      // box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+    .more-photos {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: $phw;
+      height: $phw;
+      min-width: $phw;
+      min-height: $phw;
+      border-radius: $phr;
+      background-color: #f0f0f0;
+      // box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      font-size: 14px;
+      color: #555;
+    }
+  }
 
   .rt-responsive-table {
     display: grid;
@@ -1213,90 +1306,87 @@ body {
     }
   }
 
-  .detection-ui {
-    display: flex;
-    flex-flow: column nowrap;
-    --vertical-value: 40px;
-    @include media-breakpoint-down(sm) {
-      --vertical-value: 20px;
-    }
-    height: calc(100vh - #{$header-h} - var(--vertical-value));
-    height: calc(100dvh - #{$header-h} - var(--vertical-value));
-    min-height: calc(100vh - #{$header-h} - var(--vertical-value));
-    min-height: calc(100dvh - #{$header-h} - var(--vertical-value));
-    position: relative;
-    gap: 5px;
-    .detection-scores {
-      flex: 1 1 auto; /* grows to fill leftover vertical space */
-      background-color: lighten($c-grey_6, 4%);
-      border-radius: 15px;
-      // border-bottom: #3d401a solid 4px;
-      padding: 25px;
-      padding-bottom: 0;
-      color: white;
-      @include media-breakpoint-down(sm) {
-        margin: -10px -10px 0px -10px;
-        border-radius: 0;
-      }
-      display: flex;
-      flex-direction: column;
-      height: 10%; /* or whatever fills viewport */
-      position: relative;
-      overflow: hidden;
-      .scores-list-wrapper {
-        height: 100%;
-        position: relative;
-        .scores-list {
-          flex: 1; /* grow to fill FI */
-          overflow-y: auto; /* scroll when content exceeds FI */
-          padding-bottom: 60px; /* margin below last entry */
-          box-sizing: border-box; /* ensure padding is respected */
-          // background-color: rgba(green, 0.1);
-          height: 100%;
-          max-height: 100%;
-          header {
-            position: sticky;
-            top: 0;
-            background-color: lighten($c-grey_6, 4%);
-            padding-bottom: 10px;
-            z-index: 2;
-            padding-bottom: 4px;
-            margin-bottom: 6px;
-          }
-        }
-        // &::after {
-        //   content: "";
-        //   z-index: 2;
-        //   position: absolute;
-        //   top: 14px;
-        //   left: 0;
-        //   right: 0;
-        //   height: 20px;
-        //   background: linear-gradient(
-        //     to bottom,
-        //     lighten($c-grey_6, 4%),
-        //     rgba(lighten($c-grey_6, 4%), 0)
-        //   );
-        //   pointer-events: none;
-        // }
-      }
-    }
-    .detection-inputs {
-      flex: 0 0 auto; /* takes only the height it needs */
-      // background-color: #ddd;
-      border-radius: 5px;
-    }
-  }
+  // .detection-ui {
+  //   display: flex;
+  //   flex-flow: column nowrap;
+  //   --vertical-value: 40px;
+  //   @include media-breakpoint-down(sm) {
+  //     --vertical-value: 20px;
+  //   }
+  //   height: calc(100vh - #{$header-h} - var(--vertical-value));
+  //   height: calc(100dvh - #{$header-h} - var(--vertical-value));
+  //   min-height: calc(100vh - #{$header-h} - var(--vertical-value));
+  //   min-height: calc(100dvh - #{$header-h} - var(--vertical-value));
+  //   position: relative;
+  //   gap: 5px;
+  //   .detection-scores {
+  //     flex: 1 1 auto; /* grows to fill leftover vertical space */
+  //     background-color: lighten($c-grey_6, 4%);
+  //     border-radius: 15px;
+  //     // border-bottom: #3d401a solid 4px;
+  //     padding: 25px;
+  //     padding-bottom: 0;
+  //     color: white;
+  //     @include media-breakpoint-down(sm) {
+  //       margin: -10px -10px 0px -10px;
+  //       border-radius: 0;
+  //     }
+  //     display: flex;
+  //     flex-direction: column;
+  //     height: 10%; /* or whatever fills viewport */
+  //     position: relative;
+  //     overflow: hidden;
+  //     .scores-list-wrapper {
+  //       height: 100%;
+  //       position: relative;
+  //       .scores-list {
+  //         flex: 1; /* grow to fill FI */
+  //         overflow-y: auto; /* scroll when content exceeds FI */
+  //         padding-bottom: 60px; /* margin below last entry */
+  //         box-sizing: border-box; /* ensure padding is respected */
+  //         // background-color: rgba(green, 0.1);
+  //         height: 100%;
+  //         max-height: 100%;
+  //         header {
+  //           position: sticky;
+  //           top: 0;
+  //           background-color: lighten($c-grey_6, 4%);
+  //           padding-bottom: 10px;
+  //           z-index: 2;
+  //           padding-bottom: 4px;
+  //           margin-bottom: 6px;
+  //         }
+  //       }
+  //       // &::after {
+  //       //   content: "";
+  //       //   z-index: 2;
+  //       //   position: absolute;
+  //       //   top: 14px;
+  //       //   left: 0;
+  //       //   right: 0;
+  //       //   height: 20px;
+  //       //   background: linear-gradient(
+  //       //     to bottom,
+  //       //     lighten($c-grey_6, 4%),
+  //       //     rgba(lighten($c-grey_6, 4%), 0)
+  //       //   );
+  //       //   pointer-events: none;
+  //       // }
+  //     }
+  //   }
+  //   .detection-inputs {
+  //     flex: 0 0 auto; /* takes only the height it needs */
+  //     // background-color: #ddd;
+  //     border-radius: 5px;
+  //   }
+  // }
 
   // ---------------------------------------------------------------------------
   // Detection Observations UI
   // ---------------------------------------------------------------------------
-  .remove-content-padding-y {
-    margin: -10px 0;
-    @include media-breakpoint-up(sm) {
-      margin: -20px -0px;
-    }
-  }
+
+  // --- Layout responsive grid ---
+
   .detection-observation-ui-container {
     container-type: size;
     container-name: detection;
@@ -1307,13 +1397,6 @@ body {
     justify-content: stretch;
     width: 100%;
     height: calc(100dvh - 60px);
-    .header {
-      // border: 0.5px solid grey; /* DEBUG DET-UI */
-      height: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
     .body {
       position: relative;
       // border: 0.5px solid red; /* DEBUG DET-UI */
@@ -1340,14 +1423,13 @@ body {
           flex-grow: 1;
           width: 50%;
           height: 100%;
-          .tabs {
+          .tabs-container {
             z-index: 2;
             position: absolute;
             top: 10px;
             left: 0;
             right: 0;
             height: 40px;
-            background-color: rgba(black, 0.2);
             display: flex;
             justify-content: center;
           }
@@ -1405,6 +1487,56 @@ body {
       }
     }
   }
+  .detection-observation-ui-container {
+    $sm: map-get($grid-breakpoints, sm);
+    $xs-max: map-get($grid-breakpoints, sm) - 0.02px;
+
+    @media (max-width: $xs-max) and (max-height: 700px) {
+      z-index: 200;
+      margin-top: -60px;
+      position: fixed;
+      background: $c-bg;
+      // background: rgb(169, 231, 169) !important; /* DEBUG DET-UI */
+      height: 100dvh;
+      overflow: auto;
+    }
+  }
+
+  // --- styling individual parts ---
+
+  // .detection-observation-ui-container
+  .dfpart_header {
+    // border: 0.5px solid grey; /* DEBUG DET-UI */
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    @include media-breakpoint-only(xs) {
+      padding: 0 10px;
+      height: 45px;
+    }
+  }
+  .dfpart_detection-inputs {
+    padding: 20px;
+    // background-color: lighten($c-grey_6, 4%);
+    @include media-breakpoint-down(sm) {
+      padding: 10px;
+    }
+  }
+  .dfpart_detection-scores {
+    padding: 20px;
+    background-color: lighten($c-grey_6, 4%);
+    height: 100%;
+    color: white;
+    @include media-breakpoint-down(sm) {
+      padding: 10px;
+    }
+    @include media-breakpoint-only(xs) {
+      padding-top: 60px;
+    }
+  }
+
   #map-observations-form {
     width: 100%;
     height: 100%;
@@ -2753,6 +2885,22 @@ $hb-color-on-hover: #eee;
 // ------------------------------------------------------------------------
 // Layout
 // ------------------------------------------------------------------------
+
+.remove-content-padding-x {
+  @include media-breakpoint-up(sm) {
+    margin-left: -10px;
+    margin-right: -10px;
+  }
+}
+
+.remove-content-padding-y {
+  margin-top: -10px;
+  margin-bottom: -10px;
+  @include media-breakpoint-up(sm) {
+    margin-top: -20px;
+    margin-bottom: -20px;
+  }
+}
 
 .narrow-container {
   max-width: $narrow-cont-w;
