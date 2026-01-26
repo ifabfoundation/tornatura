@@ -1925,8 +1925,8 @@ function DetectionStepGuide({
             <Container fluid>
               <Row>
                 <Col>
-                  <div className="mt-3">
-                    <div className="rounded">
+                  <div className="my-4 mb-5">
+                    <div className="very-rounded">
                       <AutoHeightIframe src={guideValue} />
                     </div>
                     <div className="mt-2">
@@ -1946,9 +1946,11 @@ function DetectionStepGuide({
         <div>Nessuna guida disponibile per questa tipologia e metodo.</div>
       )}
       <div className="fixed-bottom mt-4 text-center">
-        <button className="trnt_btn primary" onClick={() => onNextClick({})}>
-          Avanti
-        </button>
+        <div className="contents">
+          <button className="trnt_btn primary" onClick={() => onNextClick({})}>
+            Avanti
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -2946,7 +2948,7 @@ export function DetectionForm() {
   React.useEffect(() => {
     const title = selectedTypology
       ? selectedMethod
-        ? `${selectedTypology} / ${selectedMethod}`
+        ? `${selectedTypology}  ›  ${selectedMethod}`
         : `Rilevamento ${selectedTypology}`
       : "Nuovo Rilevamento";
     dispatch(headerbarActions.setTitle({ title: title, subtitle: "Subtitle" }));

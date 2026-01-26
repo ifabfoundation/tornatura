@@ -157,11 +157,11 @@ export function FieldDashboard() {
             <div className="mt-5 mt-xl-0"></div>
             <a
               // className="cardlet-button"
-              className="button accent fat-y wide"
+              className="button dashed fat-y wide"
               data-type="rounded"
               onClick={() => navigate(`/companies/${companyId}/fields/${fieldId}/new-detection`)}
             >
-              + Nuovo Rilevamento
+              + Nuova categoria di rilevamenti
             </a>
           </div>
         </div>

@@ -135,6 +135,11 @@ $ms-sidebar-transition: 100ms;
 .bg-yelo {
   background-color: $c-yelo;
 }
+.bg-glass {
+  background-color: rgba(white, 0.1) !important;
+  background-color: transparent !important;
+  backdrop-filter: blur(10px);
+}
 .color-grey-3 {
   color: $c-grey_3 !important;
 }
@@ -165,6 +170,10 @@ $ms-sidebar-transition: 100ms;
 
 .rounded {
   border-radius: $r * 2;
+  overflow: hidden;
+}
+.very-rounded {
+  border-radius: $r * 4;
   overflow: hidden;
 }
 
@@ -293,9 +302,9 @@ body {
     outline: none;
     min-width: 140px;
     @include font-m-600;
-    transition: background-color 100ms;
+    transition: all 100ms;
+    text-decoration: none;
     &:hover {
-      text-decoration: none;
     }
     &[data-type="round"] {
       border-radius: $btn-h/2;
@@ -321,7 +330,6 @@ body {
       .active {
         background-color: darken($c-yelo_dark, 6%);
       }
-      text-decoration: none;
     }
     &.accent-stronger {
       background-color: $c-yelo;
@@ -333,7 +341,6 @@ body {
       .active {
         background-color: darken($c-yelo, 6%);
       }
-      text-decoration: none;
     }
     &.primary {
       background-color: $c-dark;
@@ -345,7 +352,6 @@ body {
       .active {
         background-color: black;
       }
-      text-decoration: none;
     }
     &.secondary {
       background-color: rgba(black, 0.05);
@@ -357,7 +363,6 @@ body {
       .active {
         background-color: $c-grey_3;
       }
-      text-decoration: none;
     }
     &.danger1 {
       background-color: rgba(black, 0.05);
@@ -369,7 +374,6 @@ body {
       .active {
         background-color: $c-grey_3;
       }
-      text-decoration: none;
     }
     &.danger2 {
       background-color: $red;
@@ -381,7 +385,6 @@ body {
       .active {
         background-color: darken($red, 10%);
       }
-      text-decoration: none;
     }
     &.outlined {
       background-color: transparent;
@@ -396,7 +399,17 @@ body {
       .active {
         background-color: rgba(0, 0, 0, 0.1);
       }
-      text-decoration: none;
+    }
+    &.dashed {
+      border: 2px dashed $c-grey_4;
+      color: black;
+      &:hover {
+        border: 2px dashed $c-grey_6;
+      }
+      &:active,
+      .active {
+        background-color: rgba(0, 0, 0, 0.1);
+      }
     }
     &.wider {
       min-width: 200px;
@@ -465,6 +478,16 @@ body {
   input[type="submit"],
   button {
     margin: 3px;
+  }
+
+  .mapbox-searchbox-wrapper-floating {
+    position: absolute;
+    top: 20px;
+    width: 320px;
+    max-width: calc(100% - 40px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
   }
 
   .form-wrapper {
@@ -619,9 +642,11 @@ body {
 
   .fixed-bottom {
     position: fixed;
-    background-color: #fff;
     bottom: 0;
     left: 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
     @include media-breakpoint-up(lg) {
       left: 320px;
     }
@@ -630,11 +655,29 @@ body {
       max-width: calc(1600px - 320px);
       left: calc((100% - 1600px) / 2 + 320px);
     }
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px;
-    box-shadow: 0 -20px 0px rgba(0, 0, 0, 0.1);
+    .contents {
+      width: 100%;
+      background-color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+      box-shadow: 0 -20px 15px rgba(0, 0, 0, 0.1);
+    }
+    &[data-style="floating"] {
+      .contents {
+        width: auto;
+        border-radius: 15px;
+        margin: 10px;
+        max-width: calc(100% - 60px);
+        @include media-breakpoint-up(lg) {
+          max-width: calc(100% - 320px - 60px);
+        }
+        // @media screen and (min-width: 1800px) {
+        //   max-width: calc(1600px - 320px - 20px);
+        // }
+      }
+    }
   }
 
   .form-section {
@@ -2887,6 +2930,7 @@ $hb-color-on-hover: #eee;
 // ------------------------------------------------------------------------
 
 .remove-content-padding-x {
+  position: relative;
   @include media-breakpoint-up(sm) {
     margin-left: -10px;
     margin-right: -10px;
@@ -2894,6 +2938,7 @@ $hb-color-on-hover: #eee;
 }
 
 .remove-content-padding-y {
+  position: relative;
   margin-top: -10px;
   margin-bottom: -10px;
   @include media-breakpoint-up(sm) {

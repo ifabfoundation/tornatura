@@ -30,7 +30,9 @@ function SubmenuItem({ text, state, path }: SubmenuItemProps) {
 
 function MenuItemFamily({ famIcon, famText, famState, famItems }: MenuItemFamilyProps) {
   const contentRef = useRef<HTMLDivElement | null>(null);
-  const [isOpen, setIsOpen] = useState<boolean>(famState == "selected" ? true : false);
+  const hasSelectecChild = famItems.some((item) => item.state === "selected");
+  const isOpenInitial = famState == "selected" || hasSelectecChild ? true : false;
+  const [isOpen, setIsOpen] = useState<boolean>(isOpenInitial);
 
   useEffect(() => {
     if (contentRef.current) {

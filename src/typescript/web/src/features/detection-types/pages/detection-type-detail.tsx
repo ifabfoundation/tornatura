@@ -441,7 +441,7 @@ export function DetectionTypeDetail() {
         </Row>
         {modelPath && (
           <Row>
-            <Col className="text-center mt-4">
+            <Col xl={12} className="text-center mt-4">
               <button
                 className="trnt_btn primary"
                 data-type="rounded"
@@ -450,6 +450,7 @@ export function DetectionTypeDetail() {
                 Modello previsionale &rarr;
               </button>
             </Col>
+            <Col xl={12} className="spacer my-5"></Col>
           </Row>
         )}
       </Container>

@@ -592,10 +592,10 @@ export const FieldFormMap = ({ action, onNextClick }: FieldProps) => {
 
   return (
     <>
-      <h4>Disegna la mappa del campo</h4>
-      <hr />
+      {/* <h4>Disegna la mappa del campo</h4>
+      <hr /> */}
       {mapLoaded && (
-        <div className="mapbox-searchbox-wrapper">
+        <div className="mapbox-searchbox-wrapper-floating">
           {/*@ts-ignore*/}
           <SearchBox
             options={{
@@ -613,18 +613,20 @@ export const FieldFormMap = ({ action, onNextClick }: FieldProps) => {
           />
         </div>
       )}
-      <div ref={mapContainerRef} id="map" style={{ height: "500px" }}></div>
-      <hr />
-      <div className="buttons-wrapper my-5">
-        <button
-          className="trnt_btn primary"
-          onClick={() => {
-            onNextClick(map);
-          }}
-          disabled={map.length === 0}
-        >
-          {action}
-        </button>
+      <div ref={mapContainerRef} id="map"></div>
+
+      <div className="fixed-bottom mt-4 text-center" data-style="floating">
+        <div className="contents bg-glass">
+          <button
+            className="trnt_btn primary"
+            onClick={() => {
+              onNextClick(map);
+            }}
+            disabled={map.length === 0}
+          >
+            {action}
+          </button>
+        </div>
       </div>
     </>
   );
@@ -635,7 +637,7 @@ export function CompanyFieldForm() {
   const dispatch = useAppDispatch();
   const { companyId } = useParams();
   const currentCompany = useAppSelector((state) =>
-    companiesSelectors.selectCompanybyId(state, companyId ?? "default")
+    companiesSelectors.selectCompanybyId(state, companyId ?? "default"),
   );
   const [step, setStep] = React.useState(1);
   const [action, setAction] = React.useState("Avanti");
@@ -655,8 +657,12 @@ export function CompanyFieldForm() {
   });
 
   React.useEffect(() => {
-    dispatch(headerbarActions.setTitle({ title: "Nuovo campo", subtitle: "Subtitle" }));
-  }, []);
+    if (step === 1) {
+      dispatch(headerbarActions.setTitle({ title: "Disegna l'area del campo", subtitle: "–" }));
+    } else if (step === 2) {
+      dispatch(headerbarActions.setTitle({ title: "Dettagli del campo", subtitle: "–" }));
+    }
+  }, [step]);
 
   const createFieldAction = async (payload: AgriFieldMutationPayload) => {
     if (currentCompany) {
@@ -710,7 +716,9 @@ export function CompanyFieldForm() {
   return (
     <Fragment>
       {step === 1 && (
-        <FieldFormMap formData={formData} action={action} onNextClick={handleNextClick} />
+        <div className="remove-content-padding-x remove-content-padding-y">
+          <FieldFormMap formData={formData} action={action} onNextClick={handleNextClick} />
+        </div>
       )}
       {step === 2 && (
         <Container>
