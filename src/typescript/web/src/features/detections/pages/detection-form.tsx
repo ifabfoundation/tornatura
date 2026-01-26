@@ -2072,6 +2072,28 @@ function DetectionStepObservationPoints({
     }
   }, [observationType]);
 
+  function handleBackToDashboard() {
+    if (points.length > 0) {
+      setModal({
+        component: ModalConfirm,
+        componentProps: {
+          title: "Abbandona rilevamento",
+          content:
+            "Se torni alla dashboard perderai tutti i dati inseriti finora. Sei sicuro di voler continuare?",
+          action: "Abbandona",
+          handleCancel: () => setModalOpen(false),
+          handleConfirm: () => {
+            setModalOpen(false);
+            navigate(`/companies/${companyId}/fields/${fieldId}`, { replace: true });
+          },
+        },
+      });
+      setModalOpen(true);
+      return;
+    }
+    navigate(`/companies/${companyId}/fields/${fieldId}`, { replace: true });
+  }
+
   const handleMarkerChange = async (point: Point) => {
     setMarkerPosition(point);
     setSource("map");
@@ -2604,9 +2626,7 @@ function DetectionStepObservationPoints({
               <button
                 className="trnt_btn primary me-3"
                 data-type="round"
-                onClick={() => {
-                  navigate(`/companies/${companyId}/fields/${fieldId}`, { replace: true });
-                }}
+                onClick={handleBackToDashboard}
               >
                 &larr;
               </button>
