@@ -428,6 +428,8 @@ body {
     &.narrow-x {
       width: auto;
       min-width: auto;
+      padding-left: 10px;
+      padding-right: 10px;
     }
   }
 
@@ -472,6 +474,21 @@ body {
     height: var(--size);
     border-radius: 50%;
     display: inline-block;
+  }
+
+  table.raw-data-preview {
+    &,
+    th,
+    td {
+      border: 1px solid green;
+    }
+    td,
+    th {
+      padding: 3px;
+    }
+    th {
+      font-weight: 700;
+    }
   }
 
   a.button,

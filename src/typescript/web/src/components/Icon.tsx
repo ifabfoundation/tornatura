@@ -37,6 +37,9 @@ import darrs_y from "../assets/images/icons/darrs-y.svg";
 import dashboard_b from "../assets/images/icons/dashboard-b.svg";
 import dashboard_w from "../assets/images/icons/dashboard-w.svg";
 import dashboard_y from "../assets/images/icons/dashboard-y.svg";
+import download_b from "../assets/images/icons/download-b.svg";
+import download_w from "../assets/images/icons/download-w.svg";
+import download_y from "../assets/images/icons/download-y.svg";
 import enlarge_b from "../assets/images/icons/enlarge-b.svg";
 import enlarge_w from "../assets/images/icons/enlarge-w.svg";
 import enlarge_y from "../assets/images/icons/enlarge-y.svg";
@@ -106,6 +109,7 @@ const icons = {
   cog: { white: cog_w, black: cog_b, yellow: cog_y },
   darrs: { white: darrs_w, black: darrs_b, yellow: darrs_y },
   dashboard: { white: dashboard_w, black: dashboard_b, yellow: dashboard_y },
+  download: { white: download_w, black: download_b, yellow: download_y },
   enlarge: { white: enlarge_w, black: enlarge_b, yellow: enlarge_y },
   file: { white: file_w, black: file_b, yellow: file_y },
   folder: { white: folder_w, black: folder_b, yellow: folder_y },

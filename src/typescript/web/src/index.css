@@ -13586,6 +13586,8 @@ body {
 #app button.trnt_btn.narrow-x {
   width: auto;
   min-width: auto;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 #app .tabs-switch {
@@ -13630,6 +13632,21 @@ body {
   height: var(--size);
   border-radius: 50%;
   display: inline-block;
+}
+
+#app table.raw-data-preview,
+#app table.raw-data-preview th,
+#app table.raw-data-preview td {
+  border: 1px solid green;
+}
+
+#app table.raw-data-preview td,
+#app table.raw-data-preview th {
+  padding: 3px;
+}
+
+#app table.raw-data-preview th {
+  font-weight: 700;
 }
 
 #app a.button,

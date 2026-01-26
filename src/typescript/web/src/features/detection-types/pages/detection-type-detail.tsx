@@ -119,6 +119,71 @@ function getDetectionStats(detection: Detection) {
   return detectionStats;
 }
 
+type ExportFormat = "json" | "csv";
+
+type DownloadDataButtonProps = {
+  data: unknown[] | Record<string, unknown>; // CSV requires arrays or array of objects
+  format: ExportFormat;
+  filename?: string;
+};
+
+export function DownloadDataButton({
+  data,
+  format,
+  filename = `data.${format}`,
+}: DownloadDataButtonProps) {
+  const convertToCsv = (rows: Record<string, unknown>[]) => {
+    if (rows.length === 0) return "";
+
+    const headers = Object.keys(rows[0]);
+    const csvRows = [
+      headers.join(","), // header row
+      ...rows.map((row) => headers.map((h) => JSON.stringify(row[h] ?? "")).join(",")),
+    ];
+
+    return csvRows.join("\n");
+  };
+
+  const handleDownload = () => {
+    let fileContent = "";
+    let mime = "";
+
+    if (format === "json") {
+      fileContent = JSON.stringify(data, null, 2);
+      mime = "application/json";
+    } else {
+      // CSV
+      if (!Array.isArray(data)) {
+        console.error("CSV export requires an array of objects");
+        return;
+      }
+      fileContent = convertToCsv(data as Record<string, unknown>[]);
+      mime = "text/csv";
+    }
+
+    const blob = new Blob([fileContent], { type: mime });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    link.click();
+
+    URL.revokeObjectURL(url);
+  };
+
+  return (
+    <button
+      className="trnt_btn narrow-x slim-y outlined ps-1"
+      data-type="rounded"
+      onClick={handleDownload}
+    >
+      <Icon iconName={"download"} color={"black"} />
+      {format.toUpperCase()}
+    </button>
+  );
+}
+
 export function DetectionTypeDetail() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -243,7 +308,7 @@ export function DetectionTypeDetail() {
       },
       {
         headerText: "Azioni",
-        id: "actions",
+        id: "action1",
         type: "button",
         style: "danger1",
         buttonText: "Elimina",
@@ -251,7 +316,7 @@ export function DetectionTypeDetail() {
       },
       {
         headerText: "",
-        id: "actions",
+        id: "action2",
         type: "button",
         style: "secondary",
         buttonText: "Mostra",
@@ -340,6 +405,53 @@ export function DetectionTypeDetail() {
     modelPath = modelPaths[observationType.typology as Typology];
   }
 
+  // to be used for csv download
+  const flatDetectionsData: Record<string, unknown>[] = [];
+  detections.forEach((detection) => {
+    const dd = detection.detectionData;
+    const ds = getDetectionStats(detection);
+    const observations = dd.points.forEach((point, index) => {
+      const dotValue = point.data.rangeValue;
+      const entry = {
+        detectionId: detection.id,
+        detectionTime: new Date(detection.detectionTime).toISOString(),
+        bbch: dd.bbch ?? "",
+        observationNum: index + 1,
+        dotValue: dotValue !== undefined && dotValue !== null ? dotValue : "",
+      };
+      flatDetectionsData.push(entry);
+    });
+  });
+  console.log("flatDetectionsData", flatDetectionsData);
+
+  // debug CSV data view
+  if (false) {
+    return (
+      <div>
+        <h2>Debug CSV data</h2>
+        <table className="raw-data-preview">
+          {/* output a table showing the flat data with keys => headers */}
+          {flatDetectionsData.length > 0 &&
+            flatDetectionsData.slice(0, 1).map((row, rowIndex) => (
+              <tr key={rowIndex}>
+                {Object.entries(row).map(([key, value]) => (
+                  <th key={key}>{key}</th>
+                ))}
+              </tr>
+            ))}
+          {flatDetectionsData.length > 0 &&
+            flatDetectionsData.map((row, rowIndex) => (
+              <tr key={rowIndex}>
+                {Object.entries(row).map(([key, value]) => (
+                  <td key={key}>{String(value)}</td>
+                ))}
+              </tr>
+            ))}
+        </table>
+      </div>
+    );
+  }
+
   return (
     <div>
       <Container>
@@ -400,8 +512,16 @@ export function DetectionTypeDetail() {
 
                   {tableIsOpen && (
                     <Row>
-                      <Col className="mt-5">
+                      <Col xl={12} className="mt-5">
                         <DetectionsTable />
+                      </Col>
+                      <Col xl={12} className="my-2">
+                        <DownloadDataButton data={detections} format={"json"} filename={"campo"} />
+                        <DownloadDataButton
+                          data={flatDetectionsData}
+                          format={"csv"}
+                          filename={"campo"}
+                        />
                       </Col>
                     </Row>
                   )}

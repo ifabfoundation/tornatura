@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="30px" height="30px" viewBox="0 0 30 30" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>download-b</title>
+    <g id="download-b" stroke="none" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round" stroke-width="1">
+        <g id="Group" transform="translate(9.5, 8.8229)" stroke="#131415">
+            <polyline id="Path-5" stroke-width="1.5" transform="translate(5.5, 5.1764) scale(1, -1) rotate(315) translate(-5.5, -5.1764)" points="2.29631426 1.97273304 8.70368574 1.97273304 8.70368574 8.38010453"></polyline>
+            <line x1="5.49995" y1="8.35427704" x2="5.49995" y2="0.922861479" id="Line-2-Copy" stroke-width="1.5" transform="translate(5.4999, 4.5) scale(1, -1) translate(-5.4999, -4.5)"></line>
+            <line x1="0.5" y1="13.6771385" x2="10.5" y2="13.6771385" id="Line-3" stroke-width="1.5"></line>
+        </g>
+    </g>
+</svg>
