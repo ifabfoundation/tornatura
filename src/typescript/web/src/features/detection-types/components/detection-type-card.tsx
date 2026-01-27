@@ -1,3 +1,4 @@
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../../hooks";
 import { detectionTypesSelectors } from "../state/detection-types-slice";
@@ -6,6 +7,7 @@ import { detectionsSelectors } from "../../detections/state/detections-slice";
 import { dateToString } from "../../../services/utils";
 import { GradientLineChart } from "../../../components/GradientLineChart";
 import { getDetectionStats } from "../../../helpers/detections";
+import LineChartVisx from "../../../components/LineChartVisx";
 
 function getColor(min: number, max: number, value: number): string {
   const colors = ["#42C318", "#FFB290", "#FF4D4D", "#A10505"];
@@ -32,6 +34,23 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
   const observationType = useAppSelector((state) =>
     observationTypesSelectors.selectObservationTypeById(state, detectionType.observationTypeId),
   );
+  // Responsive width
+  const [containerWidth, setContainerWidth] = React.useState<number>(0);
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  React.useEffect(() => {
+    function updateWidth() {
+      if (containerRef.current) {
+        setContainerWidth(containerRef.current.offsetWidth);
+      } else {
+        setContainerWidth(0);
+      }
+    }
+    updateWidth();
+    window.addEventListener("resize", updateWidth);
+    return () => {
+      window.removeEventListener("resize", updateWidth);
+    };
+  }, []);
 
   // --- Calculate group stats
 
@@ -62,6 +81,19 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
       };
     })
     .sort((a, b) => a.x - b.x);
+  const graphDataVisx = detections
+    .map((detection) => {
+      const ds = getDetectionStats(detection);
+      return {
+        id: detection.id,
+        x: new Date(detection.detectionTime), // Linear time mapping
+        // x: index, // Sequential time mapping (better for debugging)
+        y: ds.pointsAvg,
+        color: getColor(groupStats.groupMin, groupStats.groupMax, ds.pointsAvg),
+        detection: detection,
+      };
+    })
+    .sort((a, b) => a.x.getTime() - b.x.getTime());
 
   const lastDate = detections
     .map((e) => e.detectionTime)
@@ -96,13 +128,22 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
         <div className="label">{`AGGIORNATO IL ${lastDateString}`}</div>
       </div>
 
-      <GradientLineChart
-        height={100}
-        padding={{ top: 0, bottom: 0, left: 40, right: 40 }}
-        strokeWidth={20}
-        dotSize={14}
-        data={graphData}
-      />
+      <div ref={containerRef}>
+        <GradientLineChart
+          height={100}
+          padding={{ top: 0, bottom: 0, left: 40, right: 40 }}
+          strokeWidth={20}
+          dotSize={14}
+          data={graphData}
+        />
+        <LineChartVisx
+          width={containerWidth}
+          height={100}
+          data={graphDataVisx}
+          onSelectPoint={undefined}
+          selectedId={undefined}
+        />
+      </div>
 
       <div className="mt-3 pt-1">
         <button

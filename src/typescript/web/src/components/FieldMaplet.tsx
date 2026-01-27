@@ -90,7 +90,7 @@ export const FieldMaplet = ({ detectionId }: FieldMapletProps) => {
         container: mapContainerRef.current,
         style: "mapbox://styles/mapbox/satellite-streets-v12",
         center: centroid,
-        zoom: 14,
+        zoom: 18,
       });
 
       mapRef.current.on("load", () => {

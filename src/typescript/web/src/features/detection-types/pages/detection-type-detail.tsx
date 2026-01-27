@@ -143,6 +143,24 @@ export function DetectionTypeDetail() {
     dispatch(observationTypesActions.fetchObservationTypesAction({}));
   }, [companyId, fieldId]);
 
+  // Responsive width
+  const [containerWidth, setContainerWidth] = React.useState<number>(0);
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  React.useEffect(() => {
+    function updateWidth() {
+      if (containerRef.current) {
+        setContainerWidth(containerRef.current.offsetWidth);
+      } else {
+        setContainerWidth(0);
+      }
+    }
+    updateWidth();
+    window.addEventListener("resize", updateWidth);
+    return () => {
+      window.removeEventListener("resize", updateWidth);
+    };
+  }, []);
+
   const notes = [];
   detections.forEach((detection) => {
     // @ts-ignore
@@ -474,21 +492,22 @@ export function DetectionTypeDetail() {
                   </div>
 
                   <div className="flex-grow-1 bg-white"></div>
-
-                  <GradientLineChart
-                    height={100}
-                    padding={{ top: 0, bottom: 0, left: 40, right: 40 }}
-                    strokeWidth={20}
-                    dotSize={14}
-                    data={graphData}
-                  />
-                  <LineChartVisx
-                    width={500}
-                    height={100}
-                    data={graphDataVisx}
-                    onSelectPoint={handleGraphPointClick}
-                    selectedId={selectedDetectionId ?? undefined}
-                  />
+                  <div ref={containerRef}>
+                    <GradientLineChart
+                      height={100}
+                      padding={{ top: 0, bottom: 0, left: 40, right: 40 }}
+                      strokeWidth={20}
+                      dotSize={14}
+                      data={graphData}
+                    />
+                    <LineChartVisx
+                      width={containerWidth}
+                      height={100}
+                      data={graphDataVisx}
+                      onSelectPoint={handleGraphPointClick}
+                      selectedId={selectedDetectionId ?? undefined}
+                    />
+                  </div>
                 </Col>
                 <Col lg={6}>
                   {selectedDetectionId && <FieldMaplet detectionId={selectedDetectionId} />}

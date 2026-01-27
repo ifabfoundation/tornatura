@@ -83,7 +83,7 @@ export default function InteractiveTimeSeriesChart({
               fill="#4f83ff"
               stroke={selectedId === d.id ? "black" : "white"}
               strokeWidth={selectedId === d.id ? 3 : 1.5}
-              style={{ cursor: "pointer" }}
+              style={{ cursor: onSelectPoint ? "pointer" : "default" }}
               onClick={() => onSelectPoint?.(d)}
             />
           );
