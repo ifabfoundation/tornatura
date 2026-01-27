@@ -1,5 +1,6 @@
 import { ObservationPoint, ObservationType } from "@tornatura/coreapis";
 import { Detection } from "@tornatura/coreapis";
+import { mapValues } from "./common";
 
 export function getRangePointColor(v: number): string {
   let c = "#43C318";
@@ -9,16 +10,28 @@ export function getRangePointColor(v: number): string {
   return c;
 }
 
-export function getCounterPointSize(): number {
-  return 25;
-}
+// export function getCounterPointSize(): number {
+//   return 25;
+// }
 
 export function enrichedMapPoints(points: ObservationPoint[], observationType: ObservationType) {
+  const type = observationType ? observationType.observationType : "null";
+  let counterSumMax = 0;
+  if (type == "counters") {
+    const sumValues = points.map((point) => {
+      let countersSum = 0;
+      if (point.data && point.data.counters) {
+        countersSum = point.data.counters.reduce((a, b) => a + b.counterValue, 0);
+      }
+      return countersSum;
+    });
+    counterSumMax = Math.max(...sumValues);
+  }
+
   const enrichedPoints = points.map((point: ObservationPoint) => {
     const num = point.data.rangeValue || 0;
-    const type = observationType ? observationType.observationType : "null";
-
-    let color: string = "black";
+    let color: string = "rgba(0,0,0,0.5)";
+    let size: number = 7;
     if (type == "range") {
       const rangeMax = observationType
         ? observationType.rangeMax
@@ -27,15 +40,21 @@ export function enrichedMapPoints(points: ObservationPoint[], observationType: O
         : 5;
       color = getRangePointColor(num / rangeMax);
     }
-
-    console.log("observationType", observationType);
+    if (type == "counters") {
+      let countersSum = 0;
+      if (point.data && point.data.counters) {
+        countersSum = point.data.counters.reduce((a, b) => a + b.counterValue, 0);
+      }
+      size = mapValues(countersSum, 0, counterSumMax, 0, 60);
+    }
     return {
       lng: point.position.lng,
       lat: point.position.lat,
-      size: 7,
+      size: size,
       color: color,
     };
   });
+  console.log(",,,,,,,,,,,,,,nrichedPoints", enrichedPoints);
   return enrichedPoints;
 }
 
@@ -43,6 +62,7 @@ export function getDetectionStats(detection: Detection) {
   // calculate stats for each detection
   // FOR DATA OF TYPE "RANGE"
   let detectionStats = {
+    type: "",
     pointsCount: 0,
     pointsSum: 0,
     pointsMin: Infinity,
@@ -54,15 +74,27 @@ export function getDetectionStats(detection: Detection) {
     intensityAvgStr: "00%",
     diseaseIndex: 0,
     diseaseIndexStr: "00%",
+    counterSumsTotal: 0,
+    displayValue: "-",
   };
+
   detection.detectionData.points.forEach((point) => {
-    const v = point.data.rangeValue;
-    const isValidPoint = v !== undefined && v !== null;
-    if (isValidPoint) {
+    const rv = point.data.rangeValue;
+    const isValidRangePoint = rv !== undefined && rv !== null;
+    if (isValidRangePoint) {
+      detectionStats.type = "range";
       detectionStats.pointsCount++;
-      detectionStats.pointsSum += v;
-      detectionStats.pointsMin = Math.min(detectionStats.pointsMin, v);
-      detectionStats.pointsMax = Math.max(detectionStats.pointsMax, v);
+      detectionStats.pointsSum += rv;
+      detectionStats.pointsMin = Math.min(detectionStats.pointsMin, rv);
+      detectionStats.pointsMax = Math.max(detectionStats.pointsMax, rv);
+    }
+
+    const counters = point.data.counters;
+    const isValidCounterPoint = counters !== undefined && counters !== null && counters.length > 0;
+    if (isValidCounterPoint) {
+      detectionStats.type = "counters";
+      const countersSum = counters.reduce((a, b) => a + b.counterValue, 0);
+      detectionStats.counterSumsTotal += countersSum;
     }
   });
   detectionStats.pointsAvg =
@@ -112,6 +144,13 @@ export function getDetectionStats(detection: Detection) {
 
   detectionStats.diseaseIndex = detectionStats.infectedPercent * detectionStats.intensityAvg;
   detectionStats.diseaseIndexStr = `${(detectionStats.diseaseIndex * 100).toFixed(1)}%`;
+
+  // --- displayValue
+  if (detectionStats.type === "range") {
+    detectionStats.displayValue = detectionStats.diseaseIndexStr;
+  } else if (detectionStats.type === "counters") {
+    detectionStats.displayValue = detectionStats.counterSumsTotal.toString();
+  }
 
   return detectionStats;
 }

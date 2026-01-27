@@ -190,7 +190,7 @@ export function DetectionTypeDetail() {
   }
 
   function handleGraphPointClick(d: any) {
-    console.log(d);
+    console.log("Graph point Datum", d);
     setSelectedDetectionId(d?.detection.id);
   }
 
@@ -335,7 +335,7 @@ export function DetectionTypeDetail() {
         id: detection.id,
         x: new Date(detection.detectionTime), // Linear time mapping
         // x: index, // Sequential time mapping (better for debugging)
-        y: ds.pointsAvg,
+        y: ds.type === "counters" ? ds.counterSumsTotal : ds.pointsAvg,
         color: getColor(groupStats.groupMin, groupStats.groupMax, ds.pointsAvg),
         detection: detection,
       };

@@ -38,3 +38,16 @@ export function useIsMobile(breakpoint: number = 576): boolean {
   }, [breakpoint]);
   return isMobile;
 }
+
+// -----------------------------------------------------------------------------
+// Like processing map function
+// val: number, fromMin: number, fromMax: number, toMin: number, toMax: number
+export function mapValues(
+  val: number,
+  fromMin: number,
+  fromMax: number,
+  toMin: number,
+  toMax: number,
+): number {
+  return ((val - fromMin) / (fromMax - fromMin)) * (toMax - toMin) + toMin;
+}
