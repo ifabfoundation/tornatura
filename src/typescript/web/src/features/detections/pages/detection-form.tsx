@@ -44,6 +44,7 @@ import Stepper from "../../../components/Stepper";
 import { useIsMobile } from "../../../helpers/common";
 // import { getRangePointColor } from "../../../helpers/detections";
 import { enrichedMapPoints } from "../../../helpers/detections";
+import keycloakInstance from "../../../providers/keycloak";
 
 const markerOptions = { color: "#EAFF00" };
 
@@ -81,7 +82,6 @@ type DetectionStepGuideData = Record<string, never>;
 
 type DetectionStepBbchData = {
   bbch?: string;
-  notes?: string;
 };
 
 type DetectionStepPointsData = {
@@ -2969,6 +2969,10 @@ export function DetectionForm() {
   }, []);
 
   React.useEffect(() => {
+    keycloakInstance.updateToken(3600);
+  }, []);
+
+  React.useEffect(() => {
     const title = selectedTypology
       ? selectedMethod
         ? `${selectedTypology}  ›  ${selectedMethod}`
@@ -3152,8 +3156,7 @@ export function DetectionForm() {
         ...prev,
         detectionData: {
           ...prev.detectionData,
-          bbch: bbchData.bbch ?? "",
-          notes: bbchData.notes ?? "",
+          bbch: bbchData.bbch ?? ""
         },
       }));
       setStepIndex(stepIndex + 1);
@@ -3257,6 +3260,7 @@ export function DetectionForm() {
               items={stepperItems}
               currentStep={stepIndex}
               handleBackClick={handleBackClick}
+              handleStepClick={(idx) => setStepIndex(idx)}
             />
           </div>
         </div>

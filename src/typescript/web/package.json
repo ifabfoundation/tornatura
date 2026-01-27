@@ -51,7 +51,8 @@
     "typescript-eslint": "^8.24.1",
     "vite": "^6.2.0",
     "vite-plugin-commonjs": "^0.10.4",
-    "vite-plugin-mkcert": "^1.17.9"
+    "vite-plugin-mkcert": "^1.17.9",
+    "vite-plugin-pwa": "^1.2.0"
   },
   "resolutions": {
     "styled-components": "^5"

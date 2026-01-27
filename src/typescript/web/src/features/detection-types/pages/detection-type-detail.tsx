@@ -8,7 +8,7 @@ import {
   observationTypesSelectors,
 } from "../../observation-types/state/observation-types-slice";
 import { detectionTypesActions, detectionTypesSelectors } from "../state/detection-types-slice";
-import { detectionsSelectors } from "../../detections/state/detections-slice";
+import { detectionsActions, detectionsSelectors } from "../../detections/state/detections-slice";
 import { Container, Row, Col } from "react-bootstrap";
 import { headerbarActions } from "../../headerbar/state/headerbar-slice";
 import TableCozy, { TableColumn, TableOptions } from "../../../components/TableCozy";
@@ -17,6 +17,7 @@ import { GradientLineChart } from "../../../components/GradientLineChart";
 import Icon from "../../../components/Icon";
 import LineChartVisx from "../../../components/LineChartVisx";
 import { getDetectionStats } from "../../../helpers/detections";
+import { ModalConfirm } from "../../../components/ModalConfirm";
 
 interface HorizontalPhotoStackProps {
   photos: string[];
@@ -106,6 +107,8 @@ export function DetectionTypeDetail() {
   const navigate = useNavigate();
   const [tableIsOpen, setTableIsOpen] = React.useState<boolean>(false);
   const [selectedDetectionId, setSelectedDetectionId] = React.useState<string | null>(null);
+  const [modalOpen, setModalOpen] = React.useState(false);
+  const [modal, setModal] = React.useState<any>({});
   const { companyId, fieldId, typeId } = useParams();
   const detectionType = useAppSelector((state) =>
     detectionTypesSelectors.selectDetectionTypeById(state, typeId ?? "default"),
@@ -180,13 +183,44 @@ export function DetectionTypeDetail() {
     }
   });
 
-  function handleDeleteClick(detection: Detection) {
-    console.log("Delete clicked for", detection);
-    // ... to be implemented
+  function handleDeleteClick(row: { detection?: Detection }) {
+    const detection = row?.detection;
+    if (!detection || !companyId || !fieldId) {
+      return;
+    }
+    const detectionDate = new Date(detection.detectionTime).toLocaleDateString();
+    setModal({
+      component: ModalConfirm,
+      componentProps: {
+        title: "Eliminazione rilevamento",
+        content: `Sei sicuro di voler eliminare il rilevamento del ${detectionDate}? Questa azione non può essere annullata.`,
+        action: "Elimina",
+        actionBtnClass: "danger",
+        handleCancel: () => setModalOpen(false),
+        handleConfirm: async () => {
+          await dispatch(
+            detectionsActions.deleteDetectionAction({
+              orgId: companyId,
+              fieldId,
+              detectionId: detection.id,
+            }),
+          );
+          setModalOpen(false);
+          if (selectedDetectionId === detection.id) {
+            const remaining = detections.filter((item) => item.id !== detection.id);
+            setSelectedDetectionId(remaining.length > 0 ? remaining[0].id : null);
+          }
+        },
+      },
+    });
+    setModalOpen(true);
   }
-  function handleHighlightDetection(detection: Detection) {
-    console.log("Highlight clicked for", detection);
-    // ... to be implemented
+  function handleHighlightDetection(row: { detection?: Detection }) {
+    const detection = row?.detection;
+    if (!detection) {
+      return;
+    }
+    setSelectedDetectionId(detection.id);
   }
 
   function handleGraphPointClick(d: any) {
@@ -273,6 +307,7 @@ export function DetectionTypeDetail() {
       const ds = getDetectionStats(detection);
       const diseaseIndexColor = getColor(0, 0.4, ds.diseaseIndex);
       return {
+        detection,
         detectionTime: new Date(detection.detectionTime).toLocaleDateString(),
         bbch: dd.bbch ?? "-",
         pointsNum: dd.points.length ?? "-",
@@ -404,6 +439,7 @@ export function DetectionTypeDetail() {
   return (
     <div>
       <Container>
+        {modalOpen && <modal.component {...modal.componentProps} />}
         <Row className="">
           <Col xl={12}>
             <section className="soft">

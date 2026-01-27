@@ -82,6 +82,26 @@ export const addNewDetection = createAsyncThunk(
   },
 );
 
+interface IDeleteDetectionPayload {
+  orgId: string;
+  fieldId: string;
+  detectionId: string;
+}
+
+export const deleteDetection = createAsyncThunk(
+  "detections/deleteDetection",
+  async ({ orgId, fieldId, detectionId }: IDeleteDetectionPayload, { rejectWithValue }) => {
+    const apiConfig = await getCoreApiConfiguration();
+    const apiInstance = new DetectionsApi(apiConfig);
+    try {
+      await apiInstance.deleteDetection(orgId, fieldId, detectionId);
+      return detectionId;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  },
+);
+
 const detectionsSlice = createSlice({
   name: "detections",
   initialState,
@@ -120,6 +140,10 @@ const detectionsSlice = createSlice({
     builder.addCase(addNewDetection.fulfilled, (state, action) => {
       detectionsAdapter.upsertOne(state, action.payload as Detection);
     });
+
+    builder.addCase(deleteDetection.fulfilled, (state, action) => {
+      detectionsAdapter.removeOne(state, action.payload as string);
+    });
   },
 });
 
@@ -148,6 +172,7 @@ export const detectionsActions = {
   fetchFieldDetectionsAction: fetchFieldDetections,
   fetchDetectionsByTypeAction: fetchDetectionsByType,
   addNewDetectionAction: addNewDetection,
+  deleteDetectionAction: deleteDetection,
 };
 
 export const detectionsReducer = detectionsSlice.reducer;

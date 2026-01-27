@@ -4,9 +4,10 @@ interface StepperProps {
   items: string[];
   currentStep: number;
   handleBackClick?: () => void;
+  handleStepClick?: (stepIndex: number) => void;
 }
 
-export const Stepper: React.FC<StepperProps> = ({ items, currentStep, handleBackClick }) => {
+export const Stepper: React.FC<StepperProps> = ({ items, currentStep, handleBackClick, handleStepClick }) => {
   const stepsNum = items.length;
 
   return (
@@ -27,8 +28,9 @@ export const Stepper: React.FC<StepperProps> = ({ items, currentStep, handleBack
           const isDone = currentStep > stepIndex;
           const isCurrent = currentStep === stepIndex;
           const handleItemClick = () => {
-            if (isDone && handleBackClick) {
-              handleBackClick();
+            if (isDone && handleStepClick) {
+              // handleBackClick();
+              handleStepClick(stepIndex);
             }
           };
           return (
