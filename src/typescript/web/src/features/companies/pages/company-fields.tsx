@@ -18,7 +18,11 @@ export function getFieldMapGeoJson(field: AgriField) {
   return {
     type: "Feature",
     properties: {
-      fill: "%23c4c920",
+      fill: "%23F0FF4A",
+      "fill-opacity": 0.2,
+      stroke: "%23EAFF00",
+      "stroke-width": 2,
+      "stroke-opacity": 1,
     },
     geometry: {
       coordinates: [data],
@@ -61,12 +65,12 @@ export function CompanyFields() {
     return s.charAt(0).toUpperCase() + s.slice(1);
   }
   return (
-    <Container>
+    <Container fluid>
       <Row>
         {fields.map((field: AgriField, index: number) => {
           const numberOdDetections = detections.filter((d) => d.agrifieldId === field.id).length;
           return (
-            <Col md={6} xl={4} key={index}>
+            <Col xs={6} md={4} xxl={3} key={index}>
               <Card
                 className="with-hover-effect"
                 onClick={() => navigate(`/companies/${companyId}/fields/${field.id}`)}
@@ -76,21 +80,22 @@ export function CompanyFields() {
                   variant="top"
                   src={`https://api.mapbox.com/styles/v1/mapbox/satellite-v9/static/geojson(${JSON.stringify(
                     getFieldMapGeoJson(field),
-                  )})/auto/640x480?access_token=${process.env.REACT_APP_MAPBOX_API_TOKEN}`} ///padding=50
+                  )})/auto/640x480?padding=60&access_token=${process.env.REACT_APP_MAPBOX_API_TOKEN}`} ///padding=50
                 />
                 <div className="llist-group">
                   <div className="llist-group-item">
                     <span className="d-flex align-items-center">
-                      <Icon iconName={"wheat"} color={"black"} /> {capitalize(field.harvest)}
+                      <Icon iconName={"wheat"} color={"black"} />
+                      <span className="upper">{capitalize(field.harvest)}</span>
                     </span>
-                    <span className="d-flex align-items-center">
+                    {/* <span className="d-flex align-items-center">
                       <Icon iconName={"size"} color={"black"} /> {field.area} he
-                    </span>
+                    </span> */}
                   </div>
                   <div className="llist-group-item">
                     <span className="d-flex align-items-center">
                       <Icon iconName={"asterisk"} color={"black"} />
-                      {`${numberOdDetections} rilevament${numberOdDetections === 1 ? "o" : "i"}`}
+                      <span className="upper">{`${numberOdDetections} rilevament${numberOdDetections === 1 ? "o" : "i"}`}</span>
                     </span>
                   </div>
                 </div>
@@ -98,7 +103,7 @@ export function CompanyFields() {
             </Col>
           );
         })}
-        <Col md={6} xl={4}>
+        <Col md={6} xl={4} xxl={3}>
           <Card
             className="add-item with-hover-effect"
             data-text="Aggiungi un campo"

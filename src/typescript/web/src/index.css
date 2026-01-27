@@ -13079,6 +13079,10 @@ strong {
   text-transform: none !important;
 }
 
+.upper {
+  text-transform: uppercase !important;
+}
+
 .rounded {
   border-radius: 10px;
   overflow: hidden;
@@ -16754,6 +16758,7 @@ ul.list-group li.list-group-item:hover {
   padding: 0;
   width: 100%;
   overflow: hidden;
+  border-radius: 10px;
   margin-bottom: 20px;
 }
 
@@ -16959,7 +16964,7 @@ ul.list-group li.list-group-item:hover {
   align-items: center;
   justify-content: space-between;
   padding: 0 10px;
-  height: 37px;
+  height: 42px;
   font-family: "Inter", sans-serif;
   font-size: 11px;
   letter-spacing: 0.02em;

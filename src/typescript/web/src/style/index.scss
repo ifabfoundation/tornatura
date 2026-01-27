@@ -163,6 +163,9 @@ $ms-sidebar-transition: 100ms;
 .text-transform-none {
   text-transform: none !important;
 }
+.upper {
+  text-transform: uppercase !important;
+}
 
 @mixin noselect {
   -webkit-user-select: none; /* Safari, Chrome (WebKit) */
@@ -2613,6 +2616,7 @@ $hb-color-on-hover: #eee;
   padding: 0;
   width: 100%;
   overflow: hidden;
+  border-radius: 10px;
   margin-bottom: 20px;
   .cardlet-header {
     &,
@@ -2706,7 +2710,7 @@ $hb-color-on-hover: #eee;
     align-items: center;
     justify-content: space-between;
     padding: 0 10px;
-    height: 37px;
+    height: 42px;
     @include font-s-600;
     & + .llist-group-item {
       border-top: 1px solid $c-grey_1;

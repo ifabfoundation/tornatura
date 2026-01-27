@@ -229,7 +229,7 @@ export function FieldDashboard() {
                 variant="top"
                 src={`https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v12/static/geojson(${JSON.stringify(
                   getFieldMapGeoJson(currentField),
-                )})/auto/1024x768?access_token=${process.env.REACT_APP_MAPBOX_API_TOKEN}`}
+                )})/auto/1024x768?padding=80&access_token=${process.env.REACT_APP_MAPBOX_API_TOKEN}`}
               />
             </Card>
           </Col>
