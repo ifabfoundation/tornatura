@@ -5,14 +5,15 @@ import _ from "lodash";
 import { fieldsSelectors } from "../state/fields-slice";
 // import { SearchBox } from "@mapbox/search-js-react";
 import mapboxgl, { LngLatLike } from "mapbox-gl";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Point } from "@tornatura/coreapis";
 import * as turf from "@turf/turf";
 import { detectionsSelectors } from "../../detections/state/detections-slice";
 
 export function FieldMap() {
   const dispatch = useAppDispatch();
-  const { fieldId } = useParams();
+  const navigate = useNavigate();
+  const { companyId, fieldId } = useParams();
   const currentField = useAppSelector((state) =>
     fieldsSelectors.selectFieldbyId(state, fieldId ?? "default"),
   );
@@ -23,7 +24,6 @@ export function FieldMap() {
   const mapRef = React.useRef<any>(null);
   const [mapLoaded, setMapLoaded] = React.useState(false);
   const [inputValue, setInputValue] = React.useState("");
-  // const markerRef = React.useRef<Marker | null>(null);
 
   React.useEffect(() => {
     dispatch(headerbarActions.setTitle({ title: "Mappa", subtitle: "Subtitle" }));
@@ -39,10 +39,12 @@ export function FieldMap() {
       });
 
       let centroid: LngLatLike = [12.5736108, 41.29246];
+      let fieldShapeBbox: any;
       if (data.length > 2) {
         const polygon = turf.polygon([data]);
         const result = turf.centroid(polygon);
         centroid = [result.geometry.coordinates[0], result.geometry.coordinates[1]];
+        fieldShapeBbox = turf.bbox(polygon);
       }
 
       mapRef.current = new mapboxgl.Map({
@@ -53,9 +55,9 @@ export function FieldMap() {
       });
 
       mapRef.current.on("load", () => {
-        const source = mapRef.current.getSource("maine");
+        const source = mapRef.current.getSource("fieldShape");
         if (!source) {
-          mapRef.current.addSource("maine", {
+          mapRef.current.addSource("fieldShape", {
             type: "geojson",
             data: {
               type: "Feature",
@@ -68,13 +70,25 @@ export function FieldMap() {
         }
 
         mapRef.current.addLayer({
-          id: "maine",
+          id: "fieldFill",
           type: "fill",
-          source: "maine",
+          source: "fieldShape",
           layout: {},
           paint: {
-            "fill-color": "#c4c920",
-            "fill-opacity": 0.7,
+            "fill-color": "#EAFF00",
+            "fill-opacity": 0.2,
+          },
+        });
+
+        mapRef.current.addLayer({
+          id: "fieldShapeLine",
+          type: "line",
+          source: "fieldShape",
+          layout: {},
+          paint: {
+            "line-color": "#EAFF00", // outline color
+            "line-width": 1,
+            "line-opacity": 1.0, // outline opacity
           },
         });
 
@@ -96,6 +110,12 @@ export function FieldMap() {
             .addTo(mapRef.current!);
         }
         */
+
+        const contW = mapContainerRef.current?.offsetWidth || 0;
+        const contH = mapContainerRef.current?.offsetHeight || 0;
+        mapRef.current.fitBounds(fieldShapeBbox, {
+          padding: { top: contH * 0.4, bottom: contH * 0.4, left: contW * 0.4, right: contW * 0.4 },
+        });
 
         setMapLoaded(true);
       });
@@ -130,6 +150,16 @@ export function FieldMap() {
       )}
  */}
         <div ref={mapContainerRef} id="map"></div>
+
+        <button
+          className="trnt_btn primary me-3 position-absolute top-0 start-0 m-3"
+          data-type="round"
+          onClick={() => {
+            navigate(`/companies/${companyId}/fields/${fieldId}`, { replace: true });
+          }}
+        >
+          &larr;
+        </button>
       </div>
     </>
   );

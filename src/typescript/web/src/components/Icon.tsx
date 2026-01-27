@@ -49,6 +49,9 @@ import file_y from "../assets/images/icons/file-y.svg";
 import folder_b from "../assets/images/icons/folder-b.svg";
 import folder_w from "../assets/images/icons/folder-w.svg";
 import folder_y from "../assets/images/icons/folder-y.svg";
+import fullscreen_b from "../assets/images/icons/fullscreen-b.svg";
+import fullscreen_w from "../assets/images/icons/fullscreen-w.svg";
+import fullscreen_y from "../assets/images/icons/fullscreen-y.svg";
 import grid_b from "../assets/images/icons/grid-b.svg";
 import grid_w from "../assets/images/icons/grid-w.svg";
 import grid_y from "../assets/images/icons/grid-y.svg";
@@ -113,6 +116,7 @@ const icons = {
   enlarge: { white: enlarge_w, black: enlarge_b, yellow: enlarge_y },
   file: { white: file_w, black: file_b, yellow: file_y },
   folder: { white: folder_w, black: folder_b, yellow: folder_y },
+  fullscreen: { white: fullscreen_w, black: fullscreen_b, yellow: fullscreen_y },
   grid: { white: grid_w, black: grid_b, yellow: grid_y },
   home: { white: home_w, black: home_b, yellow: home_y },
   larr: { white: larr_w, black: larr_b, yellow: larr_y },

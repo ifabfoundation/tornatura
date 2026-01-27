@@ -173,13 +173,19 @@ $ms-sidebar-transition: 100ms;
   -ms-user-select: none; /* Internet Explorer/Edge Legacy */
   user-select: none; /* Standard property */
 }
-
+.ratio-1-1 {
+  aspect-ratio: 1 / 1;
+}
 .rounded {
-  border-radius: $r * 2;
+  border-radius: 10px !important;
   overflow: hidden;
 }
 .very-rounded {
-  border-radius: $r * 4;
+  border-radius: 20px;
+  overflow: hidden;
+}
+.less-rounded {
+  border-radius: 5px;
   overflow: hidden;
 }
 
@@ -256,7 +262,7 @@ body {
   &:hover {
     box-shadow: 0 2px 30px 0 rgba($c-shadow, 0.25);
     // transform: translate(2px, -2px);
-    transform: scale(1.02);
+    transform: scale(1.01);
   }
 }
 
@@ -577,7 +583,7 @@ body {
 
   .detection-card {
     background-color: white;
-    border-radius: 30px;
+    border-radius: 20px;
     padding: 20px;
     margin-bottom: 20px;
     header {
@@ -2664,7 +2670,7 @@ $hb-color-on-hover: #eee;
   }
   &.add-item {
     background-color: transparent;
-    border: 2px dashed $c-grey_3;
+    border: 2px dashed $c-grey_4;
     position: relative;
     min-height: 300px;
     height: calc(100% - 20px);
@@ -2679,7 +2685,7 @@ $hb-color-on-hover: #eee;
       height: 80px;
       border-radius: 50%;
       color: $c-grey_4;
-      border: 2px dashed $c-grey_3;
+      border: 2px dashed $c-grey_4;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -2692,7 +2698,7 @@ $hb-color-on-hover: #eee;
       right: 0;
       padding: 15px;
       text-align: center;
-      color: $c-grey_4;
+      color: $c-grey_5;
     }
   }
 }

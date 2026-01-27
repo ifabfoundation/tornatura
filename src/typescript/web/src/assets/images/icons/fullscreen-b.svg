@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="30px" height="30px" viewBox="0 0 30 30" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>fullscreen-b</title>
+    <g id="fullscreen-b" stroke="none" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round" stroke-width="1">
+        <g id="Group" transform="translate(8.1422, 9.0729)" stroke="#131415">
+            <line x1="13.4430402" y1="8.05739846" x2="9.70355273" y2="11.796886" id="Path-10" stroke-width="1.5" transform="translate(11.2155, 9.8543) scale(-1, 1) translate(-11.2155, -9.8543)"></line>
+            <line x1="4.72750924" y1="0.203114042" x2="0.988021744" y2="3.94260154" id="Path-10-Copy" stroke-width="1.5" transform="translate(2.5, 2) scale(1, -1) translate(-2.5, -2)"></line>
+            <polyline id="Path-11" stroke-width="1.5" transform="translate(10.8578, 9.9271) scale(-1, 1) translate(-10.8578, -9.9271)" points="8.98802174 8.05739846 8.98802174 11.796886 12.7275092 11.796886"></polyline>
+            <polyline id="Path-11-Copy" stroke-width="1.5" transform="translate(2.8578, 1.9271) scale(1, -1) translate(-2.8578, -1.9271)" points="0.988021744 0.0573984608 0.988021744 3.79688596 4.72750924 3.79688596"></polyline>
+            <line x1="4.72750924" y1="8.05739846" x2="0.988021744" y2="11.796886" id="Path-10" stroke-width="1.5"></line>
+            <line x1="13.4430402" y1="0.203114042" x2="9.70355273" y2="3.94260154" id="Path-10-Copy" stroke-width="1.5" transform="translate(11.2155, 2) scale(-1, -1) translate(-11.2155, -2)"></line>
+            <polyline id="Path-11" stroke-width="1.5" points="0.988021744 8.05739846 0.988021744 11.796886 4.72750924 11.796886"></polyline>
+            <polyline id="Path-11-Copy" stroke-width="1.5" transform="translate(10.8578, 1.9271) scale(-1, -1) translate(-10.8578, -1.9271)" points="8.98802174 0.0573984608 8.98802174 3.79688596 12.7275092 3.79688596"></polyline>
+        </g>
+    </g>
+</svg>

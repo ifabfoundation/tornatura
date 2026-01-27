@@ -13083,13 +13083,22 @@ strong {
   text-transform: uppercase !important;
 }
 
+.ratio-1-1 {
+  aspect-ratio: 1 / 1;
+}
+
 .rounded {
-  border-radius: 10px;
+  border-radius: 10px !important;
   overflow: hidden;
 }
 
 .very-rounded {
   border-radius: 20px;
+  overflow: hidden;
+}
+
+.less-rounded {
+  border-radius: 5px;
   overflow: hidden;
 }
 
@@ -13775,7 +13784,7 @@ body {
 
 #app .detection-card {
   background-color: white;
-  border-radius: 30px;
+  border-radius: 20px;
   padding: 20px;
   margin-bottom: 20px;
 }
@@ -16881,12 +16890,12 @@ ul.list-group li.list-group-item:hover {
 
 .card.with-hover-effect:hover {
   box-shadow: 0 2px 30px 0 rgba(31, 31, 31, 0.25);
-  transform: scale(1.02);
+  transform: scale(1.01);
 }
 
 .card.add-item {
   background-color: transparent;
-  border: 2px dashed #bbbbbb;
+  border: 2px dashed #8b8b8b;
   position: relative;
   min-height: 300px;
   height: calc(100% - 20px);
@@ -16935,7 +16944,7 @@ ul.list-group li.list-group-item:hover {
   height: 80px;
   border-radius: 50%;
   color: #8b8b8b;
-  border: 2px dashed #bbbbbb;
+  border: 2px dashed #8b8b8b;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -16949,7 +16958,7 @@ ul.list-group li.list-group-item:hover {
   right: 0;
   padding: 15px;
   text-align: center;
-  color: #8b8b8b;
+  color: #545454;
 }
 
 .round-thumb {
@@ -17149,7 +17158,7 @@ ul.list-group li.list-group-item:hover {
 
 .cardlet-button:hover {
   box-shadow: 0 2px 30px 0 rgba(31, 31, 31, 0.25);
-  transform: scale(1.02);
+  transform: scale(1.01);
 }
 
 .cardlet-button:hover {

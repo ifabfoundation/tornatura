@@ -108,14 +108,48 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
     .reverse()[0];
   const lastDateString = dateToString(lastDate, false);
 
+  type NewDetectionButtonProps = {
+    className?: string;
+  };
+
+  function NewDetectionButton({ className }: NewDetectionButtonProps) {
+    return (
+      <button
+        className={"trnt_btn accent type-rounded" + (className ? " " + className : "")}
+        // className={"trnt_btn accent type-rounded"}
+        onClick={() =>
+          navigate(`/companies/${companyId}/fields/${fieldId}/new-detection`, {
+            state: { typeId: typeId },
+          })
+        }
+      >
+        <span className="upper font-s-600">+ Rilevamento {observationType.typology}</span>
+      </button>
+    );
+  }
   return (
     <div className="detection-card">
       <header className="d-flex align-items-start justify-content-between">
         <div>
-          <div className="label py-1">Rilevamenti di</div>
-          <div className="value">{`${observationType.typology}  ›  ${observationType.method}`}</div>
+          {/* <div className="label py-1">Rilevamenti di</div> */}
+          <span className="font-l-600">{`${observationType.typology}  ›  ${observationType.method}`}</span>
+          <br />
+          <button
+            className="trnt_btn slim-y primary outlined narrow-x px-3 mt-2 type-rounded"
+            data-type="rounded"
+            onClick={() =>
+              navigate(`/companies/${companyId}/fields/${fieldId}/type/${detectionType.id}`, {
+                // navigate(`/companies/${companyId}/fields/${fieldId}/new-detection`, {
+                state: { typeId: typeId },
+              })
+            }
+          >
+            {"Dettaglio →"}
+            {/* <Icon iconName={"enlarge"} color={"black"} /> */}
+          </button>
         </div>
-        <button
+
+        {/* <button
           className="trnt_btn slim-y primary outlined narrow-x px-3 type-rounded"
           data-type="rounded"
           onClick={() =>
@@ -126,8 +160,10 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
           }
         >
           Espandi
-          {/* <Icon iconName={"enlarge"} color={"black"} /> */}
-        </button>
+          </button> */}
+        <div className="d-none d-md-block">
+          <NewDetectionButton />
+        </div>
       </header>
 
       <div className="small-texts d-flex justify-content-between align-items-center mt-4 mb-2">
@@ -153,7 +189,11 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
       </div>
 
       <div className="mt-3 pt-1">
-        <button
+        <div className="d-md-none text-center">
+          <NewDetectionButton className="wide" />
+        </div>
+
+        {/* <button
           className="trnt_btn accent wide"
           data-type="round"
           onClick={() =>
@@ -163,7 +203,7 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
           }
         >
           + Rilevamento {observationType.typology}
-        </button>
+        </button> */}
       </div>
     </div>
   );

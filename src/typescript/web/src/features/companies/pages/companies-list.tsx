@@ -31,8 +31,8 @@ export function CompaniesList() {
         icon: "barn",
         text: "Aziende gestite",
         path: "/companies",
-        type: 'single',
-        familyItems: []
+        type: "single",
+        familyItems: [],
       },
     ];
 
@@ -42,8 +42,8 @@ export function CompaniesList() {
         icon: "baloon",
         text: "Invia Feedback",
         path: "/new-feedback",
-        type: 'single',
-        familyItems: []
+        type: "single",
+        familyItems: [],
       },
       // {
       //   id: "my-invitations",
@@ -68,11 +68,17 @@ export function CompaniesList() {
   };
 
   return (
-    <Container>
+    <Container fluid>
       <Row>
         {companies.map((company, index) => {
           return (
-            <Col md={6} xl={4} key={index} style={{ display: "flex", alignItems: "stretch" }}>
+            <Col
+              xs={6}
+              md={4}
+              xxl={3}
+              key={index}
+              style={{ display: "flex", alignItems: "stretch" }}
+            >
               <Card className="with-hover-effect" onClick={() => handleCompanyClick(company.orgId)}>
                 <Card.Header>
                   <Icon iconName={"barn"} color={"black"} />
@@ -95,7 +101,7 @@ export function CompaniesList() {
           );
         })}
         {currentUser.accountType === AccountTypeEnum.Agronomist && (
-          <Col md={6} xl={4}>
+          <Col xs={6} md={4} xxl={3}>
             <Card
               className="add-item with-hover-effect"
               data-text="Invita un'azienda"

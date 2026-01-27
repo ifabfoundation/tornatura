@@ -367,7 +367,7 @@ export function DetectionTypeDetail() {
         })
       }
     >
-      + Rilevamento {observationType?.typology}
+      <span className="upper font-s-600">+ Rilevamento {observationType?.typology}</span>
     </button>
   );
 
