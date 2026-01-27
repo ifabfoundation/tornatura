@@ -56,6 +56,10 @@ export function CompanyFields() {
 
   React.useEffect(() => {}, [currentCompany]);
 
+  function capitalize(s: string) {
+    if (s.length === 0) return s;
+    return s.charAt(0).toUpperCase() + s.slice(1);
+  }
   return (
     <Container>
       <Row>
@@ -77,7 +81,7 @@ export function CompanyFields() {
                 <div className="llist-group">
                   <div className="llist-group-item">
                     <span className="d-flex align-items-center">
-                      <Icon iconName={"wheat"} color={"black"} /> {field.harvest}
+                      <Icon iconName={"wheat"} color={"black"} /> {capitalize(field.harvest)}
                     </span>
                     <span className="d-flex align-items-center">
                       <Icon iconName={"size"} color={"black"} /> {field.area} he

@@ -51,3 +51,33 @@ export function mapValues(
 ): number {
   return ((val - fromMin) / (fromMax - fromMin)) * (toMax - toMin) + toMin;
 }
+
+// -----------------------------------------------------------------------------
+// function testData(
+//   aroundLon: number,
+//   aroundLat: number,
+//   radiusMeters: number,
+//   numPoints: number,
+// ): mapPoint[] {
+//   const points: mapPoint[] = [];
+//   for (let i = 0; i < numPoints; i++) {
+//     const angle = Math.random() * 2 * Math.PI;
+//     const distance = Math.random() * radiusMeters;
+//     const dx = distance * Math.cos(angle);
+//     const dy = distance * Math.sin(angle);
+
+//     // Approximate conversion from meters to degrees
+//     const deltaLng = dx / 111320 / Math.cos(aroundLat * (Math.PI / 180));
+//     const deltaLat = dy / 110540;
+
+//     const point = {
+//       lng: aroundLon + deltaLng,
+//       lat: aroundLat + deltaLat,
+//       size: 8,
+//       color: getRangePointColor(Math.random()),
+//     };
+
+//     points.push(point);
+//   }
+//   return points;
+// }

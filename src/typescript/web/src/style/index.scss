@@ -314,7 +314,8 @@ body {
       width: $btn-h;
       min-width: $btn-h;
     }
-    &[data-type="rounded"] {
+    // &[data-type="rounded"],
+    &.type-rounded {
       border-radius: 60px;
     }
     &[data-type="table"] {
@@ -490,6 +491,10 @@ body {
     border-radius: 20px;
     background-color: #eee;
     padding: 20px;
+    &.nested-1 {
+      background-color: white;
+      border-radius: 10px;
+    }
   }
 
   .dot {
@@ -1074,13 +1079,13 @@ body {
 
   .horizontal-photo-stack {
     background-color: rgba($color: grey, $alpha: 0.15);
-    padding: 5px;
-    border-radius: 10px;
+    padding: 2px;
+    border-radius: 6px;
     display: inline-flex;
     align-items: center;
-    $phw: 30px;
+    $phw: 26px;
     $phr: 4px;
-    gap: 3px;
+    gap: 2px;
     .photo {
       width: $phw;
       height: $phw;

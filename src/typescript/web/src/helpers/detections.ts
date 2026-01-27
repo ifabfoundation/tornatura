@@ -2,30 +2,11 @@ import { ObservationPoint, ObservationType } from "@tornatura/coreapis";
 import { Detection } from "@tornatura/coreapis";
 import { mapValues } from "./common";
 
-/* Anatomy of a detection object 
---------------------------------------------------------------------------------
-detection = {
-  agrifieldId: "685a5d40f2de7db5c17f177c",
-  creationTime: 1769275022455,
-  detectionData: {
-    bbch: "21",
-    notes: "Lorem ipsum…",
-    photos: ["https://placehold.co/600x400", "https://placehold.co/600x400"],
-    points: [{
-      data: {
-        counters: [],
-        rangeValue: 5,
-      },
-      position: {lng: 12.76965574474565, lat: 41.68182819504833}
-    }],
-  },
-  detectionTime: 1769275000458,
-  detectionTypeId: "6974fd8c388f508a98827411",
-  id: "6974fe8e388f508a98827415",
-  lastUpdateTime: 1769275022455,
-}
---------------------------------------------------------------------------------
-*/
+/**
+ * Anatomy of objects - at the bottom if this file
+ * - detection
+ * - observationType
+ */
 
 export function getColorDiseaseIndex(diseaseIndex: number): string {
   const colors = ["#42C318", "#FFB290", "#FF4D4D", "#A10505"];
@@ -169,3 +150,44 @@ export function getDetectionStats(detection: Detection) {
 
   return detectionStats;
 }
+
+/* Anatomy of objects
+
+detection
+--------------------------------------------------------------------------------
+detection = {
+  agrifieldId: "685a5d40f2de7db5c17f177c",
+  creationTime: 1769275022455,
+  detectionData: {
+    bbch: "21",
+    notes: "Lorem ipsum…",
+    photos: ["https://placehold.co/600x400", "https://placehold.co/600x400"],
+    points: [{
+      data: {
+        counters: [{counterName, counterValue}, {counterName, counterValue}],
+        rangeValue: 5,
+      },
+      position: {lng: 12.76965574474565, lat: 41.68182819504833}
+    }],
+  },
+  detectionTime: 1769275000458,
+  detectionTypeId: "6974fd8c388f508a98827411",
+  id: "6974fe8e388f508a98827415",
+  lastUpdateTime: 1769275022455,
+}
+--------------------------------------------------------------------------------
+observationType = {
+  bchInstructions: "Lorem ipsum Lorem ipsum"
+  category: "generic"
+  counters: []
+  creationTime: 1768376924243
+  id: "69674a5c674e876cb650b71b"
+  locationAndScoreInstructions: "Lorem ipsum lorem ipsum"
+  method: "Frutto"
+  observationType: "range"
+  rangeMax: 5
+  rangeMin: 1
+  typology: "Peronospora"
+}
+--------------------------------------------------------------------------------
+*/

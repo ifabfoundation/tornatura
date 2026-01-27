@@ -15,7 +15,7 @@ export type Datum = {
   displayLabel?: string;
 };
 
-export type InteractiveTimeSeriesChartProps = {
+export type LineChartVisxProps = {
   width: number;
   height: number;
   data: Datum[];
@@ -24,14 +24,14 @@ export type InteractiveTimeSeriesChartProps = {
   margin?: { top: number; right: number; bottom: number; left: number };
 };
 
-export default function InteractiveTimeSeriesChart({
+export default function LineChartVisx({
   width,
   height,
   data,
   onSelectPoint,
   selectedId,
   margin = { top: 20, right: 20, bottom: 40, left: 50 },
-}: InteractiveTimeSeriesChartProps) {
+}: LineChartVisxProps) {
   const { tooltipData, tooltipLeft, tooltipTop, showTooltip, hideTooltip } = useTooltip<Datum>();
 
   const innerWidth = width - margin.left - margin.right;

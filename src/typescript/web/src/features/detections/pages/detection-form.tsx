@@ -95,32 +95,6 @@ type ButtonGroupItem = {
   onClick?: () => void;
 };
 
-// const enrichedMapPoints = (points: ObservationPoint[], observationType: ObservationType) => {
-//   const enrichedPoints = points.map((point: ObservationPoint) => {
-//     const num = point.data.rangeValue || 0;
-//     const type = observationType ? observationType.observationType : "null";
-
-//     let color: string = "black";
-//     if (type == "range") {
-//       const rangeMax = observationType
-//         ? observationType.rangeMax
-//           ? observationType.rangeMax
-//           : 5
-//         : 5;
-//       color = getRangePointColor(num / rangeMax);
-//     }
-
-//     console.log("observationType", observationType);
-//     return {
-//       lng: point.position.lng,
-//       lat: point.position.lat,
-//       size: 7,
-//       color: color,
-//     };
-//   });
-//   return enrichedPoints;
-// };
-
 function ButtonGroupGrid({
   label,
   value,
@@ -329,6 +303,7 @@ function isPointInsideField(pointLon: number, pointLat: number, areaPoints: numb
   return false;
 }
 
+/* 
 // function DetectionFormMalattia({ action, onBackClick, onNextClick }: DetectionProps) {
 //   const [files, setFiles] = React.useState<FileWithPath[]>([]);
 
@@ -895,6 +870,7 @@ function isPointInsideField(pointLon: number, pointLat: number, areaPoints: numb
 //     </form>
 //   );
 // }
+*/
 
 interface DetectionFormMapProps {
   sourceType: string;
@@ -911,35 +887,6 @@ interface mapPoint {
   size?: number;
   color?: string;
 }
-
-// function testData(
-//   aroundLon: number,
-//   aroundLat: number,
-//   radiusMeters: number,
-//   numPoints: number,
-// ): mapPoint[] {
-//   const points: mapPoint[] = [];
-//   for (let i = 0; i < numPoints; i++) {
-//     const angle = Math.random() * 2 * Math.PI;
-//     const distance = Math.random() * radiusMeters;
-//     const dx = distance * Math.cos(angle);
-//     const dy = distance * Math.sin(angle);
-
-//     // Approximate conversion from meters to degrees
-//     const deltaLng = dx / 111320 / Math.cos(aroundLat * (Math.PI / 180));
-//     const deltaLat = dy / 110540;
-
-//     const point = {
-//       lng: aroundLon + deltaLng,
-//       lat: aroundLat + deltaLat,
-//       size: 8,
-//       color: getRangePointColor(Math.random()),
-//     };
-
-//     points.push(point);
-//   }
-//   return points;
-// }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // MAP COMPONENT
@@ -964,81 +911,6 @@ function DetectionFormMapPosition({
   const currentPosition = React.useContext(gpsStore);
 
   const isMobile = useIsMobile();
-  // React.useEffect(() => {
-  //   if (map.current) return; // initialize only once
-
-  //   map.current = new mapboxgl.Map({
-  //     container: mapContainer.current!,
-  //     style: "mapbox://styles/mapbox/streets-v11",
-  //     center: [0, 0],
-  //     zoom: 14,
-  //   });
-
-  //   // Add source + layer for current location
-  //   map.current.on("load", () => {
-  //     map.current!.addSource("current-location", {
-  //       type: "geojson",
-  //       data: {
-  //         type: "Feature",
-  //         geometry: { type: "Point", coordinates: [0, 0] },
-  //       },
-  //     });
-
-  //     map.current!.addLayer({
-  //       id: "current-location-circle",
-  //       type: "circle",
-  //       source: "current-location",
-  //       paint: {
-  //         "circle-radius": 12,
-  //         "circle-color": "#007AFF", // iOS blue
-  //         "circle-opacity": 0.6,
-  //       },
-  //     });
-
-  //     // Animate pulsing radius
-  //     let radius = 10;
-  //     let growing = true;
-
-  //     function animate() {
-  //       radius = growing ? radius + 0.3 : radius - 0.3;
-  //       if (radius > 20) growing = false;
-  //       if (radius < 10) growing = true;
-
-  //       map.current!.setPaintProperty(
-  //         "current-location-circle",
-  //         "circle-radius",
-  //         radius
-  //       );
-
-  //       requestAnimationFrame(animate);
-  //     }
-  //     animate();
-  //   });
-
-  //   // Watch position continuously
-  //   const watchId = navigator.geolocation.watchPosition(
-  //     (pos) => {
-  //       const lng = pos.coords.longitude;
-  //       const lat = pos.coords.latitude;
-
-  //       // Update source data
-  //       const source = map.current!.getSource("current-location") as mapboxgl.GeoJSONSource;
-  //       if (source) {
-  //         source.setData({
-  //           type: "Feature",
-  //           geometry: { type: "Point", coordinates: [lng, lat] },
-  //         });
-  //       }
-
-  //       // Optionally recenter map
-  //       map.current!.setCenter([lng, lat]);
-  //     },
-  //     (err) => console.error("Geolocation error:", err),
-  //     { enableHighAccuracy: true }
-  //   );
-
-  //   return () => navigator.geolocation.clearWatch(watchId);
-  // }, []);
 
   React.useEffect(() => {
     // -------------------------------
@@ -1510,6 +1382,7 @@ function DetectionFormMapPosition({
   return <div ref={mapContainerRef} id="map-observations-form" data-debug={debugString}></div>;
 }
 
+/* 
 // const categorie: any = {
 //   fungi: {
 //     icon: "spots",
@@ -1786,7 +1659,6 @@ function DetectionFormMapPosition({
 //   return (
 //     <Fragment>
 //       {modalOpen && <modal.component {...modal.componentProps} />}
-//       {/* <h4 className="mt-4">La tua posizione</h4> */}
 //       <div className="input-row">
 //         <label>
 //           <select name="source" onChange={(e) => handleSourceChange(e.target.value)} value={source}>
@@ -1797,7 +1669,6 @@ function DetectionFormMapPosition({
 //         </label>
 //       </div>
 //       <DetectionFormMapPosition sourceType={source} onMarkerChange={handleMarkerChange} />
-//       {/* <hr /> */}
 //       <div className="buttons-wrapper mt-4 text-center">
 //         <button className="trnt_btn primary" onClick={handleNextClick}>
 //           {action}
@@ -1806,6 +1677,7 @@ function DetectionFormMapPosition({
 //     </Fragment>
 //   );
 // }
+ */
 
 function DetectionStepTipologia({
   typologies,
@@ -2376,233 +2248,6 @@ function DetectionStepObservationPoints({
 
   return (
     <Fragment>
-      {/* GOOD STUFF
-      <Fragment>
-        // ADDED -------------------
-        {modalOpen && <modal.component {...modal.componentProps} />}
-        {noteModalOpen && (
-          <Modal closeModal={() => setNoteModalOpen(false)} title="Nota">
-            <section>
-              <div className="input-row">
-                <label>
-                  Nota
-                  <textarea
-                    rows={6}
-                    value={noteDraft}
-                    onChange={(event) => setNoteDraft(event.target.value)}
-                  />
-                </label>
-              </div>
-              <hr />
-              <div className="buttons-wrapper text-center">
-                <button className="trnt_btn secondary" onClick={() => setNoteModalOpen(false)}>
-                  Annulla
-                </button>
-                <button
-                  className="trnt_btn primary"
-                  onClick={() => {
-                    setNoteValue(noteDraft);
-                    setNoteModalOpen(false);
-                  }}
-                >
-                  Salva
-                </button>
-              </div>
-            </section>
-          </Modal>
-        )}
-        // ADDED -------------------
-        <CameraCapture
-          open={cameraOpen}
-          onClose={() => setCameraOpen(false)}
-          onCapture={(file) => onPhotosChange?.([...pendingPhotos, file])}
-        />
-        // ADDED -------------------
-        <div className="hacky-header-cover">
-          <a onClick={onBackClick}>&larr;</a>
-          <a className="finish-btn" onClick={handleSave}>
-            <span>FINE</span>
-          </a>
-        </div>
-        <div className="narrow-container my-5">
-          <h3 className="mb-4 text-center">Aggiungi punti di osservazione</h3>
-          <div className="buttons-wrapper mt-3 text-center">
-            <button
-              className={`trnt_btn ms-2 ${activeDataTab === "map" ? "primary" : "secondary"}`}
-              onClick={() => setActiveDataTab("map")}
-            >
-              Mappa
-            </button>
-            <button
-              className={`trnt_btn ${activeDataTab === "list" ? "primary" : "secondary"}`}
-              onClick={() => setActiveDataTab("list")}
-            >
-              Dati
-            </button>
-          </div>
-          <div className="detection-ui mb-4">
-            // ADDED -------------------
-            {activeDataTab === "map" && (
-              <Fragment>
-                <DetectionFormMapPosition
-                  sourceType={source}
-                  onMarkerChange={handleMarkerChange}
-                  mapPoints={mapPoints}
-                />
-              </Fragment>
-            )}
-            // ADDED -------------------
-            {activeDataTab === "list" && (
-              <Fragment>
-                {observationType.observationType === "range" && (
-                  <div className="detection-scores">
-                    <Container className="h-100 p-0">
-                      <Row className="h-100">
-                        <Col className="h-100">
-                          <div className="scores-list-wrapper">
-                            <div className="scores-list">
-                              <header className="font-s-label">Ultime osservazioni</header>
-                              {scorePoints.length === 0 && (
-                                <div>Nessuna osservazione ancora registrata</div>
-                              )}
-                              {scorePoints.map((entry: any, index: number) => (
-                                <div key={index} className="score-entry">
-                                  <span className="txt new-score-entry">
-                                    <span>#{index + 1}</span> — <span>{entry.data.rangeValue}</span>
-                                  </span>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        </Col>
-                        <Col className="h-100">
-                          <header className="font-s-label">Piante colpite</header>
-                          <div className="font-xl mt-1 mb-3">{getScoreStat("pianteColpite")}</div>
-                          <header className="font-s-label">Intensità media</header>
-                          <div className="font-xl mt-1 mb-3">{getScoreStat("intensitaMedia")}</div>
-                        </Col>
-                      </Row>
-                    </Container>
-                  </div>
-                )}
-                {observationType.observationType === "counters" && (
-                  // ADDED -------------------
-                  <div className="detection-scores">
-                    <Container className="h-100 p-0">
-                      <Row className="h-100">
-                        <Col className="h-100">
-                          <div className="scores-list-wrapper">
-                            <div className="scores-list">
-                              <header className="font-s-label">Ultime osservazioni</header>
-                              {points.length === 0 && (
-                                <div>Nessuna osservazione ancora registrata</div>
-                              )}
-                              {points.map((entry: any, index: number) => (
-                                <div key={index} className="score-entry">
-                                  <span className="txt new-score-entry">
-                                    <span>#{index + 1}</span> —{" "}
-                                    {entry.data.counters.map((counter: any, keyIndex: number) => (
-                                      <span className="ms-2" key={keyIndex}>
-                                        {counter.counterName}: {counter.counterValue}
-                                      </span>
-                                    ))}
-                                  </span>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        </Col>
-                        <Col className="h-100">
-                          <header className="font-s-label">Piante colpite</header>
-                          <div className="font-xl mt-1 mb-3">{getCountersStat("pianteColpite")}</div>
-                          <header className="font-s-label">Intensità media</header>
-                          <div className="font-xl mt-1 mb-3">{getCountersStat("intensitaMedia")}</div>
-                        </Col>
-                      </Row>
-                    </Container>
-                  </div>
-                )}
-              </Fragment>
-            )}
-            
-            // ADDED -------------------
-            <div className="buttons-wrapper mt-5 text-center">
-              <button className="trnt_btn primary" onClick={() => setCameraOpen(true)}>
-                + Foto
-              </button>
-              <button className="trnt_btn primary ms-2" onClick={handleOpenNoteModal}>
-                + Nota
-              </button>
-            </div>
-
-            // ADDED -------------------
-            <div className="detection-inputs">
-              <div className="mt-2 mb-3">
-                <div className="font-s-label">Osservazione #{scorePoints.length + 1}</div>
-                <div className="font-l mt-1">Valuta l'intensità del sintomo</div>
-              </div>
-              {observationType.observationType === "range" && (
-                <Fragment>
-                  <ScoreBtnRow score={0} label="Assente" />
-                  {Array.from({ length: rangeLength + 1 }, (_, i) => i + 1).map((v, index) => {
-                    const labels = ["Basso", "Limitato", "Cospicuo", "Alto", "Molto Alto"];
-                    if (v > 5) {
-                      return <ScoreBtnRow key={index} score={v} label="Molto Alto" />;
-                    } else {
-                      return <ScoreBtnRow key={index} score={v} label={labels[v - 1]} />;
-                    }
-                  })}
-                </Fragment>
-              )}
-              {observationType.observationType === "counters" && (
-                <Fragment>
-                  <Row>
-                    {Object.keys(counterValues).map((label, index) => {
-                      return (
-                        <Col key={index}>
-                          <ButtonGroupGrid
-                            value={+counterValues[label]}
-                            label={label}
-                            buttons={[
-                              {
-                                label: "–1",
-                                onClick: () => handleCounterOptionClick(label, -1),
-                              },
-                              {
-                                label: "+1",
-                                onClick: () => handleCounterOptionClick(label, 1),
-                              },
-                              {
-                                label: "Reset",
-                                onClick: () => handleResetCounterClick(label),
-                              },
-                              {
-                                label: "+10",
-                                onClick: () => handleCounterOptionClick(label, 10),
-                              },
-                            ]}
-                          />
-                        </Col>
-                      );
-                    })}
-                  </Row>
-                  <div className="mt-3">
-                    <CozyButton
-                      btnSize="small"
-                      content="Aggiungi Osservazione"
-                      onClick={() => handleAddCounterValuesClick()}
-                    />
-                  </div>
-                </Fragment>
-              )}
-            </div>
-          </div>
-        </div>
-
-      </Fragment>
-      */}
-
-      {/*  */}
       {modalOpen && <modal.component {...modal.componentProps} />}
       {noteModalOpen && (
         <Modal closeModal={() => setNoteModalOpen(false)} title="Nota">
@@ -3156,7 +2801,7 @@ export function DetectionForm() {
         ...prev,
         detectionData: {
           ...prev.detectionData,
-          bbch: bbchData.bbch ?? ""
+          bbch: bbchData.bbch ?? "",
         },
       }));
       setStepIndex(stepIndex + 1);

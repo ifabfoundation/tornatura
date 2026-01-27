@@ -93,7 +93,7 @@ export function DownloadDataButton({
 
   return (
     <button
-      className="trnt_btn narrow-x slim-y outlined ps-1"
+      className="trnt_btn narrow-x slim-y outlined ps-1 type-rounded"
       data-type="rounded"
       onClick={handleDownload}
     >
@@ -359,7 +359,7 @@ export function DetectionTypeDetail() {
 
   const buttonNewDetection = (
     <button
-      className="trnt_btn accent"
+      className="trnt_btn accent type-rounded"
       data-type="rounded"
       onClick={() =>
         navigate(`/companies/${companyId}/fields/${fieldId}/new-detection`, {
@@ -398,9 +398,9 @@ export function DetectionTypeDetail() {
                       <div className="font-l-600">
                         <span className="me-1">{detections.length}</span>
                         <button
-                          className="trnt_btn slim-y narrow-x outlined font-s-600 text-transform-none px-2"
-                          style={{ top: "-3px", position: "relative" }}
+                          className="trnt_btn slim-y narrow-x outlined font-s-600 text-transform-none px-2 type-rounded"
                           data-type="rounded"
+                          style={{ top: "-3px", position: "relative" }}
                           onClick={handleToggleTable}
                         >{`  ${tableIsOpen ? "Nascondi" : "Espandi"}  `}</button>
                       </div>
@@ -412,9 +412,9 @@ export function DetectionTypeDetail() {
                         <span className="me-1">{notes.length > 0 ? notes.length : "Nessuna"}</span>
                         {notes.length > 0 && (
                           <button
-                            className="trnt_btn slim-y narrow-x outlined font-s-600 text-transform-none px-2"
-                            style={{ top: "-3px", position: "relative" }}
+                            className="trnt_btn slim-y narrow-x outlined font-s-600 text-transform-none px-2 type-rounded"
                             data-type="rounded"
+                            style={{ top: "-3px", position: "relative" }}
                             onClick={handleToggleNotes}
                           >{`  ${notesDetailIsOpen ? "Nascondi" : "Espandi"}  `}</button>
                         )}
@@ -435,6 +435,7 @@ export function DetectionTypeDetail() {
                       <Col xl={12} className="mt-5">
                         <DetectionsTable
                           detections={sortedDetections}
+                          observationType={observationType?.observationType ?? ""}
                           handleHighlightDetection={(row) =>
                             setSelectedDetectionId(row.detection?.id ?? null)
                           }
@@ -455,7 +456,7 @@ export function DetectionTypeDetail() {
                       </Col>
                     </Row>
                   )}
-
+                  {/* 
                   {notesDetailIsOpen && (
                     <Row>
                       <Col xl={12} className="mt-5">
@@ -463,9 +464,9 @@ export function DetectionTypeDetail() {
                           <strong>Dettaglio note</strong>
                         </h3>
                         {notes.map((note, index) => (
-                          <section className="soft bg-white mt-3">
+                          <section className="soft nested-1 mt-2 pt-0">
                             <div key={index}>
-                              <p className="mb-2">
+                              <p className="mb-2 pt-2">
                                 <strong>
                                   <span
                                     className="d-inline-block position-relative"
@@ -494,6 +495,52 @@ export function DetectionTypeDetail() {
                                 </span>
                               </p>
                               <p>{note.text}</p>
+                            </div>
+                          </section>
+                        ))}
+                      </Col>
+                    </Row>
+                  )} */}
+
+                  {notesDetailIsOpen && (
+                    <Row>
+                      <Col xl={12} className="mt-5">
+                        <h3 className="mb-3">
+                          <strong>Dettaglio note</strong>
+                        </h3>
+                        {notes.map((note, index) => (
+                          <section className="soft nested-1 mt-2 p-3 pt-0">
+                            <div className="mb-1 pt-2 d-flex align-items-baseline justify-content-between">
+                              <strong>
+                                <span
+                                  className="d-inline-block position-relative"
+                                  style={{ margin: "-8px -5px -8px -8px", top: "10px" }}
+                                >
+                                  <Icon iconName="asterisk" color="black" />
+                                </span>
+                                {`Rilevamento ${new Date(note.detectionTime).toLocaleDateString(
+                                  [],
+                                  {
+                                    day: "2-digit",
+                                    month: "2-digit",
+                                    year: "2-digit",
+                                  },
+                                )}`}
+                              </strong>
+
+                              <button
+                                className="trnt_btn slim-y narrow-x outlined font-s-600 text-transform-none px-2 type-rounded"
+                                data-type="rounded"
+                                style={{ top: "-3px", position: "relative" }}
+                                onClick={() => {
+                                  setSelectedDetectionId(note.detection.id);
+                                }}
+                              >
+                                Evidenzia
+                              </button>
+                            </div>
+                            <div key={index}>
+                              <p className="ps-3 pe-md-5">{note.text}</p>
                             </div>
                           </section>
                         ))}
@@ -561,7 +608,7 @@ export function DetectionTypeDetail() {
           <Row>
             <Col xl={12} className="text-center mt-4">
               <button
-                className="trnt_btn primary"
+                className="trnt_btn primary type-rounded"
                 data-type="rounded"
                 onClick={() => navigate(modelPath)}
               >

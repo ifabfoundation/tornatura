@@ -13284,9 +13284,9 @@ body {
   min-width: 40px;
 }
 
-#app a.button[data-type="rounded"],
-#app input[type="submit"][data-type="rounded"],
-#app button.trnt_btn[data-type="rounded"] {
+#app a.button.type-rounded,
+#app input[type="submit"].type-rounded,
+#app button.trnt_btn.type-rounded {
   border-radius: 60px;
 }
 
@@ -13655,6 +13655,11 @@ body {
   border-radius: 20px;
   background-color: #eee;
   padding: 20px;
+}
+
+#app section.soft.nested-1 {
+  background-color: white;
+  border-radius: 10px;
 }
 
 #app .dot {
@@ -14561,18 +14566,18 @@ body {
 
 #app .horizontal-photo-stack {
   background-color: rgba(128, 128, 128, 0.15);
-  padding: 5px;
-  border-radius: 10px;
+  padding: 2px;
+  border-radius: 6px;
   display: inline-flex;
   align-items: center;
-  gap: 3px;
+  gap: 2px;
 }
 
 #app .horizontal-photo-stack .photo {
-  width: 30px;
-  height: 30px;
-  min-width: 30px;
-  min-height: 30px;
+  width: 26px;
+  height: 26px;
+  min-width: 26px;
+  min-height: 26px;
   background-size: cover;
   background-position: center;
   border-radius: 4px;
@@ -14582,10 +14587,10 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 30px;
-  height: 30px;
-  min-width: 30px;
-  min-height: 30px;
+  width: 26px;
+  height: 26px;
+  min-width: 26px;
+  min-height: 26px;
   border-radius: 4px;
   background-color: #f0f0f0;
   font-size: 14px;
