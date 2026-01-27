@@ -563,15 +563,13 @@ export function DetectionTypeDetail() {
             <section className="soft">
               <Row>
                 <Col lg={{ span: 6, order: 2 }}>
-                  {selectedDetectionId && (
-                    <FieldMaplet
-                      detectionId={selectedDetectionId}
-                      interactions={{
-                        dragPan: false,
-                        scrollZoom: false,
-                      }}
-                    />
-                  )}
+                  <FieldMaplet
+                    detectionId={selectedDetectionId}
+                    interactions={{
+                      dragPan: false,
+                      scrollZoom: false,
+                    }}
+                  />
                 </Col>
                 <Col
                   lg={{ span: 6, order: 1 }}

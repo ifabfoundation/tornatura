@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 import { useAppSelector } from "../hooks";
 import { fieldsSelectors } from "../features/fields/state/fields-slice";
 import { gpsStore } from "../providers/gps-providers";
-import { Point } from "@tornatura/coreapis";
+import { Detection, Point } from "@tornatura/coreapis";
 import { detectionsSelectors } from "../features/detections/state/detections-slice";
 import { enrichedMapPoints } from "../helpers/detections";
 import { detectionTypesSelectors } from "../features/detection-types/state/detection-types-slice";
@@ -14,7 +14,7 @@ import { observationTypesSelectors } from "../features/observation-types/state/o
 interface FieldMapletProps {
   // id of a detection
   // if provided, shows the detection points on the map
-  detectionId?: string;
+  detectionId: string | null | undefined;
 
   // (to be implemented)
   // id of a detection
@@ -56,32 +56,53 @@ export const FieldMaplet = ({
   const mapRef = React.useRef<any>(null);
   const [mapLoaded, setMapLoaded] = React.useState(false);
   const currentPosition = React.useContext(gpsStore);
-  const selectedDetection = useAppSelector((state) =>
-    detectionsSelectors.selectDetectionById(state, detectionId ?? "default"),
+
+  const [selectedDetection, setSelectedDetection] = React.useState<Detection | null>(null);
+  const detections = useAppSelector((state) =>
+    detectionsSelectors.selectDetectionbyFieldId(state, fieldId ?? "default"),
   );
-  // const detections = useAppSelector((state) =>
-  //   detectionsSelectors.selectDetectionbyFieldId(state, fieldId ?? "default"),
-  // );
-  const detectionType = useAppSelector((state) =>
-    detectionTypesSelectors.selectDetectionTypeById(
-      state,
-      selectedDetection?.detectionTypeId ?? "default",
-    ),
+  const detectionTypes = useAppSelector((state) =>
+    detectionTypesSelectors.selectDetectionTypesByField(state, fieldId ?? "default"),
   );
-  const observationType = useAppSelector((state) =>
-    observationTypesSelectors.selectObservationTypeById(
-      state,
-      detectionType?.observationTypeId ?? "default",
-    ),
+  const observationTypes = useAppSelector((state) =>
+    observationTypesSelectors.selectObservationTypes(state),
   );
 
-  const points = selectedDetection?.detectionData?.points
-    ? selectedDetection.detectionData.points
-    : [];
-  console.log("FieldMap points", points);
+  // return JSON.stringify(selectedDetection);
 
-  const selectedDetectionMapPoints = enrichedMapPoints(points, observationType);
-  console.log("••• selectedDetectionMapPoints", selectedDetectionMapPoints);
+  function getDetectionPoints() {
+    if (selectedDetection) {
+      const points = selectedDetection?.detectionData?.points
+        ? selectedDetection.detectionData.points
+        : [];
+      console.log("FieldMap points", points);
+
+      for (let detectionType of detectionTypes) {
+        if (detectionType.id === selectedDetection.detectionTypeId) {
+          const observationType = observationTypes.find(
+            (ot) => ot.id === detectionType.observationTypeId,
+          );
+          console.log("••• observationType", observationType);
+          if (observationType) {
+            return enrichedMapPoints(points, observationType);
+          }
+        }
+      }
+    }
+    return [];
+  }
+
+  React.useEffect(() => {
+    console.log("TTTTTTTTTT detectionId", detectionId);
+    if (detectionId) {
+      const det = detections.find((d) => d.id === detectionId);
+      if (det) {
+        setSelectedDetection(det);
+      } else {
+        setSelectedDetection(null);
+      }
+    }
+  }, [detectionId]);
 
   React.useEffect(() => {
     if (mapContainerRef.current && currentField) {
@@ -226,7 +247,7 @@ export const FieldMaplet = ({
 
         const pointsGeoJSON = {
           type: "FeatureCollection",
-          features: selectedDetectionMapPoints.map((pt) => ({
+          features: getDetectionPoints().map((pt) => ({
             type: "Feature",
             geometry: {
               type: "Point",
@@ -242,7 +263,7 @@ export const FieldMaplet = ({
           type: "Feature",
           geometry: {
             type: "LineString",
-            coordinates: selectedDetectionMapPoints.map((pt) => [pt.lng, pt.lat]),
+            coordinates: getDetectionPoints().map((pt) => [pt.lng, pt.lat]),
           },
           properties: {},
         };
@@ -397,7 +418,6 @@ export const FieldMaplet = ({
         mapRef.current.remove();
       };
     }
-    // }, [mapContainerRef, currentField]);
   }, []);
 
   React.useEffect(() => {
@@ -420,7 +440,7 @@ export const FieldMaplet = ({
   }, [mapLoaded, currentPosition]);
 
   React.useEffect(() => {
-    const selectedDetectionMapPoints = enrichedMapPoints(points, observationType);
+    const selectedDetectionMapPoints = getDetectionPoints();
 
     const sourcePath = mapRef.current!.getSource("dataPointsPath") as mapboxgl.GeoJSONSource;
 
@@ -452,8 +472,8 @@ export const FieldMaplet = ({
     sourcePoints?.setData(pointsGeoJSON);
   }, [selectedDetection]);
 
-  if (!selectedDetection) {
-    return <div>Detection not found</div>;
-  }
+  // if (!selectedDetection) {
+  //   return <div>Detection not found</div>;
+  // }
   return <div ref={mapContainerRef} className="map-observations"></div>;
 };
