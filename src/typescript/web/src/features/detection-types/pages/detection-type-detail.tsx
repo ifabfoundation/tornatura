@@ -538,7 +538,7 @@ export function DetectionTypeDetail() {
                     />
                     <LineChartVisx
                       width={containerWidth}
-                      height={100}
+                      height={200}
                       data={graphDataVisx}
                       onSelectPoint={handleGraphPointClick}
                       selectedId={selectedDetectionId ?? undefined}
