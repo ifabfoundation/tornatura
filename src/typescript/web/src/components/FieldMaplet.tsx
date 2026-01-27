@@ -13,7 +13,24 @@ import { observationTypesSelectors } from "../features/observation-types/state/o
 import { useIsMobile } from "../helpers/common";
 
 interface FieldMapletProps {
+  // id of a detection
+  // if provided, shows the detection points on the map
   detectionId?: string;
+
+  // (to be implemented)
+  // id of a detection
+  // if provided, shows the phantom points on the map
+  phantomId?: string;
+
+  // (to be implemented)
+  // map padding options
+  padding?: {};
+
+  // (to be implemented) - refer to https://docs.mapbox.com/mapbox-gl-js/example/toggle-interaction-handlers/
+  // map interactions on/off
+  // available interactions: "scrollZoom", "boxZoom", "dragRotate", "dragPan", "keyboard", "doubleClickZoom", "touchZoomRotate"
+  // all on by default
+  interactions?: {};
 }
 
 function isPointInsideField(pointLon: number, pointLat: number, areaPoints: number[][]) {
@@ -26,7 +43,12 @@ function isPointInsideField(pointLon: number, pointLat: number, areaPoints: numb
   return false;
 }
 
-export const FieldMaplet = ({ detectionId }: FieldMapletProps) => {
+export const FieldMaplet = ({
+  detectionId,
+  phantomId,
+  padding,
+  interactions,
+}: FieldMapletProps) => {
   const isMobile = useIsMobile();
   const { fieldId } = useParams();
   const currentField = useAppSelector((state) =>
@@ -86,11 +108,25 @@ export const FieldMaplet = ({ detectionId }: FieldMapletProps) => {
         console.log("••• bbox", fieldShapeBbox);
       }
 
+      const defaultInteractions = {
+        dragPan: true,
+        dragRotate: true,
+        scrollZoom: true,
+        doubleClickZoom: true,
+        touchZoomRotate: true,
+        keyboard: true,
+      };
+      const mergedInteractions = {
+        ...defaultInteractions,
+        ...interactions,
+      };
+
       mapRef.current = new mapboxgl.Map({
         container: mapContainerRef.current,
         style: "mapbox://styles/mapbox/satellite-streets-v12",
         center: centroid,
         zoom: 18,
+        ...mergedInteractions,
       });
 
       mapRef.current.on("load", () => {
@@ -172,9 +208,14 @@ export const FieldMaplet = ({ detectionId }: FieldMapletProps) => {
           },
         });
 
-        const mapTopPadding = isMobile ? 70 : 50;
+        //merge a default object with optional parameter
+        const paddingDefault = { top: 50, bottom: 50, left: 50, right: 50 };
+        const paddingMerged = {
+          ...paddingDefault,
+          ...(typeof padding === "object" ? padding : {}),
+        };
         mapRef.current.fitBounds(fieldShapeBbox, {
-          padding: { top: mapTopPadding, bottom: 50, left: 50, right: 50 },
+          padding: paddingMerged,
         });
 
         // --------------------------------------------------

@@ -10,7 +10,9 @@ export type Datum = {
   id: string;
   x: Date;
   y: number;
+  color: string;
   displayValue?: string;
+  displayLabel?: string;
 };
 
 export type InteractiveTimeSeriesChartProps = {
@@ -82,8 +84,8 @@ export default function InteractiveTimeSeriesChart({
             data={data}
             x={(d) => xScale(xAccessor(d).getTime())}
             y={(d) => yScale(yAccessor(d))}
-            stroke="#4f83ff"
-            strokeWidth={2}
+            stroke={"black"}
+            strokeWidth={4}
           />
 
           {/* Points */}
@@ -97,16 +99,14 @@ export default function InteractiveTimeSeriesChart({
                 cx={cx}
                 cy={cy}
                 r={selectedId === d.id ? 7 : 5}
-                fill="#4f83ff"
-                stroke={selectedId === d.id ? "black" : "white"}
+                fill={d.color}
+                stroke={selectedId === d.id ? "black" : "#111"}
                 strokeWidth={selectedId === d.id ? 3 : 1.5}
                 style={{ cursor: onSelectPoint ? "pointer" : "default" }}
                 onClick={() => onSelectPoint?.(d)}
                 onMouseMove={(e) => handleMouseMove(e, d)}
                 onMouseLeave={hideTooltip}
-              >
-                <title>{d.displayValue}</title>
-              </Circle>
+              />
             );
           })}
 
@@ -135,7 +135,9 @@ export default function InteractiveTimeSeriesChart({
           }}
         >
           <div>
-            <strong>Value:</strong> {tooltipData.displayValue}
+            <span className="font-s-600">{tooltipData.displayLabel}</span>
+            <br />
+            <strong className="font-l-600">{tooltipData.displayValue}</strong>
           </div>
           {/* <div>x: {xScale(tooltipData.x)}</div>
           <div>y: {tooltipData.y}</div> */}

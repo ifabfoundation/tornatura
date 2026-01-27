@@ -75,6 +75,7 @@ export function getDetectionStats(detection: Detection) {
     diseaseIndex: 0,
     diseaseIndexStr: "00%",
     counterSumsTotal: 0,
+    displayLabel: "-",
     displayValue: "-",
   };
 
@@ -147,8 +148,10 @@ export function getDetectionStats(detection: Detection) {
 
   // --- displayValue
   if (detectionStats.type === "range") {
+    detectionStats.displayLabel = "Indice di malattia";
     detectionStats.displayValue = detectionStats.diseaseIndexStr;
   } else if (detectionStats.type === "counters") {
+    detectionStats.displayLabel = "Totale conteggi";
     detectionStats.displayValue = detectionStats.counterSumsTotal.toString();
   }
 

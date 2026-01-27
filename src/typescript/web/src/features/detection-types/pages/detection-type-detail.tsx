@@ -18,6 +18,7 @@ import Icon from "../../../components/Icon";
 import LineChartVisx from "../../../components/LineChartVisx";
 import { getDetectionStats } from "../../../helpers/detections";
 import { ModalConfirm } from "../../../components/ModalConfirm";
+import { mapValues } from "../../../helpers/common";
 
 interface HorizontalPhotoStackProps {
   photos: string[];
@@ -364,15 +365,21 @@ export function DetectionTypeDetail() {
     .sort((a, b) => a.x - b.x);
 
   const graphDataVisx = detections
-    .map((detection) => {
+    .map((detection, index, a) => {
       const ds = getDetectionStats(detection);
       return {
         id: detection.id,
-        x: new Date(detection.detectionTime), // Linear time mapping
-        // x: index, // Sequential time mapping (better for debugging)
+        // Linear time mapping
+        // x: new Date(detection.detectionTime),
+        // Sequential time mapping (better for debugging)
+        x: new Date(
+          mapValues(index, 0, a.length, a[0].detectionTime, a[a.length - 1].detectionTime),
+        ),
         y: ds.type === "counters" ? ds.counterSumsTotal : ds.pointsAvg,
         color: getColor(groupStats.groupMin, groupStats.groupMax, ds.pointsAvg),
         detection: detection,
+        displayValue: ds.displayValue,
+        displayLabel: ds.displayLabel,
       };
     })
     .sort((a, b) => a.x.getTime() - b.x.getTime());
@@ -436,6 +443,20 @@ export function DetectionTypeDetail() {
     );
   }
 
+  const buttonNewDetection = (
+    <button
+      className="trnt_btn accent"
+      data-type="rounded"
+      onClick={() =>
+        navigate(`/companies/${companyId}/fields/${fieldId}/new-detection`, {
+          state: { typeId: typeId },
+        })
+      }
+    >
+      + Rilevamento {observationType?.typology}
+    </button>
+  );
+
   return (
     <div>
       <Container>
@@ -449,18 +470,8 @@ export function DetectionTypeDetail() {
                     <Col md={6}>
                       <div className="font-l-600">{`${observationType?.typology}  ›  ${observationType?.method}`}</div>
                     </Col>
-                    <Col md={6} className="text-md-end">
-                      <button
-                        className="trnt_btn accent"
-                        data-type="rounded"
-                        onClick={() =>
-                          navigate(`/companies/${companyId}/fields/${fieldId}/new-detection`, {
-                            state: { typeId: typeId },
-                          })
-                        }
-                      >
-                        + Rilevamento {observationType?.typology}
-                      </button>
+                    <Col md={6} className="text-md-end d-none d-md-block">
+                      {buttonNewDetection}
                     </Col>
                   </Row>
                 </Container>
@@ -468,31 +479,30 @@ export function DetectionTypeDetail() {
               <div className="mt-4">
                 <Container className="px-0">
                   <Row className="mt-4">
-                    <Col className="flex-infos">
-                      <div className="flex-info-unit">
-                        <p className="font-s-label upper mb-2">{detections.length} Rilevamenti</p>
-                        <div className="font-l-600">
-                          {/* <span className="me-1">{detections.length}</span> */}
-                          <button
-                            className="trnt_btn slim-y narrow-x outlined font-s-600 text-transform-none px-2"
-                            style={{ top: "-3px", position: "relative" }}
-                            data-type="rounded"
-                            onClick={() => setTableIsOpen(!tableIsOpen)}
-                          >{`  ${tableIsOpen ? "Nascondi" : "Mostra lista"}  `}</button>
-                        </div>
+                    <Col xs={"auto"} md={{ order: 1 }} className="me-4">
+                      <p className="font-s-label upper mb-2">{detections.length} Rilevamenti</p>
+                      <div className="font-l-600">
+                        <button
+                          className="trnt_btn slim-y narrow-x outlined font-s-600 text-transform-none px-2"
+                          style={{ top: "-3px", position: "relative" }}
+                          data-type="rounded"
+                          onClick={() => setTableIsOpen(!tableIsOpen)}
+                        >{`  ${tableIsOpen ? "Nascondi" : "Mostra lista"}  `}</button>
                       </div>
-                      <div className="flex-info-unit">
-                        <p className="font-s-label upper mb-2">{`${photos.length ? photos.length + " " : ""}Fotografi${photos.length === 1 ? "a" : "e"}`}</p>
-                        <div className="font-l-600">
-                          {photos.length > 0 && <HorizontalPhotoStack photos={photos} />}
-                          {photos.length === 0 && <div className="font-l-600">Nessuna</div>}
-                        </div>
+                    </Col>
+
+                    <Col xs={"auto"} md={{ order: 3 }} className="me-4">
+                      <p className="font-s-label upper mb-2">Note</p>
+                      <div className="font-l-600">
+                        {notes.length > 0 ? notes.length : "Nessuna"}
                       </div>
-                      <div className="flex-info-unit">
-                        <p className="font-s-label upper mb-2">Note</p>
-                        <div className="font-l-600">
-                          {notes.length > 0 ? notes.length : "Nessuna"}
-                        </div>
+                    </Col>
+
+                    <Col xs={12} md={{ span: "auto", order: 2 }} className="me-4 mt-3 mt-md-0">
+                      <p className="font-s-label upper mb-2">{`${photos.length ? photos.length + " " : ""}Fotografi${photos.length === 1 ? "a" : "e"}`}</p>
+                      <div className="font-l-600">
+                        {photos.length > 0 && <HorizontalPhotoStack photos={photos} />}
+                        {photos.length === 0 && <div className="font-l-600">Nessuna</div>}
                       </div>
                     </Col>
                   </Row>
@@ -512,6 +522,11 @@ export function DetectionTypeDetail() {
                       </Col>
                     </Row>
                   )}
+                  <Row>
+                    <Col xl={12} className="mt-4 d-md-none">
+                      {buttonNewDetection}
+                    </Col>
+                  </Row>
                 </Container>
               </div>
             </section>
@@ -521,7 +536,21 @@ export function DetectionTypeDetail() {
           <Col xl={12}>
             <section className="soft">
               <Row>
-                <Col lg={6} className="d-flex flex-column align-items-start justify-content-start">
+                <Col lg={{ span: 6, order: 2 }}>
+                  {selectedDetectionId && (
+                    <FieldMaplet
+                      detectionId={selectedDetectionId}
+                      interactions={{
+                        dragPan: false,
+                        scrollZoom: false,
+                      }}
+                    />
+                  )}
+                </Col>
+                <Col
+                  lg={{ span: 6, order: 1 }}
+                  className="d-flex flex-column align-items-start justify-content-start"
+                >
                   <div>
                     <h4>Graph title</h4>
                     <p>Legend</p>
@@ -544,9 +573,6 @@ export function DetectionTypeDetail() {
                       selectedId={selectedDetectionId ?? undefined}
                     />
                   </div>
-                </Col>
-                <Col lg={6}>
-                  {selectedDetectionId && <FieldMaplet detectionId={selectedDetectionId} />}
                 </Col>
               </Row>
             </section>

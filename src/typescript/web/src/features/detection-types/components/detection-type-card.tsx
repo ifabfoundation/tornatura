@@ -8,6 +8,7 @@ import { dateToString } from "../../../services/utils";
 import { GradientLineChart } from "../../../components/GradientLineChart";
 import { getDetectionStats } from "../../../helpers/detections";
 import LineChartVisx from "../../../components/LineChartVisx";
+import { mapValues } from "../../../helpers/common";
 
 function getColor(min: number, max: number, value: number): string {
   const colors = ["#42C318", "#FFB290", "#FF4D4D", "#A10505"];
@@ -82,15 +83,21 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
     })
     .sort((a, b) => a.x - b.x);
   const graphDataVisx = detections
-    .map((detection) => {
+    .map((detection, index, a) => {
       const ds = getDetectionStats(detection);
       return {
         id: detection.id,
-        x: new Date(detection.detectionTime), // Linear time mapping
-        // x: index, // Sequential time mapping (better for debugging)
+        // Linear time mapping
+        // x: new Date(detection.detectionTime),
+        // Sequential time mapping (better for debugging)
+        x: new Date(
+          mapValues(index, 0, a.length, a[0].detectionTime, a[a.length - 1].detectionTime),
+        ),
         y: ds.pointsAvg,
         color: getColor(groupStats.groupMin, groupStats.groupMax, ds.pointsAvg),
         detection: detection,
+        displayValue: ds.displayValue,
+        displayLabel: ds.displayLabel,
       };
     })
     .sort((a, b) => a.x.getTime() - b.x.getTime());
