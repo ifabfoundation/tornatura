@@ -5,6 +5,7 @@ import { LinePath, Circle } from "@visx/shape";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { useTooltip, TooltipWithBounds } from "@visx/tooltip";
 import { localPoint } from "@visx/event";
+import { LinearGradient } from "@visx/gradient";
 
 export type Datum = {
   id: string;
@@ -75,10 +76,42 @@ export default function LineChartVisx({
     });
   }
 
+  //   const gradients = useMemo(() => {
+  //   return points.slice(0, -1).map((a, i) => {
+  //     const b = points[i + 1];
+  //     return (
+  //       <linearGradient
+  //         key={`g-${uid.current}-${i}`}
+  //         id={`g-${uid.current}-${i}`}
+  //         gradientUnits="userSpaceOnUse"
+  //         x1={a.x}
+  //         y1={a.y}
+  //         x2={b.x}
+  //         y2={b.y}
+  //       >
+  //         <stop offset="0%" stopColor={a.color} />
+  //         <stop offset="100%" stopColor={b.color} />
+  //       </linearGradient>
+  //     );
+  //   });
+  // }, [points]);
+
   return (
     <div style={{ position: "relative" }}>
       <svg width={width} height={height}>
+        <defs></defs>
+
         <Group left={margin.left} top={margin.top}>
+          {/* Axes */}
+          <AxisBottom
+            top={innerHeight}
+            scale={xScale}
+            numTicks={5}
+            tickFormat={(d) => new Date(d as number).toLocaleDateString()}
+          />
+
+          <AxisLeft scale={yScale} numTicks={5} />
+
           {/* Line */}
           <LinePath<Datum>
             data={data}
@@ -109,16 +142,6 @@ export default function LineChartVisx({
               />
             );
           })}
-
-          {/* Axes */}
-          <AxisBottom
-            top={innerHeight}
-            scale={xScale}
-            numTicks={5}
-            tickFormat={(d) => new Date(d as number).toLocaleDateString()}
-          />
-
-          <AxisLeft scale={yScale} numTicks={5} />
         </Group>
       </svg>
       {tooltipData && (
