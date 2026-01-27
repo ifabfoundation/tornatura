@@ -91,7 +91,7 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
         // x: new Date(detection.detectionTime),
         // Sequential time mapping (better for debugging)
         x: new Date(
-          mapValues(index, 0, a.length, a[0].detectionTime, a[a.length - 1].detectionTime),
+          mapValues(index, a.length, 0, a[0].detectionTime, a[a.length - 1].detectionTime),
         ),
         y: ds.pointsAvg,
         color: getColor(groupStats.groupMin, groupStats.groupMax, ds.pointsAvg),

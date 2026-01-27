@@ -419,8 +419,11 @@ body {
       width: 100%;
     }
     &.slim-y {
-      height: 27px;
+      height: 24px;
       @include font-s-label;
+      img.icon {
+        max-height: 22px;
+      }
     }
     &.fat-y {
       height: 60px;
@@ -2077,7 +2080,8 @@ body {
           ul.menu-items {
             background-color: rgba(white, 0.05);
             margin-top: 0;
-            padding: 10px 20px 10px 20px;
+            // padding: 10px 20px 10px 20px;
+            padding: 0px 20px 10px 20px;
             border-bottom-left-radius: $r;
             border-bottom-right-radius: $r;
             &:last-child {
@@ -2093,12 +2097,12 @@ body {
         }
 
         &.selected {
-          background-color: rgba($c-yelo, 0.1);
+          background-color: rgba($c-yelo, 0.07);
           & + .subitems-wrapper {
             ul.menu-items {
-              background-color: rgba($c-yelo, 0.1) !important;
+              background-color: rgba($c-yelo, 0.07) !important;
               li.menu-item {
-                background-color: rgba($c-yelo, 0.05) !important;
+                // background-color: rgba($c-yelo, 0.05) !important;
                 &:hover {
                   background-color: rgba($c-yelo, 0.1) !important;
                 }

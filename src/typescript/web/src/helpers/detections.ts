@@ -2,22 +2,31 @@ import { ObservationPoint, ObservationType } from "@tornatura/coreapis";
 import { Detection } from "@tornatura/coreapis";
 import { mapValues } from "./common";
 
-export function getRangePointColor(v: number): string {
-  let c = "#43C318";
-  if (v > 0.25) c = "#FFB291";
-  if (v > 0.5) c = "#FF4D4E";
-  if (v > 0.75) c = "#A10406";
-  return c;
+export function getColorDiseaseIndex(diseaseIndex: number): string {
+  const colors = ["#42C318", "#FFB290", "#FF4D4D", "#A10505"];
+  return mapColorIndex(diseaseIndex, 0, 0.4, colors);
 }
 
-// export function getCounterPointSize(): number {
-//   return 25;
-// }
+export function getRangePointColorMap(
+  v: number,
+  rangeMin: number = 0,
+  rangeMax: number = 5,
+): string {
+  const colors = ["#42C318", "#FFB290", "#FF4D4D", "#A10505"];
+  return mapColorIndex(v, rangeMin, rangeMax, colors);
+}
+
+function mapColorIndex(value: number, min: number, max: number, colors: string[]): string {
+  const range = max - min;
+  const segment = range / colors.length;
+  const index = Math.min(colors.length - 1, Math.floor((value - min) / segment));
+  return colors[index];
+}
 
 export function enrichedMapPoints(points: ObservationPoint[], observationType: ObservationType) {
   const type = observationType ? observationType.observationType : "null";
   let counterSumMax = 0;
-  if (type == "counters") {
+  if (type === "counters") {
     const sumValues = points.map((point) => {
       let countersSum = 0;
       if (point.data && point.data.counters) {
@@ -28,25 +37,25 @@ export function enrichedMapPoints(points: ObservationPoint[], observationType: O
     counterSumMax = Math.max(...sumValues);
   }
 
-  const enrichedPoints = points.map((point: ObservationPoint) => {
+  const enrichedMapPoints = points.map((point: ObservationPoint) => {
     const num = point.data.rangeValue || 0;
     let color: string = "rgba(0,0,0,0.5)";
     let size: number = 7;
-    if (type == "range") {
-      const rangeMax = observationType
-        ? observationType.rangeMax
-          ? observationType.rangeMax
-          : 5
-        : 5;
-      color = getRangePointColor(num / rangeMax);
+
+    // Change color for type 'range'
+    if (type === "range") {
+      color = getRangePointColorMap(num);
     }
-    if (type == "counters") {
+
+    // Change size for type 'counters'
+    if (type === "counters") {
       let countersSum = 0;
       if (point.data && point.data.counters) {
         countersSum = point.data.counters.reduce((a, b) => a + b.counterValue, 0);
       }
       size = mapValues(countersSum, 0, counterSumMax, 0, 60);
     }
+
     return {
       lng: point.position.lng,
       lat: point.position.lat,
@@ -54,8 +63,7 @@ export function enrichedMapPoints(points: ObservationPoint[], observationType: O
       color: color,
     };
   });
-  console.log(",,,,,,,,,,,,,,nrichedPoints", enrichedPoints);
-  return enrichedPoints;
+  return enrichedMapPoints;
 }
 
 export function getDetectionStats(detection: Detection) {

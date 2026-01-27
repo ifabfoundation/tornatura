@@ -10,7 +10,6 @@ import { detectionsSelectors } from "../features/detections/state/detections-sli
 import { enrichedMapPoints } from "../helpers/detections";
 import { detectionTypesSelectors } from "../features/detection-types/state/detection-types-slice";
 import { observationTypesSelectors } from "../features/observation-types/state/observation-types-slice";
-import { useIsMobile } from "../helpers/common";
 
 interface FieldMapletProps {
   // id of a detection
@@ -49,7 +48,6 @@ export const FieldMaplet = ({
   padding,
   interactions,
 }: FieldMapletProps) => {
-  const isMobile = useIsMobile();
   const { fieldId } = useParams();
   const currentField = useAppSelector((state) =>
     fieldsSelectors.selectFieldbyId(state, fieldId ?? "default"),

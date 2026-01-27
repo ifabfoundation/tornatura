@@ -11,14 +11,16 @@ import { detectionTypesActions, detectionTypesSelectors } from "../state/detecti
 import { detectionsActions, detectionsSelectors } from "../../detections/state/detections-slice";
 import { Container, Row, Col } from "react-bootstrap";
 import { headerbarActions } from "../../headerbar/state/headerbar-slice";
-import TableCozy, { TableColumn, TableOptions } from "../../../components/TableCozy";
 import { FieldMaplet } from "../../../components/FieldMaplet";
 import { GradientLineChart } from "../../../components/GradientLineChart";
 import Icon from "../../../components/Icon";
 import LineChartVisx from "../../../components/LineChartVisx";
-import { getDetectionStats } from "../../../helpers/detections";
+import { getColorDiseaseIndex, getDetectionStats } from "../../../helpers/detections";
 import { ModalConfirm } from "../../../components/ModalConfirm";
 import { mapValues } from "../../../helpers/common";
+
+// import TableCozy, { TableColumn, TableOptions } from "../../../components/TableCozy";
+import { DetectionsTable } from "../../../components/DetectionsTable";
 
 interface HorizontalPhotoStackProps {
   photos: string[];
@@ -165,8 +167,10 @@ export function DetectionTypeDetail() {
     };
   }, []);
 
+  const sortedDetections = [...detections].sort((a, b) => b.detectionTime - a.detectionTime);
+
   const notes = [];
-  detections.forEach((detection) => {
+  sortedDetections.forEach((detection) => {
     // @ts-ignore
     if (detection.detectionData.notes && detection.detectionData.notes != "") {
       // @ts-ignore
@@ -174,7 +178,7 @@ export function DetectionTypeDetail() {
     }
   });
   const photos: string[] = [];
-  detections.forEach((detection) => {
+  sortedDetections.forEach((detection) => {
     // @ts-ignore
     if (detection.detectionData.photos && detection.detectionData.photos.length > 0) {
       // @ts-ignore
@@ -229,115 +233,123 @@ export function DetectionTypeDetail() {
     setSelectedDetectionId(d?.detection.id);
   }
 
-  function DetectionsTable() {
-    const tableOptions: TableOptions = {
-      defaultSortCol: "date",
-      defaultSortDir: "desc",
-    };
+  // function DetectionsTable() {
+  //   const tableOptions: TableOptions = {
+  //     defaultSortCol: "date",
+  //     defaultSortDir: "desc",
+  //   };
 
-    const tableColumns: TableColumn[] = [
-      {
-        headerText: "Data",
-        id: "detectionTime",
-        sortable: true,
-        style: "normal",
-        type: "text",
-      },
-      {
-        headerText: "BBCH",
-        id: "bbch",
-        sortable: true,
-        style: "normal",
-        type: "text",
-      },
-      {
-        headerText: "Osservazioni",
-        id: "pointsNum",
-        sortable: true,
-        style: "normal",
-        type: "text",
-      },
-      {
-        headerText: "% piante",
-        id: "infectedPercent",
-        sortable: true,
-        style: "normal",
-        type: "text",
-      },
-      {
-        headerText: "Intensità media",
-        id: "statIntensityAvg",
-        sortable: true,
-        style: "normal",
-        type: "text",
-      },
-      {
-        headerText: "Fotografie",
-        id: "photosNum",
-        sortable: true,
-        style: "normal",
-        type: "text",
-      },
-      {
-        headerText: "Indice di malattia",
-        id: "diseaseIndex",
-        sortable: true,
-        style: "normal",
-        type: "text",
-      },
-      {
-        headerText: "Azioni",
-        id: "action1",
-        type: "button",
-        style: "danger1",
-        buttonText: "Elimina",
-        onButtonClick: handleDeleteClick,
-      },
-      {
-        headerText: "",
-        id: "action2",
-        type: "button",
-        style: "secondary",
-        buttonText: "Mostra",
-        onButtonClick: handleHighlightDetection,
-      },
-    ];
+  //   const tableColumns: TableColumn[] = [
+  //     {
+  //       headerText: "Data",
+  //       id: "detectionTime",
+  //       sortable: true,
+  //       style: "normal",
+  //       type: "text",
+  //     },
+  //     {
+  //       headerText: "BBCH",
+  //       id: "bbch",
+  //       sortable: true,
+  //       style: "normal",
+  //       type: "text",
+  //     },
+  //     {
+  //       headerText: "Osservazioni",
+  //       id: "pointsNum",
+  //       sortable: true,
+  //       style: "normal",
+  //       type: "text",
+  //     },
+  //     {
+  //       headerText: "% piante",
+  //       id: "infectedPercent",
+  //       sortable: true,
+  //       style: "normal",
+  //       type: "text",
+  //     },
+  //     {
+  //       headerText: "Intensità media",
+  //       id: "statIntensityAvg",
+  //       sortable: true,
+  //       style: "normal",
+  //       type: "text",
+  //     },
+  //     {
+  //       headerText: "Fotografie",
+  //       id: "photosNum",
+  //       sortable: true,
+  //       style: "normal",
+  //       type: "text",
+  //     },
+  //     {
+  //       headerText: "Indice di malattia",
+  //       id: "diseaseIndex",
+  //       sortable: true,
+  //       style: "normal",
+  //       type: "text",
+  //     },
+  //     {
+  //       headerText: "Azioni",
+  //       id: "action1",
+  //       type: "button",
+  //       style: "danger1",
+  //       buttonText: "Elimina",
+  //       onButtonClick: handleDeleteClick,
+  //     },
+  //     {
+  //       headerText: "",
+  //       id: "action2",
+  //       type: "button",
+  //       style: "secondary",
+  //       buttonText: "Mostra",
+  //       onButtonClick: handleHighlightDetection,
+  //     },
+  //   ];
 
-    const tableData = detections.map((detection) => {
-      const dd = detection.detectionData;
-      const ds = getDetectionStats(detection);
-      const diseaseIndexColor = getColor(0, 0.4, ds.diseaseIndex);
-      return {
-        detection,
-        detectionTime: new Date(detection.detectionTime).toLocaleDateString(),
-        bbch: dd.bbch ?? "-",
-        pointsNum: dd.points.length ?? "-",
-        infectedPercent: ds.infectedPercentStr,
-        statIntensityAvg: ds.intensityAvgStr,
-        photosNum: dd.photos && dd.photos.length > 0 ? dd.photos.length : "–",
-        diseaseIndex: (
-          <span>
-            <span
-              className="dot me-2"
-              data-size="12"
-              style={{ background: diseaseIndexColor }}
-            ></span>
-            {ds.diseaseIndexStr}
-          </span>
-        ),
-      };
-    });
-    return <TableCozy columns={tableColumns} data={tableData} options={tableOptions} />;
-  }
+  //   const sortedDetections = [...detections].sort((a, b) => a.detectionTime - b.detectionTime);
 
-  function getColor(min: number, max: number, value: number): string {
-    // console.log("getColor", { min, max, value });
-    const colors = ["#42C318", "#FFB290", "#FF4D4D", "#A10505"];
-    const range = max - min;
-    const segment = range / colors.length;
-    const index = Math.min(colors.length - 1, Math.floor((value - min) / segment));
-    return colors[index];
-  }
+  //   const tableData = sortedDetections.map((detection) => {
+  //     const dd = detection.detectionData;
+  //     const ds = getDetectionStats(detection);
+  //     const diseaseIndexColor = getColorDiseaseIndex(ds.diseaseIndex);
+  //     return {
+  //       detection,
+  //       detectionTime:
+  //         new Date(detection.detectionTime).toLocaleDateString() +
+  //         ", " +
+  //         new Date(detection.detectionTime).toLocaleTimeString([], {
+  //           hour: "2-digit",
+  //           minute: "2-digit",
+  //         }),
+  //       bbch: dd.bbch ?? "-",
+  //       pointsNum: dd.points.length ?? "-",
+  //       infectedPercent: ds.infectedPercentStr,
+  //       statIntensityAvg: ds.intensityAvgStr,
+  //       photosNum: dd.photos && dd.photos.length > 0 ? dd.photos.length : "–",
+  //       diseaseIndex: (
+  //         <span>
+  //           <span
+  //             className="dot me-2"
+  //             data-size="12"
+  //             style={{ background: diseaseIndexColor }}
+  //           ></span>
+  //           {ds.diseaseIndexStr}
+  //         </span>
+  //       ),
+  //     };
+  //   });
+  //   return <TableCozy columns={tableColumns} data={tableData} options={tableOptions} />;
+  // }
+
+  // function getColor(min: number, max: number, value: number): string {
+  //   // console.log("getColor", { min, max, value });
+  //   const colors = ["#42C318", "#FFB290", "#FF4D4D", "#A10505"];
+  //   const range = max - min;
+  //   const segment = range / colors.length;
+  //   const index = Math.min(colors.length - 1, Math.floor((value - min) / segment));
+  //   return colors[index];
+  // }
 
   const groupStats = {
     groupMin: Infinity,
@@ -358,31 +370,30 @@ export function DetectionTypeDetail() {
         // x: detection.detectionTime, // Linear time mapping
         x: index, // Sequential time mapping (better for debugging)
         y: ds.pointsAvg,
-        color: getColor(groupStats.groupMin, groupStats.groupMax, ds.pointsAvg),
+        // color: getRangePointColor(groupStats.groupMin, groupStats.groupMax, ds.pointsAvg),
+        color: getColorDiseaseIndex(ds.diseaseIndex),
         detection: detection,
       };
     })
     .sort((a, b) => a.x - b.x);
 
-  const graphDataVisx = detections
-    .map((detection, index, a) => {
-      const ds = getDetectionStats(detection);
-      return {
-        id: detection.id,
-        // Linear time mapping
-        // x: new Date(detection.detectionTime),
-        // Sequential time mapping (better for debugging)
-        x: new Date(
-          mapValues(index, 0, a.length, a[0].detectionTime, a[a.length - 1].detectionTime),
-        ),
-        y: ds.type === "counters" ? ds.counterSumsTotal : ds.pointsAvg,
-        color: getColor(groupStats.groupMin, groupStats.groupMax, ds.pointsAvg),
-        detection: detection,
-        displayValue: ds.displayValue,
-        displayLabel: ds.displayLabel,
-      };
-    })
-    .sort((a, b) => a.x.getTime() - b.x.getTime());
+  const graphDataVisx = sortedDetections.map((detection, index, a) => {
+    const ds = getDetectionStats(detection);
+    return {
+      id: detection.id,
+      // Linear time mapping
+      // x: new Date(detection.detectionTime),
+      // Sequential time mapping (better for debugging)
+      x: new Date(mapValues(index, a.length, 0, a[0].detectionTime, a[a.length - 1].detectionTime)),
+      y: ds.type === "counters" ? ds.counterSumsTotal : ds.pointsAvg,
+      // color: getColor(groupStats.groupMin, groupStats.groupMax, ds.pointsAvg),
+      color: getColorDiseaseIndex(ds.diseaseIndex),
+      detection: detection,
+      displayValue: ds.displayValue,
+      displayLabel: ds.displayLabel,
+    };
+  });
+  // .sort((a, b) => b.x.getTime() - a.x.getTime());
 
   const modelPaths = {
     Peronospora: `/companies/${companyId}/fields/${fieldId}/models/peronospora`,
@@ -407,7 +418,7 @@ export function DetectionTypeDetail() {
         detectionId: detection.id,
         detectionTime: new Date(detection.detectionTime).toISOString(),
         bbch: dd.bbch ?? "",
-        observationNum: index + 1,
+        observationNum: `#${index + 1}`,
         dotValue: dotValue !== undefined && dotValue !== null ? dotValue : "",
         diseaseIndex: ds.diseaseIndex,
       };
@@ -480,21 +491,31 @@ export function DetectionTypeDetail() {
                 <Container className="px-0">
                   <Row className="mt-4">
                     <Col xs={"auto"} md={{ order: 1 }} className="me-4">
-                      <p className="font-s-label upper mb-2">{detections.length} Rilevamenti</p>
+                      <p className="font-s-label upper mb-2">Rilevamenti</p>
                       <div className="font-l-600">
+                        <span className="me-1">{detections.length}</span>
                         <button
                           className="trnt_btn slim-y narrow-x outlined font-s-600 text-transform-none px-2"
                           style={{ top: "-3px", position: "relative" }}
                           data-type="rounded"
                           onClick={() => setTableIsOpen(!tableIsOpen)}
-                        >{`  ${tableIsOpen ? "Nascondi" : "Mostra lista"}  `}</button>
+                        >{`  ${tableIsOpen ? "Nascondi" : "Espandi"}  `}</button>
                       </div>
                     </Col>
 
                     <Col xs={"auto"} md={{ order: 3 }} className="me-4">
                       <p className="font-s-label upper mb-2">Note</p>
                       <div className="font-l-600">
-                        {notes.length > 0 ? notes.length : "Nessuna"}
+                        <span className="me-1">{notes.length > 0 ? notes.length : "Nessuna"}</span>
+                        {notes.length > 0 && (
+                          <button
+                            disabled
+                            className="trnt_btn slim-y narrow-x outlined font-s-600 text-transform-none px-2"
+                            style={{ top: "-3px", position: "relative" }}
+                            data-type="rounded"
+                            onClick={() => setTableIsOpen(!tableIsOpen)}
+                          >{`  ${tableIsOpen ? "Nascondi" : "Espandi"}  `}</button>
+                        )}
                       </div>
                     </Col>
 
@@ -510,14 +531,24 @@ export function DetectionTypeDetail() {
                   {tableIsOpen && (
                     <Row>
                       <Col xl={12} className="mt-5">
-                        <DetectionsTable />
+                        <DetectionsTable
+                          detections={sortedDetections}
+                          handleHighlightDetection={(row) =>
+                            setSelectedDetectionId(row.detection?.id ?? null)
+                          }
+                          handleDeleteDetection={handleDeleteClick}
+                        />
                       </Col>
                       <Col xl={12} className="my-2">
-                        <DownloadDataButton data={detections} format={"json"} filename={"campo"} />
+                        <DownloadDataButton
+                          data={detections}
+                          format={"json"}
+                          filename={`campo ${fieldId}`}
+                        />
                         <DownloadDataButton
                           data={flatDetectionsData}
                           format={"csv"}
-                          filename={"campo"}
+                          filename={`campo ${fieldId}`}
                         />
                       </Col>
                     </Row>

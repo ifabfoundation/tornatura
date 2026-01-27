@@ -46,6 +46,12 @@ function MenuItemFamily({ famIcon, famText, famState, famItems }: MenuItemFamily
     }
   }, [isOpen]);
 
+  useEffect(() => {
+    const hasSelectecChild = famItems.some((item) => item.state === "selected");
+    const newIsOpen = famState == "selected" || hasSelectecChild ? true : false;
+    setIsOpen(newIsOpen);
+  }, [famState, famItems]);
+
   const className = `menu-item-family ${famState}`;
   const color = "white";
   const textClassName = "color-white";
@@ -69,10 +75,12 @@ function MenuItemFamily({ famIcon, famText, famState, famItems }: MenuItemFamily
       </li>
       <div className="subitems-wrapper" data-open={isOpen ? "true" : "false"} ref={contentRef}>
         <ul className="menu-items">
-          {famItems.map((item, i) => {
-            const state = item.state === "selected" ? "selected" : "normal";
-            return <SubmenuItem key={i} text={item.text} state={state} path={item.path} />;
-          })}
+          {famItems
+            .sort((a, b) => a.text.localeCompare(b.text))
+            .map((item, i) => {
+              const state = item.state === "selected" ? "selected" : "normal";
+              return <SubmenuItem key={i} text={item.text} state={state} path={item.path} />;
+            })}
         </ul>
       </div>
     </>

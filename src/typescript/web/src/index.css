@@ -13489,7 +13489,7 @@ body {
 #app a.button.slim-y,
 #app input[type="submit"].slim-y,
 #app button.trnt_btn.slim-y {
-  height: 27px;
+  height: 24px;
   font-family: "Inter", sans-serif;
   font-size: 11px;
   letter-spacing: 0.02em;
@@ -13532,6 +13532,12 @@ body {
   #app button.trnt_btn.slim-y {
     font-size: 11px;
   }
+}
+
+#app a.button.slim-y img.icon,
+#app input[type="submit"].slim-y img.icon,
+#app button.trnt_btn.slim-y img.icon {
+  max-height: 22px;
 }
 
 #app a.button.fat-y,
@@ -15917,7 +15923,7 @@ body {
 #app .sidebar ul.menu-items li.menu-item-family + .subitems-wrapper ul.menu-items {
   background-color: rgba(255, 255, 255, 0.05);
   margin-top: 0;
-  padding: 10px 20px 10px 20px;
+  padding: 0px 20px 10px 20px;
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
 }
@@ -15935,15 +15941,11 @@ body {
 }
 
 #app .sidebar ul.menu-items li.menu-item-family.selected {
-  background-color: rgba(234, 255, 0, 0.1);
+  background-color: rgba(234, 255, 0, 0.07);
 }
 
 #app .sidebar ul.menu-items li.menu-item-family.selected + .subitems-wrapper ul.menu-items {
-  background-color: rgba(234, 255, 0, 0.1) !important;
-}
-
-#app .sidebar ul.menu-items li.menu-item-family.selected + .subitems-wrapper ul.menu-items li.menu-item {
-  background-color: rgba(234, 255, 0, 0.05) !important;
+  background-color: rgba(234, 255, 0, 0.07) !important;
 }
 
 #app .sidebar ul.menu-items li.menu-item-family.selected + .subitems-wrapper ul.menu-items li.menu-item:hover {
