@@ -18,8 +18,6 @@ import LineChartVisx from "../../../components/LineChartVisx";
 import { getColorDiseaseIndex, getDetectionStats } from "../../../helpers/detections";
 import { ModalConfirm } from "../../../components/ModalConfirm";
 import { mapValues } from "../../../helpers/common";
-
-// import TableCozy, { TableColumn, TableOptions } from "../../../components/TableCozy";
 import { DetectionsTable } from "../../../components/DetectionsTable";
 
 interface HorizontalPhotoStackProps {
@@ -109,6 +107,7 @@ export function DetectionTypeDetail() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [tableIsOpen, setTableIsOpen] = React.useState<boolean>(false);
+  const [notesDetailIsOpen, setNotesDetailIsOpen] = React.useState<boolean>(false);
   const [selectedDetectionId, setSelectedDetectionId] = React.useState<string | null>(null);
   const [modalOpen, setModalOpen] = React.useState(false);
   const [modal, setModal] = React.useState<any>({});
@@ -131,7 +130,7 @@ export function DetectionTypeDetail() {
 
   React.useEffect(() => {
     if (detections.length > 0) {
-      const sortedDetections = [...detections].sort((a, b) => b.detectionTime - a.detectionTime);
+      const sortedDetections = [...detections].sort((a, b) => a.detectionTime - b.detectionTime);
       setSelectedDetectionId(sortedDetections[0].id);
     }
   }, [detections]);
@@ -169,12 +168,20 @@ export function DetectionTypeDetail() {
 
   const sortedDetections = [...detections].sort((a, b) => b.detectionTime - a.detectionTime);
 
-  const notes = [];
+  const notes: {
+    detection: Detection;
+    text: string;
+    detectionTime: number;
+  }[] = [];
   sortedDetections.forEach((detection) => {
     // @ts-ignore
     if (detection.detectionData.notes && detection.detectionData.notes != "") {
       // @ts-ignore
-      notes.push(detection.detectionData.notes);
+      notes.push({
+        detection,
+        text: detection.detectionData.notes,
+        detectionTime: detection.detectionTime,
+      });
     }
   });
   const photos: string[] = [];
@@ -233,124 +240,6 @@ export function DetectionTypeDetail() {
     setSelectedDetectionId(d?.detection.id);
   }
 
-  // function DetectionsTable() {
-  //   const tableOptions: TableOptions = {
-  //     defaultSortCol: "date",
-  //     defaultSortDir: "desc",
-  //   };
-
-  //   const tableColumns: TableColumn[] = [
-  //     {
-  //       headerText: "Data",
-  //       id: "detectionTime",
-  //       sortable: true,
-  //       style: "normal",
-  //       type: "text",
-  //     },
-  //     {
-  //       headerText: "BBCH",
-  //       id: "bbch",
-  //       sortable: true,
-  //       style: "normal",
-  //       type: "text",
-  //     },
-  //     {
-  //       headerText: "Osservazioni",
-  //       id: "pointsNum",
-  //       sortable: true,
-  //       style: "normal",
-  //       type: "text",
-  //     },
-  //     {
-  //       headerText: "% piante",
-  //       id: "infectedPercent",
-  //       sortable: true,
-  //       style: "normal",
-  //       type: "text",
-  //     },
-  //     {
-  //       headerText: "Intensità media",
-  //       id: "statIntensityAvg",
-  //       sortable: true,
-  //       style: "normal",
-  //       type: "text",
-  //     },
-  //     {
-  //       headerText: "Fotografie",
-  //       id: "photosNum",
-  //       sortable: true,
-  //       style: "normal",
-  //       type: "text",
-  //     },
-  //     {
-  //       headerText: "Indice di malattia",
-  //       id: "diseaseIndex",
-  //       sortable: true,
-  //       style: "normal",
-  //       type: "text",
-  //     },
-  //     {
-  //       headerText: "Azioni",
-  //       id: "action1",
-  //       type: "button",
-  //       style: "danger1",
-  //       buttonText: "Elimina",
-  //       onButtonClick: handleDeleteClick,
-  //     },
-  //     {
-  //       headerText: "",
-  //       id: "action2",
-  //       type: "button",
-  //       style: "secondary",
-  //       buttonText: "Mostra",
-  //       onButtonClick: handleHighlightDetection,
-  //     },
-  //   ];
-
-  //   const sortedDetections = [...detections].sort((a, b) => a.detectionTime - b.detectionTime);
-
-  //   const tableData = sortedDetections.map((detection) => {
-  //     const dd = detection.detectionData;
-  //     const ds = getDetectionStats(detection);
-  //     const diseaseIndexColor = getColorDiseaseIndex(ds.diseaseIndex);
-  //     return {
-  //       detection,
-  //       detectionTime:
-  //         new Date(detection.detectionTime).toLocaleDateString() +
-  //         ", " +
-  //         new Date(detection.detectionTime).toLocaleTimeString([], {
-  //           hour: "2-digit",
-  //           minute: "2-digit",
-  //         }),
-  //       bbch: dd.bbch ?? "-",
-  //       pointsNum: dd.points.length ?? "-",
-  //       infectedPercent: ds.infectedPercentStr,
-  //       statIntensityAvg: ds.intensityAvgStr,
-  //       photosNum: dd.photos && dd.photos.length > 0 ? dd.photos.length : "–",
-  //       diseaseIndex: (
-  //         <span>
-  //           <span
-  //             className="dot me-2"
-  //             data-size="12"
-  //             style={{ background: diseaseIndexColor }}
-  //           ></span>
-  //           {ds.diseaseIndexStr}
-  //         </span>
-  //       ),
-  //     };
-  //   });
-  //   return <TableCozy columns={tableColumns} data={tableData} options={tableOptions} />;
-  // }
-
-  // function getColor(min: number, max: number, value: number): string {
-  //   // console.log("getColor", { min, max, value });
-  //   const colors = ["#42C318", "#FFB290", "#FF4D4D", "#A10505"];
-  //   const range = max - min;
-  //   const segment = range / colors.length;
-  //   const index = Math.min(colors.length - 1, Math.floor((value - min) / segment));
-  //   return colors[index];
-  // }
-
   const groupStats = {
     groupMin: Infinity,
     groupMax: -Infinity,
@@ -384,8 +273,8 @@ export function DetectionTypeDetail() {
       // Linear time mapping
       // x: new Date(detection.detectionTime),
       // Sequential time mapping (better for debugging)
-      x: new Date(mapValues(index, a.length, 0, a[0].detectionTime, a[a.length - 1].detectionTime)),
-      y: ds.type === "counters" ? ds.counterSumsTotal : ds.pointsAvg,
+      x: new Date(mapValues(index, 0, a.length, a[0].detectionTime, a[a.length - 1].detectionTime)),
+      y: ds.type === "counters" ? ds.counterSumsTotal : ds.diseaseIndex,
       // color: getColor(groupStats.groupMin, groupStats.groupMax, ds.pointsAvg),
       color: getColorDiseaseIndex(ds.diseaseIndex),
       detection: detection,
@@ -453,6 +342,20 @@ export function DetectionTypeDetail() {
       </div>
     );
   }
+  function handleToggleTable() {
+    const newIsOpen = !tableIsOpen;
+    if (newIsOpen === true && notesDetailIsOpen) {
+      setNotesDetailIsOpen(false);
+    }
+    setTableIsOpen(newIsOpen);
+  }
+  function handleToggleNotes() {
+    const newIsOpen = !notesDetailIsOpen;
+    if (newIsOpen === true && tableIsOpen) {
+      setTableIsOpen(false);
+    }
+    setNotesDetailIsOpen(newIsOpen);
+  }
 
   const buttonNewDetection = (
     <button
@@ -498,7 +401,7 @@ export function DetectionTypeDetail() {
                           className="trnt_btn slim-y narrow-x outlined font-s-600 text-transform-none px-2"
                           style={{ top: "-3px", position: "relative" }}
                           data-type="rounded"
-                          onClick={() => setTableIsOpen(!tableIsOpen)}
+                          onClick={handleToggleTable}
                         >{`  ${tableIsOpen ? "Nascondi" : "Espandi"}  `}</button>
                       </div>
                     </Col>
@@ -509,12 +412,11 @@ export function DetectionTypeDetail() {
                         <span className="me-1">{notes.length > 0 ? notes.length : "Nessuna"}</span>
                         {notes.length > 0 && (
                           <button
-                            disabled
                             className="trnt_btn slim-y narrow-x outlined font-s-600 text-transform-none px-2"
                             style={{ top: "-3px", position: "relative" }}
                             data-type="rounded"
-                            onClick={() => setTableIsOpen(!tableIsOpen)}
-                          >{`  ${tableIsOpen ? "Nascondi" : "Espandi"}  `}</button>
+                            onClick={handleToggleNotes}
+                          >{`  ${notesDetailIsOpen ? "Nascondi" : "Espandi"}  `}</button>
                         )}
                       </div>
                     </Col>
@@ -553,6 +455,52 @@ export function DetectionTypeDetail() {
                       </Col>
                     </Row>
                   )}
+
+                  {notesDetailIsOpen && (
+                    <Row>
+                      <Col xl={12} className="mt-5">
+                        <h3 className="mb-3">
+                          <strong>Dettaglio note</strong>
+                        </h3>
+                        {notes.map((note, index) => (
+                          <section className="soft bg-white mt-3">
+                            <div key={index}>
+                              <p className="mb-2">
+                                <strong>
+                                  <span
+                                    className="d-inline-block position-relative"
+                                    style={{ margin: "-8px -5px -8px -8px", top: "10px" }}
+                                  >
+                                    <Icon iconName="asterisk" color="black" />
+                                  </span>
+                                  {`Rilevamento ${new Date(note.detectionTime).toLocaleDateString(
+                                    [],
+                                    {
+                                      day: "2-digit",
+                                      month: "2-digit",
+                                      year: "2-digit",
+                                    },
+                                  )}`}
+                                </strong>
+                                <span className="ms-2">
+                                  <a
+                                    className="pointer color-black"
+                                    onClick={() => {
+                                      setSelectedDetectionId(note.detection.id);
+                                    }}
+                                  >
+                                    Evidenzia
+                                  </a>
+                                </span>
+                              </p>
+                              <p>{note.text}</p>
+                            </div>
+                          </section>
+                        ))}
+                      </Col>
+                    </Row>
+                  )}
+
                   <Row>
                     <Col xl={12} className="mt-4 d-md-none">
                       {buttonNewDetection}

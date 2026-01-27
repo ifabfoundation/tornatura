@@ -69,6 +69,13 @@ export function DetectionsTable({
       type: "text",
     },
     {
+      headerText: "Note",
+      id: "notesNum",
+      sortable: true,
+      style: "normal",
+      type: "text",
+    },
+    {
       headerText: "Fotografie",
       id: "photosNum",
       sortable: true,
@@ -102,7 +109,7 @@ export function DetectionsTable({
       id: "action2",
       type: "button",
       style: "secondary",
-      buttonText: "Mostra",
+      buttonText: "Evidenzia",
       onButtonClick: (data) => {
         if (handleHighlightDetection) {
           handleHighlightDetection(data);
@@ -134,6 +141,7 @@ export function DetectionsTable({
       infectedPercent: ds.infectedPercentStr,
       statIntensityAvg: ds.intensityAvgStr,
       photosNum: dd.photos && dd.photos.length > 0 ? dd.photos.length : "–",
+      notesNum: dd.notes && dd.notes.length > 0 ? "Sì" : "–",
       diseaseIndex: (
         <span>
           <span

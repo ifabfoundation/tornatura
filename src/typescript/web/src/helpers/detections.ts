@@ -2,6 +2,31 @@ import { ObservationPoint, ObservationType } from "@tornatura/coreapis";
 import { Detection } from "@tornatura/coreapis";
 import { mapValues } from "./common";
 
+/* Anatomy of a detection object 
+--------------------------------------------------------------------------------
+detection = {
+  agrifieldId: "685a5d40f2de7db5c17f177c",
+  creationTime: 1769275022455,
+  detectionData: {
+    bbch: "21",
+    notes: "Lorem ipsum…",
+    photos: ["https://placehold.co/600x400", "https://placehold.co/600x400"],
+    points: [{
+      data: {
+        counters: [],
+        rangeValue: 5,
+      },
+      position: {lng: 12.76965574474565, lat: 41.68182819504833}
+    }],
+  },
+  detectionTime: 1769275000458,
+  detectionTypeId: "6974fd8c388f508a98827411",
+  id: "6974fe8e388f508a98827415",
+  lastUpdateTime: 1769275022455,
+}
+--------------------------------------------------------------------------------
+*/
+
 export function getColorDiseaseIndex(diseaseIndex: number): string {
   const colors = ["#42C318", "#FFB290", "#FF4D4D", "#A10505"];
   return mapColorIndex(diseaseIndex, 0, 0.4, colors);
@@ -108,27 +133,6 @@ export function getDetectionStats(detection: Detection) {
   });
   detectionStats.pointsAvg =
     detectionStats.pointsCount > 0 ? detectionStats.pointsSum / detectionStats.pointsCount : 0;
-
-  // detection = {
-  //   agrifieldId: "685a5d40f2de7db5c17f177c",
-  //   creationTime: 1769275022455,
-  //   detectionData: {
-  //     bbch: "21",
-  //     notes: "Lorem ipsum…",
-  //     photos: ["https://placehold.co/600x400", "https://placehold.co/600x400"],
-  //     points: [{
-  //       data: {
-  //         counters: [],
-  //         rangeValue: 5,
-  //       },
-  //       position: {lng: 12.76965574474565, lat: 41.68182819504833}
-  //     }],
-  //   },
-  //   detectionTime: 1769275000458,
-  //   detectionTypeId: "6974fd8c388f508a98827411",
-  //   id: "6974fe8e388f508a98827415",
-  //   lastUpdateTime: 1769275022455,
-  // }
 
   // --- pianteColpite
 
