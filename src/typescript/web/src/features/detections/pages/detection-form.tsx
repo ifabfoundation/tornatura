@@ -2472,8 +2472,8 @@ function DetectionStepObservationPoints({
                       <ScoreBtnRow score={0} label="Assente" />
                       {Array.from({ length: rangeLength }, (_, i) => i + 1).map((v, index) => {
                         console.log("score dots: ", v, rangeLength);
-                        const labels = ["Basso", "Limitato", "Cospicuo", "Alto", "Molto Alto"];
-                        if (v > 5) {
+                        const labels = ["Basso", "Limitato", "Alto", "Molto Alto"];
+                        if (v > 4) {
                           return <ScoreBtnRow key={index} score={v} label="Molto Alto" />;
                         } else {
                           return <ScoreBtnRow key={index} score={v} label={labels[v - 1]} />;

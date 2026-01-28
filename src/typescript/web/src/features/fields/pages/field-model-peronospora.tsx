@@ -132,7 +132,9 @@ export function FieldModelPeronospora() {
     "stroke-opacity": 1,
   };
 
-  if (current === null || forecast === null) {
+  if (error) {
+    return <div className="container my-5">{error}</div>
+  } else if (current === null || forecast === null) {
     return <div className="container my-5">Caricamento dati...</div>;
   }
 
