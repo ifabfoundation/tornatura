@@ -117,7 +117,7 @@ export function FieldModelCimice() {
                           geoJson,
                         )})/auto/1024x1024?padding=160&access_token=${process.env.REACT_APP_MAPBOX_API_TOKEN}`}
                         alt="Field Map"
-                        className="img-fluid rounded ratio-1-1"
+                        className="img-fluid rounded ratio-1-1 d-block"
                       />
                       {/* <button
                         className="trnt_btn slim-y narrow-x secondary type-rounded position-absolute top-0 end-0 m-3 bg-white"

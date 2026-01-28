@@ -84,6 +84,9 @@ $ms-sidebar-transition: 100ms;
 .color-hover-black:hover {
   color: black !important;
 }
+.opacity-02 {
+  opacity: 0.2 !important;
+}
 .opacity-05 {
   opacity: 0.5 !important;
 }
@@ -204,6 +207,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
   overflow: hidden;
   background-color: black;
+}
+
+small {
+  font-size: 0.8em;
 }
 
 .loading-cont {
@@ -2817,8 +2824,48 @@ $hb-color-on-hover: #eee;
 }
 
 // --------------------------------------------------------------------------------------------------
-// Model markdown
+// Models & markdown
 // --------------------------------------------------------------------------------------------------
+
+@mixin table-style {
+  width: 100%;
+  border-collapse: collapse;
+  outline: 1px solid $c-grey_2; /* outer border */
+  margin-top: 1em;
+  margin-bottom: 1em;
+  border-radius: 10px;
+  overflow: hidden;
+  th,
+  td {
+    border: 1px solid $c-grey_2;
+    padding: 8px;
+    text-align: left;
+  }
+  th {
+    background-color: $c-grey_1;
+  }
+  /* Remove borders on the outside edges */
+  tr:first-child th,
+  tr:first-child td {
+    border-top: none;
+  }
+  tr:last-child th,
+  tr:last-child td {
+    border-bottom: none;
+  }
+  tr td:first-child,
+  tr th:first-child {
+    border-left: none;
+  }
+  tr td:last-child,
+  tr th:last-child {
+    border-right: none;
+  }
+}
+
+table.model-table {
+  @include table-style;
+}
 
 #model-markdown {
   h1,
@@ -2853,41 +2900,7 @@ $hb-color-on-hover: #eee;
     opacity: 1;
   }
   table {
-    width: 100%;
-    border-collapse: collapse;
-    // border-collapse: separate;
-    // border: 1px solid $c-grey_2;
-    outline: 1px solid $c-grey_2; /* outer border */
-    margin-top: 1em;
-    margin-bottom: 1em;
-    border-radius: 10px;
-    overflow: hidden;
-    th,
-    td {
-      border: 1px solid $c-grey_2;
-      padding: 8px;
-      text-align: left;
-    }
-    th {
-      background-color: $c-grey_1;
-    }
-    /* Remove borders on the outside edges */
-    tr:first-child th,
-    tr:first-child td {
-      border-top: none;
-    }
-    tr:last-child th,
-    tr:last-child td {
-      border-bottom: none;
-    }
-    tr td:first-child,
-    tr th:first-child {
-      border-left: none;
-    }
-    tr td:last-child,
-    tr th:last-child {
-      border-right: none;
-    }
+    @include table-style;
   }
 }
 
