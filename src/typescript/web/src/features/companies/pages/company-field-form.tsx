@@ -151,6 +151,9 @@ export function FieldFormInfo({ formData, action, onNextClick, onBackClick }: Fi
                   value={formik.values.name}
                 />
               </label>
+              {formik.touched.name && formik.errors.name ? (
+                <div className="error">{formik.errors.name}</div>
+              ) : null}
             </div>
           </div>
           <div className="row input-row">
@@ -174,6 +177,9 @@ export function FieldFormInfo({ formData, action, onNextClick, onBackClick }: Fi
                   ))}
                 </select>
               </label>
+              {formik.touched.harvest && formik.errors.harvest ? (
+                <div className="error">{formik.errors.harvest}</div>
+              ) : null}
             </div>
             <div className="col-md-6 input-row-margin-fix">
               <label>
@@ -188,6 +194,9 @@ export function FieldFormInfo({ formData, action, onNextClick, onBackClick }: Fi
                   value={formik.values.variety}
                 />
               </label>
+              {formik.touched.variety && formik.errors.variety ? (
+                <div className="error">{formik.errors.variety}</div>
+              ) : null}
             </div>
           </div>
           <div className="row input-row">
@@ -211,6 +220,9 @@ export function FieldFormInfo({ formData, action, onNextClick, onBackClick }: Fi
                   ))}
                 </select>
               </label>
+              {formik.touched.rotation && formik.errors.rotation ? (
+                  <div className="error">{formik.errors.rotation}</div>
+                ) : null}
             </div>
             <div className="col-md-6 input-row-margin-fix">
               <label>
@@ -227,6 +239,9 @@ export function FieldFormInfo({ formData, action, onNextClick, onBackClick }: Fi
                   value={formik.values.rotation === "no" ? formik.values.year : ""}
                 />
               </label>
+              {formik.touched.rotation && formik.errors.year ? (
+                  <div className="error">{formik.errors.year}</div>
+                ) : null}
             </div>
           </div>
           <div className="row input-row">
@@ -250,6 +265,9 @@ export function FieldFormInfo({ formData, action, onNextClick, onBackClick }: Fi
                   ))}
                 </select>
               </label>
+              {formik.touched.areafrom && formik.errors.areafrom ? (
+                  <div className="error">{formik.errors.areafrom}</div>
+                ) : null}
             </div>
             <div className="col-md-6 input-row-margin-fix">
               <label>
@@ -271,6 +289,9 @@ export function FieldFormInfo({ formData, action, onNextClick, onBackClick }: Fi
                   }
                 />
               </label>
+              {formik.touched.area && formik.errors.area ? (
+                  <div className="error">{formik.errors.area}</div>
+                ) : null}
             </div>
           </div>
           <div className="row input-row">
@@ -287,10 +308,10 @@ export function FieldFormInfo({ formData, action, onNextClick, onBackClick }: Fi
                   value={formik.values.plants}
                 />
               </label>
+              {formik.touched.plants && formik.errors.plants ? (
+                <div className="error">{formik.errors.plants}</div>
+              ) : null}
             </div>
-            {formik.touched.plants && formik.errors.plants ? (
-              <div className="error">{formik.errors.plants}</div>
-            ) : null}
             <div className="col-md-6 input-row-margin-fix">
               <label>
                 Irrigazione
@@ -311,6 +332,9 @@ export function FieldFormInfo({ formData, action, onNextClick, onBackClick }: Fi
                   ))}
                 </select>
               </label>
+              {formik.touched.irrigation && formik.errors.irrigation ? (
+                <div className="error">{formik.errors.irrigation}</div>
+              ) : null}
             </div>
           </div>
           <div className="row input-row">
@@ -334,6 +358,9 @@ export function FieldFormInfo({ formData, action, onNextClick, onBackClick }: Fi
                   ))}
                 </select>
               </label>
+              {formik.touched.grassing && formik.errors.grassing ? (
+                <div className="error">{formik.errors.grassing}</div>
+              ) : null}
             </div>
             <div className="col-md-6 input-row-margin-fix">
               <label>
@@ -355,6 +382,9 @@ export function FieldFormInfo({ formData, action, onNextClick, onBackClick }: Fi
                   ))}
                 </select>
               </label>
+              {formik.touched.weaving && formik.errors.weaving ? (
+                <div className="error">{formik.errors.weaving}</div>
+              ) : null}
             </div>
           </div>
           <div className="row input-row">
@@ -372,6 +402,9 @@ export function FieldFormInfo({ formData, action, onNextClick, onBackClick }: Fi
                   value={formik.values.description}
                 />
               </label>
+              {formik.touched.description && formik.errors.description ? (
+                <div className="error">{formik.errors.description}</div>
+              ) : null}
             </div>
           </div>
 

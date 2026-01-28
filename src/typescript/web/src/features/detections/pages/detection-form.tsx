@@ -1828,21 +1828,11 @@ function DetectionStepGuide({
 }
 
 function DetectionStepBbch({
-  formData,
   field,
   onNextClick,
 }: DetectionProps & { field: AgriField }) {
-  const [bbch, setBbch] = React.useState(formData.detectionData.bbch ?? "");
-
-  console.log("formData-----------------1", formData);
-
-  React.useEffect(() => {
-    setBbch(formData?.detectionData?.bbch ?? "");
-  }, [formData]);
-
   const handleBbchSelection = (value: string) => {
-    setBbch(value);
-    onNextClick({ bbch });
+    onNextClick({ bbch: value });
   };
 
   let items: AccordionItem[] = [];
@@ -1962,8 +1952,8 @@ function DetectionStepObservationPoints({
     }
     if (
       observationType.observationType === "range" &&
-      observationType.rangeMax &&
-      observationType.rangeMin
+      observationType.rangeMax != undefined &&
+      observationType.rangeMin != undefined
     ) {
       setRangeLength(observationType.rangeMax - observationType.rangeMin);
     }
@@ -2108,7 +2098,7 @@ function DetectionStepObservationPoints({
     handleAddPoint(newPoint);
   };
 
-  const scoreDots = (dotsNum = rangeLength + 1, score = 0) => {
+  const scoreDots = (dotsNum = rangeLength, score = 0) => {
     const dots = Array.from({ length: dotsNum }, (_, i) => {
       const circleType = i < score ? "circlefull" : "circleempty";
       return <Icon key={i} iconName={circleType} color="black" />;
@@ -2119,7 +2109,7 @@ function DetectionStepObservationPoints({
   const btnCnt = (score: number, label: string) => {
     return (
       <div className="d-inline-flex align-items-center mt-1">
-        {scoreDots(rangeLength + 1, score)}
+        {scoreDots(rangeLength, score)}
         <div>{label}</div>
       </div>
     );
@@ -2134,7 +2124,7 @@ function DetectionStepObservationPoints({
     }
     if (stat === "intensitaMedia") {
       const totalScores = scorePoints.reduce(
-        (acc: number, entry: any) => acc + entry.data.rangeValue / (rangeLength + 1),
+        (acc: number, entry: any) => acc + entry.data.rangeValue / (rangeLength),
         0,
       );
       const avgScore = totalScores / scorePoints.length;
@@ -2480,7 +2470,8 @@ function DetectionStepObservationPoints({
                   {observationType.observationType === "range" && (
                     <Fragment>
                       <ScoreBtnRow score={0} label="Assente" />
-                      {Array.from({ length: rangeLength + 1 }, (_, i) => i + 1).map((v, index) => {
+                      {Array.from({ length: rangeLength }, (_, i) => i + 1).map((v, index) => {
+                        console.log("score dots: ", v, rangeLength);
                         const labels = ["Basso", "Limitato", "Cospicuo", "Alto", "Molto Alto"];
                         if (v > 5) {
                           return <ScoreBtnRow key={index} score={v} label="Molto Alto" />;

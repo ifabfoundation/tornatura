@@ -418,62 +418,67 @@ export const FieldMaplet = ({
         mapRef.current.remove();
       };
     }
-  }, []);
+  }, [mapContainerRef.current, currentField]);
 
   React.useEffect(() => {
-    // Update source data
-    const source = mapRef.current!.getSource("current-location") as mapboxgl.GeoJSONSource;
-    if (source) {
-      source.setData({
-        type: "Feature",
-        geometry: {
-          type: "Point",
-          coordinates: [currentPosition.lng, currentPosition.lat],
-        },
-        properties: {}, // 👈 required by type definition
-      });
+    if (mapLoaded){
+      // Update source data
+      const source = mapRef.current!.getSource("current-location") as mapboxgl.GeoJSONSource;
+      if (source) {
+        source.setData({
+          type: "Feature",
+          geometry: {
+            type: "Point",
+            coordinates: [currentPosition.lng, currentPosition.lat],
+          },
+          properties: {}, // 👈 required by type definition
+        });
+      }
     }
-
     // Optionally recenter map
     // mapRef.current!.setCenter([lng, lat]);
     // ----------------------------------
   }, [mapLoaded, currentPosition]);
 
   React.useEffect(() => {
-    const selectedDetectionMapPoints = getDetectionPoints();
+    if (mapLoaded){
+      const selectedDetectionMapPoints = getDetectionPoints();
 
-    const sourcePath = mapRef.current!.getSource("dataPointsPath") as mapboxgl.GeoJSONSource;
+      const sourcePath = mapRef.current!.getSource("dataPointsPath") as mapboxgl.GeoJSONSource;
 
-    const lineGeoJSON: GeoJSON.Feature = {
-      type: "Feature",
-      geometry: {
-        type: "LineString",
-        coordinates: selectedDetectionMapPoints.map((pt) => [pt.lng, pt.lat]),
-      },
-      properties: {},
-    };
-    sourcePath?.setData(lineGeoJSON);
-
-    const sourcePoints = mapRef.current!.getSource("dataPoints") as mapboxgl.GeoJSONSource;
-    const pointsGeoJSON: GeoJSON.FeatureCollection = {
-      type: "FeatureCollection",
-      features: selectedDetectionMapPoints.map((pt) => ({
+      const lineGeoJSON: GeoJSON.Feature = {
         type: "Feature",
         geometry: {
-          type: "Point",
-          coordinates: [pt.lng, pt.lat],
+          type: "LineString",
+          coordinates: selectedDetectionMapPoints.map((pt) => [pt.lng, pt.lat]),
         },
-        properties: {
-          size: pt.size,
-          color: pt.color,
-        },
-      })),
-    };
-    sourcePoints?.setData(pointsGeoJSON);
-  }, [selectedDetection]);
+        properties: {},
+      };
+      sourcePath?.setData(lineGeoJSON);
 
-  // if (!selectedDetection) {
-  //   return <div>Detection not found</div>;
-  // }
-  return <div ref={mapContainerRef} className="map-observations"></div>;
+      const sourcePoints = mapRef.current!.getSource("dataPoints") as mapboxgl.GeoJSONSource;
+      const pointsGeoJSON: GeoJSON.FeatureCollection = {
+        type: "FeatureCollection",
+        features: selectedDetectionMapPoints.map((pt) => ({
+          type: "Feature",
+          geometry: {
+            type: "Point",
+            coordinates: [pt.lng, pt.lat],
+          },
+          properties: {
+            size: pt.size,
+            color: pt.color,
+          },
+        })),
+      };
+      sourcePoints?.setData(pointsGeoJSON);
+    }
+  }, [selectedDetection, mapLoaded]);
+
+ if (!selectedDetection && !mapLoaded) {
+    return <div>Detection not found</div>;
+  } else {
+    return <div ref={mapContainerRef} className="map-observations"></div>;
+  }
+  
 };
