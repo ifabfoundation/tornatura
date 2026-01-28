@@ -130,7 +130,13 @@ export default function LineChartVisx({
             top={innerHeight}
             scale={xScale}
             numTicks={5}
-            tickFormat={(d) => new Date(d as number).toLocaleDateString()}
+            tickFormat={(d) =>
+              new Date(d as number).toLocaleDateString("en-GB", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "2-digit",
+              })
+            }
           />
 
           <AxisLeft scale={yScale} numTicks={5} />

@@ -1827,10 +1827,7 @@ function DetectionStepGuide({
   );
 }
 
-function DetectionStepBbch({
-  field,
-  onNextClick,
-}: DetectionProps & { field: AgriField }) {
+function DetectionStepBbch({ field, onNextClick }: DetectionProps & { field: AgriField }) {
   const handleBbchSelection = (value: string) => {
     onNextClick({ bbch: value });
   };
@@ -1868,7 +1865,7 @@ function DetectionStepBbch({
                   <img
                     src={thumbUrl}
                     alt={bbchItem.name}
-                    style={{ maxWidth: "40px", marginRight: "10px" }}
+                    style={{ maxWidth: "40px", maxHeight: "40px", marginRight: "10px" }}
                   />
                   <span>{bbchItem.name}</span>
                 </div>
@@ -2124,7 +2121,7 @@ function DetectionStepObservationPoints({
     }
     if (stat === "intensitaMedia") {
       const totalScores = scorePoints.reduce(
-        (acc: number, entry: any) => acc + entry.data.rangeValue / (rangeLength),
+        (acc: number, entry: any) => acc + entry.data.rangeValue / rangeLength,
         0,
       );
       const avgScore = totalScores / scorePoints.length;

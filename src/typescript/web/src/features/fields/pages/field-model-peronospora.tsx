@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { headerbarActions } from "../../headerbar/state/headerbar-slice";
@@ -162,39 +162,14 @@ export function FieldModelPeronospora() {
     <Container fluid className="mb-5">
       <Row>
         <Col>
-          <h1 className="my-3 mb-4">{title}</h1>
-
-          <section className="soft bg-white">
-            <Row>
-              <Col xl={12} className="mb-4 d-md-none">
-                <div style={{ backgroundColor: "#" + riskColor }} className="p-3 rounded">
-                  <small>{`⬤  `}</small>
-                  <span className="font-m-600 upper">
-                    {String(data?.detail?.risk_label ?? "-")}
-                  </span>
-                </div>
-              </Col>
-
-              <Col md={6} xl={4} xxl={3}>
-                <div className="position-relative me-md-4 mb-2 mb-md-0">
-                  <img
-                    src={`https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v12/static/geojson(${JSON.stringify(
-                      geoJson,
-                    )})/auto/1024x1024?padding=160&access_token=${process.env.REACT_APP_MAPBOX_API_TOKEN}`}
-                    alt="Field Map"
-                    className="img-fluid rounded ratio-1-1 d-block"
-                  />
-                  {/* <button
-                        className="trnt_btn slim-y narrow-x secondary type-rounded position-absolute top-0 end-0 m-3 bg-white"
-                        onClick={() => navigate(`/companies/${companyId}/fields/${fieldId}/map`)}
-                      >
-                        <Icon iconName={"fullscreen"} color={"black"} />
-                      </button> */}
-                </div>
-              </Col>
-              <Col>
+          {error && <div className="alert alert-danger">{error}</div>}
+          {loading && <div>Caricamento report...</div>}
+          {!loading && !error && (
+            <Fragment>
+              <h1 className="my-3 mb-4">{title}</h1>
+              <section className="soft bg-white">
                 <Row>
-                  <Col xl={12} className="mb-4 d-none d-md-block">
+                  <Col xl={12} className="mb-4 d-md-none">
                     <div style={{ backgroundColor: "#" + riskColor }} className="p-3 rounded">
                       <small>{`⬤  `}</small>
                       <span className="font-m-600 upper">
@@ -203,73 +178,109 @@ export function FieldModelPeronospora() {
                     </div>
                   </Col>
 
-                  <Col className="col-6 col-lg-4 col-xl-3 iiinfo-col mt-2 mb-2">
-                    <div className="iiinfo-label font-s-label mb-1 color-grey">Provincia</div>
-                    <div className="iiinfo-value font-l-600">
-                      {processProvincePeronospora(data?.province)}
+                  <Col md={6} xl={4} xxl={3}>
+                    <div className="position-relative me-md-4 mb-2 mb-md-0">
+                      <img
+                        src={`https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v12/static/geojson(${JSON.stringify(
+                          geoJson,
+                        )})/auto/1024x1024?padding=160&access_token=${process.env.REACT_APP_MAPBOX_API_TOKEN}`}
+                        alt="Field Map"
+                        className="img-fluid rounded ratio-1-1 d-block"
+                      />
+                      {/* <button
+                        className="trnt_btn slim-y narrow-x secondary type-rounded position-absolute top-0 end-0 m-3 bg-white"
+                        onClick={() => navigate(`/companies/${companyId}/fields/${fieldId}/map`)}
+                      >
+                        <Icon iconName={"fullscreen"} color={"black"} />
+                      </button> */}
                     </div>
                   </Col>
+                  <Col>
+                    <Row>
+                      <Col xl={12} className="mb-4 d-none d-md-block">
+                        <div style={{ backgroundColor: "#" + riskColor }} className="p-3 rounded">
+                          <small>{`⬤  `}</small>
+                          <span className="font-m-600 upper">
+                            {String(data?.detail?.risk_label ?? "-")}
+                          </span>
+                        </div>
+                      </Col>
 
-                  <Col className="col-6 col-lg-4 col-xl-3 iiinfo-col mt-2 mb-2">
-                    <div className="iiinfo-label font-s-label mb-1 color-grey">
-                      Punteggio rischio
-                    </div>
-                    <div className="iiinfo-value font-l-600" style={{ whiteSpace: "nowrap" }}>
-                      <small style={{ color: "#" + riskColor }} className="small">{`⬤  `}</small>
-                      {`${data?.detail?.risk_score ?? "-"} / 5.0`}
-                    </div>
-                  </Col>
+                      <Col className="col-6 col-lg-4 col-xl-3 iiinfo-col mt-2 mb-2">
+                        <div className="iiinfo-label font-s-label mb-1 color-grey">Provincia</div>
+                        <div className="iiinfo-value font-l-600">
+                          {processProvincePeronospora(data?.province)}
+                        </div>
+                      </Col>
 
-                  <Col className="col-6 col-lg-4 col-xl-3 iiinfo-col mt-2 mb-2">
-                    <div className="iiinfo-label font-s-label mb-1 color-grey">Data del report</div>
-                    <div className="iiinfo-value font-l-600">
-                      {processDate(data?.forecast_date)}
-                    </div>
-                  </Col>
+                      <Col className="col-6 col-lg-4 col-xl-3 iiinfo-col mt-2 mb-2">
+                        <div className="iiinfo-label font-s-label mb-1 color-grey">
+                          Punteggio rischio
+                        </div>
+                        <div className="iiinfo-value font-l-600" style={{ whiteSpace: "nowrap" }}>
+                          <small
+                            style={{ color: "#" + riskColor }}
+                            className="small"
+                          >{`⬤  `}</small>
+                          {`${data?.detail?.risk_score ?? "-"} / 5.0`}
+                        </div>
+                      </Col>
 
-                  <Col xl={12} className="iiinfo-col d-flex align-items-center mt-3 mb-2">
-                    <button
-                      className={`trnt_btn outlined type-rounded m-0 me-2 ${activeDataType === "current" ? "" : "opacity-02"}`}
-                      onClick={() => setActiveDataType("current")}
-                    >
-                      {/* Dati Correnti */}
-                      <span className="font-s-600">
-                        {current.target_week?.start ?? "-"} → {current.target_week?.end ?? "-"}
-                      </span>
-                    </button>
-                    <button
-                      className={`trnt_btn outlined type-rounded m-0 ${activeDataType === "forecast" ? "" : "opacity-02"}`}
-                      onClick={() => setActiveDataType("forecast")}
-                    >
-                      {/* Previsioni */}
-                      <span className="font-s-600">
-                        {forecast.target_week?.start ?? "-"} → {forecast.target_week?.end ?? "-"}
-                      </span>
-                    </button>
+                      <Col className="col-6 col-lg-4 col-xl-3 iiinfo-col mt-2 mb-2">
+                        <div className="iiinfo-label font-s-label mb-1 color-grey">
+                          Data del report
+                        </div>
+                        <div className="iiinfo-value font-l-600">
+                          {processDate(data?.forecast_date)}
+                        </div>
+                      </Col>
+
+                      <Col xl={12} className="iiinfo-col d-flex align-items-center mt-3 mb-2">
+                        <button
+                          className={`trnt_btn outlined type-rounded m-0 me-2 ${activeDataType === "current" ? "" : "opacity-02"}`}
+                          onClick={() => setActiveDataType("current")}
+                        >
+                          {/* Dati Correnti */}
+                          <span className="font-s-600">
+                            {current.target_week?.start ?? "-"} → {current.target_week?.end ?? "-"}
+                          </span>
+                        </button>
+                        <button
+                          className={`trnt_btn outlined type-rounded m-0 ${activeDataType === "forecast" ? "" : "opacity-02"}`}
+                          onClick={() => setActiveDataType("forecast")}
+                        >
+                          {/* Previsioni */}
+                          <span className="font-s-600">
+                            {forecast.target_week?.start ?? "-"} →{" "}
+                            {forecast.target_week?.end ?? "-"}
+                          </span>
+                        </button>
+                      </Col>
+                    </Row>
                   </Col>
                 </Row>
-              </Col>
-            </Row>
-          </section>
+              </section>
 
-          <section className="soft bg-white">
-            <iframe
-              src={`${process.env.REACT_APP_MODELAPIS_SERVER_URL}/v1/peronospora/risk/map`}
-              style={{
-                width: "100%",
-                height: "650px",
-                border: "none",
-                display: "block",
-              }}
-              scrolling="no"
-            />
-          </section>
+              <section className="soft bg-white">
+                <iframe
+                  src={`${process.env.REACT_APP_MODELAPIS_SERVER_URL}/v1/peronospora/risk/map`}
+                  style={{
+                    width: "100%",
+                    height: "650px",
+                    border: "none",
+                    display: "block",
+                  }}
+                  scrolling="no"
+                />
+              </section>
 
-          <section className="soft bg-white">
-            <Row>
-              <Col>{renderDetail(data)}</Col>
-            </Row>
-          </section>
+              <section className="soft bg-white">
+                <Row>
+                  <Col>{renderDetail(data)}</Col>
+                </Row>
+              </section>
+            </Fragment>
+          )}
         </Col>
       </Row>
     </Container>
