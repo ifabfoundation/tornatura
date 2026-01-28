@@ -113,6 +113,7 @@ export function DetectionTypeDetail() {
   const navigate = useNavigate();
   const [tableIsOpen, setTableIsOpen] = React.useState<boolean>(false);
   const [notesDetailIsOpen, setNotesDetailIsOpen] = React.useState<boolean>(false);
+  const [photosDetailIsOpen, setPhotosDetailIsOpen] = React.useState<boolean>(false);
   const [selectedDetectionId, setSelectedDetectionId] = React.useState<string | null>(null);
   const [modalOpen, setModalOpen] = React.useState(false);
   const [modal, setModal] = React.useState<any>({});
@@ -175,8 +176,8 @@ export function DetectionTypeDetail() {
 
   const notes: {
     detection: Detection;
-    text: string;
     detectionTime: number;
+    text: string;
   }[] = [];
   sortedDetections.forEach((detection) => {
     // @ts-ignore
@@ -189,13 +190,21 @@ export function DetectionTypeDetail() {
       });
     }
   });
-  const photos: string[] = [];
+  const photos: {
+    detection: Detection;
+    detectionTime: number;
+    url: string;
+  }[] = [];
   sortedDetections.forEach((detection) => {
     // @ts-ignore
     if (detection.detectionData.photos && detection.detectionData.photos.length > 0) {
       // @ts-ignore
       detection.detectionData.photos.forEach((photo) => {
-        photos.push(photo);
+        photos.push({
+          detection,
+          detectionTime: detection.detectionTime,
+          url: photo,
+        });
       });
     }
   });
@@ -354,13 +363,23 @@ export function DetectionTypeDetail() {
     const newIsOpen = !tableIsOpen;
     if (newIsOpen === true && notesDetailIsOpen) {
       setNotesDetailIsOpen(false);
+      setPhotosDetailIsOpen(false);
     }
     setTableIsOpen(newIsOpen);
+  }
+  function handleTogglePhotos() {
+    const newIsOpen = !photosDetailIsOpen;
+    if (newIsOpen === true && tableIsOpen) {
+      setTableIsOpen(false);
+      setNotesDetailIsOpen(false);
+    }
+    setPhotosDetailIsOpen(newIsOpen);
   }
   function handleToggleNotes() {
     const newIsOpen = !notesDetailIsOpen;
     if (newIsOpen === true && tableIsOpen) {
       setTableIsOpen(false);
+      setPhotosDetailIsOpen(false);
     }
     setNotesDetailIsOpen(newIsOpen);
   }
@@ -435,12 +454,62 @@ export function DetectionTypeDetail() {
                     <Col xs={12} md={{ span: "auto", order: 2 }} className="me-4 mt-3 mt-md-0">
                       <p className="font-s-label upper mb-2">{`${photos.length ? photos.length + " " : ""}Fotografi${photos.length === 1 ? "a" : "e"}`}</p>
                       <div className="font-l-600">
-                        {photos.length > 0 && <HorizontalPhotoStack photos={photos} />}
+                        <span onClick={handleTogglePhotos}>
+                          {photos.length > 0 && (
+                            <HorizontalPhotoStack photos={photos.map((photo) => photo.url)} />
+                          )}
+                        </span>
                         {photos.length === 0 && <div className="font-l-600">Nessuna</div>}
                       </div>
                     </Col>
                   </Row>
 
+                  {photosDetailIsOpen && (
+                    <Row>
+                      <Col xl={12} className="mt-5">
+                        {photos.map((photo, index) => (
+                          <section className="soft nested-1 mt-2 p-3 pt-0">
+                            <div className="mb-1 pt-2 d-flex align-items-baseline justify-content-between">
+                              <strong>
+                                <span
+                                  className="d-inline-block position-relative"
+                                  style={{ margin: "-8px -5px -8px -8px", top: "10px" }}
+                                >
+                                  <Icon iconName="asterisk" color="black" />
+                                </span>
+                                {`Rilevamento ${new Date(photo.detectionTime).toLocaleDateString(
+                                  [],
+                                  {
+                                    day: "2-digit",
+                                    month: "2-digit",
+                                    year: "2-digit",
+                                  },
+                                )}`}
+                              </strong>
+
+                              <button
+                                className="trnt_btn slim-y narrow-x outlined font-s-600 text-transform-none px-2 type-rounded"
+                                data-type="rounded"
+                                style={{ top: "-3px", position: "relative" }}
+                                onClick={() => {
+                                  setSelectedDetectionId(photo.detection.id);
+                                }}
+                              >
+                                Evidenzia
+                              </button>
+                            </div>
+                            <div key={index} className="text-center">
+                              <img
+                                className="d-inline-block rounded"
+                                src={photo.url}
+                                style={{ maxWidth: "300px", maxHeight: "300px" }}
+                              />
+                            </div>
+                          </section>
+                        ))}
+                      </Col>
+                    </Row>
+                  )}
                   {tableIsOpen && (
                     <Row>
                       <Col xl={12} className="mt-5">
