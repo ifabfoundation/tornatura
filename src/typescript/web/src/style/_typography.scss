@@ -223,12 +223,19 @@ $font-sans: "Inter", sans-serif;
     $style: normal
   );
 }
+@mixin font-xl-600 {
+  @include font-xl;
+  font-weight: 600 !important;
+}
+.font-xl-600 {
+  @include font-xl-600;
+}
 .font-xl {
   @include font-xl;
 }
 
 h1 {
-  @include font-l-600;
+  @include font-xl-600;
 }
 h2 {
   @include font-l-600;

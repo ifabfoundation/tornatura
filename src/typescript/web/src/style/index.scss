@@ -509,6 +509,9 @@ body {
       background-color: white;
       border-radius: 10px;
     }
+    & + section.soft {
+      margin-top: 20px;
+    }
   }
 
   .dot {
@@ -2810,6 +2813,81 @@ $hb-color-on-hover: #eee;
   button {
     margin: 0 !important;
     padding: 17px;
+  }
+}
+
+// --------------------------------------------------------------------------------------------------
+// Model markdown
+// --------------------------------------------------------------------------------------------------
+
+#model-markdown {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin-top: 0.5em * 3;
+    margin-bottom: 0.5em * 3;
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+  p {
+    margin-top: 0.5em * 3;
+    margin-bottom: 0.5em * 3;
+  }
+  ul {
+    margin-top: 0.5em * 3;
+    margin-bottom: 0.5em * 3;
+    padding-left: 20px;
+    li {
+      margin-top: 0.25em * 3;
+      margin-bottom: 0.25em * 3;
+      list-style: disc;
+    }
+  }
+  hr {
+    margin: 30px -20px;
+    border-top-color: $c-grey_2;
+    opacity: 1;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    // border-collapse: separate;
+    // border: 1px solid $c-grey_2;
+    outline: 1px solid $c-grey_2; /* outer border */
+    margin-top: 1em;
+    margin-bottom: 1em;
+    border-radius: 10px;
+    overflow: hidden;
+    th,
+    td {
+      border: 1px solid $c-grey_2;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: $c-grey_1;
+    }
+    /* Remove borders on the outside edges */
+    tr:first-child th,
+    tr:first-child td {
+      border-top: none;
+    }
+    tr:last-child th,
+    tr:last-child td {
+      border-bottom: none;
+    }
+    tr td:first-child,
+    tr th:first-child {
+      border-left: none;
+    }
+    tr td:last-child,
+    tr th:last-child {
+      border-right: none;
+    }
   }
 }
 
