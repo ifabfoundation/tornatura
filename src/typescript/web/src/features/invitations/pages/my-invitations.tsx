@@ -93,7 +93,7 @@ export function MyInvitations() {
                     <div>
                       <p className="font-s-label mb-1">Invito da</p>
                       <p className="font-m-600 mb-3">
-                        {`${invitation.inviterId} (${
+                        {`${invitation.orgId ? invitation.organization?.name : invitation.email} (${
                           invitation.orgId ? "Organizzazione" : "Agronomo"
                         })`}
                       </p>
