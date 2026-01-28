@@ -68,8 +68,6 @@ export const FieldMaplet = ({
     observationTypesSelectors.selectObservationTypes(state),
   );
 
-  // return JSON.stringify(selectedDetection);
-
   function getDetectionPoints() {
     if (selectedDetection) {
       const points = selectedDetection?.detectionData?.points
@@ -441,7 +439,8 @@ export const FieldMaplet = ({
   }, [mapLoaded, currentPosition]);
 
   React.useEffect(() => {
-    if (mapLoaded){
+    if (mapLoaded) {
+      console.log("pippppoooooooo detection change")
       const selectedDetectionMapPoints = getDetectionPoints();
 
       const sourcePath = mapRef.current!.getSource("dataPointsPath") as mapboxgl.GeoJSONSource;
