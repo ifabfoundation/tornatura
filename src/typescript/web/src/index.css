@@ -13148,6 +13148,10 @@ strong {
   text-overflow: ellipsis;
 }
 
+.white-space-nowrap {
+  white-space: nowrap;
+}
+
 body {
   font-family: "Inter", sans-serif;
   font-size: 15px;
@@ -14636,7 +14640,6 @@ small, .small {
   background-color: #e5e5e5;
   background-color: #efefef;
   border-radius: 10px;
-  overflow: hidden;
 }
 
 #app .horizontal-photo-stack {

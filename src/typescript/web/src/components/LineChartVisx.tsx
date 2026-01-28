@@ -1,9 +1,9 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { Group } from "@visx/group";
 import { scaleTime, scaleLinear } from "@visx/scale";
 import { Line, LinePath, Circle } from "@visx/shape";
 import { AxisBottom, AxisLeft } from "@visx/axis";
-import { useTooltip, TooltipWithBounds } from "@visx/tooltip";
+import { useTooltip, /* useTooltipInPortal,  */ Tooltip } from "@visx/tooltip";
 import * as allCurves from "@visx/curve";
 import { localPoint } from "@visx/event";
 import { LinearGradient } from "@visx/gradient";
@@ -36,6 +36,10 @@ export default function LineChartVisx({
   gradients = false,
   margin = { top: 20, right: 20, bottom: 40, left: 50 },
 }: LineChartVisxProps) {
+  // const { containerRef, containerBounds, TooltipInPortal } = useTooltipInPortal({
+  //   scroll: true,
+  //   detectBounds: true,
+  // });
   const { tooltipData, tooltipLeft, tooltipTop, showTooltip, hideTooltip } = useTooltip<Datum>();
 
   const innerWidth = width - margin.left - margin.right;
@@ -67,6 +71,17 @@ export default function LineChartVisx({
       }),
     [data, innerHeight],
   );
+
+  useEffect(() => {
+    if (!data.length) return;
+    // const p = data[data.length - 1]; // default point
+    const p = data[0]; // default point
+    showTooltip({
+      tooltipData: p,
+      tooltipLeft: xScale(xAccessor(p).getTime()) - 40,
+      tooltipTop: yScale(yAccessor(p)) - 70,
+    });
+  }, [data, xScale, yScale]);
 
   function handleMouseMove(event: React.MouseEvent<SVGCircleElement, MouseEvent>, d: Datum) {
     const coords = localPoint(event);
@@ -103,7 +118,7 @@ export default function LineChartVisx({
   const yBottom = height; // or innerHeight if using margins
 
   return (
-    <div className="graph-visx">
+    <div className="graph-visx" /* ref={containerRef} */>
       <svg width={width} height={height}>
         <defs>
           {gradients &&
@@ -206,26 +221,28 @@ export default function LineChartVisx({
         </Group>
       </svg>
       {tooltipData && (
-        <TooltipWithBounds
+        <Tooltip
           top={tooltipTop}
           left={tooltipLeft}
           style={{
             position: "absolute",
+            zIndex: 10,
             background: "white",
             border: "1px solid #ccc",
             padding: "6px 10px",
             borderRadius: 4,
             fontSize: 12,
+            // transform: "translate(-50%, -100%)",
           }}
         >
           <div>
-            <span className="font-s-600">{tooltipData.displayLabel}</span>
+            <span className="font-s-600 white-space-nowrap">{tooltipData.displayLabel}</span>
             <br />
             <strong className="font-l-600">{tooltipData.displayValue}</strong>
           </div>
           {/* <div>x: {xScale(tooltipData.x)}</div>
           <div>y: {tooltipData.y}</div> */}
-        </TooltipWithBounds>
+        </Tooltip>
       )}
     </div>
   );

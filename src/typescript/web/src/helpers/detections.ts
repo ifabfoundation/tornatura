@@ -1,6 +1,8 @@
 import { ObservationPoint, ObservationType } from "@tornatura/coreapis";
 import { Detection } from "@tornatura/coreapis";
 import { mapValues } from "./common";
+import legend_cimice from "../assets/images/legends/legend-cimice.svg";
+import legend_peronospora from "../assets/images/legends/legend-peronospora.svg";
 
 /**
  * Anatomy of objects - at the bottom if this file
@@ -70,6 +72,25 @@ export function enrichedMapPoints(points: ObservationPoint[], observationType: O
     };
   });
   return enrichedMapPoints;
+}
+
+export function getGraphName(typology: string): string {
+  const typologyToGraphNameMap: { [key: string]: string } = {
+    Peronospora: "Andamento dell'indice di malattia nel tempo",
+    Cimice: "Totale insetti per rilevamento",
+    // "Oidio della vite": "Indice di Oidio della vite nel tempo",
+    // "Black rot": "Indice di Black rot nel tempo",
+    // "Esca della vite": "Indice di Esca della vite nel tempo",
+  };
+  return typologyToGraphNameMap[typology] || "Andamento nel tempo";
+}
+export function getGraphLegend(typology: string): string {
+  if (typology === "Peronospora") {
+    return legend_peronospora;
+  } else if (typology === "Cimice") {
+    return legend_cimice;
+  }
+  return "";
 }
 
 export function getDetectionStats(detection: Detection) {

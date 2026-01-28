@@ -196,6 +196,9 @@ $ms-sidebar-transition: 100ms;
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.white-space-nowrap {
+  white-space: nowrap;
+}
 
 // --------------------------------------------------------------------------------------------------
 // Outside App
@@ -1106,7 +1109,7 @@ small {
     background-color: #e5e5e5;
     background-color: $c-grey_1;
     border-radius: 10px;
-    overflow: hidden;
+    // overflow: hidden;
     svg {
     }
   }

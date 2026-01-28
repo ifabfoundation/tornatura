@@ -15,7 +15,12 @@ import { FieldMaplet } from "../../../components/FieldMaplet";
 import { GradientLineChart } from "../../../components/GradientLineChart";
 import Icon from "../../../components/Icon";
 import LineChartVisx from "../../../components/LineChartVisx";
-import { getColorDiseaseIndex, getDetectionStats } from "../../../helpers/detections";
+import {
+  getColorDiseaseIndex,
+  getDetectionStats,
+  getGraphLegend,
+  getGraphName,
+} from "../../../helpers/detections";
 import { ModalConfirm } from "../../../components/ModalConfirm";
 import { mapValues } from "../../../helpers/common";
 import { DetectionsTable } from "../../../components/DetectionsTable";
@@ -371,6 +376,9 @@ export function DetectionTypeDetail() {
     </button>
   );
 
+  const graphTitle = getGraphName(observationType.typology ?? "");
+  const graphLegend = getGraphLegend(observationType.typology ?? "");
+
   return (
     <div>
       <Container>
@@ -531,8 +539,14 @@ export function DetectionTypeDetail() {
                   className="d-flex flex-column align-items-start justify-content-start"
                 >
                   <div>
-                    <h3>Graph title</h3>
-                    <p>Legend</p>
+                    <h3>
+                      <strong>{graphTitle}</strong>
+                    </h3>
+                    {graphLegend && (
+                      <div className="graph-legend my-3 p-2 pb-2 rounded bg-white d-inline-flex">
+                        <img src={graphLegend} alt="Legenda grafico" />
+                      </div>
+                    )}
                   </div>
 
                   <div className="flex-grow-1 bg-white"></div>
