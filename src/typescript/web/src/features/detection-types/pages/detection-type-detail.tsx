@@ -131,7 +131,7 @@ export function DetectionTypeDetail() {
   React.useEffect(() => {
     if (detections.length > 0) {
       const sortedDetections = [...detections].sort((a, b) => a.detectionTime - b.detectionTime);
-      setSelectedDetectionId(sortedDetections[0].id);
+      setSelectedDetectionId(sortedDetections[sortedDetections.length - 1].id);
     }
   }, [detections]);
 

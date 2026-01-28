@@ -104,7 +104,7 @@ export function CompanyFields() {
             </Col>
           );
         })}
-        <Col md={6} xl={4} xxl={3}>
+        <Col xs={6} md={4} xxl={3}>
           <Card
             className="add-item with-hover-effect"
             data-text="Aggiungi un campo"

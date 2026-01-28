@@ -1111,7 +1111,7 @@ function DetectionFormMapPosition({
           type: "circle",
           source: "dataPhantomPoints",
           paint: {
-            "circle-radius": ["get", "size"],
+            "circle-radius": 7, // ["get", "size"],
             "circle-color": "rgba(255, 255, 255, 0.3)",
             "circle-opacity": 0.8,
             "circle-stroke-color": "rgba(255, 255, 255, 0.5)",

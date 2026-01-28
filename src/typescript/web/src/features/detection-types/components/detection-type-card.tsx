@@ -65,24 +65,6 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
     groupStats.groupMax = Math.max(groupStats.groupMax, ds.pointsMax);
   });
 
-  const graphData = detections
-    .map((detection, index) => {
-      return {
-        // Linear time mapping
-        // x: detection.detectionTime,
-        // Sequential time mapping (better for debugging)
-        x: index,
-
-        y: getDetectionStats(detection).pointsAvg,
-        color: getColor(
-          groupStats.groupMin,
-          groupStats.groupMax,
-          getDetectionStats(detection).pointsAvg,
-        ),
-      };
-    })
-    .sort((a, b) => a.x - b.x);
-
   const sortedDetections = [...detections].sort((a, b) => b.detectionTime - a.detectionTime);
   const graphDataVisx = sortedDetections.map((detection, index, a) => {
     const ds = getDetectionStats(detection);
@@ -148,19 +130,6 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
             {/* <Icon iconName={"enlarge"} color={"black"} /> */}
           </button>
         </div>
-
-        {/* <button
-          className="trnt_btn slim-y primary outlined narrow-x px-3 type-rounded"
-          data-type="rounded"
-          onClick={() =>
-            navigate(`/companies/${companyId}/fields/${fieldId}/type/${detectionType.id}`, {
-              // navigate(`/companies/${companyId}/fields/${fieldId}/new-detection`, {
-              state: { typeId: typeId },
-            })
-          }
-        >
-          Espandi
-          </button> */}
         <div className="d-none d-md-block">
           <NewDetectionButton />
         </div>
@@ -174,13 +143,6 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
       </div>
 
       <div ref={containerRef}>
-        {/* <GradientLineChart
-          height={100}
-          padding={{ top: 0, bottom: 0, left: 40, right: 40 }}
-          strokeWidth={20}
-          dotSize={14}
-          data={graphData}
-        /> */}
         <LineChartVisx
           width={containerWidth}
           height={200}
@@ -194,18 +156,6 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
       <div className="d-md-none text-center mt-3 pt-1">
         <NewDetectionButton className="wide" />
       </div>
-
-      {/* <button
-          className="trnt_btn accent wide"
-          data-type="round"
-          onClick={() =>
-            navigate(`/companies/${companyId}/fields/${fieldId}/new-detection`, {
-              state: { typeId: typeId },
-            })
-          }
-        >
-          + Rilevamento {observationType.typology}
-        </button> */}
     </div>
   );
 }
