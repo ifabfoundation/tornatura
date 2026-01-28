@@ -188,6 +188,11 @@ $ms-sidebar-transition: 100ms;
   border-radius: 5px;
   overflow: hidden;
 }
+.dot-overflow-txt {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
 // --------------------------------------------------------------------------------------------------
 // Outside App
@@ -1086,6 +1091,15 @@ body {
   // Components
   // --------------------------------------------------------------------------------------------------
 
+  .graph-visx {
+    position: relative;
+    background-color: #e5e5e5;
+    background-color: $c-grey_1;
+    border-radius: 10px;
+    overflow: hidden;
+    svg {
+    }
+  }
   .horizontal-photo-stack {
     background-color: rgba($color: grey, $alpha: 0.15);
     padding: 2px;

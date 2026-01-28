@@ -13102,6 +13102,12 @@ strong {
   overflow: hidden;
 }
 
+.dot-overflow-txt {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 body {
   font-family: "Inter", sans-serif;
   font-size: 15px;
@@ -14575,6 +14581,14 @@ body {
 #app .context-selector-v2[data-open="true"] .context-selector-options-list {
   opacity: 1;
   pointer-events: auto;
+}
+
+#app .graph-visx {
+  position: relative;
+  background-color: #e5e5e5;
+  background-color: #efefef;
+  border-radius: 10px;
+  overflow: hidden;
 }
 
 #app .horizontal-photo-stack {

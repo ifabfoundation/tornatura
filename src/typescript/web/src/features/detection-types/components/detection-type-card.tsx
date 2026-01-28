@@ -6,7 +6,7 @@ import { observationTypesSelectors } from "../../observation-types/state/observa
 import { detectionsSelectors } from "../../detections/state/detections-slice";
 import { dateToString } from "../../../services/utils";
 import { GradientLineChart } from "../../../components/GradientLineChart";
-import { getDetectionStats } from "../../../helpers/detections";
+import { getColorDiseaseIndex, getDetectionStats } from "../../../helpers/detections";
 import LineChartVisx from "../../../components/LineChartVisx";
 import { mapValues } from "../../../helpers/common";
 
@@ -82,25 +82,25 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
       };
     })
     .sort((a, b) => a.x - b.x);
-  const graphDataVisx = detections
-    .map((detection, index, a) => {
-      const ds = getDetectionStats(detection);
-      return {
-        id: detection.id,
-        // Linear time mapping
-        // x: new Date(detection.detectionTime),
-        // Sequential time mapping (better for debugging)
-        x: new Date(
-          mapValues(index, a.length, 0, a[0].detectionTime, a[a.length - 1].detectionTime),
-        ),
-        y: ds.pointsAvg,
-        color: getColor(groupStats.groupMin, groupStats.groupMax, ds.pointsAvg),
-        detection: detection,
-        displayValue: ds.displayValue,
-        displayLabel: ds.displayLabel,
-      };
-    })
-    .sort((a, b) => a.x.getTime() - b.x.getTime());
+
+  const sortedDetections = [...detections].sort((a, b) => b.detectionTime - a.detectionTime);
+  const graphDataVisx = sortedDetections.map((detection, index, a) => {
+    const ds = getDetectionStats(detection);
+    return {
+      id: detection.id,
+      // Linear time mapping
+      // x: new Date(detection.detectionTime),
+      // Sequential time mapping (better for debugging)
+      x: new Date(mapValues(index, 0, a.length, a[0].detectionTime, a[a.length - 1].detectionTime)),
+      y: ds.type === "counters" ? ds.counterSumsTotal : ds.diseaseIndex,
+      // color: getColor(groupStats.groupMin, groupStats.groupMax, ds.pointsAvg),
+      color: getColorDiseaseIndex(ds.diseaseIndex),
+      detection: detection,
+      displayValue: ds.displayValue,
+      displayLabel: ds.displayLabel,
+    };
+  });
+  // .sort((a, b) => a.x.getTime() - b.x.getTime());
 
   const lastDate = detections
     .map((e) => e.detectionTime)
@@ -166,34 +166,36 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
         </div>
       </header>
 
+      <div className="spacer py-4"></div>
+
       <div className="small-texts d-flex justify-content-between align-items-center mt-4 mb-2">
         <div className="label">{`${detections.length} RILEVAMENT${detections.length !== 1 ? "I" : "O"}`}</div>
         <div className="label">{`AGGIORNATO IL ${lastDateString}`}</div>
       </div>
 
       <div ref={containerRef}>
-        <GradientLineChart
+        {/* <GradientLineChart
           height={100}
           padding={{ top: 0, bottom: 0, left: 40, right: 40 }}
           strokeWidth={20}
           dotSize={14}
           data={graphData}
-        />
+        /> */}
         <LineChartVisx
           width={containerWidth}
-          height={100}
+          height={200}
           data={graphDataVisx}
           onSelectPoint={undefined}
+          gradients={observationType?.typology === "Peronospora"}
           selectedId={undefined}
         />
       </div>
 
-      <div className="mt-3 pt-1">
-        <div className="d-md-none text-center">
-          <NewDetectionButton className="wide" />
-        </div>
+      <div className="d-md-none text-center mt-3 pt-1">
+        <NewDetectionButton className="wide" />
+      </div>
 
-        {/* <button
+      {/* <button
           className="trnt_btn accent wide"
           data-type="round"
           onClick={() =>
@@ -204,7 +206,6 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
         >
           + Rilevamento {observationType.typology}
         </button> */}
-      </div>
     </div>
   );
 }

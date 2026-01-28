@@ -456,58 +456,13 @@ export function DetectionTypeDetail() {
                       </Col>
                     </Row>
                   )}
-                  {/* 
-                  {notesDetailIsOpen && (
-                    <Row>
-                      <Col xl={12} className="mt-5">
-                        <h3 className="mb-3">
-                          <strong>Dettaglio note</strong>
-                        </h3>
-                        {notes.map((note, index) => (
-                          <section className="soft nested-1 mt-2 pt-0">
-                            <div key={index}>
-                              <p className="mb-2 pt-2">
-                                <strong>
-                                  <span
-                                    className="d-inline-block position-relative"
-                                    style={{ margin: "-8px -5px -8px -8px", top: "10px" }}
-                                  >
-                                    <Icon iconName="asterisk" color="black" />
-                                  </span>
-                                  {`Rilevamento ${new Date(note.detectionTime).toLocaleDateString(
-                                    [],
-                                    {
-                                      day: "2-digit",
-                                      month: "2-digit",
-                                      year: "2-digit",
-                                    },
-                                  )}`}
-                                </strong>
-                                <span className="ms-2">
-                                  <a
-                                    className="pointer color-black"
-                                    onClick={() => {
-                                      setSelectedDetectionId(note.detection.id);
-                                    }}
-                                  >
-                                    Evidenzia
-                                  </a>
-                                </span>
-                              </p>
-                              <p>{note.text}</p>
-                            </div>
-                          </section>
-                        ))}
-                      </Col>
-                    </Row>
-                  )} */}
 
                   {notesDetailIsOpen && (
                     <Row>
                       <Col xl={12} className="mt-5">
-                        <h3 className="mb-3">
+                        {/* <h3 className="mb-3">
                           <strong>Dettaglio note</strong>
-                        </h3>
+                        </h3> */}
                         {notes.map((note, index) => (
                           <section className="soft nested-1 mt-2 p-3 pt-0">
                             <div className="mb-1 pt-2 d-flex align-items-baseline justify-content-between">
@@ -581,19 +536,20 @@ export function DetectionTypeDetail() {
                   </div>
 
                   <div className="flex-grow-1 bg-white"></div>
-                  <div ref={containerRef}>
-                    <GradientLineChart
+                  <div ref={containerRef} className="w-100">
+                    {/* <GradientLineChart
                       height={100}
                       padding={{ top: 0, bottom: 0, left: 40, right: 40 }}
                       strokeWidth={20}
                       dotSize={14}
                       data={graphData}
-                    />
+                    /> */}
                     <LineChartVisx
                       width={containerWidth}
                       height={200}
                       data={graphDataVisx}
                       onSelectPoint={handleGraphPointClick}
+                      gradients={observationType?.typology === "Peronospora"}
                       selectedId={selectedDetectionId ?? undefined}
                     />
                   </div>

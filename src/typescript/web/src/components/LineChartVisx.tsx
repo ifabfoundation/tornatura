@@ -1,9 +1,10 @@
 import { useMemo } from "react";
 import { Group } from "@visx/group";
 import { scaleTime, scaleLinear } from "@visx/scale";
-import { LinePath, Circle } from "@visx/shape";
+import { Line, LinePath, Circle } from "@visx/shape";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { useTooltip, TooltipWithBounds } from "@visx/tooltip";
+import * as allCurves from "@visx/curve";
 import { localPoint } from "@visx/event";
 import { LinearGradient } from "@visx/gradient";
 
@@ -22,6 +23,7 @@ export type LineChartVisxProps = {
   data: Datum[];
   selectedId?: string;
   onSelectPoint?: (point: Datum) => void;
+  gradients?: boolean;
   margin?: { top: number; right: number; bottom: number; left: number };
 };
 
@@ -31,6 +33,7 @@ export default function LineChartVisx({
   data,
   onSelectPoint,
   selectedId,
+  gradients = false,
   margin = { top: 20, right: 20, bottom: 40, left: 50 },
 }: LineChartVisxProps) {
   const { tooltipData, tooltipLeft, tooltipTop, showTooltip, hideTooltip } = useTooltip<Datum>();
@@ -96,10 +99,30 @@ export default function LineChartVisx({
   //   });
   // }, [points]);
 
+  const yTop = 0; // or chart padding
+  const yBottom = height; // or innerHeight if using margins
+
   return (
-    <div style={{ position: "relative" }}>
+    <div className="graph-visx">
       <svg width={width} height={height}>
-        <defs></defs>
+        <defs>
+          {gradients &&
+            data.slice(0, -1).map((point, i) => {
+              const next = data[i + 1];
+              return (
+                <LinearGradient
+                  key={`grad-${i}`}
+                  id={`grad-${i}`}
+                  from={next.color}
+                  to={point.color}
+                  x1="0%"
+                  x2="100%"
+                  y1="0%"
+                  y2="0%"
+                />
+              );
+            })}
+        </defs>
 
         <Group left={margin.left} top={margin.top}>
           {/* Axes */}
@@ -112,14 +135,46 @@ export default function LineChartVisx({
 
           <AxisLeft scale={yScale} numTicks={5} />
 
-          {/* Line */}
-          <LinePath<Datum>
+          {/* grid */}
+          {data.slice(0, -1).map((point, i) => {
+            const x = xScale(xAccessor(point).getTime());
+            return (
+              <Line
+                key={`vline-${i}`}
+                from={{ x, y: yTop }}
+                to={{ x, y: yBottom }}
+                stroke="#ccc"
+                strokeWidth={1}
+                strokeDasharray="4 4" // optional
+                // opacity={0.8} // optional
+              />
+            );
+          })}
+
+          {/* Line v2 */}
+          {data.slice(0, -1).map((point, i) => {
+            const next = data[i + 1];
+            const segmentData = [point, next];
+            return (
+              <LinePath
+                key={`segment-${i}`}
+                data={segmentData}
+                x={(d) => xScale(xAccessor(d).getTime())}
+                y={(d) => yScale(yAccessor(d))}
+                stroke={gradients ? `url(#grad-${i})` : "black"}
+                strokeWidth={8}
+                curve={allCurves.curveNatural} // or your curve of choice
+              />
+            );
+          })}
+          {/* Line v1 */}
+          {/* <LinePath<Datum>
             data={data}
             x={(d) => xScale(xAccessor(d).getTime())}
             y={(d) => yScale(yAccessor(d))}
             stroke={"black"}
             strokeWidth={4}
-          />
+          /> */}
 
           {/* Points */}
           {data.map((d, i) => {

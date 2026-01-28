@@ -84,9 +84,10 @@ export function CompanyFields() {
                 />
                 <div className="llist-group">
                   <div className="llist-group-item">
-                    <span className="d-flex align-items-center">
+                    <span className="d-flex align-items-center dot-overflow-txt">
                       <Icon iconName={"wheat"} color={"black"} />
                       <span className="upper">{capitalize(field.harvest)}</span>
+                      <span className="upper d-none d-sm-inline">{"  •  " + field.variety}</span>
                     </span>
                     {/* <span className="d-flex align-items-center">
                       <Icon iconName={"size"} color={"black"} /> {field.area} he
