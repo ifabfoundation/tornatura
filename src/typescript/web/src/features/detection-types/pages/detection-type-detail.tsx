@@ -531,7 +531,7 @@ export function DetectionTypeDetail() {
                   className="d-flex flex-column align-items-start justify-content-start"
                 >
                   <div>
-                    <h4>Graph title</h4>
+                    <h3>Graph title</h3>
                     <p>Legend</p>
                   </div>
 

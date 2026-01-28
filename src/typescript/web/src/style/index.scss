@@ -1635,9 +1635,10 @@ small {
     align-items: center;
     justify-content: space-between;
     padding: 0 20px;
+    background-color: #131415;
     @include media-breakpoint-only(xs) {
       padding: 0 10px;
-      height: 45px;
+      // height: 45px;
     }
   }
   .dfpart_detection-inputs {

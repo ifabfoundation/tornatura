@@ -15300,12 +15300,12 @@ small, .small {
   align-items: center;
   justify-content: space-between;
   padding: 0 20px;
+  background-color: #131415;
 }
 
 @media (max-width: 575.98px) {
   #app .dfpart_header {
     padding: 0 10px;
-    height: 45px;
   }
 }
 

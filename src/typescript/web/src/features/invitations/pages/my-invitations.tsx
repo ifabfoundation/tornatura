@@ -66,7 +66,7 @@ export function MyInvitations() {
     <Container>
       <section>
         <header className="my-4">
-          <p className="">Lista degli inviti che hai ricevuto</p>
+          <h2 className="text-center">Lista degli inviti che hai ricevuto</h2>
         </header>
 
         {error && (
@@ -81,14 +81,14 @@ export function MyInvitations() {
             <p>Non hai inviti pendenti al momento</p>
           </div>
         ) : (
-          <Row>
+          <Row className="justify-content-center">
             {/* {Array(3)
               .fill(invitations)
               .flat()
               .map((invitation) => ( */}
             {invitations.map((invitation) => (
               <Col md={6} xl={4} key={invitation.id} className="mb-4">
-                <div className="form-section p-4">
+                <section className="soft bg-white p-4">
                   <div>
                     <div>
                       <p className="font-s-label mb-1">Invito da</p>
@@ -134,7 +134,7 @@ export function MyInvitations() {
                       </button>
                     </div>
                   </div>
-                </div>
+                </section>
               </Col>
             ))}
           </Row>

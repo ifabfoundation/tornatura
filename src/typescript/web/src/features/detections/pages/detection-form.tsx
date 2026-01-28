@@ -2304,8 +2304,11 @@ function DetectionStepObservationPoints({
               </button>
             </div>
             <div>
-              <a className="button narrow-x slim-y accent-stronger" onClick={handleSave}>
-                <span>✓ FINE</span>
+              <a className="button narrow-x type-rounded px-3 accent-stronger" onClick={handleSave}>
+                <span className="font-s-600">
+                  {"✓ FINE"}
+                  <span className="d-none d-lg-inline"> RILEVAMENTO</span>
+                </span>
               </a>
             </div>
           </div>

@@ -137,10 +137,12 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
 
       <div className="spacer py-4"></div>
 
+      {/*  
       <div className="small-texts d-flex justify-content-between align-items-center mt-4 mb-2">
         <div className="label">{`${detections.length} RILEVAMENT${detections.length !== 1 ? "I" : "O"}`}</div>
         <div className="label">{`AGGIORNATO IL ${lastDateString}`}</div>
       </div>
+        */}
 
       <div ref={containerRef}>
         <LineChartVisx
