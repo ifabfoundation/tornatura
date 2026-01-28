@@ -76,7 +76,10 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
       x: new Date(mapValues(index, 0, a.length, a[0].detectionTime, a[a.length - 1].detectionTime)),
       y: ds.type === "counters" ? ds.counterSumsTotal : ds.diseaseIndex,
       // color: getColor(groupStats.groupMin, groupStats.groupMax, ds.pointsAvg),
-      color: getColorDiseaseIndex(ds.diseaseIndex),
+      color:
+        observationType.observationType === "range"
+          ? getColorDiseaseIndex(ds.diseaseIndex)
+          : "white",
       detection: detection,
       displayValue: ds.displayValue,
       displayLabel: ds.displayLabel,
