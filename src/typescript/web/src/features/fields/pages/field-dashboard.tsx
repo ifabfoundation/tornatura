@@ -115,7 +115,7 @@ export function FieldDashboard() {
                     <Col className="col-6 col-lg-4 col-xl-3 iiinfo-col mt-2 mb-2">
                       <div className="iiinfo-label font-s-label">Dimensione</div>
                       <div className="iiinfo-value font-l-600">
-                        {valOrEmpty(currentField?.area)}
+                        {valOrEmpty(currentField?.area) + " ha"}
                       </div>
                     </Col>
                     <Col className="col-6 col-lg-4 col-xl-3 iiinfo-col mt-2 mb-2">

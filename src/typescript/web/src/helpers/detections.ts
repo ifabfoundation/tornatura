@@ -76,7 +76,7 @@ export function enrichedMapPoints(points: ObservationPoint[], observationType: O
 
 export function getGraphName(typology: string): string {
   const typologyToGraphNameMap: { [key: string]: string } = {
-    Peronospora: "Andamento dell'indice di malattia nel tempo",
+    Peronospora: "Indice di malattia",
     Cimice: "Totale insetti per rilevamento",
     // "Oidio della vite": "Indice di Oidio della vite nel tempo",
     // "Black rot": "Indice di Black rot nel tempo",

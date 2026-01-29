@@ -24,6 +24,7 @@ import {
 import { ModalConfirm } from "../../../components/ModalConfirm";
 import { mapValues } from "../../../helpers/common";
 import { DetectionsTable } from "../../../components/DetectionsTable";
+import { useIsMobile } from "../../../helpers/common";
 
 interface HorizontalPhotoStackProps {
   photos: string[];
@@ -118,6 +119,7 @@ export function DetectionTypeDetail() {
   const [modalOpen, setModalOpen] = React.useState(false);
   const [modal, setModal] = React.useState<any>({});
   const { companyId, fieldId, typeId } = useParams();
+  const isMobile = useIsMobile();
   const detectionType = useAppSelector((state) =>
     detectionTypesSelectors.selectDetectionTypeById(state, typeId ?? "default"),
   );
@@ -400,6 +402,7 @@ export function DetectionTypeDetail() {
 
   const graphTitle = getGraphName(observationType.typology ?? "");
   const graphLegend = getGraphLegend(observationType.typology ?? "");
+  const graphHeight = isMobile ? 100 : 200;
 
   return (
     <div>
@@ -610,10 +613,23 @@ export function DetectionTypeDetail() {
                   lg={{ span: 6, order: 1 }}
                   className="d-flex flex-column align-items-start justify-content-start"
                 >
-                  <div>
-                    <h3>
+                  {/* Line graph */}
+                  <div ref={containerRef} className="w-100 order-md-3">
+                    <LineChartVisx
+                      width={containerWidth}
+                      height={graphHeight}
+                      data={graphDataVisx}
+                      onSelectPoint={handleGraphPointClick}
+                      gradients={observationType?.typology === "Peronospora"}
+                      selectedId={selectedDetectionId ?? undefined}
+                    />
+                  </div>
+
+                  {/* Title & legend */}
+                  <div className="order-md-1">
+                    <h4>
                       <strong>{graphTitle}</strong>
-                    </h3>
+                    </h4>
                     {graphLegend && (
                       <div className="graph-legend my-3 p-2 pb-2 rounded bg-white d-inline-flex">
                         <img src={graphLegend} alt="Legenda grafico" />
@@ -621,24 +637,8 @@ export function DetectionTypeDetail() {
                     )}
                   </div>
 
-                  <div className="flex-grow-1 bg-white"></div>
-                  <div ref={containerRef} className="w-100">
-                    {/* <GradientLineChart
-                      height={100}
-                      padding={{ top: 0, bottom: 0, left: 40, right: 40 }}
-                      strokeWidth={20}
-                      dotSize={14}
-                      data={graphData}
-                    /> */}
-                    <LineChartVisx
-                      width={containerWidth}
-                      height={200}
-                      data={graphDataVisx}
-                      onSelectPoint={handleGraphPointClick}
-                      gradients={observationType?.typology === "Peronospora"}
-                      selectedId={selectedDetectionId ?? undefined}
-                    />
-                  </div>
+                  {/* Spacer */}
+                  <div className="flex-grow-1 bg-white order-md-2"></div>
                 </Col>
               </Row>
             </section>
