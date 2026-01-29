@@ -1,4 +1,4 @@
-# FRONTEND
+# Frontend
 
 ## Bugs
 
@@ -21,7 +21,7 @@
 - [ ] (Vito). Frase da aggiungere in modello
 - [ ] (Agata) (Inizio Febbraio) Con Agata sistemare istruzioni
 
-## Backend
+# Backend
 
 - [x] Aggiungere Flavescienza (= a peronospora)
 - [x] Aggiungere Scafoideo Diabrotica (= a cimice)
