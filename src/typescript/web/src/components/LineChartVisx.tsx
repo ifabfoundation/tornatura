@@ -75,13 +75,13 @@ export default function LineChartVisx({
   useEffect(() => {
     if (!data.length) return;
     // const p = data[data.length - 1]; // default point
-    const p = data[0]; // default point
+    const p = data.find((d) => d.id === selectedId) ?? data[0]; // default point
     showTooltip({
       tooltipData: p,
-      tooltipLeft: xScale(xAccessor(p).getTime()) - 40,
+      tooltipLeft: xScale(xAccessor(p).getTime()) - 20,
       tooltipTop: yScale(yAccessor(p)) - 70,
     });
-  }, [data, xScale, yScale]);
+  }, [data, xScale, yScale, selectedId]);
 
   function handleMouseMove(event: React.MouseEvent<SVGCircleElement, MouseEvent>, d: Datum) {
     const coords = localPoint(event);

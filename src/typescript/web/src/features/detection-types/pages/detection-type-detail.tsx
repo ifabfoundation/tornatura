@@ -143,11 +143,11 @@ export function DetectionTypeDetail() {
     }
   }, [detections]);
 
-  React.useEffect(() => {
-    console.log("selectedDetectionId changed:", selectedDetectionId);
-    const selectedDetection = detections.find((d) => d.id === selectedDetectionId);
-    console.log(`Observations: ${selectedDetection?.detectionData.points.length ?? 0}`);
-  }, [selectedDetectionId]);
+  // React.useEffect(() => {
+  //   console.log("selectedDetectionId changed:", selectedDetectionId);
+  //   const selectedDetection = detections.find((d) => d.id === selectedDetectionId);
+  //   console.log(`Observations: ${selectedDetection?.detectionData.points.length ?? 0}`);
+  // }, [selectedDetectionId]);
 
   React.useEffect(() => {
     if (companyId && fieldId) {
