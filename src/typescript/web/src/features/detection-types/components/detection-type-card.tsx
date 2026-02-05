@@ -29,6 +29,8 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
   const detections = useAppSelector((state) =>
     detectionsSelectors.selectDetectionByTypeId(state, typeId ?? "default"),
   );
+  const sortedDetections = [...detections].sort((a, b) => b.detectionTime - a.detectionTime);
+
   const detectionType = useAppSelector((state) =>
     detectionTypesSelectors.selectDetectionTypeById(state, typeId ?? "default"),
   );
@@ -59,13 +61,12 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
     groupMin: Infinity,
     groupMax: -Infinity,
   };
-  detections.forEach((detection) => {
+  sortedDetections.forEach((detection) => {
     const ds = getDetectionStats(detection);
     groupStats.groupMin = Math.min(groupStats.groupMin, ds.pointsMin);
     groupStats.groupMax = Math.max(groupStats.groupMax, ds.pointsMax);
   });
 
-  const sortedDetections = [...detections].sort((a, b) => b.detectionTime - a.detectionTime);
   const graphDataVisx = sortedDetections.map((detection, index, a) => {
     const ds = getDetectionStats(detection);
     return {
@@ -87,7 +88,7 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
   });
   // .sort((a, b) => a.x.getTime() - b.x.getTime());
 
-  const lastDate = detections
+  const lastDate = sortedDetections
     .map((e) => e.detectionTime)
     .sort((a, b) => b - a)
     .reverse()[0];

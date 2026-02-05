@@ -261,14 +261,14 @@ export function DetectionTypeDetail() {
     groupMax: -Infinity,
   };
 
-  detections.forEach((detection) => {
+  sortedDetections.forEach((detection) => {
     const ds = getDetectionStats(detection);
     groupStats.groupMin = Math.min(groupStats.groupMin, ds.pointsMin);
     groupStats.groupMax = Math.max(groupStats.groupMax, ds.pointsMax);
     // console.log("ds", ds);
   });
 
-  const graphData = detections
+  const graphData = sortedDetections
     .map((detection, index) => {
       const ds = getDetectionStats(detection);
       return {
@@ -317,7 +317,7 @@ export function DetectionTypeDetail() {
 
   // to be used for csv download
   const flatDetectionsData: Record<string, unknown>[] = [];
-  detections.forEach((detection) => {
+  sortedDetections.forEach((detection) => {
     const dd = detection.detectionData;
     const ds = getDetectionStats(detection);
     dd.points.forEach((point, index) => {
@@ -527,7 +527,7 @@ export function DetectionTypeDetail() {
                       </Col>
                       <Col xl={12} className="my-2">
                         <DownloadDataButton
-                          data={detections}
+                          data={sortedDetections}
                           format={"json"}
                           filename={`campo ${fieldId}`}
                         />
