@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { headerbarActions } from "../../headerbar/state/headerbar-slice";
 import { fieldsSelectors } from "../state/fields-slice";
@@ -10,7 +10,6 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Container, Row, Col } from "react-bootstrap";
 import { getFieldMapGeoJson } from "../../companies/pages/company-fields";
-import Icon from "../../../components/Icon";
 
 function getFieldCentroid(field?: AgriField): { lat: number; lng: number } | null {
   if (!field?.map?.length) {
@@ -31,8 +30,7 @@ function getFieldCentroid(field?: AgriField): { lat: number; lng: number } | nul
 
 export function FieldModelCimice() {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
-  const { companyId, fieldId } = useParams();
+  const { fieldId } = useParams();
   const currentField = useAppSelector((state) =>
     fieldsSelectors.selectFieldbyId(state, fieldId ?? "default"),
   );

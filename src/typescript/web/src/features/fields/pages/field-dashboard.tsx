@@ -2,12 +2,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import React, { Fragment } from "react";
 import { headerbarActions } from "../../headerbar/state/headerbar-slice";
-import { Card, Col, Container, Row } from "react-bootstrap";
+import { Col, Container, Row } from "react-bootstrap";
 import { fieldsSelectors } from "../state/fields-slice";
 import { detectionsSelectors } from "../../detections/state/detections-slice";
 import { getFieldMapGeoJson } from "../../companies/pages/company-fields";
 import _ from "lodash";
-import { GradientLineChart } from "../../../components/GradientLineChart";
 import {
   detectionTypesActions,
   detectionTypesSelectors,

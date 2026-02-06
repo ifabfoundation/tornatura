@@ -44,7 +44,6 @@ function isPointInsideField(pointLon: number, pointLat: number, areaPoints: numb
 
 export const FieldMaplet = ({
   detectionId,
-  phantomId,
   padding,
   interactions,
 }: FieldMapletProps) => {

@@ -22,8 +22,8 @@ export function FieldMap() {
   );
   const mapContainerRef = React.useRef<HTMLDivElement>(null);
   const mapRef = React.useRef<any>(null);
-  const [mapLoaded, setMapLoaded] = React.useState(false);
-  const [inputValue, setInputValue] = React.useState("");
+  // const [mapLoaded, setMapLoaded] = React.useState(false);
+  // const [inputValue, setInputValue] = React.useState("");
 
   React.useEffect(() => {
     dispatch(headerbarActions.setTitle({ title: "Mappa", subtitle: "Subtitle" }));
@@ -117,7 +117,7 @@ export function FieldMap() {
           padding: { top: contH * 0.4, bottom: contH * 0.4, left: contW * 0.4, right: contW * 0.4 },
         });
 
-        setMapLoaded(true);
+        // setMapLoaded(true);
       });
 
       return () => {

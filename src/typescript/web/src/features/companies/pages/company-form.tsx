@@ -33,6 +33,8 @@ export function CompanyForm() {
         icon: "barn",
         text: "Aziende gestite",
         path: "/companies",
+        type: 'single',
+        familyItems: []
       },
     ];
 
@@ -42,6 +44,8 @@ export function CompanyForm() {
         icon: "baloon",
         text: "Invia Feedback",
         path: "/new-feedback",
+        type: 'single',
+        familyItems: []
       },
     ];
 

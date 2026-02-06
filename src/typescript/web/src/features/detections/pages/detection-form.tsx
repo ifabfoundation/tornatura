@@ -1901,7 +1901,6 @@ function DetectionStepObservationPoints({
   formData,
   observationType,
   onNextClick,
-  onBackClick,
   pendingPhotos = [],
   onPhotosChange,
 }: DetectionProps & { observationType?: ObservationType }) {

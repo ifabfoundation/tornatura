@@ -12,7 +12,7 @@ import { detectionsActions, detectionsSelectors } from "../../detections/state/d
 import { Container, Row, Col } from "react-bootstrap";
 import { headerbarActions } from "../../headerbar/state/headerbar-slice";
 import { FieldMaplet } from "../../../components/FieldMaplet";
-import { GradientLineChart } from "../../../components/GradientLineChart";
+
 import Icon from "../../../components/Icon";
 import LineChartVisx from "../../../components/LineChartVisx";
 import {
@@ -243,13 +243,14 @@ export function DetectionTypeDetail() {
     });
     setModalOpen(true);
   }
-  function handleHighlightDetection(row: { detection?: Detection }) {
+
+  /*const handleHighlightDetection = (row: { detection?: Detection }) => {
     const detection = row?.detection;
     if (!detection) {
       return;
     }
     setSelectedDetectionId(detection.id);
-  }
+  }*/
 
   function handleGraphPointClick(d: any) {
     console.log("Graph point Datum", d);
@@ -280,7 +281,7 @@ export function DetectionTypeDetail() {
         detection: detection,
       };
     })
-    .sort((a, b) => a.x - b.x);
+    .sort((a, b) => a.x - b.x);*/
 
   const graphDataVisx = sortedDetections.map((detection, index, a) => {
     const ds = getDetectionStats(detection);

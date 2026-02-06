@@ -4,13 +4,12 @@ import { useAppSelector } from "../../../hooks";
 import { detectionTypesSelectors } from "../state/detection-types-slice";
 import { observationTypesSelectors } from "../../observation-types/state/observation-types-slice";
 import { detectionsSelectors } from "../../detections/state/detections-slice";
-import { dateToString } from "../../../services/utils";
-import { GradientLineChart } from "../../../components/GradientLineChart";
+
 import { getColorDiseaseIndex, getDetectionStats } from "../../../helpers/detections";
 import LineChartVisx from "../../../components/LineChartVisx";
 import { mapValues } from "../../../helpers/common";
 
-function getColor(min: number, max: number, value: number): string {
+export function getColor(min: number, max: number, value: number): string {
   const colors = ["#42C318", "#FFB290", "#FF4D4D", "#A10505"];
   const range = max - min;
   const segment = range / colors.length;
@@ -91,8 +90,8 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
   const lastDate = sortedDetections
     .map((e) => e.detectionTime)
     .sort((a, b) => b - a)
-    .reverse()[0];
-  const lastDateString = dateToString(lastDate, false);
+    .reverse()[0];*/
+  // const lastDateString = dateToString(lastDate, false);
 
   type NewDetectionButtonProps = {
     className?: string;

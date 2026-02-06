@@ -1,6 +1,6 @@
 import React from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { Alert, Container, Card } from "react-bootstrap";
+import { Alert, Container } from "react-bootstrap";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { invitationsActions, invitationsSelectors } from "../state/invitations-slice";

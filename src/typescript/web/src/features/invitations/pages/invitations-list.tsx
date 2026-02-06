@@ -19,7 +19,8 @@ const formatDate = (timestamp: number) => {
 };
 
 // Helper to get status badge class
-const getStatusClass = (status: string) => {
+// ts-ignore
+/*const getStatusClass = (status: string) => {
   switch (status) {
     case "pending":
       return "badge-warning";
@@ -34,7 +35,7 @@ const getStatusClass = (status: string) => {
     default:
       return "badge-secondary";
   }
-};
+};*/
 
 // Helper to translate status
 const translateStatus = (status: string) => {

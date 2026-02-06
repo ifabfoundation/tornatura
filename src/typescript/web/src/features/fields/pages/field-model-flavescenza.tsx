@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { headerbarActions } from "../../headerbar/state/headerbar-slice";
 import { fieldsSelectors } from "../state/fields-slice";
@@ -9,7 +9,6 @@ import { BollettinoResponse, fetchFlavescenzaReport } from "../../../services/mo
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Container, Row, Col } from "react-bootstrap";
-import Icon from "../../../components/Icon";
 import { getFieldMapGeoJson } from "../../companies/pages/company-fields";
 
 function getFieldCentroid(field?: AgriField): { lat: number; lng: number } | null {
@@ -31,8 +30,7 @@ function getFieldCentroid(field?: AgriField): { lat: number; lng: number } | nul
 
 export function FieldModelFlavescenza() {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
-  const { companyId, fieldId } = useParams();
+  const { fieldId } = useParams();
   const currentField = useAppSelector((state) =>
     fieldsSelectors.selectFieldbyId(state, fieldId ?? "default"),
   );

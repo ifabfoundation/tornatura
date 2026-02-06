@@ -1,6 +1,3 @@
-import { useAppSelector } from "../hooks";
-import { fieldsSelectors } from "../features/fields/state/fields-slice";
-import { useParams } from "react-router-dom";
 import TableCozy, { TableColumn, TableOptions } from "./TableCozy";
 import { getColorDiseaseIndex, getDetectionStats } from "../helpers/detections";
 import { Detection } from "@tornatura/coreapis";
@@ -31,10 +28,6 @@ export function DetectionsTable({
   handleHighlightDetection,
   handleDeleteDetection,
 }: DetectionsTableProps) {
-  const { fieldId } = useParams();
-  const currentField = useAppSelector((state) =>
-    fieldsSelectors.selectFieldbyId(state, fieldId ?? "default"),
-  );
   const tableOptions: TableOptions = {
     defaultSortCol: "date",
     defaultSortDir: "desc",
