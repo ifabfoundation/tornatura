@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useId, useMemo } from "react";
 import { Group } from "@visx/group";
 import { scaleTime, scaleLinear } from "@visx/scale";
 import { Line, LinePath, Circle } from "@visx/shape";
@@ -36,12 +36,8 @@ export default function LineChartVisx({
   gradients = false,
   margin = { top: 20, right: 20, bottom: 40, left: 50 },
 }: LineChartVisxProps) {
-  // const { containerRef, containerBounds, TooltipInPortal } = useTooltipInPortal({
-  //   scroll: true,
-  //   detectBounds: true,
-  // });
+  const chartId = useId(); // React 18 built-in, stable & unique
   const { tooltipData, tooltipLeft, tooltipTop, showTooltip, hideTooltip } = useTooltip<Datum>();
-
   const innerWidth = width - margin.left - margin.right;
   const innerHeight = height - margin.top - margin.bottom;
 
@@ -124,16 +120,17 @@ export default function LineChartVisx({
           {gradients &&
             data.slice(0, -1).map((point, i) => {
               const next = data[i + 1];
+              const id = `grad-${chartId}-${i}`;
               return (
                 <LinearGradient
-                  key={`grad-${i}`}
-                  id={`grad-${i}`}
+                  key={id}
+                  id={id}
                   from={next.color}
                   to={point.color}
                   x1="0%"
                   x2="100%"
-                  y1="0%"
-                  y2="0%"
+                  y1="50%"
+                  y2="50%"
                 />
               );
             })}
@@ -176,13 +173,14 @@ export default function LineChartVisx({
           {data.slice(0, -1).map((point, i) => {
             const next = data[i + 1];
             const segmentData = [point, next];
+            const stroke = gradients ? `url(#grad-${chartId}-${i})` : "black";
             return (
               <LinePath
                 key={`segment-${i}`}
                 data={segmentData}
                 x={(d) => xScale(xAccessor(d).getTime())}
                 y={(d) => yScale(yAccessor(d))}
-                stroke={gradients ? `url(#grad-${i})` : "black"}
+                stroke={stroke}
                 strokeWidth={8}
                 curve={allCurves.curveNatural} // or your curve of choice
               />

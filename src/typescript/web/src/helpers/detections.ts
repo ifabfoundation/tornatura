@@ -12,16 +12,21 @@ import legend_peronospora from "../assets/images/legends/legend-peronospora.svg"
 
 export function getColorDiseaseIndex(diseaseIndex: number): string {
   const colors = ["#42C318", "#FFB290", "#FF4D4D", "#A10505"];
-  return mapColorIndex(diseaseIndex, 0, 0.4, colors);
+  // return mapColorIndex(diseaseIndex, 0, 0.4, colors);
+  let color = colors[0];
+  if (diseaseIndex > 0.05) color = colors[1];
+  if (diseaseIndex > 0.15) color = colors[2];
+  if (diseaseIndex > 0.3) color = colors[3];
+  return color;
 }
 
-export function getRangePointColorMap(
-  v: number,
-  rangeMin: number = 0,
-  rangeMax: number = 5,
-): string {
+export function getRangePointColorMap_0_3(v: number): string {
   const colors = ["#42C318", "#FFB290", "#FF4D4D", "#A10505"];
-  return mapColorIndex(v, rangeMin, rangeMax, colors);
+  let color = colors[0];
+  if (v > 0) color = colors[1];
+  if (v > 1) color = colors[2];
+  if (v > 2) color = colors[3];
+  return color;
 }
 
 function mapColorIndex(value: number, min: number, max: number, colors: string[]): string {
@@ -52,7 +57,7 @@ export function enrichedMapPoints(points: ObservationPoint[], observationType: O
 
     // Change color for type 'range'
     if (type === "range") {
-      color = getRangePointColorMap(num);
+      color = getRangePointColorMap_0_3(num);
     }
 
     // Change size for type 'counters'
