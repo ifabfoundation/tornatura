@@ -583,7 +583,7 @@ export function Signup() {
             <div className="content">
               <Stepper
                 items={["Profilo", "Dati Personali", "Dati Aziendali", "Consensi", "Esito"]}
-                currentStep={step}
+                currentStep={step - 1}
               />
               <div className="form-wrapper">
                 {step === 1 && (
