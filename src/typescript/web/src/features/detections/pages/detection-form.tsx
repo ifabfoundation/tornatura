@@ -2359,14 +2359,20 @@ function DetectionStepObservationPoints({
                                   {scorePoints.length === 0 && (
                                     <div>Nessuna osservazione ancora registrata</div>
                                   )}
-                                  {scorePoints.map((entry: any, index: number) => (
-                                    <div key={index} className="score-entry">
-                                      <span className="txt new-score-entry">
-                                        <span>#{index + 1}</span> —{" "}
-                                        <span>{entry.data.rangeValue}</span>
-                                      </span>
-                                    </div>
-                                  ))}
+                                  {scorePoints.map((entry: any, index: number, a: any[]) => {
+                                    const hide = index < a.length - 5;
+                                    return (
+                                      <div
+                                        key={index}
+                                        className={`score-entry ${hide ? "d-none" : ""}`}
+                                      >
+                                        <span className="txt new-score-entry">
+                                          <span>#{index + 1}</span> —{" "}
+                                          <span>{entry.data.rangeValue}</span>
+                                        </span>
+                                      </div>
+                                    );
+                                  })}
                                   {scorePoints.length > 0 && (
                                     <a
                                       role="button"

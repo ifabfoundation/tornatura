@@ -250,11 +250,20 @@ export function DetectionTypeDetail() {
       return;
     }
     setSelectedDetectionId(detection.id);
-  }*/
+    scrollToGraphAndMap();
+  }
 
   function handleGraphPointClick(d: any) {
     console.log("Graph point Datum", d);
     setSelectedDetectionId(d?.detection.id);
+  }
+
+  function scrollToGraphAndMap() {
+    console.log("scrollToGraphAndMap");
+    const graphAndMapSection = document.getElementById("graph-map-section");
+    if (graphAndMapSection) {
+      graphAndMapSection.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
   }
 
   const groupStats = {
@@ -497,6 +506,7 @@ export function DetectionTypeDetail() {
                                 style={{ top: "-3px", position: "relative" }}
                                 onClick={() => {
                                   setSelectedDetectionId(photo.detection.id);
+                                  scrollToGraphAndMap();
                                 }}
                               >
                                 Evidenzia
@@ -573,6 +583,7 @@ export function DetectionTypeDetail() {
                                 style={{ top: "-3px", position: "relative" }}
                                 onClick={() => {
                                   setSelectedDetectionId(note.detection.id);
+                                  scrollToGraphAndMap();
                                 }}
                               >
                                 Evidenzia
@@ -597,7 +608,7 @@ export function DetectionTypeDetail() {
             </section>
           </Col>
         </Row>
-        <Row className="mt-4">
+        <Row className="mt-4" id="graph-map-section">
           <Col xl={12}>
             <section className="soft">
               <Row>
