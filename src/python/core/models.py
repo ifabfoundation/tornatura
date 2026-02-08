@@ -97,10 +97,11 @@ class ObservationType(Document):
     method = StringField(required=True)
     category = StringField(required=True)
     locationAndScoreInstructions = StringField(required=True)
-    bchInstructions = StringField(required=True, default="")
+    observationHint = StringField(required=True, default="Valuta l'intensità del sintomo")
     observationType = StringField(required=True, choices=("range", "counters"))
     rangeMin = FloatField(null=True)
     rangeMax = FloatField(null=True)
+    rangeLabels = ListField(StringField(), default=[])
     counters = ListField(StringField(), default=[])
     creationTime = IntField()
 

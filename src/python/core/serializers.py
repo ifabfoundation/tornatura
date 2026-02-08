@@ -70,10 +70,11 @@ class ObservationType(BaseModel):
     method: str
     category: str
     locationAndScoreInstructions: str
-    bchInstructions: str
+    observationHint: str
     observationType: str
     rangeMin: Optional[float] = None
     rangeMax: Optional[float] = None
+    rangeLabels: List[str] = []
     counters: List[str] = []
     creationTime: int
 
@@ -108,10 +109,11 @@ class ObservationTypeCreatePayload(BaseModel):
     method: str
     category: str
     locationAndScoreInstructions: str
-    bchInstructions: str = ""
+    observationHint: str = "Valuta l'intensità del sintomo"
     observationType: str
     rangeMin: Optional[float] = None
     rangeMax: Optional[float] = None
+    rangeLabels: List[str] = []
     counters: List[str] = []
 
 class ObservationTypeUpdatePayload(BaseModel):
@@ -119,10 +121,11 @@ class ObservationTypeUpdatePayload(BaseModel):
     method: Optional[str] = None
     category: Optional[str] = None
     locationAndScoreInstructions: Optional[str] = None
-    bchInstructions: Optional[str] = None
+    observationHint: Optional[str] = None
     observationType: Optional[str] = None
     rangeMin: Optional[float] = None
     rangeMax: Optional[float] = None
+    rangeLabels: Optional[List[str]] = None
     counters: Optional[List[str]] = None
 
 class AgriField(BaseModel):

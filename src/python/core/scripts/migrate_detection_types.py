@@ -47,6 +47,7 @@ def migrate_detection_types(dry_run: bool) -> int:
     ambiguous = 0
     db = ObservationType._get_db()
     detection_collection = db["detection_type"]
+    allowed_fields = {"_id", "agrifieldId", "observationTypeId", "creationTime"}
 
     for det in detection_collection.find({}):
         updates_set = {}
@@ -68,11 +69,10 @@ def migrate_detection_types(dry_run: bool) -> int:
 
             updates_set["observationTypeId"] = str(matches[0].id)
 
-        if (has_observation_type or updates_set) and (typology is not None or method is not None):
-            if typology is not None:
-                updates_unset["typology"] = ""
-            if method is not None:
-                updates_unset["method"] = ""
+        if has_observation_type or updates_set:
+            for key in det.keys():
+                if key not in allowed_fields:
+                    updates_unset[key] = ""
 
         if not updates_set and not updates_unset:
             skipped += 1
@@ -103,6 +103,21 @@ def migrate_observation_types(default_category: str | None, dry_run: bool):
     obs_by_key = build_observation_map()
     updated = 0
     skipped = 0
+    collection = ObservationType._get_collection()
+    allowed_fields = {
+        "_id",
+        "typology",
+        "method",
+        "category",
+        "locationAndScoreInstructions",
+        "observationHint",
+        "observationType",
+        "rangeMin",
+        "rangeMax",
+        "rangeLabels",
+        "counters",
+        "creationTime",
+    }
 
     for text in texts:
         key = (text.get("typology"), text.get("method"))
@@ -112,22 +127,33 @@ def migrate_observation_types(default_category: str | None, dry_run: bool):
             continue
         obs = matches[0]
 
-        updates = {}
+        updates_set = {}
+        updates_unset = {}
+        doc = obs.to_mongo().to_dict()
+        for field in doc.keys():
+            if field not in allowed_fields:
+                updates_unset[field] = ""
+
         if not obs.category:
             if default_category is None:
-                skipped += 1
-                continue
-            updates["category"] = default_category
+                pass
+            else:
+                updates_set["category"] = default_category
         if not obs.locationAndScoreInstructions:
-            updates["locationAndScoreInstructions"] = text.get("locationAndScoreInstructions", "")
-        if not obs.bchInstructions:
-            updates["bchInstructions"] = text.get("bbchInstructions", "")
+            updates_set["locationAndScoreInstructions"] = text.get("locationAndScoreInstructions", "")
+        if not obs.observationHint:
+            observation_hint = text.get("observationHint") or text.get("bbchInstructions")
+            if observation_hint:
+                updates_set["observationHint"] = observation_hint
 
-        if updates:
-            for key_name, value in updates.items():
-                setattr(obs, key_name, value)
+        if updates_set or updates_unset:
             if not dry_run:
-                obs.save()
+                update = {}
+                if updates_set:
+                    update["$set"] = updates_set
+                if updates_unset:
+                    update["$unset"] = updates_unset
+                collection.update_one({"_id": obs.id}, update)
             updated += 1
         else:
             skipped += 1

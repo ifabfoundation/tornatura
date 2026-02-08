@@ -20,10 +20,11 @@ class ObservationTypeServices:
                 method=item.method,
                 category=item.category,
                 locationAndScoreInstructions=item.locationAndScoreInstructions,
-                bchInstructions=item.bchInstructions,
+                observationHint=item.observationHint,
                 observationType=item.observationType,
                 rangeMin=item.rangeMin,
                 rangeMax=item.rangeMax,
+                rangeLabels=item.rangeLabels,
                 counters=item.counters,
                 creationTime=item.creationTime,
             )
@@ -78,14 +79,16 @@ class ObservationTypeServices:
             observation_type.category = payload.category
         if payload.locationAndScoreInstructions is not None:
             observation_type.locationAndScoreInstructions = payload.locationAndScoreInstructions
-        if payload.bchInstructions is not None:
-            observation_type.bchInstructions = payload.bchInstructions
+        if payload.observationHint is not None:
+            observation_type.observationHint = payload.observationHint
         if payload.observationType is not None:
             observation_type.observationType = payload.observationType
         if payload.rangeMin is not None:
             observation_type.rangeMin = payload.rangeMin
         if payload.rangeMax is not None:
             observation_type.rangeMax = payload.rangeMax
+        if payload.rangeLabels is not None:
+            observation_type.rangeLabels = payload.rangeLabels
         if payload.counters is not None:
             observation_type.counters = payload.counters
 
