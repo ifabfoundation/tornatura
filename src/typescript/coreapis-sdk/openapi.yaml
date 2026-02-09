@@ -2533,9 +2533,9 @@ components:
         locationAndScoreInstructions:
           type: string
           title: Locationandscoreinstructions
-        bchInstructions:
+        observationHint:
           type: string
-          title: Bchinstructions
+          title: Observationhint
         observationType:
           type: string
           title: Observationtype
@@ -2547,6 +2547,11 @@ components:
           type: number
           title: Rangemax
           nullable: true
+        rangeLabels:
+          items:
+            type: string
+          type: array
+          title: Rangelabels
         counters:
           items:
             type: string
@@ -2562,7 +2567,7 @@ components:
       - method
       - category
       - locationAndScoreInstructions
-      - bchInstructions
+      - observationHint
       - observationType
       - creationTime
       title: ObservationType
@@ -2580,9 +2585,9 @@ components:
         locationAndScoreInstructions:
           type: string
           title: Locationandscoreinstructions
-        bchInstructions:
+        observationHint:
           type: string
-          title: Bchinstructions
+          title: Observationhint
         observationType:
           type: string
           title: Observationtype
@@ -2594,6 +2599,11 @@ components:
           type: number
           title: Rangemax
           nullable: true
+        rangeLabels:
+          items:
+            type: string
+          type: array
+          title: Rangelabels
         counters:
           items:
             type: string
@@ -2605,7 +2615,6 @@ components:
       - method
       - category
       - locationAndScoreInstructions
-      - bchInstructions
       - observationType
       title: ObservationTypeCreatePayload
     ObservationTypeUpdatePayload:
@@ -2626,9 +2635,9 @@ components:
           type: string
           title: Locationandscoreinstructions
           nullable: true
-        bchInstructions:
+        observationHint:
           type: string
-          title: Bchinstructions
+          title: Observationhint
           nullable: true
         observationType:
           type: string
@@ -2641,6 +2650,12 @@ components:
         rangeMax:
           type: number
           title: Rangemax
+          nullable: true
+        rangeLabels:
+          items:
+            type: string
+          type: array
+          title: Rangelabels
           nullable: true
         counters:
           items:

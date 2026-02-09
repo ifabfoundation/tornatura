@@ -54,7 +54,7 @@ export interface ObservationType {
      * @type {string}
      * @memberof ObservationType
      */
-    bchInstructions: string;
+    observationHint: string;
 
     /**
      * @type {string}
@@ -73,6 +73,12 @@ export interface ObservationType {
      * @memberof ObservationType
      */
     rangeMax?: number | null;
+
+    /**
+     * @type {Array<string>}
+     * @memberof ObservationType
+     */
+    rangeLabels?: Array<string>;
 
     /**
      * @type {Array<string>}

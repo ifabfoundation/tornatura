@@ -48,7 +48,7 @@ export interface ObservationTypeUpdatePayload {
      * @type {string}
      * @memberof ObservationTypeUpdatePayload
      */
-    bchInstructions?: string | null;
+    observationHint?: string | null;
 
     /**
      * @type {string}
@@ -67,6 +67,12 @@ export interface ObservationTypeUpdatePayload {
      * @memberof ObservationTypeUpdatePayload
      */
     rangeMax?: number | null;
+
+    /**
+     * @type {Array<string>}
+     * @memberof ObservationTypeUpdatePayload
+     */
+    rangeLabels?: Array<string> | null;
 
     /**
      * @type {Array<string>}

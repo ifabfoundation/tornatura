@@ -34,8 +34,14 @@ def load_detection_texts():
 
 def build_observation_map():
     mapping = defaultdict(list)
-    for obs in ObservationType.objects():
-        key = (obs.typology.lower(), obs.method.lower())
+    collection = ObservationType._get_collection()
+    cursor = collection.find({}, {"_id": 1, "typology": 1, "method": 1})
+    for obs in cursor:
+        typology = obs.get("typology")
+        method = obs.get("method")
+        if not typology or not method:
+            continue
+        key = (typology.lower(), method.lower())
         mapping[key].append(obs)
     return mapping
 
@@ -126,22 +132,22 @@ def migrate_observation_types(default_category: str | None, dry_run: bool):
             skipped += 1
             continue
         obs = matches[0]
-
+        obs_id = obs["_id"]
+        doc = collection.find_one({"_id": obs_id}) or {}
         updates_set = {}
         updates_unset = {}
-        doc = obs.to_mongo().to_dict()
         for field in doc.keys():
             if field not in allowed_fields:
                 updates_unset[field] = ""
 
-        if not obs.category:
+        if not doc.get("category"):
             if default_category is None:
                 pass
             else:
                 updates_set["category"] = default_category
-        if not obs.locationAndScoreInstructions:
+        if not doc.get("locationAndScoreInstructions"):
             updates_set["locationAndScoreInstructions"] = text.get("locationAndScoreInstructions", "")
-        if not obs.observationHint:
+        if not doc.get("observationHint"):
             observation_hint = text.get("observationHint") or text.get("bbchInstructions")
             if observation_hint:
                 updates_set["observationHint"] = observation_hint
@@ -153,7 +159,7 @@ def migrate_observation_types(default_category: str | None, dry_run: bool):
                     update["$set"] = updates_set
                 if updates_unset:
                     update["$unset"] = updates_unset
-                collection.update_one({"_id": obs.id}, update)
+                collection.update_one({"_id": obs_id}, update)
             updated += 1
         else:
             skipped += 1
