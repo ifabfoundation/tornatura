@@ -87,7 +87,7 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
   });
   // .sort((a, b) => a.x.getTime() - b.x.getTime());
 
-  const lastDate = sortedDetections
+  /*const lastDate = sortedDetections
     .map((e) => e.detectionTime)
     .sort((a, b) => b - a)
     .reverse()[0];*/

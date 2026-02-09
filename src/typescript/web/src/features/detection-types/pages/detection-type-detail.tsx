@@ -251,7 +251,7 @@ export function DetectionTypeDetail() {
     }
     setSelectedDetectionId(detection.id);
     scrollToGraphAndMap();
-  }
+  }*/
 
   function handleGraphPointClick(d: any) {
     console.log("Graph point Datum", d);
@@ -278,7 +278,7 @@ export function DetectionTypeDetail() {
     // console.log("ds", ds);
   });
 
-  const graphData = sortedDetections
+  /*const graphData = sortedDetections
     .map((detection, index) => {
       const ds = getDetectionStats(detection);
       return {
@@ -303,7 +303,7 @@ export function DetectionTypeDetail() {
       y: ds.type === "counters" ? ds.counterSumsTotal : ds.diseaseIndex,
       // color: getColor(groupStats.groupMin, groupStats.groupMax, ds.pointsAvg),
       color:
-        observationType.observationType === "range"
+        observationType?.observationType === "range"
           ? getColorDiseaseIndex(ds.diseaseIndex)
           : "white",
       detection: detection,
@@ -410,8 +410,8 @@ export function DetectionTypeDetail() {
     </button>
   );
 
-  const graphTitle = getGraphName(observationType.typology ?? "");
-  const graphLegend = getGraphLegend(observationType.typology ?? "");
+  const graphTitle = getGraphName(observationType?.typology ?? "");
+  const graphLegend = getGraphLegend(observationType?.typology ?? "");
   const graphHeight = isMobile ? 100 : 200;
 
   return (

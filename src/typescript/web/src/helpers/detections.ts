@@ -29,7 +29,7 @@ export function getRangePointColorMap_0_3(v: number): string {
   return color;
 }
 
-function mapColorIndex(value: number, min: number, max: number, colors: string[]): string {
+export function mapColorIndex(value: number, min: number, max: number, colors: string[]): string {
   const range = max - min;
   const segment = range / colors.length;
   const index = Math.min(colors.length - 1, Math.floor((value - min) / segment));

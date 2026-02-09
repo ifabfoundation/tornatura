@@ -19,6 +19,23 @@ const observationTypesAdapter = createEntityAdapter<ObservationType, string>({
   selectId: (observationType: ObservationType) => observationType.id,
 });
 
+type ObservationTypeWithLegacy = ObservationType & {
+  bchInstructions?: string;
+  observationHint?: string;
+  rangeLabels?: string[];
+};
+
+const normalizeObservationType = (item: ObservationType): ObservationType => {
+  const normalized = { ...item } as ObservationTypeWithLegacy;
+  if (!normalized.observationHint) {
+    normalized.observationHint = normalized.bchInstructions ?? "";
+  }
+  if (!Array.isArray(normalized.rangeLabels)) {
+    normalized.rangeLabels = [];
+  }
+  return normalized as ObservationType;
+};
+
 const initialState = observationTypesAdapter.getInitialState<AuxState>({
   status: "idle",
   total: 0,
@@ -102,7 +119,8 @@ const observationTypesSlice = createSlice({
     builder.addCase(fetchObservationTypes.fulfilled, (state, action) => {
       state.status = "succeeded";
       state.total = action.payload.total;
-      observationTypesAdapter.setAll(state, action.payload.data as ObservationType[]);
+      const normalized = (action.payload.data as ObservationType[]).map(normalizeObservationType);
+      observationTypesAdapter.setAll(state, normalized);
     });
 
     builder.addCase(fetchObservationTypes.rejected, (state, action) => {
@@ -111,11 +129,17 @@ const observationTypesSlice = createSlice({
     });
 
     builder.addCase(addObservationType.fulfilled, (state, action) => {
-      observationTypesAdapter.upsertOne(state, action.payload as ObservationType);
+      observationTypesAdapter.upsertOne(
+        state,
+        normalizeObservationType(action.payload as ObservationType)
+      );
     });
 
     builder.addCase(updateObservationType.fulfilled, (state, action) => {
-      observationTypesAdapter.upsertOne(state, action.payload as ObservationType);
+      observationTypesAdapter.upsertOne(
+        state,
+        normalizeObservationType(action.payload as ObservationType)
+      );
     });
 
     builder.addCase(deleteObservationType.fulfilled, (state, action) => {

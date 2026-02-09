@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 
 import "./App.css";
 import { authStore } from "./providers/auth-providers";
-import { useAppDispatch, useAppSelector } from "./hooks";
+import { useAppDispatch, useAppSelector, usePageTracking } from "./hooks";
 import { getUserInfo } from "./features/users/utils";
 import { userActions, userSelectors } from "./features/users/state/user-slice";
 import { userMenuSelectors } from "./features/userMenu/state/userMenu-slice";
@@ -114,6 +114,7 @@ function MainApp() {
 }
 
 function App() {
+  usePageTracking();
   const navigate = useNavigate();
   const { initialized, authenticated } = React.useContext(authStore);
   const [loaded, setLoaded] = React.useState(false);
@@ -148,6 +149,7 @@ function App() {
         profile.accountType === AccountTypeEnum.Standard
       ) {
         await dispatch(invitationsActions.fetchMyInvitationsAction());
+        await dispatch(observationTypesActions.fetchObservationTypesAction({}))
         if (profile.organizations) {
           for (let org of profile.organizations) {
             await dispatch(companiesActions.getCompanyAction(org.id));

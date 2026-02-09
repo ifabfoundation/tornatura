@@ -1382,319 +1382,44 @@ function DetectionFormMapPosition({
   return <div ref={mapContainerRef} id="map-observations-form" data-debug={debugString}></div>;
 }
 
-/* 
-// const categorie: any = {
-//   fungi: {
-//     icon: "spots",
-//     name: "Fungo e peronospora",
-//     items: {
-//       peronospora: {
-//         name: "Peronospora",
-//         icon: false,
-//       },
-//       other_fungi: {
-//         name: "Altro fungo",
-//         icon: false,
-//       },
-//     },
-//   },
-//   bacteria: {
-//     icon: "bacteria",
-//     name: "Batterio",
-//     items: {
-//       flavescenza: {
-//         name: "Flavescenza",
-//         icon: false,
-//       },
-//       other_bacteria: {
-//         name: "Altro batterio",
-//         icon: false,
-//       },
-//     },
-//   },
-//   insect: {
-//     icon: "bug",
-//     name: "Insetto",
-//     items: {
-//       scafoideo: {
-//         name: "Scafoideo",
-//         icon: false,
-//       },
-//       cimice: {
-//         name: "Cimice",
-//         // icon: "baloon",
-//         icon: false,
-//       },
-//       diabrotica: {
-//         name: "Diabrotica",
-//         icon: false,
-//       },
-//       other_insect: {
-//         name: "Altro insetto",
-//         icon: false,
-//       },
-//     },
-//   },
-// };
 
-// const methods: any = {
-//   peronospora: {
-//     title: (
-//       <span>
-//         Rilevamento di <strong>peronospora</strong> su…
-//       </span>
-//     ),
-//     items: ["Foglia", "Frutto", "Tutta la pianta"],
-//   },
-//   other_fungi: {
-//     title: (
-//       <span>
-//         Rilevamento di <strong>altro fungo</strong> su…
-//       </span>
-//     ),
-//     items: ["Foglia", "Frutto", "Tutta la pianta"],
-//   },
-//   flavescenza: {
-//     title: (
-//       <span>
-//         Rilevamento di <strong>flavescenza</strong> su…
-//       </span>
-//     ),
-//     items: ["Foglia", "Frutto", "Tutta la pianta"],
-//   },
-//   other_bacteria: {
-//     title: (
-//       <span>
-//         Rilevamento di <strong>altro batterio</strong> su…
-//       </span>
-//     ),
-//     items: ["Foglia", "Frutto", "Tutta la pianta"],
-//   },
-//   cimice: {
-//     title: (
-//       <span>
-//         Scegli un metodo di rilevamento della <strong>cimice</strong>
-//       </span>
-//     ),
-//     items: ["Trappola", "Campo (Frappage – Visivo)"],
-//   },
-//   scafoideo: {
-//     title: (
-//       <span>
-//         Scegli un focus di rilevamento dello <strong>scafoideo</strong>
-//       </span>
-//     ),
-//     items: ["Foglie basali/polloni", "Chioma"],
-//   },
-//   diabrotica: {
-//     title: (
-//       <span>
-//         Scegli un metodo di rilevamento della <strong>diabrotica</strong>
-//       </span>
-//     ),
-//     items: [],
-//   },
-//   other_insect: {
-//     title: (
-//       <span>
-//         Scegli un metodo di rilevamento di <strong>altro insetto</strong>
-//       </span>
-//     ),
-//     items: ["Trappola", "Altro"],
-//   },
-// };
+const categoryIcons: any = {
+  "Fungo e peronospora": "spots",
+  "Batterio": "bacteria",
+  "Insetto": "bug"
+}
 
-// interface AccordionTipologiaProps {
-//   onSelect: (selection: string) => void;
-// }
-
-// function AccordionTipologia({ onSelect }: AccordionTipologiaProps) {
-//   let items: AccordionItem[] = [];
-//   items = Object.keys(categorie).map((key: string, index: number) => {
-//     let iconNameAccItem = categorie[key].icon ?? null;
-//     return {
-//       id: index.toString(),
-//       title: categorie[key].name,
-//       content: (
-//         <Fragment>
-//           {Object.keys(categorie[key].items).map((itemKey: string, itemIndex) => {
-//             let iconNameBtn = categorie[key].icon ?? null;
-//             if (categorie[key].items[itemKey].icon) {
-//               iconNameBtn = categorie[key].items[itemKey].icon;
-//             }
-//             if (categorie[key].items[itemKey].icon === false) {
-//               iconNameBtn = null;
-//             }
-//             return (
-//               <CozyButton
-//                 key={itemIndex}
-//                 iconName={iconNameBtn}
-//                 content={categorie[key].items[itemKey].name || "Altro"}
-//                 onClick={() => onSelect(itemKey)}
-//                 arrow={true}
-//               />
-//             );
-//           })}
-//         </Fragment>
-//       ),
-//       icon: iconNameAccItem,
-//     };
-//   });
-//   return (
-//     <div className="narrow-container my-5">
-//       <h3 className="mb-4 text-center">Seleziona la tipologia di rilevamento</h3>
-//       <Accordion items={items} />
-//     </div>
-//   );
-// }
-
-// function DetectionStepPosizione({ action, onNextClick }: DetectionProps) {
-//   const [source, setSource] = React.useState<string>("current");
-//   const [modalOpen, setModalOpen] = React.useState(false);
-//   const [modal, setModal] = React.useState<any>({});
-//   const { fieldId } = useParams();
-//   const currentField = useAppSelector((state) =>
-//     fieldsSelectors.selectFieldbyId(state, fieldId ?? "default"),
-//   );
-
-//   const currentPosition = React.useContext(gpsStore);
-//   const [hasGeolocation, setHasGeolocation] = React.useState<boolean>(false);
-//   const [markerPosition, setMarkerPosition] = React.useState<Point>();
-
-//   React.useEffect(() => {
-//     if (navigator.geolocation) {
-//       setHasGeolocation(true);
-//     }
-//   }, []);
-
-//   const handleSourceChange = (value: string) => {
-//     setSource(value);
-//   };
-
-//   const handleMarkerChange = async (point: Point) => {
-//     setMarkerPosition(point);
-//     setSource("map");
-//   };
-
-//   const handleNextClick = async () => {
-//     if (source === "current" && !hasGeolocation) {
-//       setModal({
-//         component: ModalConfirm,
-//         componentProps: {
-//           title: "Rilevamento",
-//           content:
-//             "Non è possibile utilizzare la posizione corrente perché il browser non supporta la geolocalizzazione.",
-//           action: "Ok",
-//           handleCancel: () => setModalOpen(false),
-//           handleConfirm: () => {
-//             setModalOpen(false);
-//           },
-//         },
-//       });
-//       setModalOpen(true);
-//       return;
-//     }
-
-//     if (source === "map" && !markerPosition) {
-//       setModal({
-//         component: ModalConfirm,
-//         componentProps: {
-//           title: "Rilevamento",
-//           content: "Devi selezionare un punto sulla mappa.",
-//           action: "Ok",
-//           handleCancel: () => setModalOpen(false),
-//           handleConfirm: () => {
-//             setModalOpen(false);
-//           },
-//         },
-//       });
-//       setModalOpen(true);
-//       return;
-//     }
-
-//     if (source === "current" && hasGeolocation) {
-//       let data: number[][] = [];
-//       currentField.map.forEach((point: Point) => {
-//         data.push([point.lng, point.lat]);
-//       });
-//       if (data.length > 2) {
-//         const polygon = turf.polygon([data]);
-//         if (!hasGeolocation) {
-//           console.log("No Geolocation data");
-//           return;
-//         } else {
-//           const point = turf.point([currentPosition.lng, currentPosition.lat]);
-//           const geolocationValid = turf.booleanContains(polygon, point);
-//           console.log("Geolocation valid?", geolocationValid);
-//           if (!geolocationValid) {
-//             setModal({
-//               component: ModalConfirm,
-//               componentProps: {
-//                 title: "Rilevamento",
-//                 content:
-//                   "La tua posizione corrente risulta fuori dall'area del campo. Scegli un altro punto cliccando sulla mappa.",
-//                 action: "Ok",
-//                 handleCancel: () => setModalOpen(false),
-//                 handleConfirm: () => {
-//                   setSource("map");
-//                   setModalOpen(false);
-//                 },
-//               },
-//             });
-//             setModalOpen(true);
-//             return;
-//           }
-//         }
-//       }
-//     }
-
-//     const data = {
-//       latitude: source === "current" ? currentPosition.lat : markerPosition?.lat,
-//       longitude: source === "current" ? currentPosition.lng : markerPosition?.lng,
-//     };
-
-//     onNextClick(data);
-//   };
-
-//   return (
-//     <Fragment>
-//       {modalOpen && <modal.component {...modal.componentProps} />}
-//       <div className="input-row">
-//         <label>
-//           <select name="source" onChange={(e) => handleSourceChange(e.target.value)} value={source}>
-//             <option value="current">Usa posizione corrente</option>
-//             <option value="map">Seleziona un punto sulla mappa</option>
-//             <option value="map">Rilevamento per l'intero campo</option>
-//           </select>
-//         </label>
-//       </div>
-//       <DetectionFormMapPosition sourceType={source} onMarkerChange={handleMarkerChange} />
-//       <div className="buttons-wrapper mt-4 text-center">
-//         <button className="trnt_btn primary" onClick={handleNextClick}>
-//           {action}
-//         </button>
-//       </div>
-//     </Fragment>
-//   );
-// }
- */
+type TypologyGroup = {
+  category: string;
+  typologies: string[];
+};
 
 function DetectionStepTipologia({
-  typologies,
+  typologyGroups,
   onNextClick,
-}: DetectionProps & { typologies: string[] }) {
+}: DetectionProps & { typologyGroups: TypologyGroup[] }) {
+  const items: AccordionItem[] = typologyGroups.map((group, index) => ({
+    id: index.toString(),
+    title: group.category,
+    content: (
+      <Fragment>
+        {group.typologies.map((item, itemIndex) => (
+          <CozyButton
+            key={itemIndex}
+            content={item}
+            onClick={() => onNextClick({ typology: item })}
+            arrow={true}
+          />
+        ))}
+      </Fragment>
+    ),
+    icon: categoryIcons[group.category]
+  }));
+
   return (
     <div className="narrow-container my-5">
       <h3 className="mb-4 text-center">Seleziona la tipologia di rilevamento</h3>
-      {typologies.length === 0 && <div>Nessuna tipologia disponibile.</div>}
-      {typologies.map((item, index) => (
-        <CozyButton
-          key={index}
-          content={item}
-          onClick={() => onNextClick({ typology: item })}
-          arrow={true}
-        />
-      ))}
+      {items.length === 0 ? <div>Nessuna tipologia disponibile.</div> : <Accordion items={items} />}
     </div>
   );
 }
@@ -2470,19 +2195,15 @@ function DetectionStepObservationPoints({
                 <div className="dfpart_detection-inputs">
                   <div className="mt-2 mb-3">
                     <div className="font-s-label">Osservazione #{scorePoints.length + 1}</div>
-                    <div className="font-l mt-1">Valuta l'intensità del sintomo</div>
+                    <div className="font-l mt-1">{observationType.observationHint}</div>
                   </div>
                   {observationType.observationType === "range" && (
                     <Fragment>
-                      <ScoreBtnRow score={0} label="Assente" />
-                      {Array.from({ length: rangeLength }, (_, i) => i + 1).map((v, index) => {
+                      {Array.from({ length: rangeLength + 1 }, (_, i) => i).map((v, index) => {
                         console.log("score dots: ", v, rangeLength);
-                        const labels = ["Basso", "Limitato", "Alto", "Molto Alto"];
-                        if (v > 4) {
-                          return <ScoreBtnRow key={index} score={v} label="Molto Alto" />;
-                        } else {
-                          return <ScoreBtnRow key={index} score={v} label={labels[v - 1]} />;
-                        }
+                        const labels = observationType.rangeLabels ?? [];
+                        const rangeMin = observationType.rangeMin ?? 0;
+                        return <ScoreBtnRow key={index} score={v + rangeMin} label={labels[v]} />;
                       })}
                     </Fragment>
                   )}
@@ -2689,9 +2410,21 @@ export function DetectionForm() {
 
   const currentStepKey = steps[stepIndex];
 
-  const typologyOptions = React.useMemo(() => {
-    const values = observationTypes.map((item) => item.typology);
-    return Array.from(new Set(values));
+  const typologyGroups = React.useMemo(() => {
+    const grouped = new Map<string, Set<string>>();
+    observationTypes.forEach((item) => {
+      const category = item.category?.trim() || "Senza categoria";
+      if (!grouped.has(category)) {
+        grouped.set(category, new Set());
+      }
+      grouped.get(category)?.add(item.typology);
+    });
+    return Array.from(grouped.entries())
+      .map(([category, typologies]) => ({
+        category,
+        typologies: Array.from(typologies).sort(),
+      }))
+      .sort((a, b) => a.category.localeCompare(b.category));
   }, [observationTypes]);
 
   const methodOptions = React.useMemo(() => {
@@ -2910,7 +2643,7 @@ export function DetectionForm() {
       <div>
         {currentStepKey === "typology" && (
           <DetectionStepTipologia
-            typologies={typologyOptions}
+            typologyGroups={typologyGroups}
             formData={formData}
             onNextClick={handleNextClick}
           />
