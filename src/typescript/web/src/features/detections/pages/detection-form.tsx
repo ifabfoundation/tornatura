@@ -1096,7 +1096,7 @@ function DetectionFormMapPosition({
           paint: {
             "line-color": "rgba(255, 255, 255, 0.2)",
             "line-opacity": 0.5,
-            "line-width": 3,
+            "line-width": 2,
             "line-dasharray": [1, 0.5], // ← dashed line
           },
         });
@@ -1116,7 +1116,7 @@ function DetectionFormMapPosition({
             "circle-opacity": 0.8,
             "circle-stroke-color": "rgba(255, 255, 255, 0.5)",
             "circle-stroke-opacity": 0.8,
-            "circle-stroke-width": 3.5,
+            "circle-stroke-width": 1.5,
           },
         });
 
@@ -1160,7 +1160,7 @@ function DetectionFormMapPosition({
           paint: {
             "line-color": "rgba(255, 255, 255, 0.9)",
             "line-opacity": 1.0,
-            "line-width": 3,
+            "line-width": 2,
             "line-dasharray": [1, 0.5], // ← dashed line
           },
         });
@@ -1180,7 +1180,7 @@ function DetectionFormMapPosition({
             "circle-opacity": 0.8,
             "circle-stroke-color": "rgba(255, 255, 255, 0.9)",
             "circle-stroke-opacity": 1.0,
-            "circle-stroke-width": 3.5,
+            "circle-stroke-width": 1.5,
           },
         });
 
@@ -1382,12 +1382,11 @@ function DetectionFormMapPosition({
   return <div ref={mapContainerRef} id="map-observations-form" data-debug={debugString}></div>;
 }
 
-
 const categoryIcons: any = {
   "Fungo e peronospora": "spots",
-  "Batterio": "bacteria",
-  "Insetto": "bug"
-}
+  Batterio: "bacteria",
+  Insetto: "bug",
+};
 
 type TypologyGroup = {
   category: string;
@@ -1413,7 +1412,7 @@ function DetectionStepTipologia({
         ))}
       </Fragment>
     ),
-    icon: categoryIcons[group.category]
+    icon: categoryIcons[group.category],
   }));
 
   return (

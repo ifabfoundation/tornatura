@@ -42,11 +42,7 @@ function isPointInsideField(pointLon: number, pointLat: number, areaPoints: numb
   return false;
 }
 
-export const FieldMaplet = ({
-  detectionId,
-  padding,
-  interactions,
-}: FieldMapletProps) => {
+export const FieldMaplet = ({ detectionId, padding, interactions }: FieldMapletProps) => {
   const { fieldId } = useParams();
   const currentField = useAppSelector((state) =>
     fieldsSelectors.selectFieldbyId(state, fieldId ?? "default"),
@@ -276,7 +272,7 @@ export const FieldMaplet = ({
           paint: {
             "line-color": "rgba(255, 255, 255, 0.9)",
             "line-opacity": 1.0,
-            "line-width": 3,
+            "line-width": 2,
             "line-dasharray": [1, 0.5], // ← dashed line
           },
         });
@@ -296,7 +292,7 @@ export const FieldMaplet = ({
             "circle-opacity": 0.8,
             "circle-stroke-color": "rgba(255, 255, 255, 0.9)",
             "circle-stroke-opacity": 1.0,
-            "circle-stroke-width": 3.5,
+            "circle-stroke-width": 1.5,
           },
         });
 
@@ -418,7 +414,7 @@ export const FieldMaplet = ({
   }, [mapContainerRef.current, currentField]);
 
   React.useEffect(() => {
-    if (mapLoaded){
+    if (mapLoaded) {
       // Update source data
       const source = mapRef.current!.getSource("current-location") as mapboxgl.GeoJSONSource;
       if (source) {
@@ -439,7 +435,7 @@ export const FieldMaplet = ({
 
   React.useEffect(() => {
     if (mapLoaded) {
-      console.log("pippppoooooooo detection change")
+      console.log("pippppoooooooo detection change");
       const selectedDetectionMapPoints = getDetectionPoints();
 
       const sourcePath = mapRef.current!.getSource("dataPointsPath") as mapboxgl.GeoJSONSource;
@@ -473,10 +469,9 @@ export const FieldMaplet = ({
     }
   }, [selectedDetection, mapLoaded]);
 
- if (!selectedDetection && !mapLoaded) {
+  if (!selectedDetection && !mapLoaded) {
     return <div>Detection not found</div>;
   } else {
     return <div ref={mapContainerRef} className="map-observations"></div>;
   }
-  
 };
