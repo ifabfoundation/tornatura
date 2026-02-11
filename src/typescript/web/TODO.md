@@ -8,15 +8,8 @@
 
 Rilevamento Tooltip (i)
 
-- [ ] ● (x) `BUG` Eleonora non riesce a fare i rilevamenti (screenshot: https://www.dropbox.com/scl/fi/ssmenmcqe1elz0rlur7ez/Screenshot-2026-02-04-at-12.36.52-2.png?rlkey=yyrxhtal5nlutlapr29pdxtbl&dl=0)
-- [ ] ● (t) Location: Impostare pagina test location
-- [ ] ● (t) Location: Considerare app nativa
-- [ ] ● (t) Aggiungere Google Analytics (mail di Eleonora del 4/2/26)
 - [ ] ● (a) Detail page: Add date selector
-- [ ] (t) UI per immettere i punti del rilevamenti: mettere una frase custom per ogni tipo di detection al posto di "Valuta l'intensità del sintomo"
-- [ ] (t) Nomi Btn range: ●○○ Basso / ●●○ Medio / ●●● Alto
 - [ ] (t) Mostrare un modale durante il caricamento delle immagini
-- [ ] (t) Mettere in produzione i tipi rilevamento: Flavescienza, Scafoideo, Diabrotica
 - [ ] (a) Focus submit button in forms
 - [ ] (a) Detection detail page: show images grouped by detection
 - [ ] (a) + (Vito)  Frase da aggiungere in modello
@@ -40,3 +33,10 @@ Rilevamento Tooltip (i)
 - [x] (a) Larve / Ninfe = Forma giovanile in legenda
 - [x] (a) Btn "E⁠evidenzia": scroll to graphs
 - [x] (a) iscrizione: breadcrumb è avanti di un passo (consensi, esito)
+- [x] (t) UI per immettere i punti del rilevamenti: mettere una frase custom per ogni tipo di detection al posto di "Valuta l'intensità del sintomo"
+- [x] (t) Nomi Btn range: ●○○ Basso / ●●○ Medio / ●●● Alto
+- [x] ● (t) Aggiungere Google Analytics (mail di Eleonora del 4/2/26)
+- [x] ● (x) `BUG` Eleonora non riesce a fare i rilevamenti (screenshot: https://www.dropbox.com/scl/fi/ssmenmcqe1elz0rlur7ez/Screenshot-2026-02-04-at-12.36.52-2.png?rlkey=yyrxhtal5nlutlapr29pdxtbl&dl=0)
+- [x] (t) Mettere in produzione i tipi rilevamento: Flavescienza, Scafoideo, Diabrotica
+- [x] ● (t) Location: Impostare pagina test location
+- [x] ● (t) Location: Considerare app nativa

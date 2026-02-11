@@ -82,11 +82,12 @@ export function FieldDetailForm({ field }: FieldDetailProps) {
         grassing: values.grassing,
         year: values.year,
       };
+
       dispatch(
         fieldsActions.updateFieldAction({ orgId: field.orgId, fieldId: field.id, body: payload })
       );
       setSubmitting(false);
-      setSubmitting(false);
+      navigate(`/companies/${field.orgId}/fields/${field.id}`);
     },
   });
 

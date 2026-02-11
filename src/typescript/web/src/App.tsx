@@ -22,6 +22,8 @@ import Loading from "./components/Loading";
 import { invitationsActions } from "./features/invitations/state/invitations-slice";
 import { observationTypesActions } from "./features/observation-types/state/observation-types-slice";
 import { detectionTypesActions } from "./features/detection-types/state/detection-types-slice";
+import ReactGA from "react-ga4";
+import { getBrowsingOrigin } from "./helpers/common";
 
 export function RouteApp() {
   const currentUser = useAppSelector(userSelectors.selectCurrentUser);
@@ -175,6 +177,10 @@ function App() {
   React.useEffect(() => {
     if (initialized && authenticated) {
       loadData();
+      ReactGA.event("login");
+      if (getBrowsingOrigin() === "PWA") {
+        ReactGA.event("originPWA");
+      }
     }
   }, [authenticated, initialized]);
 

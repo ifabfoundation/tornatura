@@ -81,3 +81,21 @@ export function mapValues(
 //   }
 //   return points;
 // }
+
+export function isMobileDevice() {
+  return (
+    window.matchMedia('(pointer: coarse)').matches &&
+    !window.matchMedia('(pointer: fine)').matches
+  );
+}
+
+export function getBrowsingOrigin() {
+  // @ts-ignore
+  const isPWA = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  if (isPWA) {
+    return "PWA";
+  } else {
+    return "WEB"
+  }
+}
+  
