@@ -270,7 +270,7 @@ export const FieldMaplet = ({ detectionId, padding, interactions }: FieldMapletP
           type: "line",
           source: "dataPointsPath",
           paint: {
-            "line-color": "rgba(255, 255, 255, 0.9)",
+            "line-color": "rgba(255, 255, 255, 0.1)",
             "line-opacity": 1.0,
             "line-width": 2,
             "line-dasharray": [1, 0.5], // ← dashed line

@@ -8,11 +8,12 @@
 
 Rilevamento Tooltip (i)
 
-- [ ] ● (a) UI Detection insetti: num sizes
-- [ ] ● (a) Line Graph: sequential VS linear time (x axis)
+- [ ] ● (a) Line Graph: cumulative version for counters
+- [ ] (x) Access instructions iframe from Detection form
 - [ ] (t) Mostrare un modale durante il caricamento delle immagini
 - [ ] (a) Detection detail page: show images grouped by detection
 - [ ] (a) + (Vito)  Frase da aggiungere in modello
+- [ ] (a) + (team) Decide Line Graph: sequential VS linear time (x axis)
 - [ ] (a) + (Fra)   Verifica testi istruzioni eg - Cimice Asiatica (Halyomorpha halys)
 - [ ] (a) + (Agata) (Inizio Febbraio) Con Agata sistemare istruzioni
 - [ ] -- (x) ⁠Da menu aggiungere nuovo rilevamento (nuovo tipo)
@@ -42,3 +43,4 @@ Rilevamento Tooltip (i)
 - [x] ● (t) Location: Impostare pagina test location
 - [x] ● (t) Location: Considerare app nativa
 - [x] ● (a) Detail page: Add date selector
+- [x] (a) UI Detection insetti: num sizes
