@@ -396,6 +396,18 @@ export function DetectionTypeDetail() {
     setNotesDetailIsOpen(newIsOpen);
   }
 
+  function handleSwitchDate(direction: "next" | "prev") {
+    const currentIndex = graphDataVisx.findIndex((d) => d.id === selectedDetectionId);
+    if (currentIndex !== -1) {
+      const nextIndex =
+        direction === "prev"
+          ? (currentIndex + 1) % graphDataVisx.length
+          : (currentIndex - 1 + graphDataVisx.length) % graphDataVisx.length;
+      setSelectedDetectionId(graphDataVisx[nextIndex].id);
+      scrollToGraphAndMap();
+    }
+  }
+
   const buttonNewDetection = (
     <button
       className="trnt_btn accent type-rounded"
@@ -413,6 +425,15 @@ export function DetectionTypeDetail() {
   const graphTitle = getGraphName(observationType?.typology ?? "");
   const graphLegend = getGraphLegend(observationType?.typology ?? "");
   const graphHeight = isMobile ? 100 : 200;
+
+  const selectedDetection = detections.find((d) => d.id === selectedDetectionId);
+  const selectedDate = selectedDetection
+    ? new Date(selectedDetection.detectionTime).toLocaleDateString("es-ES", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "2-digit",
+      })
+    : "";
 
   return (
     <div>
@@ -638,15 +659,36 @@ export function DetectionTypeDetail() {
                   </div>
 
                   {/* Title & legend */}
-                  <div className="order-md-1">
-                    <h4>
-                      <strong>{graphTitle}</strong>
-                    </h4>
-                    {graphLegend && (
-                      <div className="graph-legend my-3 p-2 pb-2 rounded bg-white d-inline-flex">
-                        <img src={graphLegend} alt="Legenda grafico" />
-                      </div>
-                    )}
+                  <div className="order-md-1 d-xl-flex align-items-start justify-content-between w-100">
+                    {/* Date switcher */}
+                    <div className="date-switcher order-lg-2 my-3 mt-lg-0 my-xl-0 ms-xl-3">
+                      <button
+                        className="trnt_btn slim-y narrow-x outlined font-s-600 text-transform-none px-2 type-round"
+                        style={{ top: "-3px", position: "relative" }}
+                        onClick={() => handleSwitchDate("prev")}
+                      >
+                        &larr;
+                      </button>
+                      <span className="date">{`${selectedDate}`}</span>
+                      <button
+                        className="trnt_btn slim-y narrow-x outlined font-s-600 text-transform-none px-2 type-round"
+                        style={{ top: "-3px", position: "relative" }}
+                        onClick={() => handleSwitchDate("next")}
+                      >
+                        &rarr;
+                      </button>
+                    </div>
+                    {/* Title & Legend */}
+                    <div className="order-lg-1" style={{ flexGrow: 1 }}>
+                      <h4>
+                        <strong>{graphTitle}</strong>
+                      </h4>
+                      {graphLegend && (
+                        <div className="graph-legend my-3 p-2 pb-2 rounded bg-white d-inline-flex">
+                          <img src={graphLegend} alt="Legenda grafico" />
+                        </div>
+                      )}
+                    </div>
                   </div>
 
                   {/* Spacer */}
@@ -667,7 +709,7 @@ export function DetectionTypeDetail() {
                 Modello previsionale &rarr;
               </button>
             </Col>
-            <Col xl={12} className="spacer my-5"></Col>
+            <Col xl={12} className="spacer my-4"></Col>
           </Row>
         )}
       </Container>

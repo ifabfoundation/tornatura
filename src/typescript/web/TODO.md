@@ -8,16 +8,17 @@
 
 Rilevamento Tooltip (i)
 
-- [ ] ● (a) Detail page: Add date selector
+- [ ] ● (a) UI Detection insetti: num sizes
+- [ ] ● (a) Line Graph: sequential VS linear time (x axis)
 - [ ] (t) Mostrare un modale durante il caricamento delle immagini
-- [ ] (a) Focus submit button in forms
 - [ ] (a) Detection detail page: show images grouped by detection
 - [ ] (a) + (Vito)  Frase da aggiungere in modello
 - [ ] (a) + (Fra)   Verifica testi istruzioni eg - Cimice Asiatica (Halyomorpha halys)
 - [ ] (a) + (Agata) (Inizio Febbraio) Con Agata sistemare istruzioni
-- [ ] - (x) ⁠Da menu aggiungere nuovo rilevamento (nuovo tipo)
-- [ ] - (a) Da detection-⁠⁠detail: Btn "Back to dashboard"
-- [ ] - (a) + (Ethel) Rilevamento, mettere dei Tooltip help (?)
+- [ ] -- (x) ⁠Da menu aggiungere nuovo rilevamento (nuovo tipo)
+- [ ] -- (a) Da detection-⁠⁠detail: Btn "Back to dashboard"
+- [ ] -- (a) + (Ethel) Rilevamento, mettere dei Tooltip help (?)
+- [ ] - (a) Focus submit button in forms
 
 ### Cod google analytics
 
@@ -40,3 +41,4 @@ Rilevamento Tooltip (i)
 - [x] (t) Mettere in produzione i tipi rilevamento: Flavescienza, Scafoideo, Diabrotica
 - [x] ● (t) Location: Impostare pagina test location
 - [x] ● (t) Location: Considerare app nativa
+- [x] ● (a) Detail page: Add date selector

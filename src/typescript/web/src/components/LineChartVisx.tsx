@@ -195,11 +195,31 @@ export default function LineChartVisx({
             strokeWidth={4}
           /> */}
 
+          {/* Selected point */}
+          {data.map((d, i) => {
+            const cx = xScale(xAccessor(d).getTime());
+            const cy = yScale(yAccessor(d));
+            return (
+              <Circle
+                key={i}
+                cx={cx}
+                cy={cy}
+                r={selectedId === d.id ? 20 : 0}
+                fill={"#eaff00"}
+                opacity={0.6}
+                strokeWidth={selectedId === d.id ? 3 : 1.5}
+                style={{ cursor: onSelectPoint ? "pointer" : "default" }}
+                onClick={() => onSelectPoint?.(d)}
+                onMouseMove={(e) => handleMouseMove(e, d)}
+                onMouseLeave={hideTooltip}
+              />
+            );
+          })}
+
           {/* Points */}
           {data.map((d, i) => {
             const cx = xScale(xAccessor(d).getTime());
             const cy = yScale(yAccessor(d));
-
             return (
               <Circle
                 key={i}

@@ -333,7 +333,8 @@ small {
     text-decoration: none;
     &:hover {
     }
-    &[data-type="round"] {
+    &[data-type="round"],
+    &.type-round {
       border-radius: $btn-h/2;
       width: $btn-h;
       min-width: $btn-h;
@@ -1506,6 +1507,38 @@ small {
   //     border-radius: 5px;
   //   }
   // }
+
+  // ---------------------------------------------------------------------------
+  // Detection Detail
+  // ---------------------------------------------------------------------------
+
+  .date-switcher {
+    display: inline-flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgba($c-yelo, 0.6);
+    height: 30px;
+    border-radius: 15px;
+    padding-left: 3px;
+    padding-right: 3px;
+    width: 100%;
+    @include media-breakpoint-up(xl) {
+      width: 9.5em;
+    }
+
+    button {
+      background-color: white !important;
+      margin: 0 !important;
+      top: 0 !important;
+      width: 24px !important;
+    }
+    .date {
+      flex-grow: 1;
+      text-align: center;
+      @include font-m-600;
+      // width: 6em;
+    }
+  }
 
   // ---------------------------------------------------------------------------
   // Detection Observations UI
