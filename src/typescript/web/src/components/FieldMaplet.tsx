@@ -433,6 +433,7 @@ export const FieldMaplet = ({ detectionId, padding, interactions }: FieldMapletP
     // ----------------------------------
   }, [mapLoaded, currentPosition]);
 
+  const minPointSize = 2;
   React.useEffect(() => {
     if (mapLoaded) {
       console.log("pippppoooooooo detection change");
@@ -460,7 +461,7 @@ export const FieldMaplet = ({ detectionId, padding, interactions }: FieldMapletP
             coordinates: [pt.lng, pt.lat],
           },
           properties: {
-            size: pt.size,
+            size: pt.size > 0 ? pt.size : minPointSize, // default size if not provided
             color: pt.color,
           },
         })),

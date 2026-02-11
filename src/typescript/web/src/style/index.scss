@@ -1277,12 +1277,12 @@ small {
     display: flex;
     margin: 0;
     height: $acc-h;
-    border: 1px solid #c5c5c5;
+    border: 1px solid rgba(#000, 0.2);
     position: relative;
     background-color: white;
     border-radius: 10px;
     width: 100%;
-    box-shadow: 0 0px 8px rgba(0, 0, 0, 0.1);
+    // box-shadow: 0 0px 8px rgba(0, 0, 0, 0.1);
     @include noselect;
     &[data-size="small"] {
       height: $acc-h - 17px;
@@ -1331,6 +1331,9 @@ small {
     }
     & + .cozy-button {
       margin: 4px 0;
+    }
+    &.type-rounded {
+      border-radius: 60px;
     }
   }
 

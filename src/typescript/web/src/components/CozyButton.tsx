@@ -8,6 +8,7 @@ interface CozyButtonProps {
   btnSize?: "small" | "large";
   onClick?: () => void;
   arrow?: boolean;
+  additionalClasses?: string[];
 }
 
 export default function CozyButton({
@@ -16,9 +17,10 @@ export default function CozyButton({
   content,
   onClick,
   arrow = false,
+  additionalClasses = [],
 }: CozyButtonProps) {
   // const [isActive, setIsActive] = useState(false);
-  const classes = ["cozy-button", arrow ? "" : "unarrowed"];
+  const classes = ["cozy-button", arrow ? "" : "unarrowed", ...additionalClasses];
   return (
     <button className={classes.join(" ")} onClick={onClick} data-size={btnSize ? btnSize : "large"}>
       <div className="btn-content">

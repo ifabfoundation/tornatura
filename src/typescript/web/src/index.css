@@ -14892,12 +14892,11 @@ small, .small {
   display: flex;
   margin: 0;
   height: 54px;
-  border: 1px solid #c5c5c5;
+  border: 1px solid rgba(0, 0, 0, 0.2);
   position: relative;
   background-color: white;
   border-radius: 10px;
   width: 100%;
-  box-shadow: 0 0px 8px rgba(0, 0, 0, 0.1);
   -webkit-user-select: none;
   /* Safari, Chrome (WebKit) */
   -moz-user-select: none;
@@ -15029,6 +15028,10 @@ small, .small {
 
 #app .cozy-button + .cozy-button {
   margin: 4px 0;
+}
+
+#app .cozy-button.type-rounded {
+  border-radius: 60px;
 }
 
 #app .dvh-test {

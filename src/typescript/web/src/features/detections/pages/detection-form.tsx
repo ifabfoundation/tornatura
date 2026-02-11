@@ -107,7 +107,7 @@ function ButtonGroupGrid({
   const items = buttons.slice(0, 4);
   return (
     <div className="button-group-grid">
-      <div className="font-s-label mb-2">
+      <div className="font-l-600 text-center mb-2">
         {label}: <span>{value}</span>
       </div>
       <div className="button-grid">
@@ -911,6 +911,7 @@ function DetectionFormMapPosition({
   const currentPosition = React.useContext(gpsStore);
 
   const isMobile = useIsMobile();
+  const minPointSize = 2;
 
   React.useEffect(() => {
     // -------------------------------
@@ -1072,7 +1073,7 @@ function DetectionFormMapPosition({
               coordinates: [pt.lng, pt.lat],
             },
             properties: {
-              size: pt.size,
+              size: pt.size > 0 ? pt.size : minPointSize, // default size if not provided
               color: pt.color,
             },
           })),
@@ -1135,7 +1136,7 @@ function DetectionFormMapPosition({
               coordinates: [pt.lng, pt.lat],
             },
             properties: {
-              size: pt.size,
+              size: pt.size && pt.size > 0 ? pt.size : minPointSize, // default size if not provided
               color: pt.color,
             },
           })),
@@ -1355,7 +1356,7 @@ function DetectionFormMapPosition({
           coordinates: [pt.lng, pt.lat],
         },
         properties: {
-          size: pt.size,
+          size: pt.size && pt.size > 0 ? pt.size : minPointSize, // default size if not provided
           color: pt.color,
         },
       })),
@@ -2194,7 +2195,7 @@ function DetectionStepObservationPoints({
                 <div className="dfpart_detection-inputs">
                   <div className="mt-2 mb-3">
                     <div className="font-s-label">Osservazione #{scorePoints.length + 1}</div>
-                    <div className="font-l mt-1">{observationType.observationHint}</div>
+                    {/* <div className="font-l mt-1">{observationType.observationHint}</div> */}
                   </div>
                   {observationType.observationType === "range" && (
                     <Fragment>
@@ -2240,8 +2241,14 @@ function DetectionStepObservationPoints({
                       </Row>
                       <div className="mt-3">
                         <CozyButton
-                          btnSize="small"
-                          content="Aggiungi Osservazione"
+                          btnSize="large"
+                          additionalClasses={["type-rounded"]}
+                          content={
+                            <div className="w-100 d-flex justify-content-between">
+                              <span>Aggiungi Osservazione</span>
+                              <span>&rarr;</span>
+                            </div>
+                          }
                           onClick={() => handleAddCounterValuesClick()}
                         />
                       </div>
