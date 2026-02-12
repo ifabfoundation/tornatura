@@ -11,6 +11,7 @@ Rilevamento Tooltip (i)
 - [ ] ● (a) Line Graph: cumulative version for counters
 - [ ] (x) Access instructions iframe from Detection form
 - [ ] (t) Mostrare un modale durante il caricamento delle immagini
+- [ ] (a) Line Graph: probably min value should always be 0
 - [ ] (a) Detection detail page: show images grouped by detection
 - [ ] (a) + (Vito)  Frase da aggiungere in modello
 - [ ] (a) + (team) Decide Line Graph: sequential VS linear time (x axis)
