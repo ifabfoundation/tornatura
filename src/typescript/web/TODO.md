@@ -1,14 +1,12 @@
 (t) = Tony
 (a) = Alex
 (x) = Da vedere insieme
-
 ● = Prioritario
 
 ### Todo
 
-Rilevamento Tooltip (i)
-
 - [ ] ● (a) Line Graph: cumulative version for counters
+- [ ] (t) `BUG` Eliminazione campo non fa nulla (Agricolus S.A > Pere San Giovanni)
 - [ ] (x) Access instructions iframe from Detection form
 - [ ] (t) Mostrare un modale durante il caricamento delle immagini
 - [ ] (a) Line Graph: probably min value should always be 0
@@ -22,10 +20,6 @@ Rilevamento Tooltip (i)
 - [ ] -- (a) + (Ethel) Rilevamento, mettere dei Tooltip help (?)
 - [ ] - (a) Focus submit button in forms
 
-### Cod google analytics
-
-<!-- Google tag (gtag.js) --> <script async src="https://www.googletagmanager.com/gtag/js?id=G-214S65X76W"></script> <script> window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-214S65X76W'); </script>
-
 ### Done
 
 - [x] (a) ⁠Da mobile tap sui punti del grafico: non mostrano il numero corretto (si riaggourna con il più recente)
@@ -38,10 +32,10 @@ Rilevamento Tooltip (i)
 - [x] (a) iscrizione: breadcrumb è avanti di un passo (consensi, esito)
 - [x] (t) UI per immettere i punti del rilevamenti: mettere una frase custom per ogni tipo di detection al posto di "Valuta l'intensità del sintomo"
 - [x] (t) Nomi Btn range: ●○○ Basso / ●●○ Medio / ●●● Alto
-- [x] ● (t) Aggiungere Google Analytics (mail di Eleonora del 4/2/26)
-- [x] ● (x) `BUG` Eleonora non riesce a fare i rilevamenti (screenshot: https://www.dropbox.com/scl/fi/ssmenmcqe1elz0rlur7ez/Screenshot-2026-02-04-at-12.36.52-2.png?rlkey=yyrxhtal5nlutlapr29pdxtbl&dl=0)
+- [x] (t) Aggiungere Google Analytics (mail di Eleonora del 4/2/26)
+- [x] (x) `BUG` Eleonora non riesce a fare i rilevamenti (screenshot: https://www.dropbox.com/scl/fi/ssmenmcqe1elz0rlur7ez/Screenshot-2026-02-04-at-12.36.52-2.png?rlkey=yyrxhtal5nlutlapr29pdxtbl&dl=0)
 - [x] (t) Mettere in produzione i tipi rilevamento: Flavescienza, Scafoideo, Diabrotica
-- [x] ● (t) Location: Impostare pagina test location
-- [x] ● (t) Location: Considerare app nativa
-- [x] ● (a) Detail page: Add date selector
+- [x] (t) Location: Impostare pagina test location
+- [x] (t) Location: Considerare app nativa
+- [x] (a) Detail page: Add date selector
 - [x] (a) UI Detection insetti: num sizes
