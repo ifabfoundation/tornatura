@@ -6,22 +6,26 @@
 ### Todo
 
 - [ ] ● (a) Line Graph: cumulative version for counters
-- [ ] (t) `BUG` Eliminazione campo non fa nulla (Agricolus S.A > Pere San Giovanni)
 - [ ] (x) Access instructions iframe from Detection form
+
 - [ ] (t) Mostrare un modale durante il caricamento delle immagini
+- [ ] (t) `BUG` Eliminazione campo non fa nulla (Agricolus S.A > Pere San Giovanni)
+
+- [ ] (a) Make loaders component (bootstrap loaders)
 - [ ] (a) Line Graph: probably min value should always be 0
 - [ ] (a) Detection detail page: show images grouped by detection
-- [ ] (a) + (Vito)  Frase da aggiungere in modello
+- [ ] (a) + (Vito) Frase da aggiungere in modello
 - [ ] (a) + (team) Decide Line Graph: sequential VS linear time (x axis)
-- [ ] (a) + (Fra)   Verifica testi istruzioni eg - Cimice Asiatica (Halyomorpha halys)
-- [ ] (a) + (Agata) (Inizio Febbraio) Con Agata sistemare istruzioni
-- [ ] -- (x) ⁠Da menu aggiungere nuovo rilevamento (nuovo tipo)
+
 - [ ] -- (a) Da detection-⁠⁠detail: Btn "Back to dashboard"
-- [ ] -- (a) + (Ethel) Rilevamento, mettere dei Tooltip help (?)
+- [ ] - (t) ⁠Da menu aggiungere nuovo rilevamento (nuovo tipo)
 - [ ] - (a) Focus submit button in forms
 
 ### Done
 
+- [x] (a) Rilevamento, mettere Tooltip help (?) con istruzioni
+- [x] (a) + (Fra)   Verifica testi istruzioni eg - Cimice Asiatica (Halyomorpha halys)
+- [x] (a) + (Agata) (Inizio Febbraio) Con Agata sistemare istruzioni
 - [x] (a) ⁠Da mobile tap sui punti del grafico: non mostrano il numero corretto (si riaggourna con il più recente)
 - [x] (t) Aggiungere Flavescienza (= a peronospora)
 - [x] (t) Aggiungere Scafoideo Diabrotica (= a cimice)

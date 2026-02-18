@@ -61,7 +61,8 @@ export default function LineChartVisx({
   const yScale = useMemo(
     () =>
       scaleLinear<number>({
-        domain: [Math.min(...data.map(yAccessor)), Math.max(...data.map(yAccessor))],
+        domain: [0, Math.max(...data.map(yAccessor))],
+        // domain: [Math.min(...data.map(yAccessor)), Math.max(...data.map(yAccessor))],
         nice: true,
         range: [innerHeight, 0],
       }),
@@ -244,7 +245,7 @@ export default function LineChartVisx({
           left={tooltipLeft}
           style={{
             position: "absolute",
-            zIndex: 10,
+            zIndex: 4,
             background: "white",
             border: "1px solid #ccc",
             padding: "6px 10px",

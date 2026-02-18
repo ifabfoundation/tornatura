@@ -45,6 +45,7 @@ import { useIsMobile } from "../../../helpers/common";
 // import { getRangePointColor } from "../../../helpers/detections";
 import { enrichedMapPoints } from "../../../helpers/detections";
 import keycloakInstance from "../../../providers/keycloak";
+import { Infopanel } from "../../../components/Infopanel";
 
 const markerOptions = { color: "#EAFF00" };
 
@@ -1651,7 +1652,9 @@ function DetectionStepObservationPoints({
   const [noteValue, setNoteValue] = React.useState(formData.detectionData.notes ?? "");
   const [noteDraft, setNoteDraft] = React.useState(noteValue);
   const [noteModalOpen, setNoteModalOpen] = React.useState(false);
+  const [infoPanelOpen, setInfoPanelOpen] = React.useState(false);
   const isMobile = useIsMobile();
+  const guideValue = observationType?.locationAndScoreInstructions?.trim() ?? "";
 
   console.log("formData-----------------2", formData);
 
@@ -2028,6 +2031,12 @@ function DetectionStepObservationPoints({
               </button>
             </div>
             <div>
+              <a
+                className="color-grey no-u font-s-label mx-2"
+                onClick={() => setInfoPanelOpen(true)}
+              >
+                {"(?)"}
+              </a>
               <a className="button narrow-x type-rounded px-3 accent-stronger" onClick={handleSave}>
                 <span className="font-s-600">
                   {"✓ FINE"}
@@ -2260,6 +2269,15 @@ function DetectionStepObservationPoints({
           </div>
         </div>
       </div>
+      <Infopanel
+        title="Istruzioni per il rilevamento"
+        isOpen={infoPanelOpen}
+        closeInfopanel={() => {
+          setInfoPanelOpen(false);
+        }}
+      >
+        <AutoHeightIframe src={guideValue} />
+      </Infopanel>
     </Fragment>
   );
 }
