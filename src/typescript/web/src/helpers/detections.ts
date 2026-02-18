@@ -10,6 +10,12 @@ import legend_peronospora from "../assets/images/legends/legend-peronospora.svg"
  * - observationType
  */
 
+export function shouldUseGradients(typology: string | undefined): boolean {
+  // Define which typologies should use gradients
+  const typologiesWithGradients = ["Peronospora", "Flavescenza"];
+  return typology !== undefined && typologiesWithGradients.includes(typology);
+}
+
 export function getColorDiseaseIndex(diseaseIndex: number): string {
   const colors = ["#42C318", "#FFB290", "#FF4D4D", "#A10505"];
   // return mapColorIndex(diseaseIndex, 0, 0.4, colors);

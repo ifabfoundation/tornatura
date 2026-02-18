@@ -170,7 +170,7 @@ export default function LineChartVisx({
             );
           })}
 
-          {/* Line v2 */}
+          {/* Line */}
           {data.slice(0, -1).map((point, i) => {
             const next = data[i + 1];
             const segmentData = [point, next];
@@ -187,14 +187,6 @@ export default function LineChartVisx({
               />
             );
           })}
-          {/* Line v1 */}
-          {/* <LinePath<Datum>
-            data={data}
-            x={(d) => xScale(xAccessor(d).getTime())}
-            y={(d) => yScale(yAccessor(d))}
-            stroke={"black"}
-            strokeWidth={4}
-          /> */}
 
           {/* Selected point */}
           {data.map((d, i) => {

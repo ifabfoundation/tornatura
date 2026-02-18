@@ -20,6 +20,7 @@ import {
   getDetectionStats,
   getGraphLegend,
   getGraphName,
+  shouldUseGradients,
 } from "../../../helpers/detections";
 import { ModalConfirm } from "../../../components/ModalConfirm";
 import { mapValues } from "../../../helpers/common";
@@ -653,7 +654,7 @@ export function DetectionTypeDetail() {
                       height={graphHeight}
                       data={graphDataVisx}
                       onSelectPoint={handleGraphPointClick}
-                      gradients={observationType?.typology === "Peronospora"}
+                      gradients={shouldUseGradients(observationType?.typology)}
                       selectedId={selectedDetectionId ?? undefined}
                     />
                   </div>

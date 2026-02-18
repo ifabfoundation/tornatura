@@ -5,6 +5,7 @@
 
 ### Todo
 
+- [ ] ● (a) Line Graph: color for other diseases
 - [ ] ● (a) Line Graph: cumulative version for counters
 - [ ] (x) Access instructions iframe from Detection form
 
