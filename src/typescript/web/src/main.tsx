@@ -14,7 +14,7 @@ import './index.css'
 import { CurrentPositionProvider } from './providers/gps-providers.tsx'
 import ReactGA from "react-ga4";
 
-ReactGA.initialize("G-214S65X76W");
+ReactGA.initialize("G-HCGJ60C7P7");
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

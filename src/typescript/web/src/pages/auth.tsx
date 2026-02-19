@@ -59,7 +59,7 @@ function SignupStep4({ action, onBackClick, onNextClick }: SignupProps) {
             className="d-inline"
           />
           <span className="my-2">
-            Ho preso visione della&nbsp; <a href="informativa_privacy.pdf">privacy policy</a>
+            Ho preso visione della&nbsp; <a href="https://tornatura.it/f/24-04-2025-informativa-privacy-app-tornatura.pdf">privacy policy</a>
           </span>
         </label>
         {formik.touched.privacy && formik.errors.privacy ? (

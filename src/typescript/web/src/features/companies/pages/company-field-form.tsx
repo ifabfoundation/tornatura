@@ -547,27 +547,16 @@ export function FieldFormInfo({ formData, action, onNextClick, onBackClick }: Fi
 }
 
 export const FieldFormMap = ({ action, onNextClick }: FieldProps) => {
+  const currentPosition = React.useContext(gpsStore);
   const mapContainerRef = React.useRef<HTMLDivElement>(null);
   const mapRef = React.useRef<any>(null);
   const [mapLoaded, setMapLoaded] = React.useState(false);
   const [inputValue, setInputValue] = React.useState("");
   const [map, setMap] = React.useState<Point[]>([]);
-  const currentPosition = React.useContext(gpsStore);
-
-  const calcArea = (points: Point[]) => {
-    const coords: number[][] = [];
-    points.forEach((p) => coords.push([p.lng, p.lat]));
-    console.log("coords", coords);
-    var polygon = turf.polygon([coords]);
-    var areaSqm = turf.area(polygon);
-    var areaHe = areaSqm / 10000; // Convert to hectares
-    console.log("points", points);
-    console.log("area in sqm", areaSqm);
-    console.log("area in hectares", areaHe);
-  };
+  
 
   React.useEffect(() => {
-    if (mapContainerRef.current) {
+    if (mapContainerRef.current ) {
       mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_API_TOKEN;
 
       mapRef.current = new mapboxgl.Map({
@@ -608,7 +597,6 @@ export const FieldFormMap = ({ action, onNextClick }: FieldProps) => {
               lat: point[1],
             });
           });
-          calcArea(points);
           setMap(points);
         } else {
           setMap(points);
@@ -621,7 +609,9 @@ export const FieldFormMap = ({ action, onNextClick }: FieldProps) => {
         }
       };
     }
-  }, [mapContainerRef, currentPosition]);
+  }, [mapContainerRef]);
+
+
 
   return (
     <>
