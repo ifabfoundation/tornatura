@@ -617,8 +617,7 @@ small {
   }
 
   .modal-bg {
-    z-index: 3;
-    z-index: 5;
+    z-index: 500;
     position: fixed;
     top: 0;
     bottom: 0;
@@ -1513,7 +1512,7 @@ small {
 
   #infopanel {
     .bg {
-      z-index: 6;
+      z-index: 300;
       position: fixed;
       top: 0;
       bottom: 0;
@@ -1527,7 +1526,7 @@ small {
       pointer-events: none;
     }
     .panel {
-      z-index: 7;
+      z-index: 301;
       position: fixed;
       top: 0;
       bottom: 0;
