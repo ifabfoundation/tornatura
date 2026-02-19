@@ -21,6 +21,7 @@
 - [ ] -- (a) Da detection-⁠⁠detail: Btn "Back to dashboard"
 - [ ] - (t) ⁠Da menu aggiungere nuovo rilevamento (nuovo tipo)
 - [ ] - (a) Focus submit button in forms
+- [ ] - (a) Stepper layout schermi piccoli (detection form)
 
 ### Done
 
