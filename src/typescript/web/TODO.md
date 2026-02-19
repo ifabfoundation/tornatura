@@ -24,6 +24,7 @@
 
 ### Done
 
+- [x] (a) `BUG` Impossibile prendere note su telefono
 - [x] (a) Rilevamento, mettere Tooltip help (?) con istruzioni
 - [x] (a) + (Fra)   Verifica testi istruzioni eg - Cimice Asiatica (Halyomorpha halys)
 - [x] (a) + (Agata) (Inizio Febbraio) Con Agata sistemare istruzioni
