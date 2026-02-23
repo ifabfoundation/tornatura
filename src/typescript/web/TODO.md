@@ -8,6 +8,9 @@
 - [ ] ● (a) Line Graph: color for other diseases
 - [ ] ● (a) Line Graph: cumulative version for counters
 - [ ] (x) Access instructions iframe from Detection form
+- [ ] (x) Aggiungere geolocation alle foto
+- [ ] (x) Modifica area del campo
+- [ ] (x) Cambiare la modalità di caricamento dei dati
 
 - [ ] (t) Mostrare un modale durante il caricamento delle immagini
 - [ ] (t) `BUG` Eliminazione campo non fa nulla (Agricolus S.A > Pere San Giovanni)
