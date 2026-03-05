@@ -75,6 +75,12 @@ async def user_registration(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="User with admin account type cannot be created",
         )
+
+    if user_services.exists_by_email(payload.email):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="User with the same email already exists",
+        )
     
     if (payload.accountType == AccountTypeEnum.standard 
         and payload.organization is not None 

@@ -1,5 +1,6 @@
 import React from "react";
 import mapboxgl, { LngLatLike } from "mapbox-gl";
+import MapboxLanguage from "@mapbox/mapbox-gl-language";
 import * as turf from "@turf/turf";
 import { useParams } from "react-router-dom";
 import { useAppSelector } from "../hooks";
@@ -140,6 +141,7 @@ export const FieldMaplet = ({ detectionId, padding, interactions }: FieldMapletP
         zoom: 18,
         ...mergedInteractions,
       });
+      mapRef.current.addControl(new MapboxLanguage({ defaultLanguage: "it" }));
 
       mapRef.current.on("load", () => {
         console.log("map loaded", mapRef);

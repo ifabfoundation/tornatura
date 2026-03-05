@@ -950,204 +950,192 @@ const bbchsPesco = {
 };
 
 const bbchsMais = {
-  bbch_0: {
-    icon: false,
-    name: "0. Emergenza",
-    items: {
-      bbch_09: {
-        name: "09 Emergenza",
-        value: "09",
-        thumbnail: "mais_00_emergenza.png",
-        icon: false,
-      },
-    },
+  "bbch_0": {
+    "icon": false,
+    "name": "0. Emergenza",
+    "items": {
+      "bbch_09": {
+        "name": "09 Emergenza",
+        "value": "09",
+        "thumbnail": "mais_00_emergenza.png",
+        "icon": false
+      }
+    }
   },
-  bbch_1: {
-    icon: false,
-    name: "1. Foglie",
-    items: {
-      bbch_11: {
-        name: "11 1ª foglia",
-        value: "11",
-        thumbnail: "mais_01_foglie.png",
-        icon: false,
+  "bbch_1": {
+    "icon": false,
+    "name": "1. Foglie",
+    "items": {
+      "bbch_11": {
+        "name": "11 1ª foglia",
+        "value": "11",
+        "thumbnail": "mais_01_foglie.png",
+        "icon": false
       },
-      bbch_12: {
-        name: "12 2 foglie",
-        value: "12",
-        thumbnail: "mais_01_foglie.png",
-        icon: false,
+      "bbch_12": {
+        "name": "12 2 foglie",
+        "value": "12",
+        "thumbnail": "mais_01_foglie.png",
+        "icon": false
       },
-      bbch_13: {
-        name: "13 3 foglie",
-        value: "13",
-        thumbnail: "mais_01_foglie.png",
-        icon: false,
+      "bbch_13": {
+        "name": "13 3 foglie",
+        "value": "13",
+        "thumbnail": "mais_01_foglie.png",
+        "icon": false
       },
-      bbch_15: {
-        name: "15 5 foglie",
-        value: "15",
-        thumbnail: "mais_01_foglie.png",
-        icon: false,
+      "bbch_15": {
+        "name": "15 5 foglie",
+        "value": "15",
+        "thumbnail": "mais_01_foglie.png",
+        "icon": false
       },
-      bbch_19: {
-        name: "19 ≥9 foglie",
-        value: "19",
-        thumbnail: "mais_01_foglie.png",
-        icon: false,
-      },
-    },
+      "bbch_19": {
+        "name": "19 ≥9 foglie",
+        "value": "19",
+        "thumbnail": "mais_01_foglie.png",
+        "icon": false
+      }
+    }
   },
-  bbch_2: {
-    icon: false,
-    name: "2. Accestimento",
-    items: {
-      bbch_21: {
-        name: "21 1 accestimento",
-        value: "21",
-        thumbnail: "mais_2_accestimento.png",
-        icon: false,
+  "bbch_3": {
+    "icon": false,
+    "name": "3. Allungamento culmo",
+    "items": {
+      "bbch_30": {
+        "name": "30 Inizio allungamento",
+        "value": "30",
+        "thumbnail": "mais_3_allungamento culmo.png",
+        "icon": false
       },
-      bbch_29: {
-        name: "29 Accestimento massimo",
-        value: "29",
-        thumbnail: "mais_2_accestimento.png",
-        icon: false,
+      "bbch_32": {
+        "name": "32 2 nodi visibili",
+        "value": "32",
+        "thumbnail": "mais_3_allungamento culmo.png",
+        "icon": false
       },
-    },
+      "bbch_39": {
+        "name": "39 Foglia bandiera visibile",
+        "value": "39",
+        "thumbnail": "mais_3_allungamento culmo.png",
+        "icon": false
+      }
+    }
   },
-  bbch_3: {
-    icon: false,
-    name: "3. Allungamento culmo",
-    items: {
-      bbch_30: {
-        name: "30 Inizio allungamento",
-        value: "30",
-        thumbnail: "mais_3_allungamento culmo.png",
-        icon: false,
+  "bbch_5": {
+    "icon": false,
+    "name": "5. Infiorescenza maschile",
+    "items": {
+      "bbch_51": {
+        "name": "51 Pennacchio visibile",
+        "value": "51",
+        "thumbnail": "mais_5_infiorescenza.png",
+        "icon": false
       },
-      bbch_32: {
-        name: "32 2 nodi visibili",
-        value: "32",
-        thumbnail: "mais_3_allungamento culmo.png",
-        icon: false,
+      "bbch_55": {
+        "name": "55 Pennacchio parziale",
+        "value": "55",
+        "thumbnail": "mais_5_infiorescenza.png",
+        "icon": false
       },
-      bbch_39: {
-        name: "39 Foglia bandiera visibile",
-        value: "39",
-        thumbnail: "mais_3_allungamento culmo.png",
-        icon: false,
-      },
-    },
+      "bbch_59": {
+        "name": "59 Pennacchio completa",
+        "value": "59",
+        "thumbnail": "mais_5_infiorescenza.png",
+        "icon": false
+      }
+    }
   },
-  bbch_5: {
-    icon: false,
-    name: "5. Infiorescenza",
-    items: {
-      bbch_51: {
-        name: "51 Pannocchia visibile",
-        value: "51",
-        thumbnail: "mais_5_infiorescenza.png",
-        icon: false,
+  "bbch_6": {
+    "icon": false,
+    "name": "6. Fioritura femminile",
+    "items": {
+      "bbch_61": {
+        "name": "61 Punta delle sete visibili nella fioritura femminile. Stami visibili nell'infiorescenza maschile",
+        "value": "61",
+        "thumbnail": "mais_6_fioritura.png",
+        "icon": false
       },
-      bbch_55: {
-        name: "55 Pannocchia parziale",
-        value: "55",
-        thumbnail: "mais_5_infiorescenza.png",
-        icon: false,
+      "bbch_65": {
+        "name": "65 Sete completamente emerse",
+        "value": "65",
+        "thumbnail": "mais_6_fioritura.png",
+        "icon": false
+     },
+      "bbch_67": {
+        "name": "67 Inizio disseccamento delle sete, fine fioritura maschile",
+        "value": "67",
+        "thumbnail": "mais_6_fioritura.png",
+        "icon": false
       },
-      bbch_59: {
-        name: "59 Pannocchia completa",
-        value: "59",
-        thumbnail: "mais_5_infiorescenza.png",
-        icon: false,
-      },
-    },
+      "bbch_69": {
+        "name": "69 Fine fioritura femminile",
+        "value": "69",
+        "thumbnail": "mais_6_fioritura.png",
+        "icon": false
+      }
+    }
   },
-  bbch_6: {
-    icon: false,
-    name: "6. Fioritura",
-    items: {
-      bbch_61: {
-        name: "61 Inizio fioritura",
-        value: "61",
-        thumbnail: "mais_6_fioritura.png",
-        icon: false,
+  "bbch_7": {
+    "icon": false,
+    "name": "7. Riempimento granella",
+    "items": {
+      "bbch_71": {
+        "name": "71 Granella acquosa",
+        "value": "71",
+        "thumbnail": "mais_7_riempimento granella.png",
+        "icon": false
       },
-      bbch_65: {
-        name: "65 Piena fioritura",
-        value: "65",
-        thumbnail: "mais_6_fioritura.png",
-        icon: false,
+      "bbch_73": {
+        "name": "73 Stadio latteo",
+        "value": "73",
+        "thumbnail": "mais_7_riempimento granella.png",
+        "icon": false
       },
-      bbch_69: {
-        name: "69 Fine fioritura",
-        value: "69",
-        thumbnail: "mais_6_fioritura.png",
-        icon: false,
+      "bbch_75": {
+        "name": "75 Stadio pastoso",
+        "value": "75",
+        "thumbnail": "mais_7_riempimento granella.png",
+        "icon": false
       },
-    },
+      "bbch_77": {
+        "name": "77 Pastoso duro",
+        "value": "77",
+        "thumbnail": "mais_7_riempimento granella.png",
+        "icon": false
+      }
+    }
   },
-  bbch_7: {
-    icon: false,
-    name: "7. Riempimento granella",
-    items: {
-      bbch_71: {
-        name: "71 Granella acquosa",
-        value: "71",
-        thumbnail: "mais_7_riempimento granella.png",
-        icon: false,
-      },
-      bbch_73: {
-        name: "73 Stadio latteo",
-        value: "73",
-        thumbnail: "mais_7_riempimento granella.png",
-        icon: false,
-      },
-      bbch_75: {
-        name: "75 Stadio pastoso",
-        value: "75",
-        thumbnail: "mais_7_riempimento granella.png",
-        icon: false,
-      },
-      bbch_77: {
-        name: "77 Pastoso duro",
-        value: "77",
-        thumbnail: "mais_7_riempimento granella.png",
-        icon: false,
-      },
-    },
+  "bbch_8": {
+    "icon": false,
+    "name": "8. Maturazione",
+    "items": {
+      "bbch_87": {
+        "name": "87 Maturità fisiologica",
+        "value": "87",
+        "thumbnail": "mais_8_maturazione.png",
+        "icon": false
+      }
+    }
   },
-  bbch_8: {
-    icon: false,
-    name: "8. Maturazione",
-    items: {
-      bbch_87: {
-        name: "87 Maturità fisiologica",
-        value: "87",
-        thumbnail: "mais_8_maturazione.png",
-        icon: false,
+  "bbch_9": {
+    "icon": false,
+    "name": "9. Senescenza",
+    "items": {
+      "bbch_97": {
+        "name": "97 Pianta secca",
+        "value": "97",
+        "thumbnail": "mais_9_senescenza.png",
+        "icon": false
       },
-    },
-  },
-  bbch_9: {
-    icon: false,
-    name: "9. Senescenza",
-    items: {
-      bbch_97: {
-        name: "97 Pianta secca",
-        value: "97",
-        thumbnail: "mais_9_senescenza.png",
-        icon: false,
-      },
-      bbch_99: {
-        name: "99 Raccolto",
-        value: "99",
-        thumbnail: "mais_9_senescenza.png",
-        icon: false,
-      },
-    },
-  },
+      "bbch_99": {
+        "name": "99 Raccolto",
+        "value": "99",
+        "thumbnail": "mais_9_senescenza.png",
+        "icon": false
+      }
+    }
+  }
 };
 
 const bbchsBarbabietola = {

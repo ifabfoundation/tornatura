@@ -20,6 +20,7 @@ import { detectionsActions, detectionsSelectors } from "../state/detections-slic
 import { fieldsSelectors } from "../../fields/state/fields-slice";
 // import { SearchBox } from "@mapbox/search-js-react";
 import mapboxgl, { LngLatLike, Marker } from "mapbox-gl";
+import MapboxLanguage from "@mapbox/mapbox-gl-language";
 import { Point } from "@tornatura/coreapis";
 import * as turf from "@turf/turf";
 import Modal from "../../../components/Modal";
@@ -90,6 +91,19 @@ type DetectionStepPointsData = {
   photos?: File[];
   notes?: string;
 };
+
+function readDetectionStepIndex(state: unknown): number | undefined {
+  if (!state || typeof state !== "object") {
+    return undefined;
+  }
+
+  const rawStep = (state as { detectionStepIndex?: unknown }).detectionStepIndex;
+  if (typeof rawStep !== "number" || !Number.isInteger(rawStep) || rawStep < 0) {
+    return undefined;
+  }
+
+  return rawStep;
+}
 
 type ButtonGroupItem = {
   label: string;
@@ -960,6 +974,7 @@ function DetectionFormMapPosition({
         center: centroid,
         zoom: 14,
       });
+      mapRef.current.addControl(new MapboxLanguage({ defaultLanguage: "it" }));
 
       mapRef.current.on("load", () => {
         console.log("map loaded", mapRef);
@@ -2314,14 +2329,16 @@ export function DetectionForm() {
   const currentField = useAppSelector((state) =>
     fieldsSelectors.selectFieldbyId(state, fieldId ?? "defauld"),
   );
-  const preselectedState = location.state as { typeId?: string } | null;
+  const preselectedState = location.state as
+    | { typeId?: string; detectionStepIndex?: number }
+    | null;
   const preselectedTypeId = (preselectedState?.typeId ?? searchParams.get("typeId") ?? "").trim();
   const preselectedTypology = (searchParams.get("typology") ?? "").trim();
   const preselectedMethod = (searchParams.get("method") ?? "").trim();
   const hasTypeIdPreselection = preselectedTypeId !== "";
   const hasTypologyMethodPreselection = preselectedTypology !== "" && preselectedMethod !== "";
   const hasPreselection = hasTypeIdPreselection || hasTypologyMethodPreselection;
-  const [stepIndex, setStepIndex] = React.useState(0);
+  const [stepIndex, setStepIndex] = React.useState(readDetectionStepIndex(location.state) ?? 0);
   const [formData, setFormData] = React.useState<DetectionMutationPayload>({
     detectionTime: new Date().getTime(),
     detectionTypeId: "",
@@ -2340,6 +2357,21 @@ export function DetectionForm() {
     hasPreselection ? preselectedMethod : "",
   );
   const [useShortFlow, setUseShortFlow] = React.useState(false);
+  const goToStep = React.useCallback(
+    (nextStep: number, replace = false) => {
+      setStepIndex(nextStep);
+      navigate(`${location.pathname}${location.search}${location.hash}`, {
+        replace,
+        state: {
+          ...((location.state && typeof location.state === "object"
+            ? location.state
+            : {}) as Record<string, unknown>),
+          detectionStepIndex: nextStep,
+        },
+      });
+    },
+    [location.hash, location.pathname, location.search, location.state, navigate],
+  );
 
   const detectionTypes = useAppSelector((state) =>
     detectionTypesSelectors.selectDetectionTypesByField(state, fieldId ?? "default"),
@@ -2434,6 +2466,27 @@ export function DetectionForm() {
 
   const currentStepKey = steps[stepIndex];
 
+  React.useEffect(() => {
+    const historyStep = readDetectionStepIndex(location.state);
+    if (historyStep === undefined) {
+      goToStep(stepIndex, true);
+    }
+  }, [goToStep, location.state, stepIndex]);
+
+  React.useEffect(() => {
+    const historyStep = readDetectionStepIndex(location.state);
+    if (historyStep !== undefined && historyStep !== stepIndex) {
+      setStepIndex(historyStep);
+    }
+  }, [location.state, stepIndex]);
+
+  React.useEffect(() => {
+    const lastIdx = Math.max(steps.length - 1, 0);
+    if (stepIndex > lastIdx) {
+      goToStep(lastIdx, true);
+    }
+  }, [goToStep, stepIndex, steps.length]);
+
   const typologyGroups = React.useMemo(() => {
     const grouped = new Map<string, Set<string>>();
     observationTypes.forEach((item) => {
@@ -2524,7 +2577,7 @@ export function DetectionForm() {
       const typologyData = data as DetectionStepTypologyData;
       setSelectedTypology(typologyData.typology);
       setSelectedMethod("");
-      setStepIndex(stepIndex + 1);
+      goToStep(stepIndex + 1);
       return;
     }
     if (currentStepKey === "method") {
@@ -2540,11 +2593,11 @@ export function DetectionForm() {
         ...prev,
         detectionTypeId: matchingDetectionType?.id ?? "",
       }));
-      setStepIndex(stepIndex + 1);
+      goToStep(stepIndex + 1);
       return;
     }
     if (currentStepKey === "guide") {
-      setStepIndex(stepIndex + 1);
+      goToStep(stepIndex + 1);
       return;
     }
     if (currentStepKey === "bbch") {
@@ -2557,7 +2610,7 @@ export function DetectionForm() {
           bbch: bbchData.bbch ?? "",
         },
       }));
-      setStepIndex(stepIndex + 1);
+      goToStep(stepIndex + 1);
       return;
     }
     if (currentStepKey === "points") {
@@ -2625,14 +2678,12 @@ export function DetectionForm() {
         },
       };
       await createDetectionAction(payload);
-      setStepIndex(stepIndex + 1);
+      goToStep(stepIndex + 1);
     }
   };
 
   const handleBackClick = async () => {
-    if (stepIndex > 0) {
-      setStepIndex(stepIndex - 1);
-    }
+    navigate(-1);
   };
 
   // const stepperItems = ["Tipologia", "Metodo", "Guida", "BBCH", "Rilevamento"];
@@ -2658,7 +2709,7 @@ export function DetectionForm() {
               items={stepperItems}
               currentStep={stepIndex}
               handleBackClick={handleBackClick}
-              handleStepClick={(idx) => setStepIndex(idx)}
+              handleStepClick={(idx) => goToStep(idx)}
             />
           </div>
         </div>

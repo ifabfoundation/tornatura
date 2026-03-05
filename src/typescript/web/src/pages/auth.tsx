@@ -9,7 +9,7 @@ import {
   UserCreatePayload,
   UsersApi,
 } from "@tornatura/coreapis";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Button, Col, Container, Row } from "react-bootstrap";
 import keycloakInstance from "../providers/keycloak";
 import TopHeader from "../components/TopHeader";
@@ -21,6 +21,19 @@ import Stepper from "../components/Stepper";
 const PhoneRegExp =
   /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 const PivaRegExp = /^\d{11}$/;
+
+function readSignupStep(state: unknown): number | undefined {
+  if (!state || typeof state !== "object") {
+    return undefined;
+  }
+
+  const rawStep = (state as { signupStep?: unknown }).signupStep;
+  if (typeof rawStep !== "number" || !Number.isInteger(rawStep) || rawStep < 1) {
+    return undefined;
+  }
+
+  return rawStep;
+}
 
 interface SignupProps {
   formData: UserCreatePayload;
@@ -34,65 +47,112 @@ function SignupStep4({ action, onBackClick, onNextClick }: SignupProps) {
     initialValues: {
       privacy: false,
       privacy2: false,
+      privacy3: false
     },
     validationSchema: Yup.object({
       privacy: Yup.boolean().oneOf([true], "È necessaria l'accettazione"),
       privacy2: Yup.boolean().oneOf([true], "È necessaria l'accettazione"),
+      privacy3: Yup.boolean().oneOf([true], "È necessaria l'accettazione"),
     }),
-    onSubmit: (values, { setSubmitting }) => {
-      onNextClick(values);
+    onSubmit: async (values, { setSubmitting }) => {
+      setSubmitting(true);
+      await onNextClick(values);
       setSubmitting(false);
     },
   });
 
   return (
     <form onSubmit={formik.handleSubmit} autoComplete="off">
-      <div className="input-row">
-        <label className="d-flex align-items-start">
-          <input
-            id="privacy"
-            name="privacy"
-            type="checkbox"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            checked={formik.values.privacy}
-            className="d-inline"
-          />
-          <span className="my-2">
-            Ho preso visione della&nbsp; <a href="https://tornatura.it/f/24-04-2025-informativa-privacy-app-tornatura.pdf">privacy policy</a>
-          </span>
-        </label>
-        {formik.touched.privacy && formik.errors.privacy ? (
-          <div className="error">{formik.errors.privacy}</div>
-        ) : null}
+      <div className="form-section">
+        <div className="container px-0">
+          <div className="row input-row">
+            <div className="col">
+              <label className="d-flex align-items-start">
+                <input
+                  id="privacy"
+                  name="privacy"
+                  type="checkbox"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  checked={formik.values.privacy}
+                  className="d-inline"
+                />
+                <span className="my-2">
+                  Ho preso visione della&nbsp;
+                  <a
+                    href="https://tornatura.it/f/24-04-2025-informativa-privacy-app-tornatura.pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    privacy policy
+                  </a>
+                </span>
+              </label>
+              {formik.touched.privacy && formik.errors.privacy ? (
+                <div className="error">{formik.errors.privacy}</div>
+              ) : null}
+            </div>
+          </div>
+          <div className="row input-row">
+            <div className="col">
+              <label className="d-flex align-items-start">
+                <input
+                  id="privacy2"
+                  name="privacy2"
+                  type="checkbox"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  checked={formik.values.privacy2}
+                  className="d-inline"
+                />
+                <span className="my-2">
+                  {
+                    "Le informazioni e i dati conferiti nell’ambito del progetto Tornatura, tramite l’utilizzo dell'applicazione, devono essere veritieri, accurati e nella piena disponibilità di chi li fornisce. Tali dati saranno utilizzati per contribuire al progetto e saranno comunicati anche per scopi rendicontativi all’ente finanziatore. Pertanto, il dichiarante si assume la piena responsabilità di ogni informazione inserita sull'applicazione"
+                  }
+                </span>
+              </label>
+              {formik.touched.privacy2 && formik.errors.privacy2 ? (
+                <div className="error">{formik.errors.privacy2}</div>
+              ) : null}
+            </div>
+          </div>
+          <div className="row input-row">
+            <div className="col">
+              <label className="d-flex align-items-start">
+                <input
+                  id="privacy"
+                  name="privacy"
+                  type="checkbox"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  checked={formik.values.privacy}
+                  className="d-inline"
+                />
+                <span className="my-2">
+                  Ho preso visione della&nbsp;
+                  <a
+                    href="https://tornatura.it/f/policy-newsletter-tornatura.pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    privacy policy newsletter
+                  </a>
+                </span>
+              </label>
+              {formik.touched.privacy && formik.errors.privacy ? (
+                <div className="error">{formik.errors.privacy}</div>
+              ) : null}
+            </div>
+          </div>
+        </div>
       </div>
-      <div className="input-row">
-        <label className="d-flex align-items-start">
-          <input
-            id="privacy2"
-            name="privacy2"
-            type="checkbox"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            checked={formik.values.privacy2}
-            className="d-inline"
-          />
-          <span className="my-2">
-            {
-              "Le informazioni e i dati conferiti nell’ambito del progetto Tornatura, tramite l’utilizzo dell'applicazione, devono essere veritieri, accurati e nella piena disponibilità di chi li fornisce. Tali dati saranno utilizzati per contribuire al progetto e saranno comunicati anche per scopi rendicontativi all’ente finanziatore. Pertanto, il dichiarante si assume la piena responsabilità di ogni informazione inserita sull'applicazione"
-            }
-          </span>
-        </label>
-        {formik.touched.privacy2 && formik.errors.privacy2 ? (
-          <div className="error">{formik.errors.privacy2}</div>
-        ) : null}
-      </div>
-      <hr />
-      <div className="buttons-wrapper">
+      <div className="buttons-wrapper mt-4 text-center">
         <button className="trnt_btn secondary" type="button" onClick={onBackClick}>
           Indietro
         </button>
-        <input type="submit" className="primary" value={action} />
+        <button type="submit" className="trnt_btn primary" disabled={formik.isSubmitting}>
+          {formik.isSubmitting ? "caricamento..." : action}
+        </button>
       </div>
     </form>
   );
@@ -116,17 +176,10 @@ function SignupStep3({ formData, action, onBackClick, onNextClick }: SignupProps
         .matches(PhoneRegExp, "Telefono non valido")
         .required("Campo obbligatorio"),
     }),
-    onSubmit: (values, { setSubmitting, resetForm }) => {
-      onNextClick(values)
-        .then((_) => {
-          resetForm({});
-        })
-        .catch((_) => {
-          setSubmitting(false);
-        })
-        .finally(() => {
-          setSubmitting(false);
-        });
+    onSubmit: async (values, { setSubmitting, resetForm }) => {
+      await onNextClick(values);
+      resetForm({});
+      setSubmitting(false);
     },
   });
 
@@ -141,80 +194,93 @@ function SignupStep3({ formData, action, onBackClick, onNextClick }: SignupProps
 
   return (
     <form onSubmit={formik.handleSubmit} autoComplete="off">
-      <div className="input-row">
-        <label>
-          Nominazione Impresa
-          <input
-            id="name"
-            name="name"
-            type="text"
-            placeholder="Ragione Sociale"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.name}
-          />
-        </label>
-        {formik.touched.name && formik.errors.name ? (
-          <div className="error">{formik.errors.name}</div>
-        ) : null}
+      <div className="form-section">
+        <div className="container px-0">
+          <div className="row input-row">
+            <div className="col">
+              <label>
+                Nominazione Impresa
+                <input
+                  id="name"
+                  name="name"
+                  type="text"
+                  placeholder="Ragione Sociale"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.name}
+                />
+              </label>
+              {formik.touched.name && formik.errors.name ? (
+                <div className="error">{formik.errors.name}</div>
+              ) : null}
+            </div>
+          </div>
+          <div className="row input-row">
+            <div className="col input-row-margin-fix">
+              <label>
+                Partita Iva
+                <input
+                  id="piva"
+                  name="piva"
+                  type="text"
+                  placeholder="P.IVA"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.piva}
+                />
+              </label>
+              {formik.touched.piva && formik.errors.piva ? (
+                <div className="error">{formik.errors.piva}</div>
+              ) : null}
+            </div>
+          </div>
+          <div className="row input-row">
+            <div className="col input-row-margin-fix">
+              <label>
+                Email Aziendale
+                <input
+                  id="email"
+                  name="email"
+                  type="text"
+                  placeholder="Email"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.email}
+                />
+              </label>
+              {formik.touched.email && formik.errors.email ? (
+                <div className="error">{formik.errors.email}</div>
+              ) : null}
+            </div>
+          </div>
+          <div className="row input-row">
+            <div className="col">
+              <label>
+                Telefono Aziendale
+                <input
+                  id="phone"
+                  name="phone"
+                  type="text"
+                  placeholder="Telefono"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.phone}
+                />
+              </label>
+              {formik.touched.phone && formik.errors.phone ? (
+                <div className="error">{formik.errors.phone}</div>
+              ) : null}
+            </div>
+          </div>
+        </div>
       </div>
-      <div className="input-row">
-        <label>
-          Partita Iva
-          <input
-            id="piva"
-            name="piva"
-            type="text"
-            placeholder="P.IVA"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.piva}
-          />
-        </label>
-        {formik.touched.piva && formik.errors.piva ? (
-          <div className="error">{formik.errors.piva}</div>
-        ) : null}
-      </div>
-      <div className="input-row">
-        <label>
-          Email
-          <input
-            id="email"
-            name="email"
-            type="text"
-            placeholder="Email"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.email}
-          />
-        </label>
-        {formik.touched.email && formik.errors.email ? (
-          <div className="error">{formik.errors.email}</div>
-        ) : null}
-      </div>
-      <div className="input-row">
-        <label>
-          Telefono
-          <input
-            id="phone"
-            name="phone"
-            type="text"
-            placeholder="Telefono"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.phone}
-          />
-        </label>
-        {formik.touched.phone && formik.errors.phone ? (
-          <div className="error">{formik.errors.phone}</div>
-        ) : null}
-      </div>
-      <hr />
-      <div className="buttons-wrapper">
+      <div className="buttons-wrapper mt-4 text-center">
         <button className="trnt_btn secondary" onClick={onBackClick}>
           Indietro
         </button>
-        <input type="submit" className="primary" value={action} />
+        <button type="submit" className="trnt_btn primary" disabled={formik.isSubmitting}>
+          {formik.isSubmitting ? "caricamento..." : action}
+        </button>
       </div>
     </form>
   );
@@ -238,11 +304,11 @@ function SignupStep2({ formData, action, onBackClick, onNextClick }: SignupProps
         .required("Campo obbligatorio"),
       piva: Yup.string().matches(PivaRegExp, "Partita IVA non valida"),
     }),
-    onSubmit: (values, { setSubmitting, setErrors }) => {
+    onSubmit: async (values, { setSubmitting, setErrors }) => {
       if (!values.piva && formData.accountType === AccountTypeEnum.Agronomist) {
         setErrors({ piva: "Campo obbligatorio" });
       } else {
-        onNextClick(values);
+        await onNextClick(values);
       }
       setSubmitting(false);
     },
@@ -260,99 +326,112 @@ function SignupStep2({ formData, action, onBackClick, onNextClick }: SignupProps
 
   return (
     <form onSubmit={formik.handleSubmit} autoComplete="off">
-      <div className="input-row">
-        <label>
-          Nome
-          <input
-            id="name"
-            name="firstName"
-            type="text"
-            placeholder="Nome"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.firstName}
-          />
-        </label>
-        {formik.touched.firstName && formik.errors.firstName ? (
-          <div className="error">{formik.errors.firstName}</div>
-        ) : null}
-      </div>
-      <div className="input-row">
-        <label>
-          Cognome
-          <input
-            id="lastname"
-            name="lastName"
-            type="text"
-            placeholder="Cognome"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.lastName}
-          />
-        </label>
-        {formik.touched.lastName && formik.errors.lastName ? (
-          <div className="error">{formik.errors.lastName}</div>
-        ) : null}
-      </div>
-      <div className="input-row">
-        <label>
-          Email
-          <input
-            id="email"
-            name="email"
-            type="text"
-            placeholder="Email"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.email}
-          />
-        </label>
-        {formik.touched.email && formik.errors.email ? (
-          <div className="error">{formik.errors.email}</div>
-        ) : null}
-      </div>
-      {formData.accountType === AccountTypeEnum.Agronomist && (
-        <div className="input-row">
-          <label>
-            Partita Iva
-            <input
-              id="piva"
-              name="piva"
-              type="text"
-              placeholder="P.IVA"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.piva}
-            />
-          </label>
-          {formik.touched.piva && formik.errors.piva ? (
-            <div className="error">{formik.errors.piva}</div>
-          ) : null}
+      <div className="form-section">
+        <div className="container px-0">
+          <div className="row input-row">
+            <div className="col input-row-margin-fix">
+              <label>
+                Nome
+                <input
+                  id="name"
+                  name="firstName"
+                  type="text"
+                  placeholder="Nome"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.firstName}
+                />
+              </label>
+              {formik.touched.firstName && formik.errors.firstName ? (
+                <div className="error">{formik.errors.firstName}</div>
+              ) : null}
+            </div>
+          </div>
+          <div className="row input-row">
+            <div className="col input-row-margin-fix">
+              <label>
+                Cognome
+                <input
+                  id="lastname"
+                  name="lastName"
+                  type="text"
+                  placeholder="Cognome"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.lastName}
+                />
+              </label>
+              {formik.touched.lastName && formik.errors.lastName ? (
+                <div className="error">{formik.errors.lastName}</div>
+              ) : null}
+            </div>
+          </div>
+          <div className="row input-row">
+            <div className="col input-row-margin-fix">
+              <label>
+                Email di Accesso
+                <input
+                  id="email"
+                  name="email"
+                  type="text"
+                  placeholder="Email"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.email}
+                />
+              </label>
+              {formik.touched.email && formik.errors.email ? (
+                <div className="error">{formik.errors.email}</div>
+              ) : null}
+            </div>
+          </div>
+          {formData.accountType === AccountTypeEnum.Agronomist && (<div className="row input-row">
+            <div className="col input-row-margin-fix">
+              <label>
+                Partita Iva
+                <input
+                  id="piva"
+                  name="piva"
+                  type="text"
+                  placeholder="P.IVA"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.piva}
+                />
+              </label>
+              {formik.touched.piva && formik.errors.piva ? (
+                <div className="error">{formik.errors.piva}</div>
+              ) : null}
+            </div>
+          </div>)}
+          <div className="row input-row">
+            <div className="col">
+              <label>
+                Telefono
+                <input
+                  id="phone"
+                  name="phone"
+                  type="text"
+                  placeholder="Telefono"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.phone}
+                />
+              </label>
+              {formik.touched.phone && formik.errors.phone ? (
+                <div className="error">{formik.errors.phone}</div>
+              ) : null}
+            </div>
+          </div>
         </div>
-      )}
-      <div className="input-row">
-        <label>
-          Telefono
-          <input
-            id="phone"
-            name="phone"
-            type="text"
-            placeholder="Telefono"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.phone}
-          />
-        </label>
-        {formik.touched.phone && formik.errors.phone ? (
-          <div className="error">{formik.errors.phone}</div>
-        ) : null}
       </div>
-      <hr />
-      <div className="buttons-wrapper">
+      <div className="buttons-wrapper mt-4 text-center">
         <button className="trnt_btn secondary" type="button" onClick={onBackClick}>
           Indietro
         </button>
-        <input type="submit" className="primary" value={action} />
+        <button type="submit" className="trnt_btn primary" disabled={formik.isSubmitting}>
+          {formik.isSubmitting ? "caricamento..." : action}
+        </button>
       </div>
     </form>
   );
@@ -363,8 +442,8 @@ function SignupStep1({ formData, action, onBackClick, onNextClick }: SignupProps
     initialValues: {
       accountType: "Agronomist",
     },
-    onSubmit: (values, { setSubmitting, resetForm }) => {
-      onNextClick(values);
+    onSubmit: async (values, { setSubmitting, resetForm }) => {
+      await onNextClick(values);
       resetForm({});
       setSubmitting(false);
     },
@@ -378,27 +457,34 @@ function SignupStep1({ formData, action, onBackClick, onNextClick }: SignupProps
 
   return (
     <form onSubmit={formik.handleSubmit} autoComplete="off">
-      <div className="input-row">
-        <label>
-          Chi sei?
-          <select
-            id="typeId"
-            name="accountType"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.accountType}
-          >
-            <option value="Agronomist">Sono un agronomo</option>
-            <option value="Standard">Sono un imprenditore agricolo</option>
-          </select>
-        </label>
+      <div className="form-section">
+        <div className="container px-0">
+          <div className="row input-row">
+            <div className="col">
+              <label>
+                Chi sei?
+                <select
+                  id="typeId"
+                  name="accountType"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.accountType}
+                >
+                  <option value="Agronomist">Sono un agronomo</option>
+                  <option value="Standard">Sono un imprenditore agricolo</option>
+                </select>
+              </label>
+            </div>
+          </div>
+        </div>
       </div>
-      <hr />
-      <div className="buttons-wrapper">
+      <div className="buttons-wrapper mt-4 text-center">
         <button className="trnt_btn secondary" type="button" onClick={onBackClick}>
           Indietro
         </button>
-        <input type="submit" className="primary" value={action} />
+        <button type="submit" className="trnt_btn primary" disabled={formik.isSubmitting}>
+          {formik.isSubmitting ? "caricamento..." : action}
+        </button>
       </div>
     </form>
   );
@@ -408,8 +494,9 @@ const COREAPIS_BASE_PATH = process.env.REACT_APP_COREAPIS_SERVER_URL;
 
 export function Signup() {
   const dispatch = useAppDispatch();
+  const location = useLocation();
   const navigate = useNavigate();
-  const [step, setStep] = React.useState(1);
+  const [step, setStep] = React.useState(readSignupStep(location.state) || 1);
   const [flow, setFlow] = React.useState<string>("Standard");
   const [invitation, setInvitation] = React.useState<InvitationPublic>();
   const [invitationToken, setInvitationToken] = React.useState<string>();
@@ -421,6 +508,36 @@ export function Signup() {
     accountType: AccountTypeEnum.Agronomist,
     phone: "",
   });
+
+
+  const goToStep = React.useCallback((nextStep: number, replace = false) => {
+    setStep(nextStep);
+    navigate(`${location.pathname}${location.search}${location.hash}`, {
+      replace,
+      state: {
+        ...((location.state && typeof location.state === "object" ? location.state : {}) as Record<string, unknown>),
+        signupStep: nextStep,
+      },
+    });
+  }, [location.hash, location.pathname, location.search, location.state, navigate]);
+
+  const handleBackClick = async () => {
+    navigate(-1);
+  };
+
+  React.useEffect(() => {
+    const historyStep = readSignupStep(location.state);
+    if (!historyStep) {
+      goToStep(step, true);
+    }
+  }, [goToStep, location.state, step]);
+
+  React.useEffect(() => {
+    const historyStep = readSignupStep(location.state);
+    if (historyStep && historyStep !== step) {
+      setStep(historyStep);
+    }
+  }, [location.state, step]);
 
   React.useEffect(() => {
     const session = sessionStorage.getItem("pending_invitation_token");
@@ -476,9 +593,9 @@ export function Signup() {
 
     if (response.status === 201) {
       if (flow === "Standard") {
-        setStep(5);
+        goToStep(5);
       } else {
-        setStep(3);
+        goToStep(3);
       }
     } else {
       console.error("Error creating account", response);
@@ -492,7 +609,7 @@ export function Signup() {
           ...formData,
           accountType: data.accountType,
         });
-        setStep(step + 1);
+        goToStep(step + 1);
       } else if (step === 2) {
         const payload = {
           ...formData,
@@ -504,9 +621,9 @@ export function Signup() {
         };
         setFormData(payload);
         if (formData.accountType === AccountTypeEnum.Standard) {
-          setStep(step + 1);
+          goToStep(step + 1);
         } else {
-          setStep(step + 2);
+          goToStep(step + 2);
         }
       } else if (step === 3) {
         const payload = {
@@ -521,7 +638,7 @@ export function Signup() {
           },
         };
         setFormData(payload);
-        setStep(step + 1);
+        goToStep(step + 1);
       } else if (step === 4) {
         await createAccountAction(formData);
       }
@@ -537,29 +654,9 @@ export function Signup() {
           phone: data.phone,
         };
         setFormData(payload);
-        setStep(step + 1);
+        goToStep(step + 1);
       } else if (step === 2) {
         await createAccountAction(formData);
-      }
-    }
-  };
-
-  const handleBackClick = async () => {
-    if (flow === "Standard") {
-      if (step > 1) {
-        if (step === 4 && formData.accountType === AccountTypeEnum.Agronomist) {
-          setStep(step - 2);
-        } else {
-          setStep(step - 1);
-        }
-      } else {
-        navigate(-1);
-      }
-    } else {
-      if (step > 1) {
-        setStep(step - 1);
-      } else {
-        navigate(-1);
       }
     }
   };
@@ -584,6 +681,7 @@ export function Signup() {
               <Stepper
                 items={["Profilo", "Dati Personali", "Dati Aziendali", "Consensi", "Esito"]}
                 currentStep={step - 1}
+                handleStepClick={(stepIndex) => {goToStep(stepIndex + 1)}}
               />
               <div className="form-wrapper">
                 {step === 1 && (

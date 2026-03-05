@@ -203,6 +203,14 @@ class UserServices:
         })
 
         return self._serialize(user)
+
+    @catch_api_exception
+    def exists_by_email(self, email: str) -> bool:
+        """Check if a user with the same email already exists."""
+        keycloak_admin = get_keycloak_admin()
+        users = keycloak_admin.get_users({"email": email})
+        target = email.strip().lower()
+        return any((user.get("email") or "").strip().lower() == target for user in users)
     
     @catch_api_exception
     def create(self, payload: UserCreatePayload):

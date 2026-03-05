@@ -5,6 +5,7 @@ import _ from "lodash";
 import { fieldsSelectors } from "../state/fields-slice";
 // import { SearchBox } from "@mapbox/search-js-react";
 import mapboxgl, { LngLatLike } from "mapbox-gl";
+import MapboxLanguage from "@mapbox/mapbox-gl-language";
 import { useNavigate, useParams } from "react-router-dom";
 import { Point } from "@tornatura/coreapis";
 import * as turf from "@turf/turf";
@@ -53,6 +54,7 @@ export function FieldMap() {
         center: centroid,
         zoom: 14,
       });
+      mapRef.current.addControl(new MapboxLanguage({ defaultLanguage: "it" }));
 
       mapRef.current.on("load", () => {
         const source = mapRef.current.getSource("fieldShape");

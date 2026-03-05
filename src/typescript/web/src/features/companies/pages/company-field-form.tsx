@@ -2,6 +2,7 @@ import React, { Fragment } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import mapboxgl from "mapbox-gl";
+import MapboxLanguage from "@mapbox/mapbox-gl-language";
 import { SearchBox } from "@mapbox/search-js-react";
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import { AgriFieldMutationPayload, Point } from "@tornatura/coreapis";
@@ -556,17 +557,36 @@ export const FieldFormMap = ({ action, onNextClick }: FieldProps) => {
   
 
   React.useEffect(() => {
+    if (mapLoaded && currentPosition) {
+      const source = mapRef.current!.getSource("current-location") as mapboxgl.GeoJSONSource;
+      
+      if (source) {
+        source.setData({
+          type: "Feature",
+          geometry: {
+            type: "Point",
+            coordinates: [currentPosition.lng, currentPosition.lat],
+          },
+          properties: {},
+        });
+      }
+    }
+  }, [mapLoaded, currentPosition]);
+  
+
+  React.useEffect(() => {
     if (mapContainerRef.current ) {
       mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_API_TOKEN;
 
       mapRef.current = new mapboxgl.Map({
         container: mapContainerRef.current,
         style: "mapbox://styles/mapbox/satellite-streets-v12",
-        center: currentPosition
+        center: currentPosition && currentPosition.lng && currentPosition.lat
           ? [currentPosition.lng, currentPosition.lat]
           : [12.5736108, 41.29246],
         zoom: 9,
       });
+      mapRef.current.addControl(new MapboxLanguage({ defaultLanguage: "it" }));
 
       const draw = new MapboxDraw({
         displayControlsDefault: false,
@@ -578,6 +598,75 @@ export const FieldFormMap = ({ action, onNextClick }: FieldProps) => {
       });
 
       mapRef.current.on("load", () => {
+        mapRef.current!.addSource("current-location", {
+          type: "geojson",
+          data: {
+            type: "Feature",
+            geometry: { type: "Point", coordinates: [0, 0] },
+          },
+        });
+
+        mapRef.current!.addLayer({
+          id: "current-location-dot",
+          type: "circle",
+          source: "current-location",
+          paint: {
+            "circle-radius": 5,
+            "circle-color": "#007AFF",
+            "circle-opacity": 1,
+          },
+        });
+    
+        mapRef.current!.addLayer({
+          id: "current-location-pulse",
+          type: "circle",
+          source: "current-location",
+          paint: {
+            "circle-radius": 5,
+            "circle-color": "#007AFF",
+            "circle-opacity": 0,
+            "circle-radius-transition": { duration: 0, delay: 0 },
+            "circle-opacity-transition": { duration: 0, delay: 0 },
+          },
+        });
+    
+        function animatePulse(startTime: number) {
+          const t = (performance.now() - startTime) / 1000;
+          const cycle = 2; // seconds per pulse
+          const minRadius = 5;
+          const maxRadius = 40;
+          const maxOpacity = 0.8;
+
+          // Instead of one pulse, compute multiple overlapping pulses
+          const pulses = 3; // number of simultaneous ripples
+          const radii: number[] = [];
+          const opacities: number[] = [];
+
+          for (let i = 0; i < pulses; i++) {
+            const offset = i * (cycle / pulses);
+            const progress = ((t - offset) % cycle) / cycle;
+
+            const radius = minRadius + progress * (maxRadius - minRadius);
+            const opacity = maxOpacity * (1 - progress);
+
+            radii.push(radius);
+            opacities.push(opacity);
+          }
+
+          // Use the largest radius and highest opacity for the layer
+          // (or dynamically create multiple layers if you want all visible)
+          const radius = radii[0];
+          const opacity = opacities[0];
+
+          if (mapRef.current) {
+            mapRef.current.setPaintProperty("current-location-pulse", "circle-radius", radius);
+            mapRef.current.setPaintProperty("current-location-pulse", "circle-opacity", opacity);
+          }
+
+          requestAnimationFrame(() => animatePulse(startTime));
+        }
+
+        animatePulse(performance.now());
         setMapLoaded(true);
       });
 
