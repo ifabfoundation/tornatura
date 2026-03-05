@@ -13,7 +13,6 @@
 - [ ] (x) Cambiare la modalità di caricamento dei dati
 
 - [ ] (t) Mostrare un modale durante il caricamento delle immagini
-- [ ] (t) `BUG` Eliminazione campo non fa nulla (Agricolus S.A > Pere San Giovanni)
 
 - [ ] (a) Make loaders component (bootstrap loaders)
 - [ ] (a) Line Graph: probably min value should always be 0
@@ -22,7 +21,6 @@
 - [ ] (a) + (team) Decide Line Graph: sequential VS linear time (x axis)
 
 - [ ] -- (a) Da detection-⁠⁠detail: Btn "Back to dashboard"
-- [ ] - (t) ⁠Da menu aggiungere nuovo rilevamento (nuovo tipo)
 - [ ] - (a) Focus submit button in forms
 - [ ] - (a) Stepper layout schermi piccoli (detection form)
 
@@ -49,3 +47,5 @@
 - [x] (t) Location: Considerare app nativa
 - [x] (a) Detail page: Add date selector
 - [x] (a) UI Detection insetti: num sizes
+- [x] (t) `BUG` Eliminazione campo non fa nulla (Agricolus S.A > Pere San Giovanni)
+- [x] (t) ⁠Da menu aggiungere nuovo rilevamento (nuovo tipo)

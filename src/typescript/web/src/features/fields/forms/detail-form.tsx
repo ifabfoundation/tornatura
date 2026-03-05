@@ -56,8 +56,9 @@ export function FieldDetailForm({ field }: FieldDetailProps) {
       rotation: Yup.string().required("Campo necessario"),
       grassing: Yup.string().required("Campo necessario"),
     }),
-    onSubmit: (values, { setSubmitting, setErrors }) => {
-      console.log("submit clicked!!!")
+    onSubmit: async (values, { setSubmitting, setErrors }) => {
+      setSubmitting(true);
+
       if (values.areafrom === "map") {
         values.area = calcArea(field.map);
       }
@@ -83,7 +84,7 @@ export function FieldDetailForm({ field }: FieldDetailProps) {
         year: values.year,
       };
 
-      dispatch(
+      await dispatch(
         fieldsActions.updateFieldAction({ orgId: field.orgId, fieldId: field.id, body: payload })
       );
       setSubmitting(false);
@@ -162,6 +163,7 @@ export function FieldDetailForm({ field }: FieldDetailProps) {
 
   return (
     <Fragment>
+      {modalOpen && <modal.component {...modal.componentProps} />}
       <form onSubmit={formik.handleSubmit} autoComplete="off">
         <div className="form-section">
           <div className="container px-0">
@@ -445,8 +447,10 @@ export function FieldDetailForm({ field }: FieldDetailProps) {
           </div>
         </div>
         <div className="buttons-wrapper mt-4 text-center">
-          <input type="submit" className="primary" value="Salva modifiche"/>
-          <button className="trnt_btn info danger1" onClick={handleFieldDelete}>
+          <button type="submit" className="trnt_btn primary" disabled={formik.isSubmitting}>
+            {formik.isSubmitting ? "caricamento..." : "Salva modifiche"}
+          </button>
+          <button type="button" className="trnt_btn info danger1" onClick={handleFieldDelete}>
             Elimina campo
           </button>
         </div>

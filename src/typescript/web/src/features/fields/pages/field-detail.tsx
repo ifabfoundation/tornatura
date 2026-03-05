@@ -44,6 +44,14 @@ export function FieldDetail() {
         familyItems: []
       },
       {
+        id: "new-detection",
+        icon: "pencil",
+        text: "Nuovo tipo rilevamento",
+        path: `/companies/${companyId}/fields/${fieldId}/new-detection`,
+        type: 'single',
+        familyItems: []
+      },
+      {
         id: "field-detections",
         icon: "checklist" as IconName,
         text: "Rilevamenti",

@@ -88,6 +88,13 @@ class InvitationServices:
         organization_services = OrganizationServices()
         user_services = UserServices()
         inviter = user_services.get(token_info)
+        target_email = payload.email.strip().lower()
+
+        if inviter.email and inviter.email.strip().lower() == target_email:
+            raise HTTPException(
+                status_code=400,
+                detail="You cannot invite yourself"
+            )
 
         # Use orgId from payload (can be null for company owner invitations)
         actual_org_id = payload.orgId
@@ -128,20 +135,20 @@ class InvitationServices:
         if actual_org_id:
             members = organization_services.list_members(actual_org_id)
             for member in members:
-                if member.user.email.lower() == payload.email.lower():
+                if member.user.email.lower() == target_email:
                     raise HTTPException(
                         status_code=400,
                         detail="User is already a member of this organization"
                     )
             existing = self.model.objects(
-                email=payload.email,
+                email=target_email,
                 orgId=actual_org_id,
                 status="pending",
                 deleted=False
             ).first()
         else:
             existing = self.model.objects(
-                email=payload.email,
+                email=target_email,
                 inviterId=inviter_id,
                 role=ClientRole.CompanyOwner.value,
                 orgId__exists=False,  # Check for null orgId
@@ -158,7 +165,7 @@ class InvitationServices:
         # Create invitation
         current_time = self._get_current_timestamp()
         invitation = self.model(
-            email=payload.email,
+            email=target_email,
             orgId=actual_org_id,  # Can be null for company owner invitations
             inviterId=inviter_id,
             role=payload.role,
@@ -530,7 +537,7 @@ class InvitationServices:
         elif role == ClientRole.CompanyManager.value:
             return "Manager"
         elif role == ClientRole.CompanyOwner.value:
-            return "Administratore"
+            return "Amministratore"
         elif role == ClientRole.CompanyStandard.value:
             return "Collaboratore"
         else:

@@ -19,7 +19,6 @@ export function ModalConfirm({
   handleConfirm,
 }: ModalConfirmProps) {
   const className = actionBtnClass ? actionBtnClass : "primary";
-  console.log("actionBtnClass", actionBtnClass);
   return (
     <Modal closeModal={handleCancel} title={title}>
       <section>
