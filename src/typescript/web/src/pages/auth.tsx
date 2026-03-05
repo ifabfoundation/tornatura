@@ -17,6 +17,9 @@ import { invitationsActions } from "../features/invitations/state/invitations-sl
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useAppDispatch } from "../hooks";
 import Stepper from "../components/Stepper";
+import SignupImpactQuestionnaireStep, {
+  SignupImpactQuestionnaireFormData,
+} from "../features/auth/components/signup-impact-questionnaire-step";
 
 const PhoneRegExp =
   /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
@@ -120,12 +123,12 @@ function SignupStep4({ action, onBackClick, onNextClick }: SignupProps) {
             <div className="col">
               <label className="d-flex align-items-start">
                 <input
-                  id="privacy"
-                  name="privacy"
+                  id="privacy3"
+                  name="privacy3"
                   type="checkbox"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  checked={formik.values.privacy}
+                  checked={formik.values.privacy3}
                   className="d-inline"
                 />
                 <span className="my-2">
@@ -139,8 +142,8 @@ function SignupStep4({ action, onBackClick, onNextClick }: SignupProps) {
                   </a>
                 </span>
               </label>
-              {formik.touched.privacy && formik.errors.privacy ? (
-                <div className="error">{formik.errors.privacy}</div>
+              {formik.touched.privacy3 && formik.errors.privacy3 ? (
+                <div className="error">{formik.errors.privacy3}</div>
               ) : null}
             </div>
           </div>
@@ -500,6 +503,29 @@ export function Signup() {
   const [flow, setFlow] = React.useState<string>("Standard");
   const [invitation, setInvitation] = React.useState<InvitationPublic>();
   const [invitationToken, setInvitationToken] = React.useState<string>();
+  const [impactQuestionnaireData, setImpactQuestionnaireData] =
+    React.useState<SignupImpactQuestionnaireFormData>({
+      employeeCount: "",
+      revenueRange: "",
+      damageIncidencePercent: "",
+      defenseActions: [],
+      annualSpendAgrochemicals: "",
+      annualSpendAgronomists: "",
+      annualSpendOperators: "",
+      annualSpendPreventiveTools: "",
+      annualSpendOther: "",
+      annualSpendNone: false,
+      satisfactionEffectiveness: "",
+      satisfactionCostBenefit: "",
+      productionProblemOutcome: "",
+      monitoredKpiCount: "",
+      kpiUpdateFrequency: "",
+      objectivesTimeHorizon: "",
+      objectivesDifficulty: "",
+      productionBonusBasis: "",
+      workerPromotionCriteria: "",
+      lowProductivityWorkerReassignmentTiming: "",
+    });
   const [formData, setFormData] = React.useState<UserCreatePayload>({
     firstName: "",
     lastName: "",
@@ -593,7 +619,7 @@ export function Signup() {
 
     if (response.status === 201) {
       if (flow === "Standard") {
-        goToStep(5);
+        goToStep(isImpactQuestionnaireRequired ? 6 : 5);
       } else {
         goToStep(3);
       }
@@ -601,6 +627,8 @@ export function Signup() {
       console.error("Error creating account", response);
     }
   };
+
+  const isImpactQuestionnaireRequired = formData.accountType === AccountTypeEnum.Standard;
 
   const handleNextClick = async (data: any) => {
     if (flow === "Standard") {
@@ -640,6 +668,13 @@ export function Signup() {
         setFormData(payload);
         goToStep(step + 1);
       } else if (step === 4) {
+        if (isImpactQuestionnaireRequired) {
+          goToStep(step + 1);
+        } else {
+          await createAccountAction(formData);
+        }
+      } else if (step === 5 && isImpactQuestionnaireRequired) {
+        setImpactQuestionnaireData(data);
         await createAccountAction(formData);
       }
     } else {
@@ -679,7 +714,11 @@ export function Signup() {
           <div className="content-area">
             <div className="content">
               <Stepper
-                items={["Profilo", "Dati Personali", "Dati Aziendali", "Consensi", "Esito"]}
+                items={
+                  isImpactQuestionnaireRequired
+                    ? ["Profilo", "Dati Personali", "Dati Aziendali", "Consensi", "Questionario", "Esito"]
+                    : ["Profilo", "Dati Personali", "Dati Aziendali", "Consensi", "Esito"]
+                }
                 currentStep={step - 1}
                 handleStepClick={(stepIndex) => {goToStep(stepIndex + 1)}}
               />
@@ -711,12 +750,20 @@ export function Signup() {
                 {step === 4 && (
                   <SignupStep4
                     formData={formData}
+                    action={isImpactQuestionnaireRequired ? "Avanti" : "Iscriviti"}
+                    onBackClick={handleBackClick}
+                    onNextClick={handleNextClick}
+                  />
+                )}
+                {step === 5 && isImpactQuestionnaireRequired && (
+                  <SignupImpactQuestionnaireStep
+                    initialValues={impactQuestionnaireData}
                     action="Iscriviti"
                     onBackClick={handleBackClick}
                     onNextClick={handleNextClick}
                   />
                 )}
-                {step === 5 && (
+                {((step === 5 && !isImpactQuestionnaireRequired) || step === 6) && (
                   <Container>
                     <Row>
                       <Col></Col>
