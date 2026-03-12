@@ -41,21 +41,30 @@ function readSignupStep(state: unknown): number | undefined {
 interface SignupProps {
   formData: UserCreatePayload;
   action: string;
+  isCompanyOwnerInStandardFlow?: boolean;
   onBackClick?: () => Promise<void>;
   onNextClick: (data: any) => Promise<void>;
 }
 
-function SignupStep4({ action, onBackClick, onNextClick }: SignupProps) {
+function SignupStep4({ formData, action, isCompanyOwnerInStandardFlow, onBackClick, onNextClick }: SignupProps) {
+  const [isProjectFormLoading, setIsProjectFormLoading] = React.useState(false);
+
   const formik = useFormik({
     initialValues: {
       privacy: false,
       privacy2: false,
-      privacy3: false
+      privacy3: false,
+      privacy4: false,
     },
     validationSchema: Yup.object({
       privacy: Yup.boolean().oneOf([true], "È necessaria l'accettazione"),
       privacy2: Yup.boolean().oneOf([true], "È necessaria l'accettazione"),
       privacy3: Yup.boolean().oneOf([true], "È necessaria l'accettazione"),
+      privacy4: Yup.boolean().test(
+        "privacy4-required",
+        "È necessaria l'accettazione",
+        (value) => !isCompanyOwnerInStandardFlow || value === true
+      ),
     }),
     onSubmit: async (values, { setSubmitting }) => {
       setSubmitting(true);
@@ -63,6 +72,48 @@ function SignupStep4({ action, onBackClick, onNextClick }: SignupProps) {
       setSubmitting(false);
     },
   });
+
+  const handleOpenProjectFormPdf = async (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    if (isProjectFormLoading) {
+      return;
+    }
+
+    const companyName = formData.organization?.name || `${formData.firstName} ${formData.lastName}`.trim();
+    const companyVat = formData.organization?.piva || formData.piva || "";
+    const today = new Date().toLocaleDateString("it-IT");
+
+    setIsProjectFormLoading(true);
+    try {
+      const response = await fetch(`${COREAPIS_BASE_PATH}/v1/forms/form-01/informativa-pmi/pdf`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          data: {
+            DATA: today,
+            PIVA: companyVat,
+            RAGIONE_SOCIALE: companyName
+          },
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Impossibile caricare il documento");
+      }
+
+      const pdfBlob = await response.blob();
+      const blobUrl = window.URL.createObjectURL(pdfBlob);
+      window.open(blobUrl, "_blank", "noopener,noreferrer");
+      window.setTimeout(() => window.URL.revokeObjectURL(blobUrl), 60000);
+    } catch (error) {
+      console.error(error);
+      window.alert("Errore nel caricamento del modulo. Riprova più tardi.");
+    } finally {
+      setIsProjectFormLoading(false);
+    }
+  };
 
   return (
     <form onSubmit={formik.handleSubmit} autoComplete="off">
@@ -119,6 +170,32 @@ function SignupStep4({ action, onBackClick, onNextClick }: SignupProps) {
               ) : null}
             </div>
           </div>
+          {isCompanyOwnerInStandardFlow && (
+            <div className="row input-row">
+              <div className="col">
+                <label className="d-flex align-items-start">
+                  <input
+                    id="privacy4"
+                    name="privacy4"
+                    type="checkbox"
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    checked={formik.values.privacy4}
+                    className="d-inline"
+                  />
+                  <span className="my-2">
+                    Ho preso visione del&nbsp;
+                    <a href="#" onClick={handleOpenProjectFormPdf}>
+                      {isProjectFormLoading ? "caricamento modulo..." : "modulo informativa PMI partecipanti"}
+                    </a>
+                  </span>
+                </label>
+                {formik.touched.privacy4 && formik.errors.privacy4 ? (
+                  <div className="error">{formik.errors.privacy4}</div>
+                ) : null}
+              </div>
+            </div>
+          )}
           <div className="row input-row">
             <div className="col">
               <label className="d-flex align-items-start">
@@ -612,6 +689,53 @@ export function Signup() {
     }
   }, [invitation]);
 
+  const isCompanyOwnerInStandardFlow =
+    flow === "Standard" && formData.accountType === AccountTypeEnum.Standard;
+  const standardStepperSteps = isCompanyOwnerInStandardFlow
+    ? [
+        { label: "Profilo", step: 1 },
+        { label: "Dati Personali", step: 2 },
+        { label: "Dati Aziendali", step: 3 },
+        { label: "Consensi", step: 4 },
+        { label: "Questionario", step: 5 },
+        { label: "Esito", step: 6 },
+      ]
+    : [
+        { label: "Profilo", step: 1 },
+        { label: "Dati Personali", step: 2 },
+        { label: "Consensi", step: 4 },
+        { label: "Esito", step: 5 },
+      ];
+  const simpleFlowStepperSteps = [
+    { label: "Dati Personali", step: 1 },
+    { label: "Consensi", step: 2 },
+    { label: "Esito", step: 3 },
+  ];
+  const standardQuestionnaireStep = standardStepperSteps.find(
+    (stepItem) => stepItem.label === "Questionario"
+  )?.step;
+  
+  const standardSuccessStep = standardStepperSteps[standardStepperSteps.length - 1].step;
+  const simpleFlowSuccessStep = simpleFlowStepperSteps[simpleFlowStepperSteps.length - 1].step;
+  const currentStandardStepIndex = Math.max(
+    standardStepperSteps.findIndex((stepItem) => stepItem.step === step),
+    0
+  );
+  const currentSimpleFlowStepIndex = Math.max(
+    simpleFlowStepperSteps.findIndex((stepItem) => stepItem.step === step),
+    0
+  );
+  const getNextMappedStep = (
+    stepperSteps: Array<{ label: string; step: number }>,
+    currentStep: number
+  ) => {
+    const currentStepIndex = stepperSteps.findIndex((stepItem) => stepItem.step === currentStep);
+    if (currentStepIndex < 0 || currentStepIndex >= stepperSteps.length - 1) {
+      return undefined;
+    }
+    return stepperSteps[currentStepIndex + 1].step;
+  };
+
   const createAccountAction = async (payload: UserCreatePayload) => {
     const apiConfig = new Configuration({ basePath: `${COREAPIS_BASE_PATH}` });
     const usersApi = new UsersApi(apiConfig);
@@ -619,16 +743,14 @@ export function Signup() {
 
     if (response.status === 201) {
       if (flow === "Standard") {
-        goToStep(isImpactQuestionnaireRequired ? 6 : 5);
+        goToStep(standardSuccessStep);
       } else {
-        goToStep(3);
+        goToStep(simpleFlowSuccessStep);
       }
     } else {
       console.error("Error creating account", response);
     }
   };
-
-  const isImpactQuestionnaireRequired = formData.accountType === AccountTypeEnum.Standard;
 
   const handleNextClick = async (data: any) => {
     if (flow === "Standard") {
@@ -637,7 +759,10 @@ export function Signup() {
           ...formData,
           accountType: data.accountType,
         });
-        goToStep(step + 1);
+        const nextStep = getNextMappedStep(standardStepperSteps, step);
+        if (nextStep !== undefined) {
+          goToStep(nextStep);
+        }
       } else if (step === 2) {
         const payload = {
           ...formData,
@@ -648,10 +773,9 @@ export function Signup() {
           phone: data.phone,
         };
         setFormData(payload);
-        if (formData.accountType === AccountTypeEnum.Standard) {
-          goToStep(step + 1);
-        } else {
-          goToStep(step + 2);
+        const nextStep = getNextMappedStep(standardStepperSteps, step);
+        if (nextStep !== undefined) {
+          goToStep(nextStep);
         }
       } else if (step === 3) {
         const payload = {
@@ -666,16 +790,22 @@ export function Signup() {
           },
         };
         setFormData(payload);
-        goToStep(step + 1);
+        const nextStep = getNextMappedStep(standardStepperSteps, step);
+        if (nextStep !== undefined) {
+          goToStep(nextStep);
+        }
       } else if (step === 4) {
-        if (isImpactQuestionnaireRequired) {
-          goToStep(step + 1);
+        if (standardQuestionnaireStep !== undefined) {
+          goToStep(standardQuestionnaireStep);
         } else {
           await createAccountAction(formData);
         }
-      } else if (step === 5 && isImpactQuestionnaireRequired) {
+      } else if (step === standardQuestionnaireStep) {
         setImpactQuestionnaireData(data);
-        await createAccountAction(formData);
+        await createAccountAction({
+          ...formData,
+          questionnaire: data,
+        } as any);
       }
     } else {
       if (step === 1) {
@@ -689,7 +819,10 @@ export function Signup() {
           phone: data.phone,
         };
         setFormData(payload);
-        goToStep(step + 1);
+        const nextStep = getNextMappedStep(simpleFlowStepperSteps, step);
+        if (nextStep !== undefined) {
+          goToStep(nextStep);
+        }
       } else if (step === 2) {
         await createAccountAction(formData);
       }
@@ -714,13 +847,11 @@ export function Signup() {
           <div className="content-area">
             <div className="content">
               <Stepper
-                items={
-                  isImpactQuestionnaireRequired
-                    ? ["Profilo", "Dati Personali", "Dati Aziendali", "Consensi", "Questionario", "Esito"]
-                    : ["Profilo", "Dati Personali", "Dati Aziendali", "Consensi", "Esito"]
-                }
-                currentStep={step - 1}
-                handleStepClick={(stepIndex) => {goToStep(stepIndex + 1)}}
+                items={standardStepperSteps.map((stepItem) => stepItem.label)}
+                currentStep={currentStandardStepIndex}
+                handleStepClick={(stepIndex) => {
+                  goToStep(standardStepperSteps[stepIndex].step);
+                }}
               />
               <div className="form-wrapper">
                 {step === 1 && (
@@ -750,12 +881,13 @@ export function Signup() {
                 {step === 4 && (
                   <SignupStep4
                     formData={formData}
-                    action={isImpactQuestionnaireRequired ? "Avanti" : "Iscriviti"}
+                    action={standardQuestionnaireStep !== undefined ? "Avanti" : "Iscriviti"}
                     onBackClick={handleBackClick}
                     onNextClick={handleNextClick}
+                    isCompanyOwnerInStandardFlow={isCompanyOwnerInStandardFlow}
                   />
                 )}
-                {step === 5 && isImpactQuestionnaireRequired && (
+                {step === standardQuestionnaireStep && (
                   <SignupImpactQuestionnaireStep
                     initialValues={impactQuestionnaireData}
                     action="Iscriviti"
@@ -763,7 +895,7 @@ export function Signup() {
                     onNextClick={handleNextClick}
                   />
                 )}
-                {((step === 5 && !isImpactQuestionnaireRequired) || step === 6) && (
+                {step === standardSuccessStep && (
                   <Container>
                     <Row>
                       <Col></Col>
@@ -788,10 +920,6 @@ export function Signup() {
                   </Container>
                 )}
               </div>
-              {/*                 </Col>
-                  <Col></Col>
-                </Row>
-              </Container> */}
             </div>
           </div>
         </div>
@@ -804,7 +932,13 @@ export function Signup() {
           <TopHeader />
           <div className="content-area">
             <div className="content">
-              <Stepper items={["Dati Personali", "Consensi", "Esito"]} currentStep={step} />
+              <Stepper
+                items={simpleFlowStepperSteps.map((stepItem) => stepItem.label)}
+                currentStep={currentSimpleFlowStepIndex}
+                handleStepClick={(stepIndex) => {
+                  goToStep(simpleFlowStepperSteps[stepIndex].step);
+                }}
+              />
 
               <div className="form-wrapper">
                 {step === 1 && (
@@ -821,6 +955,7 @@ export function Signup() {
                     action="Iscriviti"
                     onBackClick={handleBackClick}
                     onNextClick={handleNextClick}
+                    isCompanyOwnerInStandardFlow={isCompanyOwnerInStandardFlow}
                   />
                 )}
                 {step === 3 && (

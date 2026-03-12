@@ -1,8 +1,9 @@
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from email.mime.application import MIMEApplication
 from  core import config
 import smtplib
-from typing import List
+from typing import List, Optional
 
 from fastapi import logger
 
@@ -12,7 +13,7 @@ def paginate(queryset: List, page=1, limit=25):
     end = start + limit
     return queryset[start:end]
 
-def send_email(receiver_email, subject, email_body):
+def send_email(receiver_email, subject, email_body, attachments: Optional[list[dict]] = None):
     sender_email = config.APIConfig.SMTP_EMAIL
     message = MIMEMultipart()
     message["Subject"] = subject
@@ -25,6 +26,12 @@ def send_email(receiver_email, subject, email_body):
 
     # The email client will try to render the last part first
     message.attach(part1)
+
+    if attachments:
+        for attachment in attachments:
+            part = MIMEApplication(attachment["content"], _subtype=attachment.get("subtype", "octet-stream"))
+            part.add_header("Content-Disposition", "attachment", filename=attachment["filename"])
+            message.attach(part)
 
     try:
         server = smtplib.SMTP_SSL(config.APIConfig.SMTP_HOST, config.APIConfig.SMTP_PORT)

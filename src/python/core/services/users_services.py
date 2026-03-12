@@ -3,6 +3,7 @@ import json
 import os
 import random
 import string
+from datetime import datetime
 from jinja2 import Environment, FileSystemLoader
 from keycloak import KeycloakAdmin, KeycloakOpenID
 import phasetwo
@@ -13,6 +14,7 @@ from core import config
 from core.decorators import catch_api_exception
 from core.serializers import AccountTypeEnum, User, UserCreatePayload, UserUpdatePayload, FileInfo
 from core.services.files_services import FileServices
+from core.services.forms_services import FormsServices
 from core.utils import send_email
 
 env = Environment(loader=FileSystemLoader(os.path.join(config.APIConfig.BASE_DIR, 'templates/')))
@@ -222,6 +224,7 @@ class UserServices:
         data.pop("accountType")
         data.pop("phone")
         data.pop("organization")
+        data.pop("questionnaire")
         piva = data.pop("piva")
         piva = piva if piva is not None else ""
         data.update({
@@ -258,6 +261,60 @@ class UserServices:
         send_email(receiver_email=user["email"], subject="Benvenuto su Tornatura", email_body=email_body)
         
         return self._serialize(user)
+
+    def send_notification_to_staff(
+        self,
+        *,
+        user: User,
+        organization_name: str,
+        organization_piva: str,
+        questionnaire: dict | None,
+    ) -> None:
+        receiver_email = config.APIConfig.STAFF_EMAIL or config.APIConfig.SMTP_EMAIL
+        if not receiver_email:
+            return
+
+        form_services = FormsServices()
+        form_pdf = form_services.render_form_01_pdf({
+            "DATA": datetime.now().strftime("%d/%m/%Y"),
+            "PIVA": organization_piva,
+            "RAGIONE_SOCIALE": organization_name,
+        })
+
+        questionnaire_rows = []
+        if questionnaire:
+            for key, value in questionnaire.items():
+                normalized_value = (
+                    json.dumps(value, ensure_ascii=False)
+                    if isinstance(value, (dict, list))
+                    else str(value)
+                )
+                questionnaire_rows.append({
+                    "key": key,
+                    "value": normalized_value,
+                })
+
+        template = env.get_template("email_questionnaire_submission.html")
+        email_body = template.render(
+            user_name=f"{user.firstName} {user.lastName}",
+            user_email=user.email,
+            organization_name=organization_name,
+            organization_piva=organization_piva,
+            questionnaire_rows=questionnaire_rows,
+        )
+
+        send_email(
+            receiver_email=receiver_email,
+            subject="Nuova registrazione aziendale - Questionario + Form",
+            email_body=email_body,
+            attachments=[
+                {
+                    "filename": "FORM_A1_Informativa_PMI_partecipanti.pdf",
+                    "content": form_pdf,
+                    "subtype": "pdf",
+                }
+            ],
+        )
     
 
     @catch_api_exception

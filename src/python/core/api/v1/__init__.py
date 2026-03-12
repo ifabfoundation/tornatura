@@ -8,6 +8,7 @@ from core.api.v1.files import router as files_router
 from core.api.v1.feedback import router as feedbacks_router
 from core.api.v1.invitations import router as invitations_router
 from core.api.v1.observation_types import router as observation_types_router
+from core.api.v1.forms import router as forms_router
 
 
 router = APIRouter()
@@ -66,4 +67,10 @@ router.include_router(
     invitations_router,
     prefix="",
     tags=["Invitations"]
+)
+
+router.include_router(
+    forms_router,
+    prefix="",
+    tags=["Forms"]
 )

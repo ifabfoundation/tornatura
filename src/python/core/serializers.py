@@ -226,6 +226,7 @@ class UserCreatePayload(BaseModel):
     phone: str
     piva: Optional[str] = None
     organization: Optional[OrganizationCreatePayload] = None
+    questionnaire: Optional[dict[str, Any]] = None
 
 class UserUpdatePayload(BaseModel):
     firstName: Optional[str] = None
@@ -285,3 +286,7 @@ class InvitationValidateResponse(BaseModel):
     valid: bool
     invitation: Optional[InvitationPublic] = None
     error: Optional[str] = None
+
+
+class FormTemplateRenderPayload(BaseModel):
+    data: dict[str, str]

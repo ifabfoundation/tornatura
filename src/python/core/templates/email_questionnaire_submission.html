@@ -1,0 +1,47 @@
+<html>
+<head>
+  <style type="text/css">
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+    *, body, table, td, a {
+      font-family: 'Inter', Arial, sans-serif;
+    }
+  </style>
+</head>
+<body style="font-family: 'Inter', Arial, sans-serif; line-height: 1.6; color: #333;">
+  <div style="max-width: 700px; margin: 0 auto; padding: 20px;">
+    <img style="width: 150px;" width="150" src="https://tornatura.it/tmp-storage/assets/images/logo-color-black.png" />
+
+    <div style="margin-top: 24px;">
+      <h2 style="color: #3D401A; margin: 0 0 12px 0;">Nuova registrazione aziendale</h2>
+
+      <p style="margin: 0 0 8px 0;"><strong>Utente:</strong> {{ user_name|e }} ({{ user_email|e }})</p>
+      <p style="margin: 0 0 16px 0;"><strong>Azienda:</strong> {{ organization_name|e }} - P.IVA {{ organization_piva|e }}</p>
+
+      <h3 style="color: #3D401A; margin: 20px 0 10px 0;">Risposte Questionario</h3>
+
+      {% if questionnaire_rows and questionnaire_rows|length > 0 %}
+      <table style="border-collapse: collapse; width: 100%;">
+        <tbody>
+          {% for row in questionnaire_rows %}
+          <tr>
+            <td style="padding: 8px 10px; border: 1px solid #ddd; background: #fafafa; width: 35%; vertical-align: top;">
+              <strong>{{ row.key|e }}</strong>
+            </td>
+            <td style="padding: 8px 10px; border: 1px solid #ddd; vertical-align: top;">
+              {{ row.value|e }}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p style="margin: 0;">Nessun questionario fornito.</p>
+      {% endif %}
+
+      <p style="margin-top: 18px; color: #777; font-size: 12px;">
+        In allegato: Form 01 compilato.
+      </p>
+    </div>
+  </div>
+</body>
+</html>

@@ -101,6 +101,12 @@ async def user_registration(
         organization_services.assign_role(user_id=user.id, org_id=organization.orgId, role=OrganizationCustomRole.ManageAgrifields)
         organization_services.assign_role(user_id=user.id, org_id=organization.orgId, role=OrganizationCustomRole.ManageDataFiles)
         organization_services.assign_role(user_id=user.id, org_id=organization.orgId, role=OrganizationDefaultRole.ManageInvitations)
+        user_services.send_notification_to_staff(
+            user=user,
+            organization_name=organization.name,
+            organization_piva=organization.piva,
+            questionnaire=payload.questionnaire,
+        )
     
     
     return StatusResponse(status=201, message="User created successfully")
