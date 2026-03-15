@@ -12385,7 +12385,7 @@ ul li {
 
 .font-s {
   font-family: "Inter", sans-serif;
-  font-size: 11px;
+  font-size: 9.5px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -12396,7 +12396,7 @@ ul li {
 
 @media (min-width: 576px) {
   .font-s {
-    font-size: 11px;
+    font-size: 10.5px;
   }
 }
 
@@ -12420,7 +12420,7 @@ ul li {
 
 .font-s-600 {
   font-family: "Inter", sans-serif;
-  font-size: 11px;
+  font-size: 9.5px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -12432,7 +12432,7 @@ ul li {
 
 @media (min-width: 576px) {
   .font-s-600 {
-    font-size: 11px;
+    font-size: 10.5px;
   }
 }
 
@@ -12456,7 +12456,7 @@ ul li {
 
 .font-s-label {
   font-family: "Inter", sans-serif;
-  font-size: 11px;
+  font-size: 9.5px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -12469,7 +12469,7 @@ ul li {
 
 @media (min-width: 576px) {
   .font-s-label {
-    font-size: 11px;
+    font-size: 10.5px;
   }
 }
 
@@ -12493,7 +12493,7 @@ ul li {
 
 .font-m {
   font-family: "Inter", sans-serif;
-  font-size: 15px;
+  font-size: 13px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -12504,7 +12504,7 @@ ul li {
 
 @media (min-width: 576px) {
   .font-m {
-    font-size: 15px;
+    font-size: 14px;
   }
 }
 
@@ -12528,7 +12528,7 @@ ul li {
 
 .font-m-strong {
   font-family: "Inter", sans-serif;
-  font-size: 15px;
+  font-size: 13px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -12540,7 +12540,7 @@ ul li {
 
 @media (min-width: 576px) {
   .font-m-strong {
-    font-size: 15px;
+    font-size: 14px;
   }
 }
 
@@ -12564,7 +12564,7 @@ ul li {
 
 .font-m-600 {
   font-family: "Inter", sans-serif;
-  font-size: 15px;
+  font-size: 13px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -12576,7 +12576,7 @@ ul li {
 
 @media (min-width: 576px) {
   .font-m-600 {
-    font-size: 15px;
+    font-size: 14px;
   }
 }
 
@@ -12600,7 +12600,7 @@ ul li {
 
 .font-l-600 {
   font-family: "Inter", sans-serif;
-  font-size: 20px;
+  font-size: 17px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -12612,7 +12612,7 @@ ul li {
 
 @media (min-width: 576px) {
   .font-l-600 {
-    font-size: 20px;
+    font-size: 18px;
   }
 }
 
@@ -12636,7 +12636,7 @@ ul li {
 
 .font-l {
   font-family: "Inter", sans-serif;
-  font-size: 20px;
+  font-size: 17px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -12647,7 +12647,7 @@ ul li {
 
 @media (min-width: 576px) {
   .font-l {
-    font-size: 20px;
+    font-size: 18px;
   }
 }
 
@@ -12671,7 +12671,7 @@ ul li {
 
 .font-xl-600 {
   font-family: "Inter", sans-serif;
-  font-size: 27px;
+  font-size: 21px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -12683,7 +12683,7 @@ ul li {
 
 @media (min-width: 576px) {
   .font-xl-600 {
-    font-size: 27px;
+    font-size: 24px;
   }
 }
 
@@ -12707,7 +12707,7 @@ ul li {
 
 .font-xl {
   font-family: "Inter", sans-serif;
-  font-size: 27px;
+  font-size: 21px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -12718,7 +12718,7 @@ ul li {
 
 @media (min-width: 576px) {
   .font-xl {
-    font-size: 27px;
+    font-size: 24px;
   }
 }
 
@@ -12742,7 +12742,7 @@ ul li {
 
 h1, .h1 {
   font-family: "Inter", sans-serif;
-  font-size: 27px;
+  font-size: 21px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -12754,7 +12754,7 @@ h1, .h1 {
 
 @media (min-width: 576px) {
   h1, .h1 {
-    font-size: 27px;
+    font-size: 24px;
   }
 }
 
@@ -12778,7 +12778,7 @@ h1, .h1 {
 
 h2, .h2 {
   font-family: "Inter", sans-serif;
-  font-size: 20px;
+  font-size: 17px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -12790,7 +12790,7 @@ h2, .h2 {
 
 @media (min-width: 576px) {
   h2, .h2 {
-    font-size: 20px;
+    font-size: 18px;
   }
 }
 
@@ -12814,7 +12814,7 @@ h2, .h2 {
 
 h3, .h3 {
   font-family: "Inter", sans-serif;
-  font-size: 20px;
+  font-size: 17px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -12825,7 +12825,7 @@ h3, .h3 {
 
 @media (min-width: 576px) {
   h3, .h3 {
-    font-size: 20px;
+    font-size: 18px;
   }
 }
 
@@ -12849,7 +12849,7 @@ h3, .h3 {
 
 h4, .h4 {
   font-family: "Inter", sans-serif;
-  font-size: 15px;
+  font-size: 13px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -12860,7 +12860,7 @@ h4, .h4 {
 
 @media (min-width: 576px) {
   h4, .h4 {
-    font-size: 15px;
+    font-size: 14px;
   }
 }
 
@@ -12884,7 +12884,7 @@ h4, .h4 {
 
 h5, .h5 {
   font-family: "Inter", sans-serif;
-  font-size: 11px;
+  font-size: 9.5px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -12897,7 +12897,7 @@ h5, .h5 {
 
 @media (min-width: 576px) {
   h5, .h5 {
-    font-size: 11px;
+    font-size: 10.5px;
   }
 }
 
@@ -12921,7 +12921,7 @@ h5, .h5 {
 
 h6, .h6 {
   font-family: "Inter", sans-serif;
-  font-size: 11px;
+  font-size: 9.5px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -12933,7 +12933,7 @@ h6, .h6 {
 
 @media (min-width: 576px) {
   h6, .h6 {
-    font-size: 11px;
+    font-size: 10.5px;
   }
 }
 
@@ -12957,7 +12957,7 @@ h6, .h6 {
 
 p {
   font-family: "Inter", sans-serif;
-  font-size: 15px;
+  font-size: 13px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -12968,7 +12968,7 @@ p {
 
 @media (min-width: 576px) {
   p {
-    font-size: 15px;
+    font-size: 14px;
   }
 }
 
@@ -13154,7 +13154,7 @@ strong {
 
 body {
   font-family: "Inter", sans-serif;
-  font-size: 15px;
+  font-size: 13px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -13169,7 +13169,7 @@ body {
 
 @media (min-width: 576px) {
   body {
-    font-size: 15px;
+    font-size: 14px;
   }
 }
 
@@ -13234,7 +13234,7 @@ small, .small {
 
 #app {
   font-family: "Inter", sans-serif;
-  font-size: 15px;
+  font-size: 13px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -13252,7 +13252,7 @@ small, .small {
 
 @media (min-width: 576px) {
   #app {
-    font-size: 15px;
+    font-size: 14px;
   }
 }
 
@@ -13299,7 +13299,7 @@ small, .small {
   outline: none;
   min-width: 140px;
   font-family: "Inter", sans-serif;
-  font-size: 15px;
+  font-size: 13px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -13315,7 +13315,7 @@ small, .small {
   #app a.button,
   #app input[type="submit"],
   #app button.trnt_btn {
-    font-size: 15px;
+    font-size: 14px;
   }
 }
 
@@ -13564,7 +13564,7 @@ small, .small {
 #app button.trnt_btn.slim-y {
   height: 24px;
   font-family: "Inter", sans-serif;
-  font-size: 11px;
+  font-size: 9.5px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -13579,7 +13579,7 @@ small, .small {
   #app a.button.slim-y,
   #app input[type="submit"].slim-y,
   #app button.trnt_btn.slim-y {
-    font-size: 11px;
+    font-size: 10.5px;
   }
 }
 
@@ -13618,7 +13618,7 @@ small, .small {
 #app button.trnt_btn.fat-y {
   height: 60px;
   font-family: "Inter", sans-serif;
-  font-size: 11px;
+  font-size: 9.5px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -13633,7 +13633,7 @@ small, .small {
   #app a.button.fat-y,
   #app input[type="submit"].fat-y,
   #app button.trnt_btn.fat-y {
-    font-size: 11px;
+    font-size: 10.5px;
   }
 }
 
@@ -13687,6 +13687,52 @@ small, .small {
   #app .flex-infos .flex-info-unit {
     width: auto;
     min-width: 140px;
+  }
+}
+
+#app .bedge {
+  background-color: rgba(128, 128, 128, 0.5);
+  font-family: "Inter", sans-serif;
+  font-size: 9.5px;
+  letter-spacing: 0.02em;
+  line-height: 1.3em;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: white;
+  height: 16px;
+  min-width: 16px;
+  padding: 0 4px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (min-width: 576px) {
+  #app .bedge {
+    font-size: 10.5px;
+  }
+}
+
+@media (min-width: 768px) {
+  #app .bedge {
+    font-size: 11px;
+  }
+}
+
+@media (min-width: 992px) {
+  #app .bedge {
+    font-size: 11px;
+  }
+}
+
+@media (min-width: 1200px) {
+  #app .bedge {
+    font-size: 11px;
   }
 }
 
@@ -13796,7 +13842,7 @@ small, .small {
 
 #app .label {
   font-family: "Inter", sans-serif;
-  font-size: 11px;
+  font-size: 9.5px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -13809,7 +13855,7 @@ small, .small {
 
 @media (min-width: 576px) {
   #app .label {
-    font-size: 11px;
+    font-size: 10.5px;
   }
 }
 
@@ -13855,7 +13901,7 @@ small, .small {
 
 #app .detection-card header .value {
   font-family: "Inter", sans-serif;
-  font-size: 20px;
+  font-size: 17px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -13868,7 +13914,7 @@ small, .small {
 
 @media (min-width: 576px) {
   #app .detection-card header .value {
-    font-size: 20px;
+    font-size: 18px;
   }
 }
 
@@ -13943,7 +13989,7 @@ small, .small {
 
 #app .modal-bg .mod-scrollable .modal header h2, #app .modal-bg .mod-scrollable .modal header .h2 {
   font-family: "Inter", sans-serif;
-  font-size: 20px;
+  font-size: 17px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -13956,7 +14002,7 @@ small, .small {
 
 @media (min-width: 576px) {
   #app .modal-bg .mod-scrollable .modal header h2, #app .modal-bg .mod-scrollable .modal header .h2 {
-    font-size: 20px;
+    font-size: 18px;
   }
 }
 
@@ -13983,7 +14029,7 @@ small, .small {
   top: 50%;
   right: 15px;
   font-family: "Inter", sans-serif;
-  font-size: 20px;
+  font-size: 17px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -14000,7 +14046,7 @@ small, .small {
 
 @media (min-width: 576px) {
   #app .modal-bg .mod-scrollable .modal header .close {
-    font-size: 20px;
+    font-size: 18px;
   }
 }
 
@@ -14121,7 +14167,7 @@ small, .small {
 #app .input-row label,
 #app .form-row label {
   font-family: "Inter", sans-serif;
-  font-size: 11px;
+  font-size: 9.5px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -14137,7 +14183,7 @@ small, .small {
 @media (min-width: 576px) {
   #app .input-row label,
   #app .form-row label {
-    font-size: 11px;
+    font-size: 10.5px;
   }
 }
 
@@ -14182,7 +14228,7 @@ small, .small {
   border-color: #bbbbbb;
   border-color: rgba(139, 139, 139, 0.3);
   font-family: "Inter", sans-serif;
-  font-size: 15px;
+  font-size: 13px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -14199,7 +14245,7 @@ small, .small {
   #app .form-row input,
   #app .form-row select,
   #app .form-row textarea {
-    font-size: 15px;
+    font-size: 14px;
   }
 }
 
@@ -14333,7 +14379,7 @@ small, .small {
 #app .input-row .error,
 #app .form-row .error {
   font-family: "Inter", sans-serif;
-  font-size: 11px;
+  font-size: 9.5px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -14346,7 +14392,7 @@ small, .small {
 @media (min-width: 576px) {
   #app .input-row .error,
   #app .form-row .error {
-    font-size: 11px;
+    font-size: 10.5px;
   }
 }
 
@@ -14475,7 +14521,7 @@ small, .small {
   color: inherit;
   margin-bottom: 2px;
   font-family: "Inter", sans-serif;
-  font-size: 11px;
+  font-size: 9.5px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -14488,7 +14534,7 @@ small, .small {
 
 @media (min-width: 576px) {
   #app .context-selector-v2 .main-area .label {
-    font-size: 11px;
+    font-size: 10.5px;
   }
 }
 
@@ -14512,7 +14558,7 @@ small, .small {
 
 #app .context-selector-v2 .main-area .value {
   font-family: "Inter", sans-serif;
-  font-size: 15px;
+  font-size: 13px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -14525,7 +14571,7 @@ small, .small {
 
 @media (min-width: 576px) {
   #app .context-selector-v2 .main-area .value {
-    font-size: 15px;
+    font-size: 14px;
   }
 }
 
@@ -14577,7 +14623,7 @@ small, .small {
 #app .context-selector-v2 .context-selector-options-list .context-selector-option {
   padding: 10px;
   font-family: "Inter", sans-serif;
-  font-size: 15px;
+  font-size: 13px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -14594,7 +14640,7 @@ small, .small {
 
 @media (min-width: 576px) {
   #app .context-selector-v2 .context-selector-options-list .context-selector-option {
-    font-size: 15px;
+    font-size: 14px;
   }
 }
 
@@ -14692,7 +14738,7 @@ small, .small {
 
 #app .rt-responsive-table .rt-row .rt-label {
   font-family: "Inter", sans-serif;
-  font-size: 11px;
+  font-size: 9.5px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -14707,7 +14753,7 @@ small, .small {
 
 @media (min-width: 576px) {
   #app .rt-responsive-table .rt-row .rt-label {
-    font-size: 11px;
+    font-size: 10.5px;
   }
 }
 
@@ -14732,7 +14778,7 @@ small, .small {
 #app .rt-responsive-table .rt-row .rt-value {
   flex-grow: 1;
   font-family: "Inter", sans-serif;
-  font-size: 20px;
+  font-size: 17px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -14748,7 +14794,7 @@ small, .small {
 
 @media (min-width: 576px) {
   #app .rt-responsive-table .rt-row .rt-value {
-    font-size: 20px;
+    font-size: 18px;
   }
 }
 
@@ -14820,7 +14866,7 @@ small, .small {
 
 #app .accordion .accordion-section button.accordion-header .accordion-header-left .accordion-title {
   font-family: "Inter", sans-serif;
-  font-size: 15px;
+  font-size: 13px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -14832,7 +14878,7 @@ small, .small {
 
 @media (min-width: 576px) {
   #app .accordion .accordion-section button.accordion-header .accordion-header-left .accordion-title {
-    font-size: 15px;
+    font-size: 14px;
   }
 }
 
@@ -14930,7 +14976,7 @@ small, .small {
 #app .cozy-button .btn-content span {
   margin-left: 8px;
   font-family: "Inter", sans-serif;
-  font-size: 15px;
+  font-size: 13px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -14942,7 +14988,7 @@ small, .small {
 
 @media (min-width: 576px) {
   #app .cozy-button .btn-content span {
-    font-size: 15px;
+    font-size: 14px;
   }
 }
 
@@ -14984,7 +15030,7 @@ small, .small {
 
 #app .cozy-button:not(.unarrowed)::after {
   font-family: "Inter", sans-serif;
-  font-size: 15px;
+  font-size: 13px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -15003,7 +15049,7 @@ small, .small {
 
 @media (min-width: 576px) {
   #app .cozy-button:not(.unarrowed)::after {
-    font-size: 15px;
+    font-size: 14px;
   }
 }
 
@@ -15087,7 +15133,7 @@ small, .small {
   text-decoration: none;
   cursor: pointer;
   font-family: "Inter", sans-serif;
-  font-size: 20px;
+  font-size: 17px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -15104,7 +15150,7 @@ small, .small {
 
 @media (min-width: 576px) {
   #app .hacky-header-cover a {
-    font-size: 20px;
+    font-size: 18px;
   }
 }
 
@@ -15135,7 +15181,7 @@ small, .small {
   justify-content: center;
   background-color: #eaff00;
   font-family: "Inter", sans-serif;
-  font-size: 11px;
+  font-size: 9.5px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -15149,7 +15195,7 @@ small, .small {
 
 @media (min-width: 576px) {
   #app .hacky-header-cover a span {
-    font-size: 11px;
+    font-size: 10.5px;
   }
 }
 
@@ -15291,7 +15337,7 @@ small, .small {
   flex-grow: 1;
   text-align: center;
   font-family: "Inter", sans-serif;
-  font-size: 15px;
+  font-size: 13px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -15303,7 +15349,7 @@ small, .small {
 
 @media (min-width: 576px) {
   #app .date-switcher .date {
-    font-size: 15px;
+    font-size: 14px;
   }
 }
 
@@ -15517,7 +15563,7 @@ small, .small {
   top: 50%;
   transform: translateY(-50%);
   font-family: "Inter", sans-serif;
-  font-size: 20px;
+  font-size: 17px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -15540,7 +15586,7 @@ small, .small {
 
 @media (min-width: 576px) {
   #app .stepper-wrapper button.stepper-back-button {
-    font-size: 20px;
+    font-size: 18px;
   }
 }
 
@@ -15584,7 +15630,7 @@ small, .small {
   margin: 0px -7px;
   clip-path: polygon(15px 50%, 0% 0%, calc(100% - 15px) 0%, 100% 50%, calc(100% - 15px) 100%, 0% 100%);
   font-family: "Inter", sans-serif;
-  font-size: 15px;
+  font-size: 13px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -15604,7 +15650,7 @@ small, .small {
 
 @media (min-width: 576px) {
   #app .stepper-wrapper ol.stepper li {
-    font-size: 15px;
+    font-size: 14px;
   }
 }
 
@@ -15628,7 +15674,7 @@ small, .small {
 
 #app .stepper-wrapper ol.stepper li::before {
   font-family: "Inter", sans-serif;
-  font-size: 11px;
+  font-size: 9.5px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -15648,7 +15694,7 @@ small, .small {
 
 @media (min-width: 576px) {
   #app .stepper-wrapper ol.stepper li::before {
-    font-size: 11px;
+    font-size: 10.5px;
   }
 }
 
@@ -15729,7 +15775,7 @@ small, .small {
 
 #app .mobile-headerbar .title {
   font-family: "Inter", sans-serif;
-  font-size: 20px;
+  font-size: 17px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -15744,7 +15790,7 @@ small, .small {
 
 @media (min-width: 576px) {
   #app .mobile-headerbar .title {
-    font-size: 20px;
+    font-size: 18px;
   }
 }
 
@@ -15871,7 +15917,7 @@ small, .small {
 #app .sidebar .level-1 .submenu-label,
 #app .sidebar .level-2 .submenu-label {
   font-family: "Inter", sans-serif;
-  font-size: 11px;
+  font-size: 9.5px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -15888,7 +15934,7 @@ small, .small {
 @media (min-width: 576px) {
   #app .sidebar .level-1 .submenu-label,
   #app .sidebar .level-2 .submenu-label {
-    font-size: 11px;
+    font-size: 10.5px;
   }
 }
 
@@ -16039,7 +16085,7 @@ small, .small {
   align-items: center;
   padding-left: 40px;
   font-family: "Inter", sans-serif;
-  font-size: 15px;
+  font-size: 13px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -16054,7 +16100,7 @@ small, .small {
   #app .sidebar ul.menu-items li.menu-item .text-container,
   #app .sidebar ul.menu-items li.menu-item-family a,
   #app .sidebar ul.menu-items li.menu-item-family .text-container {
-    font-size: 15px;
+    font-size: 14px;
   }
 }
 
@@ -16255,7 +16301,7 @@ small, .small {
 
 #app .ui-right .headerbar .texts .title h2, #app .ui-right .headerbar .texts .title .h2 {
   font-family: "Inter", sans-serif;
-  font-size: 20px;
+  font-size: 17px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -16267,7 +16313,7 @@ small, .small {
 
 @media (min-width: 576px) {
   #app .ui-right .headerbar .texts .title h2, #app .ui-right .headerbar .texts .title .h2 {
-    font-size: 20px;
+    font-size: 18px;
   }
 }
 
@@ -16291,7 +16337,7 @@ small, .small {
 
 #app .ui-right .headerbar .texts .title .title-comment {
   font-family: "Inter", sans-serif;
-  font-size: 11px;
+  font-size: 9.5px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -16305,7 +16351,7 @@ small, .small {
 
 @media (min-width: 576px) {
   #app .ui-right .headerbar .texts .title .title-comment {
-    font-size: 11px;
+    font-size: 10.5px;
   }
 }
 
@@ -16346,7 +16392,7 @@ small, .small {
   right: 4px;
   background-color: #dc3545;
   font-family: "Inter", sans-serif;
-  font-size: 11px;
+  font-size: 9.5px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -16368,7 +16414,7 @@ small, .small {
 
 @media (min-width: 576px) {
   #app .ui-right .headerbar .user-avatar.notification::after {
-    font-size: 11px;
+    font-size: 10.5px;
   }
 }
 
@@ -16516,7 +16562,7 @@ ul.list-group li.list-group-item:hover {
 
 .component-table-cozy header .cell {
   font-family: "Inter", sans-serif;
-  font-size: 11px;
+  font-size: 9.5px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -16532,7 +16578,7 @@ ul.list-group li.list-group-item:hover {
 
 @media (min-width: 576px) {
   .component-table-cozy header .cell {
-    font-size: 11px;
+    font-size: 10.5px;
   }
 }
 
@@ -16585,7 +16631,7 @@ ul.list-group li.list-group-item:hover {
 
 .component-table-cozy .data-row {
   display: table-row;
-  height: 60px;
+  height: 45px;
   background-color: white;
   box-shadow: 0 2px 10px 0 rgba(31, 31, 31, 0.05);
   transition: box-shadow 300ms, background-color 100ms;
@@ -16605,7 +16651,7 @@ ul.list-group li.list-group-item:hover {
 
 .component-table-cozy .data-row .cell {
   font-family: "Inter", sans-serif;
-  font-size: 15px;
+  font-size: 13px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -16616,7 +16662,7 @@ ul.list-group li.list-group-item:hover {
 
 @media (min-width: 576px) {
   .component-table-cozy .data-row .cell {
-    font-size: 15px;
+    font-size: 14px;
   }
 }
 
@@ -16661,7 +16707,7 @@ ul.list-group li.list-group-item:hover {
 
 .component-table-cozy .data-row .cell[data-style="small"] {
   font-family: "Inter", sans-serif;
-  font-size: 11px;
+  font-size: 9.5px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -16672,7 +16718,7 @@ ul.list-group li.list-group-item:hover {
 
 @media (min-width: 576px) {
   .component-table-cozy .data-row .cell[data-style="small"] {
-    font-size: 11px;
+    font-size: 10.5px;
   }
 }
 
@@ -16696,7 +16742,7 @@ ul.list-group li.list-group-item:hover {
 
 .component-table-cozy .data-row .cell[data-style="small-grey"] {
   font-family: "Inter", sans-serif;
-  font-size: 11px;
+  font-size: 9.5px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -16708,7 +16754,7 @@ ul.list-group li.list-group-item:hover {
 
 @media (min-width: 576px) {
   .component-table-cozy .data-row .cell[data-style="small-grey"] {
-    font-size: 11px;
+    font-size: 10.5px;
   }
 }
 
@@ -16857,14 +16903,13 @@ ul.list-group li.list-group-item:hover {
 }
 
 .user-menu .user-menu-items .user-menu-item.notification::after {
-  content: "88";
   content: attr(data-notifications);
   position: absolute;
   top: 15px;
   right: 14px;
   background-color: #dc3545;
   font-family: "Inter", sans-serif;
-  font-size: 11px;
+  font-size: 9.5px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -16886,7 +16931,7 @@ ul.list-group li.list-group-item:hover {
 
 @media (min-width: 576px) {
   .user-menu .user-menu-items .user-menu-item.notification::after {
-    font-size: 11px;
+    font-size: 10.5px;
   }
 }
 
@@ -16927,7 +16972,7 @@ ul.list-group li.list-group-item:hover {
 .nav-tabs .nav-link.active, .nav-tabs .nav-link.active:hover {
   color: black;
   font-family: "Inter", sans-serif;
-  font-size: 15px;
+  font-size: 13px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -16941,7 +16986,7 @@ ul.list-group li.list-group-item:hover {
 
 @media (min-width: 576px) {
   .nav-tabs .nav-link.active, .nav-tabs .nav-link.active:hover {
-    font-size: 15px;
+    font-size: 14px;
   }
 }
 
@@ -16984,7 +17029,7 @@ ul.list-group li.list-group-item:hover {
 .card .cardlet-header,
 .card .cardlet-header span.title {
   font-family: "Inter", sans-serif;
-  font-size: 15px;
+  font-size: 13px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -16997,7 +17042,7 @@ ul.list-group li.list-group-item:hover {
 @media (min-width: 576px) {
   .card .cardlet-header,
   .card .cardlet-header span.title {
-    font-size: 15px;
+    font-size: 14px;
   }
 }
 
@@ -17031,7 +17076,7 @@ ul.list-group li.list-group-item:hover {
   justify-content: flex-start;
   padding-left: 12px;
   font-family: "Inter", sans-serif;
-  font-size: 15px;
+  font-size: 13px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -17043,7 +17088,7 @@ ul.list-group li.list-group-item:hover {
 
 @media (min-width: 576px) {
   .card .card-header {
-    font-size: 15px;
+    font-size: 14px;
   }
 }
 
@@ -17101,7 +17146,7 @@ ul.list-group li.list-group-item:hover {
   min-height: 300px;
   height: calc(100% - 20px);
   font-family: "Inter", sans-serif;
-  font-size: 15px;
+  font-size: 13px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -17113,7 +17158,7 @@ ul.list-group li.list-group-item:hover {
 
 @media (min-width: 576px) {
   .card.add-item {
-    font-size: 15px;
+    font-size: 14px;
   }
 }
 
@@ -17176,7 +17221,7 @@ ul.list-group li.list-group-item:hover {
   padding: 0 10px;
   height: 42px;
   font-family: "Inter", sans-serif;
-  font-size: 11px;
+  font-size: 9.5px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -17188,7 +17233,7 @@ ul.list-group li.list-group-item:hover {
 
 @media (min-width: 576px) {
   .llist-group .llist-group-item {
-    font-size: 11px;
+    font-size: 10.5px;
   }
 }
 
@@ -17229,7 +17274,7 @@ ul.list-group li.list-group-item:hover {
 
 .cardlet .cardlet-header {
   font-family: "Inter", sans-serif;
-  font-size: 11px;
+  font-size: 9.5px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -17242,7 +17287,7 @@ ul.list-group li.list-group-item:hover {
 
 @media (min-width: 576px) {
   .cardlet .cardlet-header {
-    font-size: 11px;
+    font-size: 10.5px;
   }
 }
 
@@ -17266,7 +17311,7 @@ ul.list-group li.list-group-item:hover {
 
 .cardlet .cardlet-content {
   font-family: "Inter", sans-serif;
-  font-size: 20px;
+  font-size: 17px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -17283,7 +17328,7 @@ ul.list-group li.list-group-item:hover {
 
 @media (min-width: 576px) {
   .cardlet .cardlet-content {
-    font-size: 20px;
+    font-size: 18px;
   }
 }
 
@@ -17316,7 +17361,7 @@ ul.list-group li.list-group-item:hover {
   justify-content: center;
   padding: 0 10px;
   font-family: "Inter", sans-serif;
-  font-size: 15px;
+  font-size: 13px;
   letter-spacing: 0.02em;
   line-height: 1.3em;
   font-weight: 400;
@@ -17335,7 +17380,7 @@ ul.list-group li.list-group-item:hover {
 
 @media (min-width: 576px) {
   .cardlet-button {
-    font-size: 15px;
+    font-size: 14px;
   }
 }
 
@@ -17523,6 +17568,11 @@ table.model-table tr th:last-child {
 #model-markdown table tr td:last-child,
 #model-markdown table tr th:last-child {
   border-right: none;
+}
+
+.row {
+  --bs-gutter-x: 0.5rem;
+  --bs-gutter-x: 10px;
 }
 
 .remove-content-padding-x {

@@ -116,8 +116,8 @@ $font-sans: "Inter", sans-serif;
 @mixin font-s {
   @include font-style(
     $font-fam: $font-sans,
-    $xs: 11px,
-    $sm: 11px,
+    $xs: 9.5px,
+    $sm: 10.5px,
     $md: 11px,
     $lg: 11px,
     $xl: 11px,
@@ -151,8 +151,8 @@ $font-sans: "Inter", sans-serif;
 @mixin font-m {
   @include font-style(
     $font-fam: $font-sans,
-    $xs: 15px,
-    $sm: 15px,
+    $xs: 13px,
+    $sm: 14px,
     $md: 15px,
     $lg: 15px,
     $xl: 15px,
@@ -185,8 +185,8 @@ $font-sans: "Inter", sans-serif;
 @mixin font-l {
   @include font-style(
     $font-fam: $font-sans,
-    $xs: 20px,
-    $sm: 20px,
+    $xs: 17px,
+    $sm: 18px,
     $md: 20px,
     $lg: 20px,
     $xl: 20px,
@@ -212,8 +212,8 @@ $font-sans: "Inter", sans-serif;
 @mixin font-xl {
   @include font-style(
     $font-fam: $font-sans,
-    $xs: 27px,
-    $sm: 27px,
+    $xs: 21px,
+    $sm: 24px,
     $md: 27px,
     $lg: 27px,
     $xl: 27px,

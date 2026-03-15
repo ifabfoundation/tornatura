@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="30px" height="30px" viewBox="0 0 30 30" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>info-b</title>
+    <g id="info-b" stroke="none" fill="none">
+        <circle id="Oval" stroke="#131415" stroke-width="1.5" stroke-linecap="round" cx="15" cy="15" r="8"></circle>
+        <path d="M11.8406874,18.2017186 C13.764334,17.39761 15.0794535,15.4240774 15.0794535,14.3954574 C15.0794535,13.3668374 14.6368367,18.2017186 15.8451162,18.2017186 C16.2534221,18.2017186 16.6874545,17.9336824 17.1472135,17.39761" id="Path" stroke="#131415" stroke-width="1.5" stroke-linecap="round"></path>
+        <circle id="Oval-2" fill="#131415" fill-rule="evenodd" cx="15" cy="11.7307149" r="1"></circle>
+    </g>
+</svg>
