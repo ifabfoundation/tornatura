@@ -16856,7 +16856,8 @@ ul.list-group li.list-group-item:hover {
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(2px);
 }
 
 .user-menu {
@@ -16864,10 +16865,19 @@ ul.list-group li.list-group-item:hover {
   position: fixed;
   width: 200px;
   border-radius: 5px;
-  top: 55px;
-  right: 10px;
+  top: 15%;
+  right: 50%;
+  transform: translate(50%, 0);
   background-color: white;
   box-shadow: 0 2px 10px 0 rgba(31, 31, 31, 0.1);
+}
+
+@media (min-width: 992px) {
+  .user-menu {
+    top: 55px;
+    right: 10px;
+    transform: translate(0, 0);
+  }
 }
 
 .user-menu .large-user-avatar {

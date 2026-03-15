@@ -2666,15 +2666,25 @@ $hb-color-on-hover: #eee;
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: rgba(black, 0.5);
+  background-color: rgba(black, 0.8);
+  backdrop-filter: blur(2px);
 }
 .user-menu {
   z-index: 25;
   position: fixed;
   width: 200px;
   border-radius: $r;
-  top: $header-h - 5px;
-  right: 10px;
+
+  top: 15%;
+  right: 50%;
+  transform: translate(50%, 0);
+
+  @include media-breakpoint-up(lg) {
+    top: $header-h - 5px;
+    right: 10px;
+    transform: translate(0, 0);
+  }
+
   background-color: white;
   box-shadow: 0 2px 10px 0 rgba($c-shadow, 0.1);
 
