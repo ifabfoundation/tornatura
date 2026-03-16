@@ -58,6 +58,9 @@ import grid_y from "../assets/images/icons/grid-y.svg";
 import home_b from "../assets/images/icons/home-b.svg";
 import home_w from "../assets/images/icons/home-w.svg";
 import home_y from "../assets/images/icons/home-y.svg";
+import info_b from "../assets/images/icons/info-b.svg";
+import info_w from "../assets/images/icons/info-w.svg";
+import info_y from "../assets/images/icons/info-y.svg";
 import larr_b from "../assets/images/icons/larr-b.svg";
 import larr_w from "../assets/images/icons/larr-w.svg";
 import larr_y from "../assets/images/icons/larr-y.svg";
@@ -119,6 +122,7 @@ const icons = {
   fullscreen: { white: fullscreen_w, black: fullscreen_b, yellow: fullscreen_y },
   grid: { white: grid_w, black: grid_b, yellow: grid_y },
   home: { white: home_w, black: home_b, yellow: home_y },
+  info: { white: info_w, black: info_b, yellow: info_y },
   larr: { white: larr_w, black: larr_b, yellow: larr_y },
   pencil: { white: pencil_w, black: pencil_b, yellow: pencil_y },
   pic: { white: pic_w, black: pic_b, yellow: pic_y },

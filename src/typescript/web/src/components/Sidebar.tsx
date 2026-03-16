@@ -5,11 +5,13 @@ import MenuItemFamily from "./MenuItemFamily";
 import logo from "../assets/images/logo-full-white-color.svg";
 import { IconName } from "./Icon";
 import { useAppDispatch, useAppSelector } from "../hooks";
+import { userSelectors } from "../features/users/state/user-slice";
 import { SidebarActions, SidebarSelectors } from "../features/sidebar/state/sidebar-slice";
 import "./Sidebar.css";
 import { companiesSelectors } from "../features/companies/state/companies-slice";
 import { fieldsSelectors } from "../features/fields/state/fields-slice";
 import Icon from "../components/Icon";
+import { userMenuActions } from "../features/userMenu/state/userMenu-slice";
 
 interface MenuFamilyItem {
   text: string;
@@ -170,6 +172,8 @@ export default function SideBar() {
   const { menuEntries, menuBottomEntries } = useAppSelector(SidebarSelectors.selectMenuEntries);
   const [currentEntry, setCurrentEntry] = React.useState<string>("companies");
   const mobileOpen = useAppSelector((state) => state.sidebar.mobileOpen);
+  const currentUser = useAppSelector(userSelectors.selectCurrentUser);
+  const userNameSurname = `${currentUser?.firstName} ${currentUser?.lastName}`;
 
   React.useEffect(() => {
     let entry;
@@ -278,6 +282,15 @@ export default function SideBar() {
                 />
               );
             })}
+
+            <MenuItem
+              icon={"user"}
+              text={userNameSurname}
+              state={"normal"}
+              // path={""}
+              addClass={"d-lg-none"}
+              onClick={() => dispatch(userMenuActions.toggle())}
+            />
           </ul>
         </div>
       </div>

@@ -484,6 +484,20 @@ small {
     }
   }
 
+  .bedge {
+    background-color: rgba(128, 128, 128, 0.5);
+    @include font-s-label;
+    color: white;
+    height: 16px;
+    min-width: 16px;
+    padding: 0 4px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    // transform: translate(50%, -50%);
+  }
+
   .tabs-switch {
     height: 36px;
     padding: 4px;
@@ -2519,7 +2533,7 @@ ul.list-group {
   }
   .data-row {
     display: table-row;
-    height: 60px;
+    height: 45px;
     background-color: white;
     box-shadow: 0 2px 10px 0 rgba($c-shadow, 0.05);
     transition:
@@ -2652,15 +2666,25 @@ $hb-color-on-hover: #eee;
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: rgba(black, 0.5);
+  background-color: rgba(black, 0.8);
+  backdrop-filter: blur(2px);
 }
 .user-menu {
   z-index: 25;
   position: fixed;
   width: 200px;
   border-radius: $r;
-  top: $header-h - 5px;
-  right: 10px;
+
+  top: 15%;
+  right: 50%;
+  transform: translate(50%, 0);
+
+  @include media-breakpoint-up(lg) {
+    top: $header-h - 5px;
+    right: 10px;
+    transform: translate(0, 0);
+  }
+
   background-color: white;
   box-shadow: 0 2px 10px 0 rgba($c-shadow, 0.1);
 
@@ -2695,7 +2719,6 @@ $hb-color-on-hover: #eee;
       &.notification {
         // get the content from the data attribute data-notifications
         &::after {
-          content: "88";
           content: attr(data-notifications);
           position: absolute;
           top: 15px;
@@ -3192,6 +3215,14 @@ table.model-table {
 // ------------------------------------------------------------------------
 // Layout
 // ------------------------------------------------------------------------
+
+@include media-breakpoint-down(xs) {
+  .row {
+    --bs-gutter-x: 0.5rem; // horizontal gutter
+    --bs-gutter-x: 10px; // horizontal gutter
+    // --bs-gutter-y: 0.5rem; // vertical gutter (optional)
+  }
+}
 
 .remove-content-padding-x {
   position: relative;

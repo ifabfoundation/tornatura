@@ -2033,25 +2033,34 @@ function DetectionStepObservationPoints({
 
             <div className="buttons-wrapper text-center">
               <button
-                className="trnt_btn small narrow-x slim-y primary"
+                className="trnt_btn small narrow-x primary no-slim-y type-rounded px-1"
                 onClick={() => setCameraOpen(true)}
               >
-                {`+ Foto ${pendingPhotos.length}`}
+                <Icon iconName={"pic"} color={"white"} />
+                <span className="ms-2 me-1 d-none d-sm-inline">Foto</span>
+                {pendingPhotos.length > 0 && (
+                  <span className="bedge ms-1">{pendingPhotos.length}</span>
+                )}
+                {pendingPhotos.length == 0 && <span className="bedge ms-1 d-sm-none">+</span>}
               </button>
               <button
-                className="trnt_btn small narrow-x slim-y primary ms-2"
+                className="trnt_btn small narrow-x primary ms-1 no-slim-y type-rounded px-1"
                 onClick={handleOpenNoteModal}
               >
-                + Nota
+                <Icon iconName={"pencil"} color={"white"} />
+                <span className="mx-1 d-none d-sm-inline">Nota</span>
+                {noteValue != "" && <span className="bedge ms-1">1</span>}
+                {noteValue == "" && <span className="bedge ms-1 d-sm-none">+</span>}
               </button>
             </div>
-            <div>
-              <a
-                className="color-grey no-u font-s-label mx-2"
+            <div className="d-flex align-items-center">
+              <button
+                className="trnt_btn small narrow-x slim-y primary mx-1 px-1 rounded"
                 onClick={() => setInfoPanelOpen(true)}
               >
-                {"(?)"}
-              </a>
+                <Icon iconName={"info"} color={"white"} />
+                <span className="mx-2 d-none d-md-inline">Istruzioni</span>
+              </button>
               <a className="button narrow-x type-rounded px-3 accent-stronger" onClick={handleSave}>
                 <span className="font-s-600">
                   {"✓ FINE"}
