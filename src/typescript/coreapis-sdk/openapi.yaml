@@ -2399,6 +2399,8 @@ components:
         notes:
           type: string
           title: Notes
+        treatment:
+          $ref: '#/components/schemas/ObservationTreatment'
         photos:
           items:
             type: string
@@ -2413,6 +2415,7 @@ components:
       required:
       - bbch
       - notes
+      - treatment
       - photos
       - points
       title: DetectionData
@@ -2424,6 +2427,8 @@ components:
         notes:
           type: string
           title: Notes
+        treatment:
+          $ref: '#/components/schemas/ObservationTreatment'
         photos:
           items:
             $ref: '#/components/schemas/FileInfo'
@@ -2438,9 +2443,26 @@ components:
       required:
       - bbch
       - notes
+      - treatment
       - photos
       - points
       title: DetectionDataPayload
+    ObservationTreatment:
+      properties:
+        treatment:
+          type: boolean
+          title: Treatment
+          default: false
+        treatmentDate:
+          type: string
+          title: Treatmentdate
+          default: ''
+        treatmentProduct:
+          type: string
+          title: Treatmentproduct
+          default: ''
+      type: object
+      title: ObservationTreatment
     ObservationCounter:
       properties:
         counterName:
@@ -3110,6 +3132,11 @@ components:
           nullable: true
         organization:
           $ref: '#/components/schemas/OrganizationCreatePayload'
+          nullable: true
+        questionnaire:
+          additionalProperties: true
+          type: object
+          title: Questionnaire
           nullable: true
       type: object
       required:

@@ -28,9 +28,16 @@ class ObservationPoint(EmbeddedDocument):
     data = EmbeddedDocumentField(ObservationData, required=True)
 
 
+class ObservationTreatment(EmbeddedDocument):
+    treatment = BooleanField(default=False, required=True)
+    treatmentDate = StringField(default="")
+    treatmentProduct = StringField(default="")
+
+
 class DetectionData(EmbeddedDocument):
     bbch = StringField(default="")
     notes = StringField(default="")
+    treatment = EmbeddedDocumentField(ObservationTreatment, default=ObservationTreatment)
     photos = ListField(EmbeddedDocumentField(FileInfo), default=[])
     points = ListField(EmbeddedDocumentField(ObservationPoint), default=[])
 

@@ -13,6 +13,7 @@
  */
 
 import { ObservationPoint } from './observation-point';
+import { ObservationTreatment } from './observation-treatment';
  /**
  * 
  *
@@ -32,6 +33,12 @@ export interface DetectionData {
      * @memberof DetectionData
      */
     notes: string;
+
+    /**
+     * @type {ObservationTreatment}
+     * @memberof DetectionData
+     */
+    treatment: ObservationTreatment;
 
     /**
      * @type {Array<string>}

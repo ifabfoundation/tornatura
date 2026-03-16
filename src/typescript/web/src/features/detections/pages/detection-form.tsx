@@ -65,6 +65,7 @@ type DetectionStepData =
   | DetectionStepMethodData
   | DetectionStepGuideData
   | DetectionStepBbchData
+  | DetectionStepTreatmentData
   | DetectionStepPointsData;
 
 type DetectionStepTypologyData = {
@@ -84,6 +85,10 @@ type DetectionStepGuideData = Record<string, never>;
 
 type DetectionStepBbchData = {
   bbch?: string;
+};
+
+type DetectionStepTreatmentData = {
+  treatment: DetectionMutationPayload["detectionData"]["treatment"];
 };
 
 type DetectionStepPointsData = {
@@ -317,575 +322,6 @@ function isPointInsideField(pointLon: number, pointLat: number, areaPoints: numb
   }
   return false;
 }
-
-/* 
-// function DetectionFormMalattia({ action, onBackClick, onNextClick }: DetectionProps) {
-//   const [files, setFiles] = React.useState<FileWithPath[]>([]);
-
-//   const formik = useFormik({
-//     initialValues: {
-//       detectionTime: "",
-//       note: "",
-//       desease: "",
-//       infectedPlants: 0,
-//       uprootedPlants: 0,
-//     },
-//     validationSchema: Yup.object({
-//       detectionTime: Yup.string().required("Specifica la data del rilevamento"),
-//       desease: Yup.string().required("Specifica il nome della malattia"),
-//       infectedPlants: Yup.number()
-//         .min(0, "La percentuale di piante contagiate deve essere possitiva")
-//         .max(100),
-//       uprootedPlants: Yup.number().required("Specifica il numero di piante estirpate"),
-//     }),
-//     onSubmit: (values, { setSubmitting, resetForm }) => {
-//       const data = {
-//         detectionTime: new Date(values.detectionTime).getTime(),
-//         note: values.note,
-//         details: {
-//           desease: values.desease,
-//           infectedPlants: values.infectedPlants,
-//           uprootedPlants: values.uprootedPlants,
-//         },
-//         files: files,
-//       };
-//       onNextClick(data);
-//       resetForm({});
-//       setSubmitting(false);
-//     },
-//   });
-
-//   const onDrop = React.useCallback((acceptedFiles: any) => {
-//     setFiles(acceptedFiles);
-//   }, []);
-
-//   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, multiple: false });
-
-//   const filesPreview = files.map((file: FileWithPath) => (
-//     <li key={file.name}>
-//       <span className="mr-2">{file.name}</span>
-//     </li>
-//   ));
-
-//   return (
-//     <form onSubmit={formik.handleSubmit} autoComplete="off">
-//       <h4 className="mt-4 mb-4">Dati del rilevamento: Malattia</h4>
-//       <div className="input-row">
-//         <label>
-//           Data del rilevamento
-//           <input
-//             id="detectionTime"
-//             name="detectionTime"
-//             type="datetime-local"
-//             placeholder="Data rilevamento"
-//             onChange={formik.handleChange}
-//             onBlur={formik.handleBlur}
-//             value={formik.values.detectionTime}
-//           />
-//         </label>
-//         {formik.touched.detectionTime && formik.errors.detectionTime ? (
-//           <div className="error">{formik.errors.detectionTime}</div>
-//         ) : null}
-//       </div>
-//       <div className="input-row">
-//         <label>
-//           Nome della malattia
-//           <input
-//             id="desease"
-//             name="desease"
-//             type="text"
-//             placeholder="Nome malattia"
-//             onChange={formik.handleChange}
-//             onBlur={formik.handleBlur}
-//             value={formik.values.desease}
-//           />
-//         </label>
-//         {formik.touched.desease && formik.errors.desease ? (
-//           <div className="error">{formik.errors.desease}</div>
-//         ) : null}
-//       </div>
-//       <div className="input-row">
-//         <label>
-//           Percentuale Piante Contagiate
-//           <input
-//             id="infectedPlants"
-//             name="infectedPlants"
-//             type="text"
-//             placeholder="Percentuale Piante Contagiate"
-//             onChange={formik.handleChange}
-//             onBlur={formik.handleBlur}
-//             value={formik.values.infectedPlants}
-//           />
-//         </label>
-//         {formik.touched.infectedPlants && formik.errors.infectedPlants ? (
-//           <div className="error">{formik.errors.infectedPlants}</div>
-//         ) : null}
-//       </div>
-//       <div className="input-row">
-//         <label>
-//           Numero di Piante Estirpate
-//           <input
-//             id="uprootedPlants"
-//             name="uprootedPlants"
-//             type="text"
-//             placeholder="Nome Piante Estirpate"
-//             onChange={formik.handleChange}
-//             onBlur={formik.handleBlur}
-//             value={formik.values.uprootedPlants}
-//           />
-//         </label>
-//         {formik.touched.uprootedPlants && formik.errors.uprootedPlants ? (
-//           <div className="error">{formik.errors.uprootedPlants}</div>
-//         ) : null}
-//       </div>
-//       <div className="input-row">
-//         <label>
-//           Nota aggiuntiva
-//           <textarea
-//             id="note"
-//             name="note"
-//             placeholder=""
-//             rows={15}
-//             cols={50}
-//             onChange={formik.handleChange}
-//             onBlur={formik.handleBlur}
-//             value={formik.values.note}
-//           ></textarea>
-//         </label>
-//         {formik.touched.note && formik.errors.note ? (
-//           <div className="error">{formik.errors.note}</div>
-//         ) : null}
-//       </div>
-//       <div className="input-row">
-//         <div
-//           {...getRootProps()}
-//           style={{ backgroundColor: "white", height: "60px", textAlign: "center", margin: "auto" }}
-//         >
-//           <input {...getInputProps()} accept=".png, .jpeg, .jpg" />
-//           {isDragActive ? (
-//             <p className="mt-4">Trascina i file qui...</p>
-//           ) : (
-//             <p className="mt-4">
-//               Trascina e rilascia alcuni file qui, oppure fai clic per selezionarli
-//             </p>
-//           )}
-//         </div>
-//         --------------------------------------------------------------------------
-//         <div>
-//           <ul>{filesPreview}</ul>
-//         </div>
-//       </div>
-//       <hr />
-//       <div className="buttons-wrapper">
-//         <button className="trnt_btn secondary" onClick={onBackClick}>
-//           Indietro
-//         </button>
-//         <input type="submit" className="primary" value={action} />
-//       </div>
-//     </form>
-//   );
-// }
-
-// function DetectionFormParassita({ action, onBackClick, onNextClick }: DetectionProps) {
-//   const [files, setFiles] = React.useState<FileWithPath[]>([]);
-
-//   const formik = useFormik({
-//     initialValues: {
-//       detectionTime: "",
-//       note: "",
-//       parasite: "",
-//       infectedPlants: 0,
-//       uprootedPlants: 0,
-//     },
-//     validationSchema: Yup.object({
-//       detectionTime: Yup.string().required("Specifica la data del rilevamento"),
-//       parasite: Yup.string().required("Specifica il nome del parassita"),
-//       infectedPlants: Yup.number()
-//         .min(0, "La percentuale di piante contagiate deve essere possitiva")
-//         .max(100),
-//       uprootedPlants: Yup.number().required("Specifica il numero di piante estirpate"),
-//     }),
-//     onSubmit: (values, { setSubmitting, resetForm }) => {
-//       const data = {
-//         detectionTime: new Date(values.detectionTime).getTime(),
-//         note: values.note,
-//         details: {
-//           parasite: values.parasite,
-//           infectedPlants: values.infectedPlants,
-//           uprootedPlants: values.uprootedPlants,
-//         },
-//         files: files,
-//       };
-//       onNextClick(data);
-//       resetForm({});
-//       setSubmitting(false);
-//     },
-//   });
-
-//   const onDrop = React.useCallback((acceptedFiles: any) => {
-//     setFiles(acceptedFiles);
-//   }, []);
-
-//   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, multiple: false });
-
-//   const filesPreview = files.map((file: FileWithPath) => (
-//     <li key={file.name}>
-//       <span className="mr-2">{file.name}</span>
-//     </li>
-//   ));
-
-//   return (
-//     <form onSubmit={formik.handleSubmit} autoComplete="off">
-//       <h4 className="mt-4 mb-4">Dati del rilevamento: Parassita</h4>
-//       <div className="input-row">
-//         <label>
-//           Data del rilevamento
-//           <input
-//             id="detectionTime"
-//             name="detectionTime"
-//             type="datetime-local"
-//             placeholder="Data rilevamento"
-//             onChange={formik.handleChange}
-//             onBlur={formik.handleBlur}
-//             value={formik.values.detectionTime}
-//           />
-//         </label>
-//         {formik.touched.detectionTime && formik.errors.detectionTime ? (
-//           <div className="error">{formik.errors.detectionTime}</div>
-//         ) : null}
-//       </div>
-//       <div className="input-row">
-//         <label>
-//           Nome del parassita
-//           <input
-//             id="parasite"
-//             name="parasite"
-//             type="text"
-//             placeholder="Nome malattia"
-//             onChange={formik.handleChange}
-//             onBlur={formik.handleBlur}
-//             value={formik.values.parasite}
-//           />
-//         </label>
-//         {formik.touched.parasite && formik.errors.parasite ? (
-//           <div className="error">{formik.errors.parasite}</div>
-//         ) : null}
-//       </div>
-//       <div className="input-row">
-//         <label>
-//           Percentuale Piante Contagiate
-//           <input
-//             id="infectedPlants"
-//             name="infectedPlants"
-//             type="text"
-//             placeholder="Percentuale Piante Contagiate"
-//             onChange={formik.handleChange}
-//             onBlur={formik.handleBlur}
-//             value={formik.values.infectedPlants}
-//           />
-//         </label>
-//         {formik.touched.infectedPlants && formik.errors.infectedPlants ? (
-//           <div className="error">{formik.errors.infectedPlants}</div>
-//         ) : null}
-//       </div>
-//       <div className="input-row">
-//         <label>
-//           Numero di Piante Estirpate
-//           <input
-//             id="uprootedPlants"
-//             name="uprootedPlants"
-//             type="text"
-//             placeholder="Nome Piante Estirpate"
-//             onChange={formik.handleChange}
-//             onBlur={formik.handleBlur}
-//             value={formik.values.uprootedPlants}
-//           />
-//         </label>
-//         {formik.touched.uprootedPlants && formik.errors.uprootedPlants ? (
-//           <div className="error">{formik.errors.uprootedPlants}</div>
-//         ) : null}
-//       </div>
-//       <div className="input-row">
-//         <label>
-//           Nota aggiuntiva
-//           <textarea
-//             id="note"
-//             name="note"
-//             placeholder=""
-//             rows={15}
-//             cols={50}
-//             onChange={formik.handleChange}
-//             onBlur={formik.handleBlur}
-//             value={formik.values.note}
-//           ></textarea>
-//         </label>
-//         {formik.touched.note && formik.errors.note ? (
-//           <div className="error">{formik.errors.note}</div>
-//         ) : null}
-//       </div>
-//       <div className="input-row">
-//         <div {...getRootProps()}>
-//           <input {...getInputProps()} accept=".png, .jpeg, .jpg" />
-//           {isDragActive ? (
-//             <p>Trascina i file qui...</p>
-//           ) : (
-//             <p>Trascina e rilascia alcuni file qui, oppure fai clic per selezionarli</p>
-//           )}
-//         </div>
-//         --------------------------------------------------------------------------
-//         <div>
-//           <ul>{filesPreview}</ul>
-//         </div>
-//       </div>
-//       <hr />
-//       <div className="buttons-wrapper">
-//         <button className="trnt_btn secondary" onClick={onBackClick}>
-//           Indietro
-//         </button>
-//         <input type="submit" className="primary" value={action} />
-//       </div>
-//     </form>
-//   );
-// }
-
-// function DetectionFormInsetto({ action, onBackClick, onNextClick }: DetectionProps) {
-//   const [files, setFiles] = React.useState<FileWithPath[]>([]);
-
-//   const formik = useFormik({
-//     initialValues: {
-//       detectionTime: "",
-//       note: "",
-//       insect: "",
-//       trapsNumber: 0,
-//     },
-//     validationSchema: Yup.object({
-//       detectionTime: Yup.string().required("Specifica la data del rilevamento"),
-//       insect: Yup.string().required("Specifica il nome dell'insetto"),
-//       trapsNumber: Yup.number(),
-//     }),
-//     onSubmit: (values, { setSubmitting, resetForm }) => {
-//       const data = {
-//         detectionTime: new Date(values.detectionTime).getTime(),
-//         note: values.note,
-//         details: {
-//           insect: values.insect,
-//           trapsNumber: values.trapsNumber,
-//         },
-//         files: files,
-//       };
-//       onNextClick(data);
-//       resetForm({});
-//       setSubmitting(false);
-//     },
-//   });
-
-//   const onDrop = React.useCallback((acceptedFiles: any) => {
-//     setFiles(acceptedFiles);
-//   }, []);
-
-//   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, multiple: false });
-
-//   const filesPreview = files.map((file: FileWithPath) => (
-//     <li key={file.name}>
-//       <span className="mr-2">{file.name}</span>
-//     </li>
-//   ));
-
-//   return (
-//     <form onSubmit={formik.handleSubmit} autoComplete="off">
-//       <h4 className="mt-4 mb-4">Dati del rilevamento: Insetti</h4>
-//       <div className="input-row">
-//         <label>
-//           Data del rilevamento
-//           <input
-//             id="detectionTime"
-//             name="detectionTime"
-//             type="datetime-local"
-//             placeholder="Data rilevamento"
-//             onChange={formik.handleChange}
-//             onBlur={formik.handleBlur}
-//             value={formik.values.detectionTime}
-//           />
-//         </label>
-//         {formik.touched.detectionTime && formik.errors.detectionTime ? (
-//           <div className="error">{formik.errors.detectionTime}</div>
-//         ) : null}
-//       </div>
-//       <div className="input-row">
-//         <label>
-//           Nome dell'insetto
-//           <input
-//             id="insect"
-//             name="insect"
-//             type="text"
-//             placeholder="Nome insetto"
-//             onChange={formik.handleChange}
-//             onBlur={formik.handleBlur}
-//             value={formik.values.insect}
-//           />
-//         </label>
-//         {formik.touched.insect && formik.errors.insect ? (
-//           <div className="error">{formik.errors.insect}</div>
-//         ) : null}
-//       </div>
-//       <div className="input-row">
-//         <label>
-//           Numero di trappole
-//           <input
-//             id="trapsNumber"
-//             name="trapsNumber"
-//             type="text"
-//             placeholder="Numero di trappole"
-//             onChange={formik.handleChange}
-//             onBlur={formik.handleBlur}
-//             value={formik.values.trapsNumber}
-//           />
-//         </label>
-//         {formik.touched.trapsNumber && formik.errors.trapsNumber ? (
-//           <div className="error">{formik.errors.trapsNumber}</div>
-//         ) : null}
-//       </div>
-//       <div className="input-row">
-//         <label>
-//           Nota aggiuntiva
-//           <textarea
-//             id="note"
-//             name="note"
-//             placeholder=""
-//             rows={15}
-//             cols={50}
-//             onChange={formik.handleChange}
-//             onBlur={formik.handleBlur}
-//             value={formik.values.note}
-//           ></textarea>
-//         </label>
-//         {formik.touched.note && formik.errors.note ? (
-//           <div className="error">{formik.errors.note}</div>
-//         ) : null}
-//       </div>
-//       <div className="input-row">
-//         <div {...getRootProps()}>
-//           <input {...getInputProps()} accept=".png, .jpeg, .jpg" />
-//           {isDragActive ? (
-//             <p>Trascina i file qui...</p>
-//           ) : (
-//             <p>Trascina e rilascia alcuni file qui, oppure fai clic per selezionarli</p>
-//           )}
-//         </div>
-//         --------------------------------------------------------------------------
-//         <div>
-//           <ul>{filesPreview}</ul>
-//         </div>
-//       </div>
-//       <hr />
-//       <div className="buttons-wrapper">
-//         <button className="trnt_btn secondary" onClick={onBackClick}>
-//           Indietro
-//         </button>
-//         <input type="submit" className="primary" value={action} />
-//       </div>
-//     </form>
-//   );
-// }
-
-// function DetectionFormAltro({ action, onBackClick, onNextClick }: DetectionProps) {
-//   const [files, setFiles] = React.useState<FileWithPath[]>([]);
-
-//   const formik = useFormik({
-//     initialValues: {
-//       detectionTime: "",
-//       note: "",
-//     },
-//     validationSchema: Yup.object({
-//       detectionTime: Yup.string().required("Specifica la data del rilevamento"),
-//     }),
-//     onSubmit: (values, { setSubmitting, resetForm }) => {
-//       const data = {
-//         detectionTime: new Date(values.detectionTime).getTime(),
-//         note: values.note,
-//         details: {},
-//         files: files,
-//       };
-//       onNextClick(data);
-//       resetForm({});
-//       setSubmitting(false);
-//     },
-//   });
-
-//   const onDrop = React.useCallback((acceptedFiles: any) => {
-//     setFiles(acceptedFiles);
-//   }, []);
-
-//   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, multiple: false });
-//   const filesPreview = files.map((file: FileWithPath) => (
-//     <li key={file.name}>
-//       <span className="mr-2">{file.name}</span>
-//     </li>
-//   ));
-
-//   return (
-//     <form onSubmit={formik.handleSubmit} autoComplete="off">
-//       <h4 className="mt-4 mb-4">Dati del rilevamento: Insetti</h4>
-//       <div className="input-row">
-//         <label>
-//           Data del rilevamento
-//           <input
-//             id="detectionTime"
-//             name="detectionTime"
-//             type="datetime-local"
-//             placeholder="Data rilevamento"
-//             onChange={formik.handleChange}
-//             onBlur={formik.handleBlur}
-//             value={formik.values.detectionTime}
-//           />
-//         </label>
-//         {formik.touched.detectionTime && formik.errors.detectionTime ? (
-//           <div className="error">{formik.errors.detectionTime}</div>
-//         ) : null}
-//       </div>
-//       <div className="input-row">
-//         <label>
-//           Nota
-//           <textarea
-//             id="note"
-//             name="note"
-//             placeholder=""
-//             rows={15}
-//             cols={50}
-//             onChange={formik.handleChange}
-//             onBlur={formik.handleBlur}
-//             value={formik.values.note}
-//           ></textarea>
-//         </label>
-//         {formik.touched.note && formik.errors.note ? (
-//           <div className="error">{formik.errors.note}</div>
-//         ) : null}
-//       </div>
-//       <div className="input-row">
-//         <div {...getRootProps()}>
-//           <input {...getInputProps()} accept=".png, .jpeg, .jpg" />
-//           {isDragActive ? (
-//             <p>Trascina i file qui...</p>
-//           ) : (
-//             <p>Trascina e rilascia alcuni file qui, oppure fai clic per selezionarli</p>
-//           )}
-//         </div>
-//         --------------------------------------------------------------------------
-//         <div>
-//           <ul>{filesPreview}</ul>
-//         </div>
-//       </div>
-//       <hr />
-//       <div className="buttons-wrapper">
-//         <button className="trnt_btn secondary" onClick={onBackClick}>
-//           Indietro
-//         </button>
-//         <input type="submit" className="primary" value={action} />
-//       </div>
-//     </form>
-//   );
-// }
-*/
 
 interface DetectionFormMapProps {
   sourceType: string;
@@ -1638,6 +1074,182 @@ function DetectionStepBbch({ field, onNextClick }: DetectionProps & { field: Agr
   );
 }
 
+function DetectionStepTreatment({ formData, onNextClick }: DetectionProps) {
+  const { fieldId } = useParams();
+  const previousDetections = useAppSelector((state) =>
+    detectionsSelectors.selectDetectionbyFieldId(state, fieldId ?? "default"),
+  );
+  const [treatment, setTreatment] = React.useState(formData.detectionData.treatment.treatment);
+  const [treatmentDate, setTreatmentDate] = React.useState(
+    formData.detectionData.treatment.treatmentDate ?? "",
+  );
+  const [treatmentProduct, setTreatmentProduct] = React.useState(
+    formData.detectionData.treatment.treatmentProduct ?? "",
+  );
+  const [error, setError] = React.useState("");
+
+  React.useEffect(() => {
+    setTreatment(formData.detectionData.treatment.treatment);
+    setTreatmentDate(formData.detectionData.treatment.treatmentDate ?? "");
+    setTreatmentProduct(formData.detectionData.treatment.treatmentProduct ?? "");
+  }, [formData]);
+
+  const productSuggestions = React.useMemo(() => {
+    return Array.from(
+      new Set(
+        previousDetections
+          .map((detection) => detection.detectionData.treatment?.treatmentProduct?.trim() ?? "")
+          .filter((value) => value !== ""),
+      ),
+    ).sort((a, b) => a.localeCompare(b));
+  }, [previousDetections]);
+
+  const normalizeDateInput = (value: string) => {
+    const digits = value.replace(/\D/g, "").slice(0, 8);
+    if (digits.length <= 2) {
+      return digits;
+    }
+    if (digits.length <= 4) {
+      return `${digits.slice(0, 2)}/${digits.slice(2)}`;
+    }
+    return `${digits.slice(0, 2)}/${digits.slice(2, 4)}/${digits.slice(4)}`;
+  };
+
+  const toPickerDate = (value: string) => {
+    const match = value.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+    if (!match) {
+      return "";
+    }
+    const [, day, month, year] = match;
+    return `${year}-${month}-${day}`;
+  };
+
+  const handleSubmit = () => {
+    if (treatment && treatmentDate.trim() === "") {
+      setError("Specifica la data del trattamento.");
+      return;
+    }
+    if (treatment && !/^\d{2}\/\d{2}\/\d{4}$/.test(treatmentDate.trim())) {
+      setError("Inserisci la data nel formato gg/mm/aaaa.");
+      return;
+    }
+    if (treatment && treatmentProduct.trim() === "") {
+      setError("Specifica il nome del prodotto utilizzato.");
+      return;
+    }
+
+    setError("");
+    onNextClick({
+      treatment: {
+        treatment,
+        treatmentDate: treatment ? treatmentDate : "",
+        treatmentProduct: treatment ? treatmentProduct.trim() : "",
+      },
+    });
+  };
+
+  return (
+    <div className="narrow-container my-5">
+      <h3 className="mb-4 text-center">Trattamenti</h3>
+      <p className="text-center mb-4">
+        Indica se la coltura è stata trattata dall&apos;ultimo rilevamento (o dall&apos;inizio
+        della stagione, se è il primo).
+      </p>
+      <div className="input-row">
+        <label className="mb-2">
+          È stato eseguito un trattamento prima di questo rilevamento?
+        </label>
+        <div className="d-flex gap-2 flex-wrap">
+          <CozyButton
+            content="No"
+            additionalClasses={!treatment ? ["trnt_btn primary"] : ["trnt_btn secondary"]}
+            onClick={() => {
+              setTreatment(false);
+              setError("");
+            }}
+          />
+          <CozyButton
+            content="Sì"
+            additionalClasses={treatment ? ["trnt_btn primary"] : ["trnt_btn secondary"]}
+            onClick={() => {
+              setTreatment(true);
+              setError("");
+            }}
+          />
+        </div>
+      </div>
+      {treatment && (
+        <Fragment>
+          <div className="input-row mt-4">
+            <label>
+              Quando è stato eseguito?
+              <input
+                type="text"
+                value={treatmentDate}
+                placeholder="gg/mm/aaaa"
+                inputMode="numeric"
+                onChange={(event) => {
+                  setTreatmentDate(normalizeDateInput(event.target.value));
+                  setError("");
+                }}
+              />
+            </label>
+            <div className="mt-2">
+              <input
+                type="date"
+                value={toPickerDate(treatmentDate)}
+                onChange={(event) => {
+                  const value = event.target.value;
+                  if (value === "") {
+                    setTreatmentDate("");
+                    return;
+                  }
+                  const [year, month, day] = value.split("-");
+                  setTreatmentDate(`${day}/${month}/${year}`);
+                  setError("");
+                }}
+              />
+            </div>
+            <small className="d-block mt-2 text-muted">
+              Se non ricordi il giorno esatto, inserisci una data approssimativa.
+            </small>
+          </div>
+          <div className="input-row mt-4">
+            <label>
+              Nome del prodotto (come in etichetta)
+              <input
+                type="text"
+                value={treatmentProduct}
+                placeholder="es. Captan, Ditianon"
+                list="treatment-products"
+                onChange={(event) => {
+                  setTreatmentProduct(event.target.value);
+                  setError("");
+                }}
+              />
+            </label>
+            {productSuggestions.length > 0 && (
+              <datalist id="treatment-products">
+                {productSuggestions.map((product) => (
+                  <option key={product} value={product} />
+                ))}
+              </datalist>
+            )}
+          </div>
+        </Fragment>
+      )}
+      {error !== "" && <div className="error mt-3">{error}</div>}
+      <div className="fixed-bottom mt-4 text-center">
+        <div className="contents">
+          <button className="trnt_btn primary" onClick={handleSubmit}>
+            Avanti
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function DetectionStepObservationPoints({
   formData,
   observationType,
@@ -2354,6 +1966,11 @@ export function DetectionForm() {
     detectionData: {
       bbch: "",
       notes: "",
+      treatment: {
+        treatment: false,
+        treatmentDate: "",
+        treatmentProduct: "",
+      },
       photos: [],
       points: [],
     },
@@ -2411,6 +2028,7 @@ export function DetectionForm() {
   React.useEffect(() => {
     if (companyId && fieldId) {
       dispatch(detectionTypesActions.fetchDetectionTypesAction({ orgId: companyId, fieldId }));
+      dispatch(detectionsActions.fetchFieldDetectionsAction({ orgId: companyId, fieldId }));
     }
     dispatch(observationTypesActions.fetchObservationTypesAction({}));
   }, [companyId, fieldId, dispatch]);
@@ -2468,10 +2086,10 @@ export function DetectionForm() {
   ]);
 
   const steps = useShortFlow
-    ? ["bbch", "points", "done"]
+    ? ["bbch", "treatment", "points", "done"]
     : hasPreselection
-      ? ["bbch", "points", "done"]
-      : ["typology", "method", "guide", "bbch", "points", "done"];
+      ? ["bbch", "treatment", "points", "done"]
+      : ["typology", "method", "guide", "bbch", "treatment", "points", "done"];
 
   const currentStepKey = steps[stepIndex];
 
@@ -2622,6 +2240,18 @@ export function DetectionForm() {
       goToStep(stepIndex + 1);
       return;
     }
+    if (currentStepKey === "treatment") {
+      const treatmentData = data as DetectionStepTreatmentData;
+      setFormData((prev) => ({
+        ...prev,
+        detectionData: {
+          ...prev.detectionData,
+          treatment: treatmentData.treatment,
+        },
+      }));
+      goToStep(stepIndex + 1);
+      return;
+    }
     if (currentStepKey === "points") {
       const pointsData = data as DetectionStepPointsData;
       const notesToSave = pointsData.notes ?? formData.detectionData.notes ?? "";
@@ -2697,8 +2327,8 @@ export function DetectionForm() {
 
   // const stepperItems = ["Tipologia", "Metodo", "Guida", "BBCH", "Rilevamento"];
   const stepperItems = useShortFlow
-    ? ["BBCH", "Rilevamento"]
-    : ["Tipologia", "Metodo", "Guida", "BBCH", "Rilevamento"];
+    ? ["BBCH", "Trattamento", "Rilevamento"]
+    : ["Tipologia", "Metodo", "Guida", "BBCH", "Trattamento", "Rilevamento"];
 
   return (
     <Fragment>
@@ -2756,6 +2386,9 @@ export function DetectionForm() {
             onBackClick={handleBackClick}
             onNextClick={handleNextClick}
           />
+        )}
+        {currentStepKey === "treatment" && (
+          <DetectionStepTreatment formData={formData} onNextClick={handleNextClick} />
         )}
         {currentStepKey === "points" && (
           <DetectionStepObservationPoints

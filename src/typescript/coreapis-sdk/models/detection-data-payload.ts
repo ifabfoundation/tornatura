@@ -14,6 +14,7 @@
 
 import { FileInfo } from './file-info';
 import { ObservationPoint } from './observation-point';
+import { ObservationTreatment } from './observation-treatment';
  /**
  * 
  *
@@ -33,6 +34,12 @@ export interface DetectionDataPayload {
      * @memberof DetectionDataPayload
      */
     notes: string;
+
+    /**
+     * @type {ObservationTreatment}
+     * @memberof DetectionDataPayload
+     */
+    treatment: ObservationTreatment;
 
     /**
      * @type {Array<FileInfo>}

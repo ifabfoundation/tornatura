@@ -86,15 +86,22 @@ class ObservationPoint(BaseModel):
     position: Point
     data: ObservationData
 
+class ObservationTreatment(BaseModel):
+    treatment: bool = False
+    treatmentDate: str = ""
+    treatmentProduct: str = ""
+
 class DetectionData(BaseModel):
     bbch: str
     notes: str
+    treatment: ObservationTreatment = ObservationTreatment()
     photos: List[str]
     points: List[ObservationPoint]
 
 class DetectionDataPayload(BaseModel):
     bbch: str
     notes: str
+    treatment: ObservationTreatment = ObservationTreatment()
     photos: List[FileInfo]
     points: List[ObservationPoint]
 

@@ -9,6 +9,7 @@ from core.models import (
     ObservationCounter,
     ObservationData,
     ObservationPoint,
+    ObservationTreatment,
     Point,
 )
 from core.serializers import Detection, DetectionMutationPayload
@@ -35,6 +36,7 @@ class DetectionServices:
        
         def _create_instance(item) -> Detection:
             agrifield = agrifield_services.get(item.agrifieldId)
+            treatment = item.detectionData.treatment or ObservationTreatment()
             points = []
             for point in item.detectionData.points:
                 points.append(
@@ -64,6 +66,11 @@ class DetectionServices:
                 detectionData={
                     "bbch": item.detectionData.bbch,
                     "notes": item.detectionData.notes,
+                    "treatment": {
+                        "treatment": treatment.treatment,
+                        "treatmentDate": treatment.treatmentDate,
+                        "treatmentProduct": treatment.treatmentProduct,
+                    },
                     "photos": [
                         file_services.get_file_url(agrifield.orgId, photo.category, photo.name)
                         for photo in item.detectionData.photos
@@ -122,6 +129,7 @@ class DetectionServices:
             )
 
         detection_data = data["detectionData"]
+        treatment_data = detection_data.get("treatment", {})
         points = []
         for point in detection_data.get("points", []):
             observation = point.get("data", {})
@@ -147,6 +155,7 @@ class DetectionServices:
             detectionData=DetectionData(
                 bbch=detection_data.get("bbch", ""),
                 notes=detection_data.get("notes", ""),
+                treatment=ObservationTreatment(**treatment_data),
                 photos=[FileInfo(**photo) for photo in detection_data.get("photos", [])],
                 points=points,
             ),
