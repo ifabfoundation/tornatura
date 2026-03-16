@@ -11,7 +11,6 @@ import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { companiesSelectors } from "../state/companies-slice";
 import { headerbarActions } from "../../headerbar/state/headerbar-slice";
 import { fieldsActions } from "../../fields/state/fields-slice";
-import { unwrapResult } from "@reduxjs/toolkit";
 import * as turf from "@turf/turf";
 import { gpsStore } from "../../../providers/gps-providers";
 import { Col, Container, Row } from "react-bootstrap";
@@ -61,7 +60,8 @@ export function FieldFormInfo({ formData, action, onNextClick, onBackClick }: Fi
       rotation: Yup.string().required("Campo necessario"),
       grassing: Yup.string().required("Campo necessario"),
     }),
-    onSubmit: (values, { setSubmitting, setErrors }) => {
+    onSubmit: async (values, { setSubmitting, setErrors }) => {
+      setSubmitting(true);
       if (values.areafrom === "map") {
         values.area = calcArea(formData.map);
       }
@@ -72,7 +72,7 @@ export function FieldFormInfo({ formData, action, onNextClick, onBackClick }: Fi
       } else if (values.rotation === "si") {
         values.year = "";
       }
-      onNextClick(values);
+      await onNextClick(values);
       setSubmitting(false);
     },
   });
@@ -408,138 +408,15 @@ export function FieldFormInfo({ formData, action, onNextClick, onBackClick }: Fi
               ) : null}
             </div>
           </div>
-
-          {/*  
-        <div className="spacer" style={{ height: "200px" }}></div>
-
-        <div className="input-row">
-          <label>
-            Nome
-            <input
-              id="name"
-              name="name"
-              type="text"
-              placeholder="Nome del campo"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.name}
-            />
-          </label>
-          {formik.touched.name && formik.errors.name ? (
-            <div className="error">{formik.errors.name}</div>
-          ) : null}
-        </div>
-        <div className="input-row">
-          <label>
-            Coltura
-            <input
-              id="harvest"
-              name="harvest"
-              type="text"
-              placeholder="Coltura del campo"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.harvest}
-            />
-          </label>
-          {formik.touched.harvest && formik.errors.harvest ? (
-            <div className="error">{formik.errors.harvest}</div>
-          ) : null}
-        </div>
-        <div className="input-row">
-          Dimensione del campo
-          <Row>
-            <Col>
-              <input
-                type="radio"
-                name="areafrom"
-                value="mappa"
-                onChange={formik.handleChange}
-                checked={formik.values.areafrom === "mappa"}
-              />
-              Calcola dalla mappa
-            </Col>
-            <Col>
-              <input
-                type="radio"
-                name="areafrom"
-                value="manuale"
-                onChange={formik.handleChange}
-                checked={formik.values.areafrom === "manuale"}
-              />
-              manuale
-            </Col>
-            <Col>
-              <label>
-                Dimensione in ettari
-                <input
-                  id="area"
-                  name="area"
-                  // type="number"
-                  // step={0.01}
-                  min={0}
-                  placeholder="Area del campo in ettari"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value={
-                    formik.values.areafrom === "manuale"
-                      ? formik.values.area
-                      : calcArea(formData.map)
-                  }
-                />
-              </label>
-            </Col>
-          </Row>
-          {formik.touched.area && formik.errors.area ? (
-            <div className="error">{formik.errors.area}</div>
-          ) : null}
-        </div>
-        <div className="input-row">
-          <label>
-            Numero di piante
-            <input
-              id="plants"
-              name="plants"
-              type="number"
-              min={0}
-              placeholder="Numero di piante"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.plants}
-            />
-          </label>
-          {formik.touched.plants && formik.errors.plants ? (
-            <div className="error">{formik.errors.plants}</div>
-          ) : null}
-        </div>
-        <div className="input-row">
-          <label>
-            Descrizione
-            <textarea
-              id="description"
-              name="description"
-              placeholder="Descrizione del campo"
-              rows={15}
-              cols={50}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.description}
-            ></textarea>
-          </label>
-          {formik.touched.description && formik.errors.description ? (
-            <div className="error">{formik.errors.description}</div>
-          ) : null}
-        </div>
-
-          <hr />
-        */}
         </div>
       </div>
       <div className="buttons-wrapper mt-4 text-center">
         <button className="trnt_btn secondary" onClick={onBackClick}>
           Indietro
         </button>
-        <input type="submit" className="primary" value={action} />
+        <button type="submit" className="trnt_btn primary" disabled={formik.isSubmitting}>
+          {formik.isSubmitting ? "Caricamento..." : action}
+        </button>
       </div>
 
       <div className="spacer my-5"></div>
@@ -778,14 +655,12 @@ export function CompanyFieldForm() {
 
   const createFieldAction = async (payload: AgriFieldMutationPayload) => {
     if (currentCompany) {
-      dispatch(fieldsActions.addNewFieldAction({ orgId: currentCompany.orgId, body: payload }))
-        .then(unwrapResult)
-        .then((_) => {
-          navigate(`/companies/${companyId}/fields`, { replace: true });
-        })
-        .catch((reason) => {
-          console.error("Error creating field with reason: ", reason);
-        });
+      try {
+        await dispatch(fieldsActions.addNewFieldAction({ orgId: currentCompany.orgId, body: payload }));
+        navigate(`/companies/${companyId}/fields`, { replace: true });
+      } catch (reason){
+        console.error("Error creating field with reason: ", reason);
+      }
     }
   };
 
@@ -806,7 +681,7 @@ export function CompanyFieldForm() {
         year: data.year,
       };
       setFormData(payload);
-      createFieldAction(payload);
+      await createFieldAction(payload);
     } else if (step === 1) {
       const payload = {
         ...formData,
