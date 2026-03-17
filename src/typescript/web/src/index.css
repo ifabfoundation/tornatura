@@ -15772,6 +15772,9 @@ small, .small {
     margin: 0px;
     clip-path: none;
   }
+  #app .stepper-container .stepper-wrapper ol.stepper li[data-current="true"].adjust-mobile-ml {
+    margin-left: 24px;
+  }
   #app .stepper-container .stepper-wrapper ol.stepper li[data-current="false"] {
     display: none;
   }

@@ -19,6 +19,7 @@ export const Stepper: React.FC<StepperProps> = ({
 }) => {
   const stepsNum = items.length;
   const hasExitButton = !!handleExitClick;
+  const hasBackArrow = !!handleBackClick && currentStep > 0;
 
   return (
     <div className="stepper-container">
@@ -33,7 +34,7 @@ export const Stepper: React.FC<StepperProps> = ({
       )}
       <div className="flex-grow-1">
         <div className="stepper-wrapper">
-          {handleBackClick && currentStep > 0 && (
+          {hasBackArrow && (
             <button className="stepper-back-button m-0" onClick={handleBackClick}>
               &larr;
             </button>
@@ -62,6 +63,7 @@ export const Stepper: React.FC<StepperProps> = ({
                   data-done={isDone ? "true" : "false"}
                   data-current={isCurrent ? "true" : "false"}
                   onClick={handleItemClick}
+                  className={hasExitButton ? "adjust-mobile-ml" : ""}
                 >
                   <div className="text-center">
                     <span>{item}</span>

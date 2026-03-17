@@ -1934,6 +1934,9 @@ small {
               max-width: 100%;
               margin: 0px;
               clip-path: none;
+              &.adjust-mobile-ml {
+                margin-left: 24px;
+              }
             }
             &[data-current="false"] {
               display: none;

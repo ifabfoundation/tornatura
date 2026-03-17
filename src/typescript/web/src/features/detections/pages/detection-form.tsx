@@ -1159,17 +1159,17 @@ function DetectionStepTreatment({ formData, onNextClick }: DetectionProps) {
   return (
     <div className="narrow-container my-5">
       <h3 className="mb-4 text-center">
-        <strong>Trattamenti</strong>
+        <strong>È stato eseguito un trattamento prima di questo rilevamento?</strong>
       </h3>
       <div className="form-section">
         <p className="mb-4">
-          Indica se la coltura è stata trattata dall&apos;ultimo rilevamento (o dall&apos;inizio
-          della stagione, se è il primo).
+          Indica se la coltura è stata trattata dall&apos;ultimo rilevamento &mdash;
+          o&nbsp;dall&apos;inizio della stagione, se è il primo.
         </p>
         <div className="input-row">
-          <label className="mb-2">
+          {/* <label className="mb-2">
             È stato eseguito un trattamento prima di questo rilevamento?
-          </label>
+          </label> */}
           <div className="d-flex gap-2">
             <CozyButton
               content="No"
@@ -2352,8 +2352,8 @@ export function DetectionForm() {
 
   // const stepperItems = ["Tipologia", "Metodo", "Guida", "BBCH", "Rilevamento"];
   const stepperItems = useShortFlow
-    ? ["BBCH", "Trattamento", "Rilevamento"]
-    : ["Tipologia", "Metodo", "Guida", "BBCH", "Trattamento", "Rilevamento"];
+    ? ["BBCH", "Trattamenti", "Rilevamento"]
+    : ["Tipologia", "Metodo", "Guida", "BBCH", "Trattamenti", "Rilevamento"];
 
   const stepperRecaps = steps.slice(0, stepIndex).map((key) => {
     let recapString = "✓";
