@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="30px" height="30px" viewBox="0 0 30 30" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>add-b</title>
+    <g id="add-b" stroke="none" fill="none" stroke-linecap="round" stroke-width="1.5">
+        <circle id="Oval" stroke="#131415" cx="15" cy="15" r="8"></circle>
+        <line x1="12" y1="15" x2="18" y2="15" id="Line-3" stroke="#131415"></line>
+        <line x1="15.00005" y1="12.00005" x2="15.00005" y2="18.00005" id="Line-3-Copy" stroke="#131415"></line>
+    </g>
+</svg>

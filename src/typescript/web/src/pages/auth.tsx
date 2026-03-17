@@ -46,7 +46,13 @@ interface SignupProps {
   onNextClick: (data: any) => Promise<void>;
 }
 
-function SignupStep4({ formData, action, isCompanyOwnerInStandardFlow, onBackClick, onNextClick }: SignupProps) {
+function SignupStep4({
+  formData,
+  action,
+  isCompanyOwnerInStandardFlow,
+  onBackClick,
+  onNextClick,
+}: SignupProps) {
   const [isProjectFormLoading, setIsProjectFormLoading] = React.useState(false);
 
   const formik = useFormik({
@@ -63,7 +69,7 @@ function SignupStep4({ formData, action, isCompanyOwnerInStandardFlow, onBackCli
       privacy4: Yup.boolean().test(
         "privacy4-required",
         "È necessaria l'accettazione",
-        (value) => !isCompanyOwnerInStandardFlow || value === true
+        (value) => !isCompanyOwnerInStandardFlow || value === true,
       ),
     }),
     onSubmit: async (values, { setSubmitting }) => {
@@ -79,7 +85,8 @@ function SignupStep4({ formData, action, isCompanyOwnerInStandardFlow, onBackCli
       return;
     }
 
-    const companyName = formData.organization?.name || `${formData.firstName} ${formData.lastName}`.trim();
+    const companyName =
+      formData.organization?.name || `${formData.firstName} ${formData.lastName}`.trim();
     const companyVat = formData.organization?.piva || formData.piva || "";
     const today = new Date().toLocaleDateString("it-IT");
 
@@ -94,7 +101,7 @@ function SignupStep4({ formData, action, isCompanyOwnerInStandardFlow, onBackCli
           data: {
             DATA: today,
             PIVA: companyVat,
-            RAGIONE_SOCIALE: companyName
+            RAGIONE_SOCIALE: companyName,
           },
         }),
       });
@@ -186,7 +193,9 @@ function SignupStep4({ formData, action, isCompanyOwnerInStandardFlow, onBackCli
                   <span className="my-2">
                     Ho preso visione del&nbsp;
                     <a href="#" onClick={handleOpenProjectFormPdf}>
-                      {isProjectFormLoading ? "caricamento modulo..." : "modulo informativa PMI partecipanti"}
+                      {isProjectFormLoading
+                        ? "caricamento modulo..."
+                        : "modulo informativa PMI partecipanti"}
                     </a>
                   </span>
                 </label>
@@ -231,7 +240,7 @@ function SignupStep4({ formData, action, isCompanyOwnerInStandardFlow, onBackCli
           Indietro
         </button>
         <button type="submit" className="trnt_btn primary" disabled={formik.isSubmitting}>
-          {formik.isSubmitting ? "caricamento..." : action}
+          {formik.isSubmitting ? "Caricamento..." : action}
         </button>
       </div>
     </form>
@@ -359,7 +368,7 @@ function SignupStep3({ formData, action, onBackClick, onNextClick }: SignupProps
           Indietro
         </button>
         <button type="submit" className="trnt_btn primary" disabled={formik.isSubmitting}>
-          {formik.isSubmitting ? "caricamento..." : action}
+          {formik.isSubmitting ? "Caricamento..." : action}
         </button>
       </div>
     </form>
@@ -465,25 +474,27 @@ function SignupStep2({ formData, action, onBackClick, onNextClick }: SignupProps
               ) : null}
             </div>
           </div>
-          {formData.accountType === AccountTypeEnum.Agronomist && (<div className="row input-row">
-            <div className="col input-row-margin-fix">
-              <label>
-                Partita Iva
-                <input
-                  id="piva"
-                  name="piva"
-                  type="text"
-                  placeholder="P.IVA"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value={formik.values.piva}
-                />
-              </label>
-              {formik.touched.piva && formik.errors.piva ? (
-                <div className="error">{formik.errors.piva}</div>
-              ) : null}
+          {formData.accountType === AccountTypeEnum.Agronomist && (
+            <div className="row input-row">
+              <div className="col input-row-margin-fix">
+                <label>
+                  Partita Iva
+                  <input
+                    id="piva"
+                    name="piva"
+                    type="text"
+                    placeholder="P.IVA"
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.piva}
+                  />
+                </label>
+                {formik.touched.piva && formik.errors.piva ? (
+                  <div className="error">{formik.errors.piva}</div>
+                ) : null}
+              </div>
             </div>
-          </div>)}
+          )}
           <div className="row input-row">
             <div className="col">
               <label>
@@ -510,7 +521,7 @@ function SignupStep2({ formData, action, onBackClick, onNextClick }: SignupProps
           Indietro
         </button>
         <button type="submit" className="trnt_btn primary" disabled={formik.isSubmitting}>
-          {formik.isSubmitting ? "caricamento..." : action}
+          {formik.isSubmitting ? "Caricamento..." : action}
         </button>
       </div>
     </form>
@@ -563,7 +574,7 @@ function SignupStep1({ formData, action, onBackClick, onNextClick }: SignupProps
           Indietro
         </button>
         <button type="submit" className="trnt_btn primary" disabled={formik.isSubmitting}>
-          {formik.isSubmitting ? "caricamento..." : action}
+          {formik.isSubmitting ? "Caricamento..." : action}
         </button>
       </div>
     </form>
@@ -612,17 +623,21 @@ export function Signup() {
     phone: "",
   });
 
-
-  const goToStep = React.useCallback((nextStep: number, replace = false) => {
-    setStep(nextStep);
-    navigate(`${location.pathname}${location.search}${location.hash}`, {
-      replace,
-      state: {
-        ...((location.state && typeof location.state === "object" ? location.state : {}) as Record<string, unknown>),
-        signupStep: nextStep,
-      },
-    });
-  }, [location.hash, location.pathname, location.search, location.state, navigate]);
+  const goToStep = React.useCallback(
+    (nextStep: number, replace = false) => {
+      setStep(nextStep);
+      navigate(`${location.pathname}${location.search}${location.hash}`, {
+        replace,
+        state: {
+          ...((location.state && typeof location.state === "object"
+            ? location.state
+            : {}) as Record<string, unknown>),
+          signupStep: nextStep,
+        },
+      });
+    },
+    [location.hash, location.pathname, location.search, location.state, navigate],
+  );
 
   const handleBackClick = async () => {
     navigate(-1);
@@ -712,22 +727,22 @@ export function Signup() {
     { label: "Esito", step: 3 },
   ];
   const standardQuestionnaireStep = standardStepperSteps.find(
-    (stepItem) => stepItem.label === "Questionario"
+    (stepItem) => stepItem.label === "Questionario",
   )?.step;
-  
+
   const standardSuccessStep = standardStepperSteps[standardStepperSteps.length - 1].step;
   const simpleFlowSuccessStep = simpleFlowStepperSteps[simpleFlowStepperSteps.length - 1].step;
   const currentStandardStepIndex = Math.max(
     standardStepperSteps.findIndex((stepItem) => stepItem.step === step),
-    0
+    0,
   );
   const currentSimpleFlowStepIndex = Math.max(
     simpleFlowStepperSteps.findIndex((stepItem) => stepItem.step === step),
-    0
+    0,
   );
   const getNextMappedStep = (
     stepperSteps: Array<{ label: string; step: number }>,
-    currentStep: number
+    currentStep: number,
   ) => {
     const currentStepIndex = stepperSteps.findIndex((stepItem) => stepItem.step === currentStep);
     if (currentStepIndex < 0 || currentStepIndex >= stepperSteps.length - 1) {

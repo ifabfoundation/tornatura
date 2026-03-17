@@ -1,3 +1,6 @@
+import add_b from "../assets/images/icons/add-b.svg";
+import add_w from "../assets/images/icons/add-w.svg";
+import add_y from "../assets/images/icons/add-y.svg";
 import alert_b from "../assets/images/icons/alert-b.svg";
 import alert_w from "../assets/images/icons/alert-w.svg";
 import alert_y from "../assets/images/icons/alert-y.svg";
@@ -16,6 +19,9 @@ import barn_y from "../assets/images/icons/barn-y.svg";
 import bin_b from "../assets/images/icons/bin-b.svg";
 import bin_w from "../assets/images/icons/bin-w.svg";
 import bin_y from "../assets/images/icons/bin-y.svg";
+import bulletin_b from "../assets/images/icons/bulletin-b.svg";
+import bulletin_w from "../assets/images/icons/bulletin-w.svg";
+import bulletin_y from "../assets/images/icons/bulletin-y.svg";
 import bug_b from "../assets/images/icons/bug-b.svg";
 import bug_w from "../assets/images/icons/bug-w.svg";
 import bug_y from "../assets/images/icons/bug-y.svg";
@@ -102,12 +108,14 @@ import x_w from "../assets/images/icons/x-w.svg";
 import x_y from "../assets/images/icons/x-y.svg";
 
 const icons = {
+  add: { white: add_w, black: add_b, yellow: add_y },
   alert: { white: alert_w, black: alert_b, yellow: alert_y },
   asterisk: { white: asterisk_w, black: asterisk_b, yellow: asterisk_y },
   bacteria: { white: bacteria_w, black: bacteria_b, yellow: bacteria_y },
   baloon: { white: baloon_w, black: baloon_b, yellow: baloon_y },
   barn: { white: barn_w, black: barn_b, yellow: barn_y },
   bin: { white: bin_w, black: bin_b, yellow: bin_y },
+  bulletin: { white: bulletin_w, black: bulletin_b, yellow: bulletin_y },
   bug: { white: bug_w, black: bug_b, yellow: bug_y },
   checklist: { white: checklist_w, black: checklist_b, yellow: checklist_y },
   circleempty: { white: circleempty_w, black: circleempty_b, yellow: circleempty_y },

@@ -440,7 +440,18 @@ export function DetectionTypeDetail() {
     <div>
       <Container>
         {modalOpen && <modal.component {...modal.componentProps} />}
-        <Row className="">
+        <Row className="d-lg-none">
+          <Col xl={12}>
+            <button
+              className="trnt_btn primary type-rounded"
+              onClick={() => navigate(`/companies/${companyId}/fields/${fieldId}`)}
+            >
+              {"← Dashboard campo"}
+            </button>
+            <div className="space-05"></div>
+          </Col>
+        </Row>
+        <Row>
           <Col xl={12}>
             <section className="soft">
               <div className="d-flex align-items-start justify-content-between">

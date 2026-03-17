@@ -157,7 +157,7 @@ export function FieldDashboard() {
         {companyId && fieldId && (
           <Row className="mt-4">
             {detectionTypes.map((value, index) => (
-              <Col key={index} xl={12}>
+              <Col key={index} xl={6}>
                 <DetectionTypeCard companyId={companyId} fieldId={fieldId} typeId={value.id} />
               </Col>
             ))}

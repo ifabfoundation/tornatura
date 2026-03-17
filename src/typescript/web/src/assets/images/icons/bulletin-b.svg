@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="30px" height="30px" viewBox="0 0 30 30" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>bulletin-b</title>
+    <g id="bulletin-b" stroke="none" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-width="1">
+        <g id="Group" transform="translate(7.284, 7.4992)" stroke="#131415">
+            <path d="M1.75148123,15.0015971 L12.4319877,15.0015971 C13.5365572,15.0015971 14.4319877,14.1061666 14.4319877,13.0015971 L14.4319877,0 L3.49310715,0 L3.49310715,13.2550436 C3.49310715,14.2196385 2.71114848,15.0015971 1.74655357,15.0015971 C0.78195867,15.0015971 0,14.2196385 0,13.2550436 L0,1.58403647 L1.75148123,1.58403647" id="Path" stroke-width="1.5"></path>
+            <line x1="11.4319877" y1="12.0015971" x2="6.51345693" y2="12.0015971" id="Line-3" stroke-width="1.5"></line>
+            <line x1="11.2937112" y1="9.00299427" x2="6.51345693" y2="9.00299427" id="Line-3-Copy" stroke-width="1.5"></line>
+            <polygon id="Path" stroke-width="1.5" points="6.51345693 6.00149714 6.51345693 3.0001 11.4319877 3.0001 11.4319877 6.00159714"></polygon>
+        </g>
+    </g>
+</svg>

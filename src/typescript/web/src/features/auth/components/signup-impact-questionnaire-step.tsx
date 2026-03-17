@@ -179,14 +179,16 @@ export default function SignupImpactQuestionnaireStep({
                   value={formik.values.employeeCount}
                 />
               </label>
-              {formik.touched.employeeCount && formik.errors.employeeCount ? <div className="error">{formik.errors.employeeCount}</div> : null}
+              {formik.touched.employeeCount && formik.errors.employeeCount ? (
+                <div className="error">{formik.errors.employeeCount}</div>
+              ) : null}
             </div>
           </div>
 
           <div className="row input-row">
             <div className="col">
               <label>
-                Fatturato per vendita di beni e servizi della Vostra impresa nell'anno 2024? Includere i ricavi derivanti da: vendita di beni e/o servizi dell'impresa, lavorazioni eseguite per conto di terzi, vendita di prodotti rivenduti senza trasformazione da parte dell'impresa, prestazioni di servizi industriali
+                Fatturato
                 <select
                   id="revenueRange"
                   name="revenueRange"
@@ -202,14 +204,26 @@ export default function SignupImpactQuestionnaireStep({
                   ))}
                 </select>
               </label>
-              {formik.touched.revenueRange && formik.errors.revenueRange ? <div className="error">{formik.errors.revenueRange}</div> : null}
+              <p>
+                Fatturato per vendita di beni e servizi della Vostra impresa nell'anno 2024?
+                Includere i ricavi derivanti da: vendita di beni e/o servizi dell'impresa,
+                lavorazioni eseguite per conto di terzi, vendita di prodotti rivenduti senza
+                trasformazione da parte dell'impresa, prestazioni di servizi industriali
+              </p>
+              {formik.touched.revenueRange && formik.errors.revenueRange ? (
+                <div className="error">{formik.errors.revenueRange}</div>
+              ) : null}
             </div>
           </div>
 
           <div className="row input-row">
             <div className="col">
               <label>
-                Ad oggi qual è l'incidenza di danni da malattia / insetto fitofago per le colture della Vostra impresa? Fate una stima basata sulla media degli ultimi 4/5 anni. (indicare un numero %). Per incidenza di danni si intende la percentuale di piante estirpate / danneggiate o la percentuale di frutti non commercializzabili per ettaro di terreno per flavescenza dorata, cimice asiatica, peronospora, diabrotica..
+                Ad oggi qual è l'incidenza di danni da malattia / insetto fitofago per le colture
+                della Vostra impresa? Fate una stima basata sulla media degli ultimi 4/5 anni.
+                (indicare un numero %). Per incidenza di danni si intende la percentuale di piante
+                estirpate / danneggiate o la percentuale di frutti non commercializzabili per ettaro
+                di terreno per flavescenza dorata, cimice asiatica, peronospora, diabrotica..
                 <input
                   id="damageIncidencePercent"
                   name="damageIncidencePercent"
@@ -222,13 +236,18 @@ export default function SignupImpactQuestionnaireStep({
                   value={formik.values.damageIncidencePercent}
                 />
               </label>
-              {formik.touched.damageIncidencePercent && formik.errors.damageIncidencePercent ? <div className="error">{formik.errors.damageIncidencePercent}</div> : null}
+              {formik.touched.damageIncidencePercent && formik.errors.damageIncidencePercent ? (
+                <div className="error">{formik.errors.damageIncidencePercent}</div>
+              ) : null}
             </div>
           </div>
 
           <div className="row input-row">
             <div className="col">
-              <label className="mb-2">Attualmente quali di queste azioni state svolgendo per la difesa fitosanitaria delle Vostre colture?</label>
+              <label className="mb-2">
+                Attualmente quali di queste azioni state svolgendo per la difesa fitosanitaria delle
+                Vostre colture?
+              </label>
               {defenseActionOptions.map((option) => (
                 <label className="d-flex align-items-start" key={option}>
                   <input
@@ -243,13 +262,17 @@ export default function SignupImpactQuestionnaireStep({
                   <span className="my-2">{option}</span>
                 </label>
               ))}
-              {formik.touched.defenseActions && formik.errors.defenseActions ? <div className="error">{formik.errors.defenseActions}</div> : null}
+              {formik.touched.defenseActions && formik.errors.defenseActions ? (
+                <div className="error">{formik.errors.defenseActions}</div>
+              ) : null}
             </div>
           </div>
 
           <div className="row input-row">
             <div className="col">
-              <label className="mb-2">Quanto spende la Vostra impresa annualmente per questa attività? (in Euro)</label>
+              <label className="mb-2">
+                Quanto spende la Vostra impresa annualmente per questa attività? (in Euro)
+              </label>
               <input
                 id="annualSpendAgrochemicals"
                 name="annualSpendAgrochemicals"
@@ -318,7 +341,8 @@ export default function SignupImpactQuestionnaireStep({
           <div className="row input-row">
             <div className="col">
               <label>
-                Soddisfazione: Inserire un punteggio per Efficacia complessiva nel ridurre le avversità delle piante (1-10)
+                Soddisfazione: Inserire un punteggio per Efficacia complessiva nel ridurre le
+                avversità delle piante (1-10)
                 <input
                   id="satisfactionEffectiveness"
                   name="satisfactionEffectiveness"
@@ -331,7 +355,10 @@ export default function SignupImpactQuestionnaireStep({
                   value={formik.values.satisfactionEffectiveness}
                 />
               </label>
-              {formik.touched.satisfactionEffectiveness && formik.errors.satisfactionEffectiveness ? <div className="error">{formik.errors.satisfactionEffectiveness}</div> : null}
+              {formik.touched.satisfactionEffectiveness &&
+              formik.errors.satisfactionEffectiveness ? (
+                <div className="error">{formik.errors.satisfactionEffectiveness}</div>
+              ) : null}
             </div>
           </div>
 
@@ -351,7 +378,9 @@ export default function SignupImpactQuestionnaireStep({
                   value={formik.values.satisfactionCostBenefit}
                 />
               </label>
-              {formik.touched.satisfactionCostBenefit && formik.errors.satisfactionCostBenefit ? <div className="error">{formik.errors.satisfactionCostBenefit}</div> : null}
+              {formik.touched.satisfactionCostBenefit && formik.errors.satisfactionCostBenefit ? (
+                <div className="error">{formik.errors.satisfactionCostBenefit}</div>
+              ) : null}
             </div>
           </div>
 
@@ -374,7 +403,9 @@ export default function SignupImpactQuestionnaireStep({
                   ))}
                 </select>
               </label>
-              {formik.touched.productionProblemOutcome && formik.errors.productionProblemOutcome ? <div className="error">{formik.errors.productionProblemOutcome}</div> : null}
+              {formik.touched.productionProblemOutcome && formik.errors.productionProblemOutcome ? (
+                <div className="error">{formik.errors.productionProblemOutcome}</div>
+              ) : null}
             </div>
           </div>
 
@@ -397,7 +428,9 @@ export default function SignupImpactQuestionnaireStep({
                   ))}
                 </select>
               </label>
-              {formik.touched.monitoredKpiCount && formik.errors.monitoredKpiCount ? <div className="error">{formik.errors.monitoredKpiCount}</div> : null}
+              {formik.touched.monitoredKpiCount && formik.errors.monitoredKpiCount ? (
+                <div className="error">{formik.errors.monitoredKpiCount}</div>
+              ) : null}
             </div>
           </div>
 
@@ -420,7 +453,9 @@ export default function SignupImpactQuestionnaireStep({
                   ))}
                 </select>
               </label>
-              {formik.touched.kpiUpdateFrequency && formik.errors.kpiUpdateFrequency ? <div className="error">{formik.errors.kpiUpdateFrequency}</div> : null}
+              {formik.touched.kpiUpdateFrequency && formik.errors.kpiUpdateFrequency ? (
+                <div className="error">{formik.errors.kpiUpdateFrequency}</div>
+              ) : null}
             </div>
           </div>
 
@@ -443,7 +478,9 @@ export default function SignupImpactQuestionnaireStep({
                   ))}
                 </select>
               </label>
-              {formik.touched.objectivesTimeHorizon && formik.errors.objectivesTimeHorizon ? <div className="error">{formik.errors.objectivesTimeHorizon}</div> : null}
+              {formik.touched.objectivesTimeHorizon && formik.errors.objectivesTimeHorizon ? (
+                <div className="error">{formik.errors.objectivesTimeHorizon}</div>
+              ) : null}
             </div>
           </div>
 
@@ -466,7 +503,9 @@ export default function SignupImpactQuestionnaireStep({
                   ))}
                 </select>
               </label>
-              {formik.touched.objectivesDifficulty && formik.errors.objectivesDifficulty ? <div className="error">{formik.errors.objectivesDifficulty}</div> : null}
+              {formik.touched.objectivesDifficulty && formik.errors.objectivesDifficulty ? (
+                <div className="error">{formik.errors.objectivesDifficulty}</div>
+              ) : null}
             </div>
           </div>
 
@@ -489,7 +528,9 @@ export default function SignupImpactQuestionnaireStep({
                   ))}
                 </select>
               </label>
-              {formik.touched.productionBonusBasis && formik.errors.productionBonusBasis ? <div className="error">{formik.errors.productionBonusBasis}</div> : null}
+              {formik.touched.productionBonusBasis && formik.errors.productionBonusBasis ? (
+                <div className="error">{formik.errors.productionBonusBasis}</div>
+              ) : null}
             </div>
           </div>
 
@@ -512,7 +553,9 @@ export default function SignupImpactQuestionnaireStep({
                   ))}
                 </select>
               </label>
-              {formik.touched.workerPromotionCriteria && formik.errors.workerPromotionCriteria ? <div className="error">{formik.errors.workerPromotionCriteria}</div> : null}
+              {formik.touched.workerPromotionCriteria && formik.errors.workerPromotionCriteria ? (
+                <div className="error">{formik.errors.workerPromotionCriteria}</div>
+              ) : null}
             </div>
           </div>
 
@@ -535,7 +578,8 @@ export default function SignupImpactQuestionnaireStep({
                   ))}
                 </select>
               </label>
-              {formik.touched.lowProductivityWorkerReassignmentTiming && formik.errors.lowProductivityWorkerReassignmentTiming ? (
+              {formik.touched.lowProductivityWorkerReassignmentTiming &&
+              formik.errors.lowProductivityWorkerReassignmentTiming ? (
                 <div className="error">{formik.errors.lowProductivityWorkerReassignmentTiming}</div>
               ) : null}
             </div>
@@ -548,7 +592,7 @@ export default function SignupImpactQuestionnaireStep({
           Indietro
         </button>
         <button type="submit" className="trnt_btn primary" disabled={formik.isSubmitting}>
-          {formik.isSubmitting ? "caricamento..." : action}
+          {formik.isSubmitting ? "Caricamento..." : action}
         </button>
       </div>
     </form>

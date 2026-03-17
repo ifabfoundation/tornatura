@@ -119,6 +119,9 @@ $ms-sidebar-transition: 100ms;
   cursor: pointer;
 }
 
+.space-05 {
+  height: #{$space * 0.5};
+}
 .space-1 {
   height: #{$space * 1};
 }
@@ -2859,15 +2862,31 @@ $hb-color-on-hover: #eee;
 }
 
 .llist-group {
+  $hs: 24px;
+  $hl: 42px;
   .llist-group-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 10px;
-    height: 42px;
+    padding: 0 5px;
     @include font-s-600;
-    & + .llist-group-item {
-      border-top: 1px solid $c-grey_1;
+    height: $hs;
+    @include media-breakpoint-only(xs) {
+      &:first-of-type {
+        height: $hs + 5px;
+        padding-top: 5px;
+      }
+      &:last-of-type {
+        height: $hs + 5px;
+        padding-bottom: 5px;
+      }
+    }
+    @include media-breakpoint-up(sm) {
+      height: $hl;
+      padding: 0 10px;
+      & + .llist-group-item {
+        border-top: 1px solid $c-grey_1;
+      }
     }
   }
 }

@@ -117,11 +117,19 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
       <header className="d-flex align-items-start justify-content-between">
         <div>
           {/* <div className="label py-1">Rilevamenti di</div> */}
-          <span className="font-l-600">{`${observationType.typology}  ›  ${observationType.method}`}</span>
+          <a
+            className="font-l-600 color-black no-u pointer"
+            onClick={() =>
+              navigate(`/companies/${companyId}/fields/${fieldId}/type/${detectionType.id}`, {
+                // navigate(`/companies/${companyId}/fields/${fieldId}/new-detection`, {
+                state: { typeId: typeId },
+              })
+            }
+          >{`${observationType.typology}  ›  ${observationType.method}`}</a>
           <br />
           <button
             className="trnt_btn slim-y primary outlined narrow-x px-3 mt-2 type-rounded"
-            data-type="rounded"
+            // data-type="rounded"
             onClick={() =>
               navigate(`/companies/${companyId}/fields/${fieldId}/type/${detectionType.id}`, {
                 // navigate(`/companies/${companyId}/fields/${fieldId}/new-detection`, {

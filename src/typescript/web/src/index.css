@@ -13061,6 +13061,10 @@ strong {
   cursor: pointer;
 }
 
+.space-05 {
+  height: 15px;
+}
+
 .space-1 {
   height: 30px;
 }
@@ -17228,8 +17232,7 @@ ul.list-group li.list-group-item:hover {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 10px;
-  height: 42px;
+  padding: 0 5px;
   font-family: "Inter", sans-serif;
   font-size: 9.5px;
   letter-spacing: 0.02em;
@@ -17239,6 +17242,7 @@ ul.list-group li.list-group-item:hover {
   font-stretch: normal;
   font-optical-sizing: auto;
   font-weight: 600;
+  height: 24px;
 }
 
 @media (min-width: 576px) {
@@ -17265,8 +17269,25 @@ ul.list-group li.list-group-item:hover {
   }
 }
 
-.llist-group .llist-group-item + .llist-group-item {
-  border-top: 1px solid #efefef;
+@media (max-width: 575.98px) {
+  .llist-group .llist-group-item:first-of-type {
+    height: 29px;
+    padding-top: 5px;
+  }
+  .llist-group .llist-group-item:last-of-type {
+    height: 29px;
+    padding-bottom: 5px;
+  }
+}
+
+@media (min-width: 576px) {
+  .llist-group .llist-group-item {
+    height: 42px;
+    padding: 0 10px;
+  }
+  .llist-group .llist-group-item + .llist-group-item {
+    border-top: 1px solid #efefef;
+  }
 }
 
 .cardlet {

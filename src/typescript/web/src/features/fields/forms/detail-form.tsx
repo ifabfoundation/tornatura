@@ -85,7 +85,7 @@ export function FieldDetailForm({ field }: FieldDetailProps) {
       };
 
       await dispatch(
-        fieldsActions.updateFieldAction({ orgId: field.orgId, fieldId: field.id, body: payload })
+        fieldsActions.updateFieldAction({ orgId: field.orgId, fieldId: field.id, body: payload }),
       );
       setSubmitting(false);
       navigate(`/companies/${field.orgId}/fields/${field.id}`);
@@ -190,8 +190,8 @@ export function FieldDetailForm({ field }: FieldDetailProps) {
                   />
                 </label>
                 {formik.touched.name && formik.errors.name ? (
-                <div className="error">{formik.errors.name}</div>
-              ) : null}
+                  <div className="error">{formik.errors.name}</div>
+                ) : null}
               </div>
             </div>
             <div className="row input-row">
@@ -216,8 +216,8 @@ export function FieldDetailForm({ field }: FieldDetailProps) {
                   </select>
                 </label>
                 {formik.touched.harvest && formik.errors.harvest ? (
-                <div className="error">{formik.errors.harvest}</div>
-              ) : null}
+                  <div className="error">{formik.errors.harvest}</div>
+                ) : null}
               </div>
               <div className="col-md-6 input-row-margin-fix">
                 <label>
@@ -233,8 +233,8 @@ export function FieldDetailForm({ field }: FieldDetailProps) {
                   />
                 </label>
                 {formik.touched.variety && formik.errors.variety ? (
-                <div className="error">{formik.errors.variety}</div>
-              ) : null}
+                  <div className="error">{formik.errors.variety}</div>
+                ) : null}
               </div>
             </div>
             <div className="row input-row">
@@ -259,8 +259,8 @@ export function FieldDetailForm({ field }: FieldDetailProps) {
                   </select>
                 </label>
                 {formik.touched.rotation && formik.errors.rotation ? (
-                <div className="error">{formik.errors.rotation}</div>
-              ) : null}
+                  <div className="error">{formik.errors.rotation}</div>
+                ) : null}
               </div>
               <div className="col-md-6 input-row-margin-fix">
                 <label>
@@ -278,8 +278,8 @@ export function FieldDetailForm({ field }: FieldDetailProps) {
                   />
                 </label>
                 {formik.touched.year && formik.errors.year ? (
-                <div className="error">{formik.errors.year}</div>
-              ) : null}
+                  <div className="error">{formik.errors.year}</div>
+                ) : null}
               </div>
             </div>
             <div className="row input-row">
@@ -304,8 +304,8 @@ export function FieldDetailForm({ field }: FieldDetailProps) {
                   </select>
                 </label>
                 {formik.touched.areafrom && formik.errors.areafrom ? (
-                <div className="error">{formik.errors.areafrom}</div>
-              ) : null}
+                  <div className="error">{formik.errors.areafrom}</div>
+                ) : null}
               </div>
               <div className="col-md-6 input-row-margin-fix">
                 <label>
@@ -326,8 +326,8 @@ export function FieldDetailForm({ field }: FieldDetailProps) {
                   />
                 </label>
                 {formik.touched.area && formik.errors.area ? (
-                <div className="error">{formik.errors.area}</div>
-              ) : null}
+                  <div className="error">{formik.errors.area}</div>
+                ) : null}
               </div>
             </div>
             <div className="row input-row">
@@ -369,8 +369,8 @@ export function FieldDetailForm({ field }: FieldDetailProps) {
                   </select>
                 </label>
                 {formik.touched.irrigation && formik.errors.irrigation ? (
-                <div className="error">{formik.errors.irrigation}</div>
-              ) : null}
+                  <div className="error">{formik.errors.irrigation}</div>
+                ) : null}
               </div>
             </div>
             <div className="row input-row">
@@ -419,8 +419,8 @@ export function FieldDetailForm({ field }: FieldDetailProps) {
                   </select>
                 </label>
                 {formik.touched.weaving && formik.errors.weaving ? (
-                <div className="error">{formik.errors.weaving}</div>
-              ) : null}
+                  <div className="error">{formik.errors.weaving}</div>
+                ) : null}
               </div>
             </div>
             <div className="row input-row">
@@ -448,7 +448,7 @@ export function FieldDetailForm({ field }: FieldDetailProps) {
         </div>
         <div className="buttons-wrapper mt-4 text-center">
           <button type="submit" className="trnt_btn primary" disabled={formik.isSubmitting}>
-            {formik.isSubmitting ? "caricamento..." : "Salva modifiche"}
+            {formik.isSubmitting ? "Caricamento..." : "Salva modifiche"}
           </button>
           <button type="button" className="trnt_btn info danger1" onClick={handleFieldDelete}>
             Elimina campo
