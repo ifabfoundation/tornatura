@@ -316,8 +316,10 @@ function CameraCapture({
 function isPointInsideField(pointLon: number, pointLat: number, areaPoints: number[][]) {
   if (areaPoints.length > 2) {
     const polygon = turf.polygon([areaPoints]);
+    const polygonWithTolerance = turf.buffer(polygon, 5, { units: "meters" });
     const point = turf.point([pointLon, pointLat]);
-    const isContained = turf.booleanContains(polygon, point);
+    if (!polygonWithTolerance) return false; // or handle however you want
+    const isContained = turf.booleanContains(polygonWithTolerance, point);
     return isContained;
   }
   return false;

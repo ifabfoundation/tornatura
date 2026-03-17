@@ -13347,6 +13347,14 @@ small, .small {
   }
 }
 
+#app a.button:disabled,
+#app input[type="submit"]:disabled,
+#app button.trnt_btn:disabled {
+  background-color: #d8d8d8 !important;
+  pointer-events: none !important;
+  color: #bbbbbb !important;
+}
+
 #app a.button[data-type="round"], #app a.button.type-round,
 #app input[type="submit"][data-type="round"],
 #app input[type="submit"].type-round,
@@ -17677,6 +17685,12 @@ table.model-table tr th:last-child {
 
 #app .mapboxgl-ctrl {
   opacity: 0.5;
+}
+
+#app #map[data-map-type="area-drawing"] .mapboxgl-ctrl-top-right .mapboxgl-ctrl-group.mapboxgl-ctrl {
+  opacity: 1;
+  scale: 1.2;
+  transform-origin: top right;
 }
 
 .CodeMirror .CodeMirror-scroll {

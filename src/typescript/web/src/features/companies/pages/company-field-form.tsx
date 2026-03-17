@@ -222,8 +222,8 @@ export function FieldFormInfo({ formData, action, onNextClick, onBackClick }: Fi
                 </select>
               </label>
               {formik.touched.rotation && formik.errors.rotation ? (
-                  <div className="error">{formik.errors.rotation}</div>
-                ) : null}
+                <div className="error">{formik.errors.rotation}</div>
+              ) : null}
             </div>
             <div className="col-md-6 input-row-margin-fix">
               <label>
@@ -241,8 +241,8 @@ export function FieldFormInfo({ formData, action, onNextClick, onBackClick }: Fi
                 />
               </label>
               {formik.touched.rotation && formik.errors.year ? (
-                  <div className="error">{formik.errors.year}</div>
-                ) : null}
+                <div className="error">{formik.errors.year}</div>
+              ) : null}
             </div>
           </div>
           <div className="row input-row">
@@ -267,8 +267,8 @@ export function FieldFormInfo({ formData, action, onNextClick, onBackClick }: Fi
                 </select>
               </label>
               {formik.touched.areafrom && formik.errors.areafrom ? (
-                  <div className="error">{formik.errors.areafrom}</div>
-                ) : null}
+                <div className="error">{formik.errors.areafrom}</div>
+              ) : null}
             </div>
             <div className="col-md-6 input-row-margin-fix">
               <label>
@@ -291,8 +291,8 @@ export function FieldFormInfo({ formData, action, onNextClick, onBackClick }: Fi
                 />
               </label>
               {formik.touched.area && formik.errors.area ? (
-                  <div className="error">{formik.errors.area}</div>
-                ) : null}
+                <div className="error">{formik.errors.area}</div>
+              ) : null}
             </div>
           </div>
           <div className="row input-row">
@@ -431,12 +431,11 @@ export const FieldFormMap = ({ action, onNextClick }: FieldProps) => {
   const [mapLoaded, setMapLoaded] = React.useState(false);
   const [inputValue, setInputValue] = React.useState("");
   const [map, setMap] = React.useState<Point[]>([]);
-  
 
   React.useEffect(() => {
     if (mapLoaded && currentPosition) {
       const source = mapRef.current!.getSource("current-location") as mapboxgl.GeoJSONSource;
-      
+
       if (source) {
         source.setData({
           type: "Feature",
@@ -449,18 +448,18 @@ export const FieldFormMap = ({ action, onNextClick }: FieldProps) => {
       }
     }
   }, [mapLoaded, currentPosition]);
-  
 
   React.useEffect(() => {
-    if (mapContainerRef.current ) {
+    if (mapContainerRef.current) {
       mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_API_TOKEN;
 
       mapRef.current = new mapboxgl.Map({
         container: mapContainerRef.current,
         style: "mapbox://styles/mapbox/satellite-streets-v12",
-        center: currentPosition && currentPosition.lng && currentPosition.lat
-          ? [currentPosition.lng, currentPosition.lat]
-          : [12.5736108, 41.29246],
+        center:
+          currentPosition && currentPosition.lng && currentPosition.lat
+            ? [currentPosition.lng, currentPosition.lat]
+            : [12.5736108, 41.29246],
         zoom: 9,
       });
       mapRef.current.addControl(new MapboxLanguage({ defaultLanguage: "it" }));
@@ -493,7 +492,7 @@ export const FieldFormMap = ({ action, onNextClick }: FieldProps) => {
             "circle-opacity": 1,
           },
         });
-    
+
         mapRef.current!.addLayer({
           id: "current-location-pulse",
           type: "circle",
@@ -506,7 +505,7 @@ export const FieldFormMap = ({ action, onNextClick }: FieldProps) => {
             "circle-opacity-transition": { duration: 0, delay: 0 },
           },
         });
-    
+
         function animatePulse(startTime: number) {
           const t = (performance.now() - startTime) / 1000;
           const cycle = 2; // seconds per pulse
@@ -577,7 +576,7 @@ export const FieldFormMap = ({ action, onNextClick }: FieldProps) => {
     }
   }, [mapContainerRef]);
 
-
+  const buttonDisabled = map.length === 0;
 
   return (
     <>
@@ -602,16 +601,17 @@ export const FieldFormMap = ({ action, onNextClick }: FieldProps) => {
           />
         </div>
       )}
-      <div ref={mapContainerRef} id="map"></div>
+      <div ref={mapContainerRef} id="map" data-map-type="area-drawing"></div>
 
       <div className="fixed-bottom mt-4 text-center" data-style="floating">
         <div className="contents bg-glass">
           <button
-            className="trnt_btn primary"
+            className="trnt_btn accent-stronger"
             onClick={() => {
               onNextClick(map);
             }}
-            disabled={map.length === 0}
+            disabled={buttonDisabled}
+            title={buttonDisabled ? "Seleziona un'area sulla mappa" : ""}
           >
             {action}
           </button>
@@ -656,9 +656,11 @@ export function CompanyFieldForm() {
   const createFieldAction = async (payload: AgriFieldMutationPayload) => {
     if (currentCompany) {
       try {
-        await dispatch(fieldsActions.addNewFieldAction({ orgId: currentCompany.orgId, body: payload }));
+        await dispatch(
+          fieldsActions.addNewFieldAction({ orgId: currentCompany.orgId, body: payload }),
+        );
         navigate(`/companies/${companyId}/fields`, { replace: true });
-      } catch (reason){
+      } catch (reason) {
         console.error("Error creating field with reason: ", reason);
       }
     }

@@ -334,6 +334,11 @@ small {
     @include font-m-600;
     transition: all 100ms;
     text-decoration: none;
+    &:disabled {
+      background-color: $c-grey_2 !important;
+      pointer-events: none !important;
+      color: $c-grey_3 !important;
+    }
     &:hover {
     }
     &[data-type="round"],
@@ -3336,6 +3341,12 @@ table.model-table {
   }
   .mapboxgl-ctrl {
     opacity: 0.5;
+  }
+
+  #map[data-map-type="area-drawing"] .mapboxgl-ctrl-top-right .mapboxgl-ctrl-group.mapboxgl-ctrl {
+    opacity: 1;
+    scale: 1.2;
+    transform-origin: top right;
   }
 }
 
