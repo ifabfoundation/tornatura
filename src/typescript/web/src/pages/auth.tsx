@@ -588,7 +588,10 @@ export function Signup() {
   const location = useLocation();
   const navigate = useNavigate();
   const [step, setStep] = React.useState(readSignupStep(location.state) || 1);
-  const [flow, setFlow] = React.useState<string>("Standard");
+
+  // const [flow, setFlow] = React.useState<string>("Standard");
+  const [flow, setFlow] = React.useState<string>("Simple");
+
   const [invitation, setInvitation] = React.useState<InvitationPublic>();
   const [invitationToken, setInvitationToken] = React.useState<string>();
   const [impactQuestionnaireData, setImpactQuestionnaireData] =
@@ -867,6 +870,10 @@ export function Signup() {
                 handleStepClick={(stepIndex) => {
                   goToStep(standardStepperSteps[stepIndex].step);
                 }}
+                handleBackClick={handleBackClick}
+                handleExitClick={() => {
+                  navigate("/");
+                }}
               />
               <div className="form-wrapper">
                 {step === 1 && (
@@ -952,6 +959,10 @@ export function Signup() {
                 currentStep={currentSimpleFlowStepIndex}
                 handleStepClick={(stepIndex) => {
                   goToStep(simpleFlowStepperSteps[stepIndex].step);
+                }}
+                handleBackClick={handleBackClick}
+                handleExitClick={() => {
+                  navigate("/");
                 }}
               />
 

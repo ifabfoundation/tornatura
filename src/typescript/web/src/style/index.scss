@@ -733,6 +733,7 @@ small {
 
   .fixed-bottom {
     position: fixed;
+    z-index: 4;
     bottom: 0;
     left: 0;
     display: flex;
@@ -1314,7 +1315,7 @@ small {
       display: flex;
       align-items: center;
       height: 100%;
-      margin-right: 25px;
+      // margin-right: 25px; //////////////
       color: inherit !important;
       span {
         margin-left: 8px;
@@ -1792,142 +1793,165 @@ small {
   }
   // ---------------------------------------------------------------------------
 
-  .stepper-wrapper {
-    position: relative;
-    margin: 0 10px;
-    @include media-breakpoint-down(sm) {
-      margin-top: -10px;
-      ol.stepper {
-        border-radius: 0px !important;
-      }
-    }
+  .stepper-container {
+    background-color: $c-yelo-dark;
+    display: flex;
+    align-items: center;
+    flex-flow: row-reverse;
 
-    @include media-breakpoint-between(sm, md) {
-      margin: -20px -10px 0px -10px;
+    $debugSafeCheck: 0px;
+    margin: #{-10px + $debugSafeCheck} #{-0px + $debugSafeCheck} 0px #{-0px + $debugSafeCheck};
+    @include media-breakpoint-up(sm) {
+      margin: #{-20px + $debugSafeCheck} #{-10px + $debugSafeCheck};
     }
-
-    button.stepper-back-button {
-      z-index: 1;
-      @include media-breakpoint-up(md) {
-        display: none;
-      }
-      position: absolute;
-      left: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      @include font-l;
-      border: none;
-      border-radius: 16px;
-      height: 32px;
-      width: 32px;
-      // border: 1.5px solid rgba(white, 0.05);
-      color: $c-yelo;
+    @include media-breakpoint-up(md) {
+      margin: #{-10px + $debugSafeCheck};
+      flex-flow: row;
       background-color: transparent;
     }
+    @include media-breakpoint-up(xl) {
+      margin: 0;
+    }
 
-    $neg-margin: 7px;
-    ol.stepper {
-      display: flex;
-      height: 46px;
-      width: 100%;
-      overflow: hidden;
-      border-radius: $r * 2;
-      // &::after {
-      //   content: var(--steps-num);
-      //   position: relative;
+    .stepper-wrapper {
+      position: relative;
+      margin: 0 10px;
+      @include media-breakpoint-down(md) {
+        margin: 0;
+        ol.stepper {
+          border-radius: 0px !important;
+        }
+      }
+
+      // @include media-breakpoint-between(sm, md) {
+      //   margin: -20px -10px 0px -10px;
       // }
-      li {
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: background-color 0.3s;
-        flex-grow: 1;
-        background-color: $c-grey_3;
-        // width: 33.33%;
-        width: calc(100% / var(--steps-num) + #{$neg-margin * 2});
-        max-width: calc(100% / var(--steps-num) + #{$neg-margin * 2});
-        min-width: calc(100% / var(--steps-num) + #{$neg-margin * 2});
-        margin: 0px #{-$neg-margin};
 
-        clip-path: polygon(
-          15px 50%,
-          0% 0%,
-          calc(100% - 15px) 0%,
-          100% 50%,
-          calc(100% - 15px) 100%,
-          0% 100%
-        );
-        &:first-child {
+      button.stepper-back-button {
+        z-index: 1;
+        @include media-breakpoint-up(md) {
+          display: none;
+        }
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        @include font-l;
+        border: none;
+        border-radius: 16px;
+        height: 32px;
+        width: 32px;
+        // border: 1.5px solid rgba(white, 0.05);
+        color: $c-yelo;
+        background-color: transparent;
+      }
+
+      $neg-margin: 7px;
+      ol.stepper {
+        display: flex;
+        height: 52px;
+        width: 100%;
+        overflow: hidden;
+        border-radius: $r * 2;
+        @include media-breakpoint-up(md) {
+          &[data-has-recaps="true"] {
+            height: 60px;
+          }
+        }
+        transition: height 0.3s;
+        li {
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: background-color 0.3s;
+          flex-grow: 1;
+          background-color: $c-grey_3;
+          // width: 33.33%;
+          width: calc(100% / var(--steps-num) + #{$neg-margin * 2});
+          max-width: calc(100% / var(--steps-num) + #{$neg-margin * 2});
+          min-width: calc(100% / var(--steps-num) + #{$neg-margin * 2});
+          margin: 0px #{-$neg-margin};
+
           clip-path: polygon(
+            15px 50%,
             0% 0%,
             calc(100% - 15px) 0%,
             100% 50%,
             calc(100% - 15px) 100%,
             0% 100%
           );
-        }
-        &:last-child {
-          clip-path: polygon(15px 50%, 0% 0%, 100% 0%, 100% 100%, 0% 100%);
-        }
+          &:first-child {
+            clip-path: polygon(
+              0% 0%,
+              calc(100% - 15px) 0%,
+              100% 50%,
+              calc(100% - 15px) 100%,
+              0% 100%
+            );
+          }
+          &:last-child {
+            clip-path: polygon(15px 50%, 0% 0%, 100% 0%, 100% 100%, 0% 100%);
+          }
 
-        @include font-m-600;
-        &::before {
-          @include font-s-label;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          height: 16px;
-          width: 16px;
-          border-radius: 50%;
-          margin: 0 7px;
-        }
-        &[data-done="true"] {
-          background-color: $c-dark;
-          color: white;
-          cursor: pointer;
-          &:hover {
-            background-color: darken($c-dark, 5%);
+          @include font-m-600;
+          &::before {
+            @include font-s-label;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            margin: 0 7px;
           }
-          // &::before {
-          //   content: "✓";
-          //   background-color: white;
-          //   color: $c-dark;
-          // }
-        }
-        &[data-current="true"] {
-          background-color: $c-yelo_dark;
-          color: $c-yelo;
-          // &::before {
-          //   content: attr(data-step-num);
-          //   background-color: $c-yelo;
-          //   color: $c-dark;
-          // }
-        }
-        @include media-breakpoint-down(md) {
+          &[data-done="true"] {
+            background-color: $c-dark;
+            color: white;
+            cursor: pointer;
+            &:hover {
+              background-color: darken($c-dark, 5%);
+            }
+            // &::before {
+            //   content: "✓";
+            //   background-color: white;
+            //   color: $c-dark;
+            // }
+          }
           &[data-current="true"] {
-            width: 100%;
-            min-width: 100%;
-            max-width: 100%;
-            margin: 0px;
-            clip-path: none;
+            background-color: $c-yelo_dark;
+            color: $c-yelo;
+            // &::before {
+            //   content: attr(data-step-num);
+            //   background-color: $c-yelo;
+            //   color: $c-dark;
+            // }
           }
-          &[data-current="false"] {
-            display: none;
-            // width: 0px;
-            // min-width: 0px;
-            // max-width: 0px;
-            // margin: 0px;
-            // &:first-child,
-            // &:last-child {
-            //   width: 0px;
-            //   min-width: 0px;
-            //   max-width: 0px;
-            // }
-            // flex-grow: 0;
-            // span {
-            //   display: none;
-            // }
+          @include media-breakpoint-down(md) {
+            &[data-current="true"] {
+              width: 100%;
+              min-width: 100%;
+              max-width: 100%;
+              margin: 0px;
+              clip-path: none;
+            }
+            &[data-current="false"] {
+              display: none;
+              // width: 0px;
+              // min-width: 0px;
+              // max-width: 0px;
+              // margin: 0px;
+              // &:first-child,
+              // &:last-child {
+              //   width: 0px;
+              //   min-width: 0px;
+              //   max-width: 0px;
+              // }
+              // flex-grow: 0;
+              // span {
+              //   display: none;
+              // }
+            }
           }
         }
       }
@@ -2308,7 +2332,9 @@ small {
       padding-right: $space;
       box-shadow: 0 2px 10px 0 rgba($c-grey_6, 0.15);
       @include media-breakpoint-down(lg) {
-        opacity: 0;
+        &:not(.external) {
+          opacity: 0;
+        }
       }
       &.dark {
         background-color: $c-grey_6;
@@ -3235,7 +3261,7 @@ table.model-table {
 // Layout
 // ------------------------------------------------------------------------
 
-@include media-breakpoint-down(xs) {
+@include media-breakpoint-only(xs) {
   .row {
     --bs-gutter-x: 0.5rem; // horizontal gutter
     --bs-gutter-x: 10px; // horizontal gutter

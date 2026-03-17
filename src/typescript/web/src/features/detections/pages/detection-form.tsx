@@ -870,7 +870,9 @@ function DetectionStepTipologia({
 
   return (
     <div className="narrow-container my-5">
-      <h3 className="mb-4 text-center">Seleziona la tipologia di rilevamento</h3>
+      <h3 className="mb-4 pb-2 text-center">
+        <strong>Seleziona la tipologia di rilevamento</strong>
+      </h3>
       {items.length === 0 ? <div>Nessuna tipologia disponibile.</div> : <Accordion items={items} />}
     </div>
   );
@@ -883,8 +885,10 @@ function DetectionStepMetodo({
 }: DetectionProps & { typology: string; methods: string[] }) {
   return (
     <div className="narrow-container my-5">
-      <h3 className="mb-4 text-center">Seleziona il metodo di osservazione</h3>
-      {typology && <p className="text-center">Tipologia: {typology}</p>}
+      <h3 className="mb-4 pb-2 text-center">
+        <strong>Seleziona il metodo di osservazione</strong>
+      </h3>
+      {/* {typology && <p className="text-center">Tipologia: {typology}</p>} */}
       {methods.length === 0 && <div>Nessun metodo disponibile.</div>}
       {methods.map((item, index) => (
         <CozyButton
@@ -966,7 +970,9 @@ function DetectionStepGuide({
   const isGuideUrl = /^https?:\/\//i.test(guideValue);
   return (
     <div className="my-5 text-center">
-      <h3 className="mb-4">Indicazioni per effettuare il rilevamento</h3>
+      <h3 className="mb-4 pb-2">
+        <strong>Indicazioni per effettuare il rilevamento</strong>
+      </h3>
       {observationType ? (
         <Fragment>
           {isGuideUrl ? (
@@ -1068,7 +1074,9 @@ function DetectionStepBbch({ field, onNextClick }: DetectionProps & { field: Agr
 
   return (
     <div className="narrow-container my-5">
-      <h3 className="mb-4 text-center">{"Seleziona la fase fenologica (BBCH)"}</h3>
+      <h3 className="mb-4 pb-2 text-center">
+        <strong>{"Seleziona la fase fenologica (BBCH)"}</strong>
+      </h3>
       <Accordion items={items} />
     </div>
   );
@@ -1150,102 +1158,107 @@ function DetectionStepTreatment({ formData, onNextClick }: DetectionProps) {
 
   return (
     <div className="narrow-container my-5">
-      <h3 className="mb-4 text-center">Trattamenti</h3>
-      <p className="text-center mb-4">
-        Indica se la coltura è stata trattata dall&apos;ultimo rilevamento (o dall&apos;inizio
-        della stagione, se è il primo).
-      </p>
-      <div className="input-row">
-        <label className="mb-2">
-          È stato eseguito un trattamento prima di questo rilevamento?
-        </label>
-        <div className="d-flex gap-2 flex-wrap">
-          <CozyButton
-            content="No"
-            additionalClasses={!treatment ? ["trnt_btn primary"] : ["trnt_btn secondary"]}
-            onClick={() => {
-              setTreatment(false);
-              setError("");
-            }}
-          />
-          <CozyButton
-            content="Sì"
-            additionalClasses={treatment ? ["trnt_btn primary"] : ["trnt_btn secondary"]}
-            onClick={() => {
-              setTreatment(true);
-              setError("");
-            }}
-          />
+      <h3 className="mb-4 text-center">
+        <strong>Trattamenti</strong>
+      </h3>
+      <div className="form-section">
+        <p className="mb-4">
+          Indica se la coltura è stata trattata dall&apos;ultimo rilevamento (o dall&apos;inizio
+          della stagione, se è il primo).
+        </p>
+        <div className="input-row">
+          <label className="mb-2">
+            È stato eseguito un trattamento prima di questo rilevamento?
+          </label>
+          <div className="d-flex gap-2">
+            <CozyButton
+              content="No"
+              additionalClasses={["mt-0", !treatment ? "trnt_btn primary" : "trnt_btn secondary"]}
+              onClick={() => {
+                setTreatment(false);
+                setError("");
+              }}
+            />
+            <CozyButton
+              content="Sì"
+              additionalClasses={["mt-0", treatment ? "trnt_btn primary" : "trnt_btn secondary"]}
+              onClick={() => {
+                setTreatment(true);
+                setError("");
+              }}
+            />
+          </div>
         </div>
-      </div>
-      {treatment && (
-        <Fragment>
-          <div className="input-row mt-4">
-            <label>
-              Quando è stato eseguito?
-              <input
-                type="text"
-                value={treatmentDate}
-                placeholder="gg/mm/aaaa"
-                inputMode="numeric"
-                onChange={(event) => {
-                  setTreatmentDate(normalizeDateInput(event.target.value));
-                  setError("");
-                }}
-              />
-            </label>
-            <div className="mt-2">
-              <input
-                type="date"
-                value={toPickerDate(treatmentDate)}
-                onChange={(event) => {
-                  const value = event.target.value;
-                  if (value === "") {
-                    setTreatmentDate("");
-                    return;
-                  }
-                  const [year, month, day] = value.split("-");
-                  setTreatmentDate(`${day}/${month}/${year}`);
-                  setError("");
-                }}
-              />
+        {treatment && (
+          <Fragment>
+            <div className="input-row mt-4">
+              <label>
+                Quando è stato eseguito?
+                <input
+                  type="text"
+                  value={treatmentDate}
+                  placeholder="gg/mm/aaaa"
+                  inputMode="numeric"
+                  onChange={(event) => {
+                    setTreatmentDate(normalizeDateInput(event.target.value));
+                    setError("");
+                  }}
+                />
+              </label>
+              <div className="mt-2">
+                <input
+                  type="date"
+                  value={toPickerDate(treatmentDate)}
+                  onChange={(event) => {
+                    const value = event.target.value;
+                    if (value === "") {
+                      setTreatmentDate("");
+                      return;
+                    }
+                    const [year, month, day] = value.split("-");
+                    setTreatmentDate(`${day}/${month}/${year}`);
+                    setError("");
+                  }}
+                />
+              </div>
+              <small className="d-block mt-2 text-muted">
+                Se non ricordi il giorno esatto, inserisci una data approssimativa.
+              </small>
             </div>
-            <small className="d-block mt-2 text-muted">
-              Se non ricordi il giorno esatto, inserisci una data approssimativa.
-            </small>
+            <div className="input-row mt-4">
+              <label>
+                Nome del prodotto (come in etichetta)
+                <input
+                  type="text"
+                  value={treatmentProduct}
+                  placeholder="es. Captan, Ditianon"
+                  list="treatment-products"
+                  onChange={(event) => {
+                    setTreatmentProduct(event.target.value);
+                    setError("");
+                  }}
+                />
+              </label>
+              {productSuggestions.length > 0 && (
+                <datalist id="treatment-products">
+                  {productSuggestions.map((product) => (
+                    <option key={product} value={product} />
+                  ))}
+                </datalist>
+              )}
+            </div>
+          </Fragment>
+        )}
+        {error !== "" && <div className="error mt-3">{error}</div>}
+        <div className="fixed-bottom mt-4 text-center">
+          <div className="contents">
+            <button className="trnt_btn primary" onClick={handleSubmit}>
+              Avanti
+            </button>
           </div>
-          <div className="input-row mt-4">
-            <label>
-              Nome del prodotto (come in etichetta)
-              <input
-                type="text"
-                value={treatmentProduct}
-                placeholder="es. Captan, Ditianon"
-                list="treatment-products"
-                onChange={(event) => {
-                  setTreatmentProduct(event.target.value);
-                  setError("");
-                }}
-              />
-            </label>
-            {productSuggestions.length > 0 && (
-              <datalist id="treatment-products">
-                {productSuggestions.map((product) => (
-                  <option key={product} value={product} />
-                ))}
-              </datalist>
-            )}
-          </div>
-        </Fragment>
-      )}
-      {error !== "" && <div className="error mt-3">{error}</div>}
-      <div className="fixed-bottom mt-4 text-center">
-        <div className="contents">
-          <button className="trnt_btn primary" onClick={handleSubmit}>
-            Avanti
-          </button>
         </div>
       </div>
+      <div className="space-3"></div>
     </div>
   );
 }
@@ -1950,9 +1963,10 @@ export function DetectionForm() {
   const currentField = useAppSelector((state) =>
     fieldsSelectors.selectFieldbyId(state, fieldId ?? "defauld"),
   );
-  const preselectedState = location.state as
-    | { typeId?: string; detectionStepIndex?: number }
-    | null;
+  const preselectedState = location.state as {
+    typeId?: string;
+    detectionStepIndex?: number;
+  } | null;
   const preselectedTypeId = (preselectedState?.typeId ?? searchParams.get("typeId") ?? "").trim();
   const preselectedTypology = (searchParams.get("typology") ?? "").trim();
   const preselectedMethod = (searchParams.get("method") ?? "").trim();
@@ -1983,6 +1997,7 @@ export function DetectionForm() {
     hasPreselection ? preselectedMethod : "",
   );
   const [useShortFlow, setUseShortFlow] = React.useState(false);
+  const [stepperRecapValues, setStepperRecapValues] = React.useState<Record<string, string>>({});
   const goToStep = React.useCallback(
     (nextStep: number, replace = false) => {
       setStepIndex(nextStep);
@@ -2092,6 +2107,12 @@ export function DetectionForm() {
       : ["typology", "method", "guide", "bbch", "treatment", "points", "done"];
 
   const currentStepKey = steps[stepIndex];
+
+  const updateStepperRecaps = (nextStep: number, values: {}) => {
+    const currentValues = stepperRecapValues;
+    const newValues = { ...currentValues, ...values };
+    setStepperRecapValues(newValues);
+  };
 
   React.useEffect(() => {
     const historyStep = readDetectionStepIndex(location.state);
@@ -2204,6 +2225,7 @@ export function DetectionForm() {
       const typologyData = data as DetectionStepTypologyData;
       setSelectedTypology(typologyData.typology);
       setSelectedMethod("");
+      updateStepperRecaps(stepIndex + 1, { typology: typologyData.typology });
       goToStep(stepIndex + 1);
       return;
     }
@@ -2220,10 +2242,12 @@ export function DetectionForm() {
         ...prev,
         detectionTypeId: matchingDetectionType?.id ?? "",
       }));
+      updateStepperRecaps(stepIndex + 1, { typology: selectedTypology, method: methodData.method });
       goToStep(stepIndex + 1);
       return;
     }
     if (currentStepKey === "guide") {
+      // updateStepperRecaps(stepIndex + 1, { typology: formData, method: formData });
       goToStep(stepIndex + 1);
       return;
     }
@@ -2237,6 +2261,7 @@ export function DetectionForm() {
           bbch: bbchData.bbch ?? "",
         },
       }));
+      updateStepperRecaps(stepIndex + 1, { bbch: bbchData.bbch ?? "" });
       goToStep(stepIndex + 1);
       return;
     }
@@ -2330,28 +2355,27 @@ export function DetectionForm() {
     ? ["BBCH", "Trattamento", "Rilevamento"]
     : ["Tipologia", "Metodo", "Guida", "BBCH", "Trattamento", "Rilevamento"];
 
+  const stepperRecaps = steps.slice(0, stepIndex).map((key) => {
+    let recapString = "✓";
+    if (stepperRecapValues.hasOwnProperty(key)) {
+      recapString = stepperRecapValues[key];
+    }
+    return recapString;
+  });
+
   return (
     <Fragment>
       {!["points", "done"].includes(currentStepKey) && (
-        <div className="d-flex">
-          <button
-            className="trnt_btn primary me-3"
-            data-type="round"
-            onClick={() => {
-              navigate(`/companies/${companyId}/fields/${fieldId}`, { replace: true });
-            }}
-          >
-            &larr;
-          </button>
-          <div className="flex-grow-1">
-            <Stepper
-              items={stepperItems}
-              currentStep={stepIndex}
-              handleBackClick={handleBackClick}
-              handleStepClick={(idx) => goToStep(idx)}
-            />
-          </div>
-        </div>
+        <Stepper
+          items={stepperItems}
+          currentStep={stepIndex}
+          handleBackClick={handleBackClick}
+          handleStepClick={(idx) => goToStep(idx)}
+          handleExitClick={() => {
+            navigate(`/companies/${companyId}/fields/${fieldId}`, { replace: true });
+          }}
+          itemRecaps={stepperRecaps}
+        />
       )}
 
       <div>

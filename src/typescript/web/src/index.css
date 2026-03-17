@@ -14104,6 +14104,7 @@ small, .small {
 
 #app .fixed-bottom {
   position: fixed;
+  z-index: 4;
   bottom: 0;
   left: 0;
   display: flex;
@@ -14973,7 +14974,6 @@ small, .small {
   display: flex;
   align-items: center;
   height: 100%;
-  margin-right: 25px;
   color: inherit !important;
 }
 
@@ -15540,27 +15540,49 @@ small, .small {
   }
 }
 
-#app .stepper-wrapper {
+#app .stepper-container {
+  background-color: #3d401a;
+  display: flex;
+  align-items: center;
+  flex-flow: row-reverse;
+  margin: -10px 0px 0px 0px;
+}
+
+@media (min-width: 576px) {
+  #app .stepper-container {
+    margin: -20px -10px;
+  }
+}
+
+@media (min-width: 768px) {
+  #app .stepper-container {
+    margin: -10px;
+    flex-flow: row;
+    background-color: transparent;
+  }
+}
+
+@media (min-width: 1200px) {
+  #app .stepper-container {
+    margin: 0;
+  }
+}
+
+#app .stepper-container .stepper-wrapper {
   position: relative;
   margin: 0 10px;
 }
 
-@media (max-width: 575.98px) {
-  #app .stepper-wrapper {
-    margin-top: -10px;
+@media (max-width: 767.98px) {
+  #app .stepper-container .stepper-wrapper {
+    margin: 0;
   }
-  #app .stepper-wrapper ol.stepper {
+  #app .stepper-container .stepper-wrapper ol.stepper {
     border-radius: 0px !important;
   }
 }
 
-@media (min-width: 576px) and (max-width: 767.98px) {
-  #app .stepper-wrapper {
-    margin: -20px -10px 0px -10px;
-  }
-}
-
-#app .stepper-wrapper button.stepper-back-button {
+#app .stepper-container .stepper-wrapper button.stepper-back-button {
   z-index: 1;
   position: absolute;
   left: 10px;
@@ -15583,44 +15605,51 @@ small, .small {
 }
 
 @media (min-width: 768px) {
-  #app .stepper-wrapper button.stepper-back-button {
+  #app .stepper-container .stepper-wrapper button.stepper-back-button {
     display: none;
   }
 }
 
 @media (min-width: 576px) {
-  #app .stepper-wrapper button.stepper-back-button {
+  #app .stepper-container .stepper-wrapper button.stepper-back-button {
     font-size: 18px;
   }
 }
 
 @media (min-width: 768px) {
-  #app .stepper-wrapper button.stepper-back-button {
+  #app .stepper-container .stepper-wrapper button.stepper-back-button {
     font-size: 20px;
   }
 }
 
 @media (min-width: 992px) {
-  #app .stepper-wrapper button.stepper-back-button {
+  #app .stepper-container .stepper-wrapper button.stepper-back-button {
     font-size: 20px;
   }
 }
 
 @media (min-width: 1200px) {
-  #app .stepper-wrapper button.stepper-back-button {
+  #app .stepper-container .stepper-wrapper button.stepper-back-button {
     font-size: 20px;
   }
 }
 
-#app .stepper-wrapper ol.stepper {
+#app .stepper-container .stepper-wrapper ol.stepper {
   display: flex;
-  height: 46px;
+  height: 52px;
   width: 100%;
   overflow: hidden;
   border-radius: 10px;
+  transition: height 0.3s;
 }
 
-#app .stepper-wrapper ol.stepper li {
+@media (min-width: 768px) {
+  #app .stepper-container .stepper-wrapper ol.stepper[data-has-recaps="true"] {
+    height: 60px;
+  }
+}
+
+#app .stepper-container .stepper-wrapper ol.stepper li {
   height: 100%;
   display: flex;
   align-items: center;
@@ -15644,39 +15673,39 @@ small, .small {
   font-weight: 600 !important;
 }
 
-#app .stepper-wrapper ol.stepper li:first-child {
+#app .stepper-container .stepper-wrapper ol.stepper li:first-child {
   clip-path: polygon(0% 0%, calc(100% - 15px) 0%, 100% 50%, calc(100% - 15px) 100%, 0% 100%);
 }
 
-#app .stepper-wrapper ol.stepper li:last-child {
+#app .stepper-container .stepper-wrapper ol.stepper li:last-child {
   clip-path: polygon(15px 50%, 0% 0%, 100% 0%, 100% 100%, 0% 100%);
 }
 
 @media (min-width: 576px) {
-  #app .stepper-wrapper ol.stepper li {
+  #app .stepper-container .stepper-wrapper ol.stepper li {
     font-size: 14px;
   }
 }
 
 @media (min-width: 768px) {
-  #app .stepper-wrapper ol.stepper li {
+  #app .stepper-container .stepper-wrapper ol.stepper li {
     font-size: 15px;
   }
 }
 
 @media (min-width: 992px) {
-  #app .stepper-wrapper ol.stepper li {
+  #app .stepper-container .stepper-wrapper ol.stepper li {
     font-size: 15px;
   }
 }
 
 @media (min-width: 1200px) {
-  #app .stepper-wrapper ol.stepper li {
+  #app .stepper-container .stepper-wrapper ol.stepper li {
     font-size: 15px;
   }
 }
 
-#app .stepper-wrapper ol.stepper li::before {
+#app .stepper-container .stepper-wrapper ol.stepper li::before {
   font-family: "Inter", sans-serif;
   font-size: 9.5px;
   letter-spacing: 0.02em;
@@ -15697,53 +15726,53 @@ small, .small {
 }
 
 @media (min-width: 576px) {
-  #app .stepper-wrapper ol.stepper li::before {
+  #app .stepper-container .stepper-wrapper ol.stepper li::before {
     font-size: 10.5px;
   }
 }
 
 @media (min-width: 768px) {
-  #app .stepper-wrapper ol.stepper li::before {
+  #app .stepper-container .stepper-wrapper ol.stepper li::before {
     font-size: 11px;
   }
 }
 
 @media (min-width: 992px) {
-  #app .stepper-wrapper ol.stepper li::before {
+  #app .stepper-container .stepper-wrapper ol.stepper li::before {
     font-size: 11px;
   }
 }
 
 @media (min-width: 1200px) {
-  #app .stepper-wrapper ol.stepper li::before {
+  #app .stepper-container .stepper-wrapper ol.stepper li::before {
     font-size: 11px;
   }
 }
 
-#app .stepper-wrapper ol.stepper li[data-done="true"] {
+#app .stepper-container .stepper-wrapper ol.stepper li[data-done="true"] {
   background-color: #1f1f1f;
   color: white;
   cursor: pointer;
 }
 
-#app .stepper-wrapper ol.stepper li[data-done="true"]:hover {
+#app .stepper-container .stepper-wrapper ol.stepper li[data-done="true"]:hover {
   background-color: #121212;
 }
 
-#app .stepper-wrapper ol.stepper li[data-current="true"] {
+#app .stepper-container .stepper-wrapper ol.stepper li[data-current="true"] {
   background-color: #3d401a;
   color: #eaff00;
 }
 
 @media (max-width: 767.98px) {
-  #app .stepper-wrapper ol.stepper li[data-current="true"] {
+  #app .stepper-container .stepper-wrapper ol.stepper li[data-current="true"] {
     width: 100%;
     min-width: 100%;
     max-width: 100%;
     margin: 0px;
     clip-path: none;
   }
-  #app .stepper-wrapper ol.stepper li[data-current="false"] {
+  #app .stepper-container .stepper-wrapper ol.stepper li[data-current="false"] {
     display: none;
   }
 }
@@ -16263,7 +16292,7 @@ small, .small {
 }
 
 @media (max-width: 991.98px) {
-  #app .ui-right .headerbar {
+  #app .ui-right .headerbar:not(.external) {
     opacity: 0;
   }
 }
@@ -17601,9 +17630,11 @@ table.model-table tr th:last-child {
   border-right: none;
 }
 
-.row {
-  --bs-gutter-x: 0.5rem;
-  --bs-gutter-x: 10px;
+@media (max-width: 575.98px) {
+  .row {
+    --bs-gutter-x: 0.5rem;
+    --bs-gutter-x: 10px;
+  }
 }
 
 .remove-content-padding-x {
