@@ -1643,11 +1643,7 @@ function DetectionStepObservationPoints({
       <div className="remove-content-padding-x remove-content-padding-y">
         <div className="detection-observation-ui-container">
           <div className="dfpart_header">
-            {/* {`Fotografie     Note     ✓Fine`} */}
-
-            <div className="">
-              {/* <a onClick={onBackClick}>&larr;</a> */}
-
+            <div className="d-flex align-items-center">
               <button
                 className="trnt_btn primary me-3"
                 data-type="round"
@@ -1655,9 +1651,17 @@ function DetectionStepObservationPoints({
               >
                 &times;
               </button>
+              <button
+                className="trnt_btn small narrow-x slim-y primary mx-1 px-1 rounded"
+                onClick={() => setInfoPanelOpen(true)}
+              >
+                <Icon iconName={"info"} color={"white"} />
+                <span className="mx-2 d-none d-md-inline">Istruzioni</span>
+              </button>
             </div>
 
-            <div className="buttons-wrapper text-center">
+            <div className="buttons-wrapper text-center"></div>
+            <div className="d-flex align-items-center">
               <button
                 className="trnt_btn small narrow-x white no-slim-y type-rounded px-1"
                 onClick={() => setCameraOpen(true)}
@@ -1677,15 +1681,6 @@ function DetectionStepObservationPoints({
                 <span className="mx-1 d-none d-sm-inline">Nota</span>
                 {noteValue != "" && <span className="bedge ms-1">1</span>}
                 {/* {noteValue == "" && <span className="bedge ms-1 d-sm-none">+</span>} */}
-              </button>
-            </div>
-            <div className="d-flex align-items-center">
-              <button
-                className="trnt_btn small narrow-x slim-y primary mx-1 px-1 rounded"
-                onClick={() => setInfoPanelOpen(true)}
-              >
-                <Icon iconName={"info"} color={"white"} />
-                <span className="mx-2 d-none d-md-inline">Istruzioni</span>
               </button>
               <a className="button narrow-x type-rounded px-3 accent-stronger" onClick={handleSave}>
                 <span className="font-s-600">
