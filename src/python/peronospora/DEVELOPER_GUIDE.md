@@ -1,8 +1,9 @@
 # Peronospora Risk Prediction - Developer Guide
 ## Guida Tecnica Completa per Sviluppatori
 
-**Versione**: 1.0  
-**Data**: 14 Gennaio 2026  
+**Versione**: 2.0
+**Data**: Marzo 2026
+**Copertura**: tutte le 107 province italiane
 **Sistema**: Pipeline di inferenza per predizione rischio peronospora su vite
 
 ---
@@ -45,7 +46,7 @@ Il sistema è composto da 3 componenti principali:
 │                   MODEL INFERENCE                            │
 │  model.py                                                    │
 │  • Carica modelli XGBoost (Lead 0, Lead 1)                 │
-│  • Genera predizioni rischio (1-5)                          │
+│  • Genera predizioni rischio (0-4)                          │
 │  • Salva in predictions/ + history/                         │
 └─────────────────────────────────────────────────────────────┘
                             ↓
@@ -204,15 +205,17 @@ python data/prepare_inference_data.py --list-only    # Solo lista date S3
 **Cosa fa**:
 1. Carica modelli da `model/near_term_lead_X/`
 2. Legge dataset da `data/dataframe_inference/lead_X.csv`
-3. Genera predizioni (1-5)
+3. Genera predizioni (0-4)
 4. Salva risultati
 
 **Architettura Modello**:
 ```
 XGBoost Regressor
 ├─ Input: 20 features
-├─ Output: risk_score (1-5, continuo)
-├─ Discretizzazione: round(risk_score) → risk_level (1-5)
+├─ Output interno: 1-5 (continuo)
+├─ Output finale: risk_score (0-4, continuo) = output_interno - 1
+├─ Discretizzazione: range-based mapping → risk_level (0-4)
+│    0.0-1.0 → 0, 1.0-2.0 → 1, 2.0-3.0 → 2, 3.0-3.5 → 3, 3.5-4.0 → 4
 └─ Training: 2012, 2013, 2014, 2016, 2017 (LOYO CV)
 ```
 
@@ -223,8 +226,22 @@ XGBoost Regressor
 **Output**:
 ```csv
 NUTS_3,forecast_base,target_period_start,target_period_end,lead_weeks,risk_score,risk_level,risk_label,temp,prec,rh,lw
-bologna,2026-01-14,2026-01-12,2026-01-18,0,1.24,1,Nessuna allerta,4.6,20.4,91.4,83
+bologna,2026-01-14,2026-01-12,2026-01-18,0,1.24,1,Sorveglianza,4.6,20.4,91.4,83
 ```
+
+**Livelli di rischio** (da `risk_levels.json`):
+- Level 0: "Nessun rischio rilevato"
+- Level 1: "Sorveglianza"
+- Level 2: "Attenzione"
+- Level 3: "Rischio elevato"
+- Level 4: "Rischio molto elevato"
+
+**Mappatura risk_score → risk_level** (range-based):
+- 0.0-1.0 → Level 0
+- 1.0-2.0 → Level 1
+- 2.0-3.0 → Level 2
+- 3.0-3.5 → Level 3
+- 3.5-4.0 → Level 4
 
 **Uso**:
 ```bash
@@ -241,17 +258,19 @@ python model.py --no_summary       # Senza stampa summary
 
 **Cosa fa**:
 1. Legge predizioni da `predictions/lead_0.csv`
-2. Carica shapefile province (`data/weather/shapefiles/`)
-3. Crea mappa Folium con overlay satellite
-4. Colora province per livello rischio
+2. Legge `data/provinces_italy.json` per mappatura nomi province
+3. Carica shapefile `province_italia.shp` da `data/weather/shapefiles/`
+4. Crea mappa Folium con overlay satellite (centro: 42.0, 12.5, zoom 6)
+5. Colora province per livello rischio
+6. Fit bounds su Emilia-Romagna per default
 
 **Legenda Colori**:
 ```
-1 - Verde scuro:  Nessuna allerta
-2 - Verde chiaro: Basso rischio
-3 - Giallo:       Rischio moderato
-4 - Arancione:    Alto rischio
-5 - Rosso:        Rischio molto alto
+0 - Verde:        Nessun rischio rilevato
+1 - Giallo:       Sorveglianza
+2 - Arancione:    Attenzione
+3 - Arancione scuro: Rischio elevato
+4 - Rosso:        Rischio molto elevato
 ```
 
 **Output**: `risk_map_satellite.html`
@@ -433,7 +452,7 @@ inference/
 │   │   ├── forecast/           # Forecast 10gg per app (GIORNALIERO)
 │   │   │   └── bologna_forecast.csv
 │   │   └── shapefiles/         # Confini province (STATICO)
-│   │       └── province_emilia_romagna.*
+│   │       └── province_italia.*  # Shapefile tutte le 107 province italiane
 │   ├── phenology/              # Moduli calcolo fenologia
 │   │   ├── dormancy.py
 │   │   ├── forcing.py
@@ -446,6 +465,8 @@ inference/
 │   │   │   └── hostSusceptibilityParameters.csv
 │   │   └── phenology_csv/      # Output fenologia (TEMP)
 │   │       └── bologna_2026.csv
+│   ├── provinces_italy.json    # Config centralizzata 107 province
+│   ├── generate_provinces_config.py  # Script generazione config
 │   └── dataframe_inference/    # Dataset per modello (TEMP)
 │       ├── lead_0.csv
 │       └── lead_1.csv
@@ -465,6 +486,9 @@ inference/
 │       └── ...
 ├── risk_map_satellite.html     # Mappa interattiva (AGGIORNATO)
 ├── requirements.txt
+├── CHANGELOG.md                # Registro modifiche per il backend
+├── logs/                       # Log scheduler (rotazione mensile)
+│   └── scheduler_YYYYMM.log
 └── venv/                       # NON INCLUDERE NEL PACKAGE
 ```
 
@@ -483,8 +507,8 @@ inference/
 **Corrente** (`predictions/lead_0.csv`):
 ```csv
 NUTS_3,forecast_base,target_period_start,target_period_end,lead_weeks,risk_score,risk_level,risk_label,temp,prec,rh,lw
-bologna,2026-01-14,2026-01-12,2026-01-18,0,1.24,1,Nessuna allerta,4.6,20.4,91.4,83
-ferrara,2026-01-14,2026-01-12,2026-01-18,0,1.26,1,Nessuna allerta,5.0,17.7,91.7,81
+bologna,2026-01-14,2026-01-12,2026-01-18,0,1.24,1,Sorveglianza,4.6,20.4,91.4,83
+ferrara,2026-01-14,2026-01-12,2026-01-18,0,1.26,1,Sorveglianza,5.0,17.7,91.7,81
 ...
 ```
 
@@ -493,8 +517,8 @@ ferrara,2026-01-14,2026-01-12,2026-01-18,0,1.26,1,Nessuna allerta,5.0,17.7,91.7,
 - `forecast_base`: Data in cui è stata fatta la predizione
 - `target_period_start/end`: Periodo di riferimento (settimana ISO)
 - `lead_weeks`: 0 o 1
-- `risk_score`: Rischio continuo (1.00-5.00)
-- `risk_level`: Rischio discreto (1-5)
+- `risk_score`: Rischio continuo (0.00-4.00)
+- `risk_level`: Rischio discreto (0-4)
 - `risk_label`: Testo descrittivo
 - `temp, prec, rh, lw`: Feature meteo aggregate sulla settimana
 
@@ -532,35 +556,23 @@ predictor.save_predictions(
 **Endpoint suggeriti**:
 
 ```
-GET /v1/peronospora/risk/current
-→ Restituisce predictions/lead_0.csv (JSON)
+GET /api/risk/current
+→ Restituisce predictions/lead_0.csv
 
-GET /v1/peronospora/risk/forecast
-→ Restituisce predictions/lead_1.csv (JSON)
+GET /api/risk/forecast
+→ Restituisce predictions/lead_1.csv
 
-GET /v1/peronospora/risk/history?start=2026-01-01&end=2026-01-14
-→ Restituisce range da predictions/history/ (JSON)
+GET /api/risk/history?start=2026-01-01&end=2026-01-14
+→ Restituisce range da predictions/history/
 
-GET /v1/peronospora/risk/province/{province}/current
-→ Restituisce la prediction per provincia (lead 0)
+GET /api/weather/forecast/{province}
+→ Restituisce data/weather/forecast/{province}_forecast.csv
 
-GET /v1/peronospora/risk/province/{province}/forecast
-→ Restituisce la prediction per provincia (lead 1)
-
-GET /v1/peronospora/risk/location/current?lat=44.4949&lng=11.3426
-→ Restituisce la prediction della provincia in cui cade la posizione (lead 0)
-
-GET /v1/peronospora/risk/location/forecast?lat=44.4949&lng=11.3426
-→ Restituisce la prediction della provincia in cui cade la posizione (lead 1)
-
-GET /v1/peronospora/risk/map
+GET /api/map
 → Restituisce risk_map_satellite.html
 
-GET /v1/weather/forecast/{province}
-→ Restituisce JSON con `data` dal forecast per provincia
-
-GET /v1/health
-→ Health check
+GET /api/provinces
+→ Restituisce data/provinces_italy.json
 ```
 
 ### 5.3 Formato JSON per App
@@ -584,62 +596,6 @@ with open('api_response.json', 'w') as f:
     json.dump(output, f, indent=2)
 ```
 
-Esempi di risposta:
-
-**Weather forecast**
-```json
-{
-  "province": "bologna",
-  "forecast_base": "2026-01-20",
-  "data": [
-    {
-      "date": "2026-01-20",
-      "temp_mean": 1.70,
-      "temp_min": -1.44,
-      "temp_max": 3.46,
-      "prec_sum": 0.68,
-      "rh_mean": 78.89,
-      "lw_hours": 0,
-      "site": "bologna",
-      "forecast_base": "2026-01-20"
-    }
-  ]
-}
-```
-
-**Risk location (current/forecast)**
-```json
-{
-  "forecast_date": "2026-01-20",
-  "target_week": { "start": "2026-01-19", "end": "2026-01-25" },
-  "detail": {
-    "NUTS_3": "bologna",
-    "risk_score": 1.23,
-    "risk_level": 1,
-    "risk_label": "Nessun rischio rilevato"
-  },
-  "location": { "lat": 44.4949, "lng": 11.3426 },
-  "province": "bologna"
-}
-```
-
-**Risk province (current/forecast)**
-```json
-{
-  "forecast_date": "2026-01-20",
-  "target_week": { "start": "2026-01-19", "end": "2026-01-25" },
-  "province": "bologna",
-  "provinces": [
-    {
-      "NUTS_3": "bologna",
-      "risk_score": 1.23,
-      "risk_level": 1,
-      "risk_label": "Nessun rischio rilevato"
-    }
-  ]
-}
-```
-
 ---
 
 ## 6. Deployment {#deployment}
@@ -649,7 +605,7 @@ Esempi di risposta:
 **Minimi**:
 - CPU: 2 cores
 - RAM: 4 GB
-- Disco: 10 GB (cache cresce ~100 MB/anno)
+- Disco: 20 GB (cache cresce ~1.2 GB/anno per 107 province)
 - OS: Linux (Ubuntu 20.04+, Debian 11+)
 
 **Dipendenze**:
@@ -663,6 +619,7 @@ cfgrib >= 0.9.10
 boto3 >= 1.28.0
 folium >= 0.14.0
 geopandas >= 0.14.0
+scipy >= 1.10.0  # Usato da phenology (forcing/dormancy)
 ```
 
 ### 6.2 Credenziali AWS S3
@@ -866,10 +823,12 @@ print(df['risk_level'].value_counts())
 ### 7.3 Performance
 
 **Tempi Tipici**:
-- `prepare_inference_data.py`: 5-10 min (primo run), 30s-2min (incrementale)
+- `prepare_inference_data.py`: 5-6 min (incrementale con 107 province)
 - `backfill_predictions.py`: 1-2 min/giorno
 - `model.py`: <10s
 - `plot_risk_map.py`: <5s
+
+**Nota**: Con 107 province il tempo di elaborazione incrementale e' significativamente maggiore rispetto alle precedenti 9 province dell'Emilia-Romagna.
 
 **Ottimizzazioni**:
 - Cache già popolato → molto più veloce
@@ -889,6 +848,7 @@ print(df['risk_level'].value_counts())
 
 ### 8.2 Prossimi Sviluppi
 
+- [x] Espansione a tutte le 107 province italiane (DONE - Marzo 2026)
 - [ ] Calcolo fenologia parallelizzato
 - [ ] Archivio forecast originali per simulazioni realistiche
 - [ ] API REST nativa

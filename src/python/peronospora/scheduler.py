@@ -37,8 +37,8 @@ Version: 2.0
 """
 
 import os
-import subprocess
 import sys
+import subprocess
 import logging
 from datetime import datetime, timezone, timedelta
 from pathlib import Path

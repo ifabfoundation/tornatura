@@ -1,18 +1,20 @@
 Peronospora Inference Pipeline - Transfer Package
 =================================================
 
-Package: peronospora_inference_20260114
-Created: 2026-01-14 14:33:37
-Total Files: 56
-Total Size: 4.4M
+Package: peronospora_inference_20260310
+Created: 2026-03-10 09:50:11
+Total Files: 64
+Total Size: 6.8M
 
 Contents:
 ---------
-✓ Python scripts (6 files)
+✓ Python scripts (8 files)
 ✓ Trained models (Lead 0, Lead 1)
 ✓ Phenology models + parameters
 ✓ Province shapefiles
+✓ Province configuration (107 provinces)
 ✓ Documentation (DEVELOPER_GUIDE.md)
+✓ Changelog for backend team
 ✓ Requirements.txt
 ✓ Setup script
 

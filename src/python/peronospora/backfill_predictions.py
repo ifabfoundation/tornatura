@@ -27,15 +27,17 @@ from pathlib import Path
 from datetime import datetime, timedelta
 import pandas as pd
 import numpy as np
+from peronospora import paths
 
 # Setup paths
-SCRIPT_DIR = Path(__file__).parent
-DATA_DIR = SCRIPT_DIR / "data"
+HISTORY_DIR = paths.PREDICTIONS_HISTORY_DIR
+DATA_DIR = paths.DATA_DIR
+WEATHER_DIR = paths.WEATHER_DIR
+CACHE_DIR = paths.CACHE_DIR
 PHENOLOGY_DIR = DATA_DIR / "phenology"
-CACHE_DIR = DATA_DIR / "weather" / "cache"
-INFERENCE_DIR = DATA_DIR / "dataframe_inference"
-MODEL_DIR = SCRIPT_DIR / "model"
-HISTORY_DIR = SCRIPT_DIR / "predictions" / "history"
+INFERENCE_DIR = paths.INFERENCE_DIR
+TEMP_DIR = paths.TEMP_DIR
+MODEL_DIR = paths.MODEL_DIR
 
 # Add paths for imports
 sys.path.insert(0, str(DATA_DIR))  # For prepare_inference_data
@@ -257,9 +259,25 @@ def run_backfill(start_week=1, end_date=None, force=False):
             dmatrix = xgb.DMatrix(X, feature_names=features)
             
             # Predict
+            # Il modello predice 1-5, sottraiamo 1 per ottenere scala 0-4
             predictions = models[lead].predict(dmatrix)
-            df_inference['risk_score'] = np.clip(predictions, 1, 5).round(2)
-            df_inference['risk_level'] = df_inference['risk_score'].apply(lambda x: int(np.clip(np.round(x), 1, 5)))
+            df_inference['risk_score'] = np.clip(predictions - 1, 0, 4).round(2)
+            
+            # Calcola risk_level usando range thresholds (non rounding)
+            # 0-1 → 0, 1-2 → 1, 2-3 → 2, 3-3.5 → 3, 3.5-4 → 4
+            def score_to_level(score):
+                if score < 1.0:
+                    return 0
+                elif score < 2.0:
+                    return 1
+                elif score < 3.0:
+                    return 2
+                elif score < 3.5:
+                    return 3
+                else:
+                    return 4
+            
+            df_inference['risk_level'] = df_inference['risk_score'].apply(score_to_level)
             
             # Save to history
             history_file = HISTORY_DIR / f"{forecast_date.strftime('%Y-%m-%d')}_lead_{lead}.csv"

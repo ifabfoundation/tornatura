@@ -1,34 +1,44 @@
 {
-  "1": {
+  "0": {
     "label": "Nessun rischio rilevato",
     "descrizione": "Condizioni sfavorevoli alla malattia; continuare i controlli di routine.",
-    "colore": "#00cc00"
+    "colore": "#00cc00",
+    "range_min": 0.0,
+    "range_max": 1.0
   },
-  "2": {
+  "1": {
     "label": "Sorveglianza",
     "descrizione": "Presenza di alcuni fattori favorevoli; osservare regolarmente il vigneto.",
-    "colore": "#ffff00"
+    "colore": "#ffff00",
+    "range_min": 1.0,
+    "range_max": 2.0
   },
-  "3": {
+  "2": {
     "label": "Attenzione",
     "descrizione": "Condizioni potenzialmente favorevoli; aumentare l'attenzione ai controlli.",
-    "colore": "#ffa500"
+    "colore": "#ffa500",
+    "range_min": 2.0,
+    "range_max": 3.0
   },
-  "4": {
+  "3": {
     "label": "Rischio elevato",
     "descrizione": "Condizioni favorevoli; monitorare il vigneto con maggiore frequenza.",
-    "colore": "#ff6600"
+    "colore": "#ff6600",
+    "range_min": 3.0,
+    "range_max": 3.5
   },
-  "5": {
+  "4": {
     "label": "Rischio molto elevato",
     "descrizione": "Condizioni molto favorevoli; massima attenzione e verificare gli aggiornamenti regionali.",
-    "colore": "#ff0000"
+    "colore": "#ff0000",
+    "range_min": 3.5,
+    "range_max": 4.0
   },
   "_metadata": {
-    "versione": "2.0",
-    "data_aggiornamento": "2026-01-14",
+    "versione": "4.0",
+    "data_aggiornamento": "2026-02-25",
     "descrizione": "Livelli di rischio per peronospora della vite (Plasmopara viticola)",
-    "scala_rischio": "1-5 (da nessun rischio a rischio molto elevato)",
-    "note": "Versione semplificata con descrizioni concise per utilizzo in app"
+    "scala_rischio": "0-4 con range non uniformi",
+    "note": "Range: 0-1 verde, 1-2 giallo, 2-3 arancione, 3-3.5 arancione scuro, 3.5-4 rosso"
   }
 }
