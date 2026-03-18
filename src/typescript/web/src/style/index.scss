@@ -74,6 +74,9 @@ $ms-sidebar-transition: 100ms;
 .color-black {
   color: black !important;
 }
+.color-red {
+  color: darken($c-red, 20%) !important;
+}
 .color-accent {
   color: $c-yelo !important;
 }
@@ -350,6 +353,7 @@ small {
     // &[data-type="rounded"],
     &.type-rounded {
       border-radius: 60px;
+      min-width: $btn-h !important;
     }
     &[data-type="table"] {
       min-width: auto;
@@ -399,6 +403,17 @@ small {
       &:active,
       .active {
         background-color: $c-grey_3;
+      }
+    }
+    &.white {
+      background-color: white;
+      color: black;
+      &:hover {
+        background-color: #f4f4f4;
+      }
+      &:active,
+      .active {
+        background-color: #eee;
       }
     }
     &.danger1 {

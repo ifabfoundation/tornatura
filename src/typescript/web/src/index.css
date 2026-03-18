@@ -13006,6 +13006,10 @@ strong {
   color: black !important;
 }
 
+.color-red {
+  color: #e60000 !important;
+}
+
 .color-accent {
   color: #eaff00 !important;
 }
@@ -13369,6 +13373,7 @@ small, .small {
 #app input[type="submit"].type-rounded,
 #app button.trnt_btn.type-rounded {
   border-radius: 60px;
+  min-width: 40px !important;
 }
 
 #app a.button[data-type="table"],
@@ -13465,6 +13470,28 @@ small, .small {
 #app button.trnt_btn.secondary:active,
 #app button.trnt_btn.secondary .active {
   background-color: #bbbbbb;
+}
+
+#app a.button.white,
+#app input[type="submit"].white,
+#app button.trnt_btn.white {
+  background-color: white;
+  color: black;
+}
+
+#app a.button.white:hover,
+#app input[type="submit"].white:hover,
+#app button.trnt_btn.white:hover {
+  background-color: #f4f4f4;
+}
+
+#app a.button.white:active,
+#app a.button.white .active,
+#app input[type="submit"].white:active,
+#app input[type="submit"].white .active,
+#app button.trnt_btn.white:active,
+#app button.trnt_btn.white .active {
+  background-color: #eee;
 }
 
 #app a.button.danger1,

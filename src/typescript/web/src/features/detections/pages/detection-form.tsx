@@ -1250,11 +1250,11 @@ function DetectionStepTreatment({ formData, onNextClick }: DetectionProps) {
             </div>
           </Fragment>
         )}
-        {error !== "" && <div className="error mt-3">{error}</div>}
+        {error !== "" && <div className="error color-red mt-3">{error}</div>}
         <div className="fixed-bottom mt-4 text-center">
           <div className="contents">
             <button className="trnt_btn primary" onClick={handleSubmit}>
-              Avanti
+              Inizia il rilevamento &rarr;
             </button>
           </div>
         </div>
@@ -1653,30 +1653,30 @@ function DetectionStepObservationPoints({
                 data-type="round"
                 onClick={handleBackToDashboard}
               >
-                &larr;
+                &times;
               </button>
             </div>
 
             <div className="buttons-wrapper text-center">
               <button
-                className="trnt_btn small narrow-x primary no-slim-y type-rounded px-1"
+                className="trnt_btn small narrow-x white no-slim-y type-rounded px-1"
                 onClick={() => setCameraOpen(true)}
               >
-                <Icon iconName={"pic"} color={"white"} />
+                <Icon iconName={"pic"} color={"black"} />
                 <span className="ms-2 me-1 d-none d-sm-inline">Foto</span>
                 {pendingPhotos.length > 0 && (
                   <span className="bedge ms-1">{pendingPhotos.length}</span>
                 )}
-                {pendingPhotos.length == 0 && <span className="bedge ms-1 d-sm-none">+</span>}
+                {/* {pendingPhotos.length == 0 && <span className="bedge ms-1 d-sm-none">+</span>} */}
               </button>
               <button
-                className="trnt_btn small narrow-x primary ms-1 no-slim-y type-rounded px-1"
+                className="trnt_btn small narrow-x white ms-1 no-slim-y type-rounded px-1"
                 onClick={handleOpenNoteModal}
               >
-                <Icon iconName={"pencil"} color={"white"} />
+                <Icon iconName={"pencil"} color={"black"} />
                 <span className="mx-1 d-none d-sm-inline">Nota</span>
                 {noteValue != "" && <span className="bedge ms-1">1</span>}
-                {noteValue == "" && <span className="bedge ms-1 d-sm-none">+</span>}
+                {/* {noteValue == "" && <span className="bedge ms-1 d-sm-none">+</span>} */}
               </button>
             </div>
             <div className="d-flex align-items-center">
@@ -2110,7 +2110,7 @@ export function DetectionForm() {
   const currentStepKey = steps[stepIndex];
 
   const updateStepperRecaps = (nextStep: number, values: {}) => {
-    console.log(nextStep)
+    console.log(nextStep);
     const currentValues = stepperRecapValues;
     const newValues = { ...currentValues, ...values };
     setStepperRecapValues(newValues);
