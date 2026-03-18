@@ -4,10 +4,10 @@ import { Col, Container, Row } from "react-bootstrap";
 // import * as Yup from "yup";
 import {
   DetectionMutationPayload,
+  DetectionPhotoPayload,
   ObservationPoint,
   ObservationType,
   FilesApi,
-  FileInfo,
   DetectionType,
   AgriField,
   Detection,
@@ -881,7 +881,6 @@ function DetectionStepTipologia({
 }
 
 function DetectionStepMetodo({
-  typology,
   methods,
   onNextClick,
 }: DetectionProps & { typology: string; methods: string[] }) {
@@ -2111,6 +2110,7 @@ export function DetectionForm() {
   const currentStepKey = steps[stepIndex];
 
   const updateStepperRecaps = (nextStep: number, values: {}) => {
+    console.log(nextStep)
     const currentValues = stepperRecapValues;
     const newValues = { ...currentValues, ...values };
     setStepperRecapValues(newValues);
@@ -2212,14 +2212,17 @@ export function DetectionForm() {
     }
   };
 
-  const uploadDetectionPhotos = async (files: File[]): Promise<FileInfo[]> => {
+  const uploadDetectionPhotos = async (files: File[]): Promise<DetectionPhotoPayload[]> => {
     if (!companyId || files.length === 0) {
       return [];
     }
     const apiConfig = await getCoreApiConfiguration();
     const filesApi = new FilesApi(apiConfig);
     const response = await filesApi.uploadFilesForm(files, companyId, "data");
-    return response.data;
+    return response.data.map((photo) => ({
+      caption: "",
+      photo,
+    }));
   };
 
   const handleNextClick = async (data: DetectionStepData) => {
@@ -2322,7 +2325,7 @@ export function DetectionForm() {
       }
 
       const photosToUpload = pointsData.photos ?? pendingPhotos;
-      let uploadedPhotos: FileInfo[] = formData.detectionData.photos ?? [];
+      let uploadedPhotos: DetectionPhotoPayload[] = formData.detectionData.photos ?? [];
       if (photosToUpload.length > 0) {
         try {
           uploadedPhotos = await uploadDetectionPhotos(photosToUpload);

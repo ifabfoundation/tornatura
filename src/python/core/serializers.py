@@ -91,18 +91,28 @@ class ObservationTreatment(BaseModel):
     treatmentDate: str = ""
     treatmentProduct: str = ""
 
+class DetectionPhoto(BaseModel):
+    caption: str = ""
+    url: str
+    position: Optional[Point] = None
+
+class DetectionPhotoPayload(BaseModel):
+    caption: str = ""
+    photo: FileInfo
+    position: Optional[Point] = None
+
 class DetectionData(BaseModel):
     bbch: str
     notes: str
     treatment: ObservationTreatment = ObservationTreatment()
-    photos: List[str]
+    photos: List[DetectionPhoto]
     points: List[ObservationPoint]
 
 class DetectionDataPayload(BaseModel):
     bbch: str
     notes: str
     treatment: ObservationTreatment = ObservationTreatment()
-    photos: List[FileInfo]
+    photos: List[DetectionPhotoPayload]
     points: List[ObservationPoint]
 
 class DetectionTypeCreatePayload(BaseModel):

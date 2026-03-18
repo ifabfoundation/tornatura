@@ -34,11 +34,17 @@ class ObservationTreatment(EmbeddedDocument):
     treatmentProduct = StringField(default="")
 
 
+class detectionPhoto(EmbeddedDocument):
+    caption = StringField(default="")
+    photo = EmbeddedDocumentField(FileInfo, required=True)
+    position = EmbeddedDocumentField(Point, null=True)
+
+
 class DetectionData(EmbeddedDocument):
     bbch = StringField(default="")
     notes = StringField(default="")
     treatment = EmbeddedDocumentField(ObservationTreatment, default=ObservationTreatment)
-    photos = ListField(EmbeddedDocumentField(FileInfo), default=[])
+    photos = ListField(EmbeddedDocumentField(detectionPhoto), default=[])
     points = ListField(EmbeddedDocumentField(ObservationPoint), default=[])
 
 

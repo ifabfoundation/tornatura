@@ -2403,7 +2403,7 @@ components:
           $ref: '#/components/schemas/ObservationTreatment'
         photos:
           items:
-            type: string
+            $ref: '#/components/schemas/DetectionPhoto'
           type: array
           title: Photos
         points:
@@ -2431,7 +2431,7 @@ components:
           $ref: '#/components/schemas/ObservationTreatment'
         photos:
           items:
-            $ref: '#/components/schemas/FileInfo'
+            $ref: '#/components/schemas/DetectionPhotoPayload'
           type: array
           title: Photos
         points:
@@ -2447,6 +2447,39 @@ components:
       - photos
       - points
       title: DetectionDataPayload
+    DetectionPhoto:
+      properties:
+        caption:
+          type: string
+          title: Caption
+          default: ''
+        url:
+          type: string
+          title: Url
+        position:
+          anyOf:
+          - $ref: '#/components/schemas/Point'
+          - type: 'null'
+      type: object
+      required:
+      - url
+      title: DetectionPhoto
+    DetectionPhotoPayload:
+      properties:
+        caption:
+          type: string
+          title: Caption
+          default: ''
+        photo:
+          $ref: '#/components/schemas/FileInfo'
+        position:
+          anyOf:
+          - $ref: '#/components/schemas/Point'
+          - type: 'null'
+      type: object
+      required:
+      - photo
+      title: DetectionPhotoPayload
     ObservationTreatment:
       properties:
         treatment:

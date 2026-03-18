@@ -1,5 +1,5 @@
 import React from "react";
-import { Detection } from "@tornatura/coreapis";
+import { Detection, DetectionPhoto } from "@tornatura/coreapis";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
@@ -28,15 +28,15 @@ import { DetectionsTable } from "../../../components/DetectionsTable";
 import { useIsMobile } from "../../../helpers/common";
 
 interface HorizontalPhotoStackProps {
-  photos: string[];
+  photos: DetectionPhoto[];
 }
 
 function HorizontalPhotoStack({ photos }: HorizontalPhotoStackProps) {
   const maxPhotosToShow = 4;
   return (
     <div className="horizontal-photo-stack">
-      {photos.slice(0, maxPhotosToShow).map((photoUrl, index) => (
-        <div key={index} className="photo" style={{ backgroundImage: `url(${photoUrl})` }}></div>
+      {photos.slice(0, maxPhotosToShow).map((photo, index) => (
+        <div key={index} className="photo" style={{ backgroundImage: `url(${photo.url})` }}></div>
       ))}
       {photos.length > maxPhotosToShow && (
         <div className="more-photos">+{photos.length - maxPhotosToShow}</div>
@@ -196,17 +196,15 @@ export function DetectionTypeDetail() {
   const photos: {
     detection: Detection;
     detectionTime: number;
-    url: string;
+    photo: DetectionPhoto;
   }[] = [];
   sortedDetections.forEach((detection) => {
-    // @ts-ignore
     if (detection.detectionData.photos && detection.detectionData.photos.length > 0) {
-      // @ts-ignore
       detection.detectionData.photos.forEach((photo) => {
         photos.push({
           detection,
           detectionTime: detection.detectionTime,
-          url: photo,
+          photo,
         });
       });
     }
@@ -502,7 +500,7 @@ export function DetectionTypeDetail() {
                       <div className="font-l-600">
                         <span onClick={handleTogglePhotos}>
                           {photos.length > 0 && (
-                            <HorizontalPhotoStack photos={photos.map((photo) => photo.url)} />
+                            <HorizontalPhotoStack photos={photos.map((item) => item.photo)} />
                           )}
                         </span>
                         {photos.length === 0 && <div className="font-l-600">Nessuna</div>}
@@ -548,7 +546,7 @@ export function DetectionTypeDetail() {
                             <div key={index} className="text-center">
                               <img
                                 className="d-inline-block rounded"
-                                src={photo.url}
+                                src={photo.photo.url}
                                 style={{ maxWidth: "300px", maxHeight: "300px" }}
                               />
                             </div>

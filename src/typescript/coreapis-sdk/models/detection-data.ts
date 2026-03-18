@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { DetectionPhoto } from './detection-photo';
 import { ObservationPoint } from './observation-point';
 import { ObservationTreatment } from './observation-treatment';
  /**
@@ -41,10 +42,10 @@ export interface DetectionData {
     treatment: ObservationTreatment;
 
     /**
-     * @type {Array<string>}
+     * @type {Array<DetectionPhoto>}
      * @memberof DetectionData
      */
-    photos: Array<string>;
+    photos: Array<DetectionPhoto>;
 
     /**
      * @type {Array<ObservationPoint>}

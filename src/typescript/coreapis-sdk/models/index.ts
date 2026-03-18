@@ -8,6 +8,8 @@ export * from './detection';
 export * from './detection-data';
 export * from './detection-data-payload';
 export * from './detection-mutation-payload';
+export * from './detection-photo';
+export * from './detection-photo-payload';
 export * from './detection-type';
 export * from './detection-type-create-payload';
 export * from './detection-type-update-payload';

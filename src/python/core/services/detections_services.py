@@ -11,6 +11,7 @@ from core.models import (
     ObservationPoint,
     ObservationTreatment,
     Point,
+    detectionPhoto,
 )
 from core.serializers import Detection, DetectionMutationPayload
 from core.services.agrifields_services import AgriFieldServices
@@ -72,7 +73,18 @@ class DetectionServices:
                         "treatmentProduct": treatment.treatmentProduct,
                     },
                     "photos": [
-                        file_services.get_file_url(agrifield.orgId, photo.category, photo.name)
+                        {
+                            "caption": photo.caption,
+                            "url": file_services.get_file_url(
+                                agrifield.orgId,
+                                photo.photo.category,
+                                photo.photo.name,
+                            ),
+                            "position": {
+                                "lng": photo.position.lng,
+                                "lat": photo.position.lat,
+                            } if photo.position else None,
+                        }
                         for photo in item.detectionData.photos
                     ],
                     "points": points,
@@ -148,6 +160,17 @@ class DetectionServices:
                 )
             )
 
+        photos = []
+        for photo in detection_data.get("photos", []):
+            position = photo.get("position")
+            photos.append(
+                detectionPhoto(
+                    caption=photo.get("caption", ""),
+                    photo=FileInfo(**photo.get("photo")),
+                    position=Point(**position) if position else None,
+                )
+            )
+
         detection = self.model(
             agrifieldId=agrifield_id,
             detectionTime=data["detectionTime"],
@@ -156,7 +179,7 @@ class DetectionServices:
                 bbch=detection_data.get("bbch", ""),
                 notes=detection_data.get("notes", ""),
                 treatment=ObservationTreatment(**treatment_data),
-                photos=[FileInfo(**photo) for photo in detection_data.get("photos", [])],
+                photos=photos,
                 points=points,
             ),
             creationTime=current_time,

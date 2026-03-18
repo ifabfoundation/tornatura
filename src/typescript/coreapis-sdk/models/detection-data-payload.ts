@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { FileInfo } from './file-info';
+import { DetectionPhotoPayload } from './detection-photo-payload';
 import { ObservationPoint } from './observation-point';
 import { ObservationTreatment } from './observation-treatment';
  /**
@@ -42,10 +42,10 @@ export interface DetectionDataPayload {
     treatment: ObservationTreatment;
 
     /**
-     * @type {Array<FileInfo>}
+     * @type {Array<DetectionPhotoPayload>}
      * @memberof DetectionDataPayload
      */
-    photos: Array<FileInfo>;
+    photos: Array<DetectionPhotoPayload>;
 
     /**
      * @type {Array<ObservationPoint>}

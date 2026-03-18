@@ -15,7 +15,7 @@
     "@mapbox/search-js-react": "^1.1.0",
     "@react-keycloak/web": "^3.4.0",
     "@reduxjs/toolkit": "^2.6.1",
-    "@tornatura/coreapis": "file:../libs/tornatura-coreapis-1.0.14.tgz",
+    "@tornatura/coreapis": "file:../libs/tornatura-coreapis-1.0.17.tgz",
     "@turf/turf": "^7.2.0",
     "@types/mapbox__mapbox-gl-draw": "^1.4.8",
     "@visx/visx": "^4.0.1-alpha.0",
