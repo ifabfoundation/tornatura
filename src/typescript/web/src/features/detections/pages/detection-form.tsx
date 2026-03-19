@@ -1663,7 +1663,7 @@ function DetectionStepObservationPoints({
             <div className="buttons-wrapper text-center"></div>
             <div className="d-flex align-items-center">
               <button
-                className="trnt_btn small narrow-x white no-slim-y type-rounded px-1"
+                className="trnt_btn small narrow-x white no-slim-y type-rounded px-1 px-sm-2 px-md-3"
                 onClick={() => setCameraOpen(true)}
               >
                 <Icon iconName={"pic"} color={"black"} />
@@ -1674,7 +1674,7 @@ function DetectionStepObservationPoints({
                 {/* {pendingPhotos.length == 0 && <span className="bedge ms-1 d-sm-none">+</span>} */}
               </button>
               <button
-                className="trnt_btn small narrow-x white ms-1 no-slim-y type-rounded px-1"
+                className="trnt_btn small narrow-x white ms-1 no-slim-y type-rounded px-1 px-sm-2 px-md-3"
                 onClick={handleOpenNoteModal}
               >
                 <Icon iconName={"pencil"} color={"black"} />
