@@ -314,8 +314,11 @@ export function DetectionTypeDetail() {
 
   const modelPaths = {
     Peronospora: `/companies/${companyId}/fields/${fieldId}/models/peronospora`,
-    Cimice: `/companies/${companyId}/fields/${fieldId}/models/cimice-asiatica`,
     Flavescenza: `/companies/${companyId}/fields/${fieldId}/models/flavescenza-dorata`,
+    Cimice: `/companies/${companyId}/fields/${fieldId}/models/cimice-asiatica`,
+    // Lisso: `/companies/${companyId}/fields/${fieldId}/models/lisso`,
+    // Scafoideo: `/companies/${companyId}/fields/${fieldId}/models/scafoideo`,
+    // Diabrotica: `/companies/${companyId}/fields/${fieldId}/models/diabrotica`,
   };
   let modelPath = null;
   type Typology = keyof typeof modelPaths;
@@ -329,17 +332,39 @@ export function DetectionTypeDetail() {
   sortedDetections.forEach((detection) => {
     const dd = detection.detectionData;
     const ds = getDetectionStats(detection);
+    console.log("ds-------------:", ds);
     dd.points.forEach((point, index) => {
-      const dotValue = point.data.rangeValue;
-      const entry = {
-        detectionId: detection.id,
-        detectionTime: new Date(detection.detectionTime).toISOString(),
-        bbch: dd.bbch ?? "",
-        observationNum: `#${index + 1}`,
-        dotValue: dotValue !== undefined && dotValue !== null ? dotValue : "",
-        diseaseIndex: ds.diseaseIndex,
-      };
-      flatDetectionsData.push(entry);
+      if (observationType?.observationType === "range") {
+        const dotValue = point.data.rangeValue;
+        const entry = {
+          detectionId: detection.id,
+          detectionTime: new Date(detection.detectionTime).toISOString(),
+          bbch: dd.bbch ?? "",
+          observationNum: `#${index + 1}`,
+          dotValue: dotValue !== undefined && dotValue !== null ? dotValue : "",
+          diseaseIndex: ds.diseaseIndex,
+        };
+        flatDetectionsData.push(entry);
+      } else if (observationType?.observationType === "counters") {
+        const counter1Name = point?.data?.counters[0]?.counterName ?? "_1";
+        const counter2Name = point?.data?.counters[1]?.counterName ?? "_2";
+        const counter1Value = point?.data?.counters[0]?.counterValue;
+        const counter2Value = point?.data?.counters[1]?.counterValue;
+        const entry = {
+          detectionId: detection.id,
+          detectionTime: new Date(detection.detectionTime).toISOString(),
+          bbch: dd.bbch ?? "",
+          observationNum: `#${index + 1}`,
+          [`counter${counter1Name}`]: counter1Value,
+          [`counter${counter2Name}`]: counter2Value,
+          counterSum:
+            counter1Value !== undefined && counter2Value !== undefined
+              ? counter1Value + counter2Value
+              : "",
+        };
+        console.log("entry", entry);
+        flatDetectionsData.push(entry);
+      }
     });
   });
 
@@ -434,6 +459,8 @@ export function DetectionTypeDetail() {
       })
     : "";
 
+  console.log("observationType", observationType);
+
   return (
     <div>
       <Container>
@@ -457,6 +484,7 @@ export function DetectionTypeDetail() {
                   <Row>
                     <Col md={6}>
                       <div className="font-l-600">{`${observationType?.typology}  ›  ${observationType?.method}`}</div>
+                      <div className="debug">{observationType?.typology}</div>
                     </Col>
                     <Col md={6} className="text-md-end d-none d-md-block">
                       {buttonNewDetection}

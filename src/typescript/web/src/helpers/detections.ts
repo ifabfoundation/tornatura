@@ -1,8 +1,8 @@
 import { ObservationPoint, ObservationType } from "@tornatura/coreapis";
 import { Detection } from "@tornatura/coreapis";
 import { mapValues } from "./common";
-import legend_cimice from "../assets/images/legends/legend-cimice.svg";
-import legend_peronospora from "../assets/images/legends/legend-peronospora.svg";
+import legend_insetto from "../assets/images/legends/legend-cimice.svg";
+import legend_indice_malattia from "../assets/images/legends/legend-peronospora.svg";
 
 /**
  * Anatomy of objects - at the bottom if this file
@@ -72,7 +72,7 @@ export function enrichedMapPoints(points: ObservationPoint[], observationType: O
       if (point.data && point.data.counters) {
         countersSum = point.data.counters.reduce((a, b) => a + b.counterValue, 0);
       }
-      size = mapValues(countersSum, 0, counterSumMax, 0, 60);
+      size = mapValues(countersSum, 0, counterSumMax, 0, 40);
     }
 
     return {
@@ -96,10 +96,10 @@ export function getGraphName(typology: string): string {
   return typologyToGraphNameMap[typology] || "Andamento nel tempo";
 }
 export function getGraphLegend(typology: string): string {
-  if (typology === "Peronospora") {
-    return legend_peronospora;
-  } else if (typology === "Cimice") {
-    return legend_cimice;
+  if (["Peronospora", "Giallumi"].includes(typology)) {
+    return legend_indice_malattia;
+  } else if (["Cimice", "Diabrotica", "Lisso", "Scafoideo"].includes(typology)) {
+    return legend_insetto;
   }
   return "";
 }
@@ -121,6 +121,8 @@ export function getDetectionStats(detection: Detection) {
     diseaseIndex: 0,
     diseaseIndexStr: "00%",
     counterSumsTotal: 0,
+    counter1Sum: 0,
+    counter2Sum: 0,
     displayLabel: "-",
     displayValue: "-",
   };
@@ -142,6 +144,8 @@ export function getDetectionStats(detection: Detection) {
       detectionStats.type = "counters";
       const countersSum = counters.reduce((a, b) => a + b.counterValue, 0);
       detectionStats.counterSumsTotal += countersSum;
+      detectionStats.counter1Sum += counters[0]?.counterValue ?? 0;
+      detectionStats.counter2Sum += counters[1]?.counterValue ?? 0;
     }
   });
   detectionStats.pointsAvg =

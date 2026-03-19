@@ -298,6 +298,17 @@ export const FieldMaplet = ({ detectionId, padding, interactions }: FieldMapletP
           },
         });
 
+        mapRef.current!.addLayer({
+          id: "dataPointsDotsCenters",
+          type: "circle",
+          source: "dataPoints",
+          paint: {
+            "circle-radius": 2,
+            "circle-color": "white",
+            "circle-opacity": 0.8,
+          },
+        });
+
         // --------------------------------------------------
         // Add source + layer for current location
         // --------------------------------------------------

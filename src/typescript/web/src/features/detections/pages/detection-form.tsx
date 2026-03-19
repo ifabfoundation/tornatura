@@ -1645,14 +1645,14 @@ function DetectionStepObservationPoints({
           <div className="dfpart_header">
             <div className="d-flex align-items-center">
               <button
-                className="trnt_btn primary me-3"
+                className="trnt_btn primary me-2 me-md-2"
                 data-type="round"
                 onClick={handleBackToDashboard}
               >
                 &times;
               </button>
               <button
-                className="trnt_btn small narrow-x slim-y primary mx-1 px-1 rounded"
+                className="trnt_btn small narrow-x primary type-rounded px-1 px-md-2"
                 onClick={() => setInfoPanelOpen(true)}
               >
                 <Icon iconName={"info"} color={"white"} />
@@ -1674,7 +1674,7 @@ function DetectionStepObservationPoints({
                 {/* {pendingPhotos.length == 0 && <span className="bedge ms-1 d-sm-none">+</span>} */}
               </button>
               <button
-                className="trnt_btn small narrow-x white ms-1 no-slim-y type-rounded px-1 px-sm-2 px-md-3"
+                className="trnt_btn small narrow-x white mx-2 no-slim-y type-rounded px-1 px-sm-2 px-md-3"
                 onClick={handleOpenNoteModal}
               >
                 <Icon iconName={"pencil"} color={"black"} />
@@ -1683,9 +1683,9 @@ function DetectionStepObservationPoints({
                 {/* {noteValue == "" && <span className="bedge ms-1 d-sm-none">+</span>} */}
               </button>
               <a className="button narrow-x type-rounded px-3 accent-stronger" onClick={handleSave}>
-                <span className="font-s-600">
-                  {"✓ FINE"}
-                  <span className="d-none d-lg-inline"> RILEVAMENTO</span>
+                <span className="font-m-600">
+                  {"✓ Fine"}
+                  <span className="d-none d-sm-inline d-lg-none d-xl-inline"> rilevamento</span>
                 </span>
               </a>
             </div>
