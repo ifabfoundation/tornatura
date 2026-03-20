@@ -1325,7 +1325,7 @@ function DetectionStepObservationPoints({
   }, [observationType]);
 
   function handleBackToDashboard() {
-    if (points.length > 0) {
+    if (points.length > 0 || pendingPhotos.length > 0 || noteValue.trim() !== "") {
       setModal({
         component: ModalConfirm,
         componentProps: {
