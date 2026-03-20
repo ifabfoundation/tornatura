@@ -13097,6 +13097,10 @@ strong {
   background-color: #eaff00;
 }
 
+.bg-grey_1 {
+  background-color: #efefef;
+}
+
 .bg-glass {
   background-color: rgba(255, 255, 255, 0.1) !important;
   background-color: transparent !important;
@@ -13138,6 +13142,10 @@ strong {
 .rounded {
   border-radius: 10px !important;
   overflow: hidden;
+}
+
+.rounded-visible {
+  border-radius: 10px !important;
 }
 
 .very-rounded {
@@ -13227,6 +13235,7 @@ small, .small {
   width: 100%;
   height: 100%;
   display: block;
+  min-width: 970px;
 }
 
 .loading-cont .icon {
@@ -14724,7 +14733,6 @@ small, .small {
 
 #app .graph-visx {
   position: relative;
-  background-color: #e5e5e5;
   background-color: #efefef;
   border-radius: 10px;
 }

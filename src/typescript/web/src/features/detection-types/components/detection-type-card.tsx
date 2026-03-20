@@ -8,6 +8,7 @@ import { detectionsSelectors } from "../../detections/state/detections-slice";
 import { getColorDiseaseIndex, getDetectionStats } from "../../../helpers/detections";
 import LineChartVisx from "../../../components/LineChartVisx";
 import { mapValues } from "../../../helpers/common";
+import Icon from "../../../components/Icon";
 
 export function getColor(min: number, max: number, value: number): string {
   const colors = ["#42C318", "#FFB290", "#FF4D4D", "#A10505"];
@@ -96,29 +97,47 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
   type NewDetectionButtonProps = {
     className?: string;
   };
-
   function NewDetectionButton({ className }: NewDetectionButtonProps) {
     return (
       <button
         className={"trnt_btn accent type-rounded" + (className ? " " + className : "")}
-        // className={"trnt_btn accent type-rounded"}
         onClick={() =>
           navigate(`/companies/${companyId}/fields/${fieldId}/new-detection`, {
             state: { typeId: typeId },
           })
         }
       >
-        <span className="upper font-s-600">+ Rilevamento {observationType.typology}</span>
+        <span className="font-m-600">+&nbsp;Rilevamento {observationType.typology}</span>
+      </button>
+    );
+  }
+  type OpenDetailButtonProps = {
+    className?: string;
+  };
+  function OpenDetailButton({ className }: OpenDetailButtonProps) {
+    return (
+      <button
+        className={"trnt_btn primary ps-lg-4 type-rounded" + (className ? " " + className : "")}
+        onClick={() =>
+          navigate(`/companies/${companyId}/fields/${fieldId}/type/${detectionType.id}`, {
+            state: { typeId: typeId },
+          })
+        }
+      >
+        {"Espandi"}
+        <span className="ms-1 mt-1 me-0">
+          <Icon iconName={"fullscreen"} color={"white"} />
+        </span>
       </button>
     );
   }
   return (
     <div className="detection-card">
-      <header className="d-flex align-items-start justify-content-between">
+      <header className="d-flex align-items-start justify-content-between flex-wrap">
         <div>
           {/* <div className="label py-1">Rilevamenti di</div> */}
           <a
-            className="font-l-600 color-black no-u pointer"
+            className="font-l-600 color-black no-u pointer d-inline-block me-4 mb-2"
             onClick={() =>
               navigate(`/companies/${companyId}/fields/${fieldId}/type/${detectionType.id}`, {
                 // navigate(`/companies/${companyId}/fields/${fieldId}/new-detection`, {
@@ -126,9 +145,10 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
               })
             }
           >{`${observationType.typology}  ›  ${observationType.method}`}</a>
-          <br />
+          {/* <br />
           <button
-            className="trnt_btn slim-y primary outlined narrow-x px-3 mt-2 type-rounded"
+            className="trnt_btn slim-y primary narrow-x px-3 mt-2 type-rounded"
+            style={{ marginLeft: "-5px" }}
             // data-type="rounded"
             onClick={() =>
               navigate(`/companies/${companyId}/fields/${fieldId}/type/${detectionType.id}`, {
@@ -138,15 +158,15 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
             }
           >
             {"Dettaglio →"}
-            {/* <Icon iconName={"enlarge"} color={"black"} /> */}
-          </button>
+          </button> */}
         </div>
-        <div className="d-none d-md-block">
+        <div className="d-none d-md-block" style={{ marginLeft: "-7px" }}>
+          <OpenDetailButton />
           <NewDetectionButton />
         </div>
       </header>
 
-      <div className="spacer py-4"></div>
+      <div className="spacer py-2"></div>
 
       {/*  
       <div className="small-texts d-flex justify-content-between align-items-center mt-4 mb-2">
@@ -155,7 +175,13 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
       </div>
         */}
 
-      <div ref={containerRef}>
+      <div ref={containerRef} className="bg-grey_1 rounded-visible">
+        <div className="p-3 font-s-600">
+          {detections.length == 1 && "1 rilevamento"}
+          {detections.length > 1 && `${detections.length} rilevamenti`}
+
+          {/* <div className="label">{`${detections.length} RILEVAMENT${detections.length !== 1 ? "I" : "O"}`}</div> */}
+        </div>
         <LineChartVisx
           width={containerWidth}
           height={200}
@@ -166,8 +192,9 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
         />
       </div>
 
-      <div className="d-md-none text-center mt-3 pt-1">
-        <NewDetectionButton className="wide" />
+      <div className="d-md-none mt-3 pt-1 d-flex align-items-center justify-content-stretch">
+        <OpenDetailButton className="w-50 px-0" />
+        <NewDetectionButton className="w-50" />
       </div>
     </div>
   );

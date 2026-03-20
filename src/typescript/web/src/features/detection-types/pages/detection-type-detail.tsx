@@ -439,7 +439,16 @@ export function DetectionTypeDetail() {
     }
   }
 
-  const buttonNewDetection = (
+  const ButtonDashboard = (
+    <button
+      className="trnt_btn primary type-rounded"
+      onClick={() => navigate(`/companies/${companyId}/fields/${fieldId}`)}
+    >
+      {"← Dashboard"}
+    </button>
+  );
+
+  const ButtonNewDetection = (
     <button
       className="trnt_btn accent type-rounded"
       data-type="rounded"
@@ -559,17 +568,12 @@ export function DetectionTypeDetail() {
       <Container fluid>
         {modalOpen && <modal.component {...modal.componentProps} />}
         <Row>
-          <Col xs={6}>
-            <button
-              className="trnt_btn primary type-rounded"
-              onClick={() => navigate(`/companies/${companyId}/fields/${fieldId}`)}
-            >
-              {"← Dashboard"}
-            </button>
-            <div className="space-05"></div>
+          <Col xs={6}>{ButtonDashboard}</Col>
+          <Col xs={6} className="text-end">
+            {ButtonNewDetection}
           </Col>
           <Col xs={6} className="text-end">
-            {buttonNewDetection}
+            <div className="space-05"></div>
           </Col>
         </Row>
         <Row>
@@ -593,7 +597,7 @@ export function DetectionTypeDetail() {
                           </p>
                           <div className="font-l-600">
                             <span onClick={handleTogglePhotos}>
-                              {photos.length > 0 && (
+                              {photos.length + notes.length > 0 && (
                                 <>
                                   <HorizontalPhotoStack photos={photos.map((item) => item.photo)} />
                                   <button
@@ -605,26 +609,20 @@ export function DetectionTypeDetail() {
                                 </>
                               )}
                             </span>
-                            {photos.length === 0 && <div className="font-l-600">Nessuna</div>}
+                            {photos.length + notes.length === 0 && (
+                              <div className="font-l-600">Nessuna</div>
+                            )}
                           </div>
                         </div>
-                        {/* <div className="d-none d-lg-block">{buttonNewDetection}</div> */}
+                        {/* <div className="d-none d-lg-block">{ButtonNewDetection}</div> */}
                       </div>
                     </Col>
                   </Row>
                   {mediaDetailIsOpen && (
                     <Row>
                       <Col xl={12} className="mt-5">
-                        {/* <h3 className="mb-3">
-                          <strong>Dettaglio note</strong>
-                        </h3> */}
                         <MediaItems />
                       </Col>
-                    </Row>
-                  )}
-                  {mediaDetailIsOpen && (
-                    <Row>
-                      <Col xl={12} className="mt-5"></Col>
                     </Row>
                   )}
                 </Container>
@@ -703,14 +701,9 @@ export function DetectionTypeDetail() {
           </Col>
         </Row>
 
-        <Row className="mt-4" id="graph-map-section">
-          {/* <Col xl={12} className="me-4">
-            <h3>
-              <strong>Tutti i rilevamenti</strong>
-            </h3>
-          </Col> */}
+        <Row className="mt-4">
           <Col xl={12}>
-            <section className="soft">
+            <section className="soft pb-3">
               <div className="">
                 <Container fluid className="px-0">
                   <Row>
@@ -725,7 +718,8 @@ export function DetectionTypeDetail() {
                         handleDeleteDetection={handleDeleteClick}
                       />
                     </Col>
-                    <Col xl={12} className="my-2">
+                    <Col xl={12} className="mt-3 d-flex align-items-center justify-content-end">
+                      <div className="font-s-600 me-2">Esporta dati</div>
                       <DownloadDataButton
                         data={sortedDetections}
                         format={"json"}
@@ -738,18 +732,19 @@ export function DetectionTypeDetail() {
                       />
                     </Col>
                   </Row>
-
-                  <Row>
-                    <Col xl={12} className="mt-4 d-md-none">
-                      {buttonNewDetection}
-                    </Col>
-                  </Row>
                 </Container>
               </div>
             </section>
           </Col>
         </Row>
-        {modelPath && (
+        <Row className="mt-4 d-md-none">
+          <Col xs={6}>{ButtonDashboard}</Col>
+          <Col xs={6} className="text-end">
+            {ButtonNewDetection}
+          </Col>
+        </Row>
+
+        {/* {modelPath && (
           <Row>
             <Col xl={12} className="text-center mt-4">
               <button
@@ -762,7 +757,10 @@ export function DetectionTypeDetail() {
             </Col>
             <Col xl={12} className="spacer my-4"></Col>
           </Row>
-        )}
+        )} */}
+        <Row>
+          <Col xl={12} className="spacer my-4"></Col>
+        </Row>
       </Container>
     </div>
   );

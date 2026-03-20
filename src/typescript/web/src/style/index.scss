@@ -147,6 +147,9 @@ $ms-sidebar-transition: 100ms;
 .bg-yelo {
   background-color: $c-yelo;
 }
+.bg-grey_1 {
+  background-color: $c-grey_1;
+}
 .bg-glass {
   background-color: rgba(white, 0.1) !important;
   background-color: transparent !important;
@@ -188,6 +191,9 @@ $ms-sidebar-transition: 100ms;
 .rounded {
   border-radius: 10px !important;
   overflow: hidden;
+}
+.rounded-visible {
+  border-radius: 10px !important;
 }
 .very-rounded {
   border-radius: 20px;
@@ -244,6 +250,7 @@ small {
       width: 100%;
       height: 100%;
       display: block;
+      min-width: 970px;
     }
     // .overlay {
     //   z-index: 2;
@@ -1144,7 +1151,6 @@ small {
 
   .graph-visx {
     position: relative;
-    background-color: #e5e5e5;
     background-color: $c-grey_1;
     border-radius: 10px;
     // overflow: hidden;
