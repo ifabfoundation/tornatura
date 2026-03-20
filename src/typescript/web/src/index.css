@@ -16643,6 +16643,8 @@ ul.list-group li.list-group-item:hover {
   font-weight: 700;
   text-transform: uppercase;
   padding-bottom: 3px;
+  padding-left: 2px;
+  padding-right: 2px;
   color: #1f1f1f;
   pointer-events: none;
 }
@@ -16688,16 +16690,18 @@ ul.list-group li.list-group-item:hover {
 }
 
 .component-table-cozy header .cell.sortable span::after {
-  content: url("../assets/images/sortable.svg");
-  opacity: 0.7;
+  content: url("./assets/images/sortable.svg");
+  opacity: 0.5;
 }
 
 .component-table-cozy header .cell.sortable.sorted-asc span::after {
-  content: url("../assets/images/sorted-asc.svg");
+  content: url("./assets/images/sorted-asc.svg");
+  opacity: 1;
 }
 
 .component-table-cozy header .cell.sortable.sorted-desc span::after {
-  content: url("../assets/images/sorted-desc.svg");
+  content: url("./assets/images/sorted-desc.svg");
+  opacity: 1;
 }
 
 .component-table-cozy .data-row {
@@ -16761,6 +16765,10 @@ ul.list-group li.list-group-item:hover {
 
 .component-table-cozy .data-row .cell:last-child {
   border-radius: 0 5px 5px 0;
+}
+
+.component-table-cozy .data-row .cell.shrink {
+  width: 0;
 }
 
 .component-table-cozy .data-row .cell.arrow {

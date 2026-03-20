@@ -1,17 +1,20 @@
 import React, { useState } from "react";
 import rarr from "../assets/images/rarr.svg";
 import _ from "lodash";
+import Icon, { IconName } from "./Icon";
 
 interface RowButtonProps {
   text?: string;
+  icon?: IconName;
   style?: string;
   callback: () => void;
 }
 
-const RowButton: React.FC<RowButtonProps> = ({ text, style, callback }) => {
+const RowButton: React.FC<RowButtonProps> = ({ text, icon, style, callback }) => {
   const className = `button${style ? ` ${style}` : ""}`;
   return (
     <a className={className} data-type="table" onClick={callback}>
+      {icon && <Icon iconName={icon} color="black" />}
       {text}
     </a>
   );
@@ -23,7 +26,10 @@ export interface TableColumn {
   sortable?: boolean;
   type: "text" | "button";
   style?: string;
+  shrink?: boolean;
+  align?: "left" | "center" | "right";
   buttonText?: string;
+  buttonIcon?: IconName;
   onButtonClick?: (data: any) => void;
 }
 
@@ -95,7 +101,7 @@ const TableCozy: React.FC<TableCozyProps> = ({ columns, data, options }) => {
             : () => {};
           return (
             <div key={col.id} className={className} onClick={callback}>
-              <span>{col.headerText}</span>
+              <span className={`d-block text-${col.align ?? "left"}`}>{col.headerText}</span>
             </div>
           );
         })}
@@ -115,8 +121,12 @@ const TableCozy: React.FC<TableCozyProps> = ({ columns, data, options }) => {
               if (col.type === "text") {
                 const cell = d[col.id];
                 return (
-                  <div className="cell" data-style={col.style} key={j}>
-                    {cell}
+                  <div
+                    className={`cell${col.shrink ? " shrink" : ""}`}
+                    data-style={col.style}
+                    key={j}
+                  >
+                    <div className={`w-100 text-${col.align ?? "left"}`}>{cell}</div>
                   </div>
                 );
               } else if (col.type === "button") {
@@ -126,8 +136,13 @@ const TableCozy: React.FC<TableCozyProps> = ({ columns, data, options }) => {
                   }
                 };
                 return (
-                  <div className="cell" key={j}>
-                    <RowButton text={col.buttonText} style={col.style} callback={buttonCallback} />
+                  <div className={`cell${col.shrink ? " shrink" : ""}`} key={j}>
+                    <RowButton
+                      text={col.buttonText}
+                      icon={col.buttonIcon}
+                      style={col.style}
+                      callback={buttonCallback}
+                    />
                   </div>
                 );
               }

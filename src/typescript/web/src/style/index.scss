@@ -2557,6 +2557,8 @@ ul.list-group {
     .cell {
       @include font-s-label;
       padding-bottom: 3px;
+      padding-left: 2px;
+      padding-right: 2px;
       color: $c-grey_6;
       pointer-events: none;
       span {
@@ -2571,14 +2573,16 @@ ul.list-group {
           }
         }
         span::after {
-          content: url("../assets/images/sortable.svg");
-          opacity: 0.7;
+          content: url("./assets/images/sortable.svg");
+          opacity: 0.5;
         }
         &.sorted-asc span::after {
-          content: url("../assets/images/sorted-asc.svg");
+          content: url("./assets/images/sorted-asc.svg");
+          opacity: 1;
         }
         &.sorted-desc span::after {
-          content: url("../assets/images/sorted-desc.svg");
+          content: url("./assets/images/sorted-desc.svg");
+          opacity: 1;
         }
       }
     }
@@ -2607,6 +2611,9 @@ ul.list-group {
       }
       &:last-child {
         border-radius: 0 $r $r 0;
+      }
+      &.shrink {
+        width: 0;
       }
       &.arrow {
         width: 30px;

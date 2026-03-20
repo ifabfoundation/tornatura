@@ -47,27 +47,31 @@ export function DetectionsTable({
       sortable: true,
       style: "normal",
       type: "text",
+      align: "center",
     },
     {
-      headerText: "Osservazioni",
+      headerText: "Punti",
       id: "pointsNum",
-      sortable: true,
+      sortable: false,
       style: "normal",
       type: "text",
+      align: "center",
     },
     {
       headerText: "Note",
       id: "notesNum",
-      sortable: true,
+      sortable: false,
       style: "normal",
       type: "text",
+      align: "center",
     },
     {
-      headerText: "Fotografie",
+      headerText: "Foto",
       id: "photosNum",
-      sortable: true,
+      sortable: false,
       style: "normal",
       type: "text",
+      align: "center",
     },
   ];
   const tableColumnsRange: TableColumn[] = [
@@ -77,6 +81,7 @@ export function DetectionsTable({
       sortable: true,
       style: "normal",
       type: "text",
+      align: "center",
     },
     {
       headerText: "Intensità media",
@@ -84,6 +89,7 @@ export function DetectionsTable({
       sortable: true,
       style: "normal",
       type: "text",
+      align: "center",
     },
     {
       headerText: "Indice di malattia",
@@ -91,6 +97,7 @@ export function DetectionsTable({
       sortable: true,
       style: "normal",
       type: "text",
+      align: "center",
     },
   ];
   const counterNames = getCounterNames(detections);
@@ -101,6 +108,7 @@ export function DetectionsTable({
       sortable: true,
       style: "normal",
       type: "text",
+      align: "center",
     },
     {
       headerText: counterNames.length > 1 ? counterNames[1] : "Adulti_",
@@ -108,6 +116,7 @@ export function DetectionsTable({
       sortable: true,
       style: "normal",
       type: "text",
+      align: "center",
     },
     {
       headerText: "Somma",
@@ -115,29 +124,16 @@ export function DetectionsTable({
       sortable: true,
       style: "normal",
       type: "text",
+      align: "center",
     },
   ];
   const tableColumnsActions: TableColumn[] = [
-    {
-      headerText: "Azioni",
-      id: "action1",
-      type: "button",
-      style: "danger1",
-      buttonText: "Elimina",
-      onButtonClick: (data) => {
-        if (handleDeleteDetection) {
-          handleDeleteDetection(data);
-          return;
-        }
-        console.log("handleDeleteDetection not set", data);
-        alert("handleDeleteDetection not set");
-      },
-    },
     {
       headerText: "",
       id: "action2",
       type: "button",
       style: "outlined type-rounded slim-y",
+      shrink: true,
       buttonText: "Evidenzia",
       onButtonClick: (data) => {
         if (handleHighlightDetection) {
@@ -146,6 +142,23 @@ export function DetectionsTable({
         }
         console.log("handleHighlightDetection not set", data);
         alert("handleHighlightDetection not set");
+      },
+    },
+    {
+      headerText: "",
+      id: "action1",
+      type: "button",
+      style: "normal",
+      shrink: true,
+      // buttonText: "E",
+      buttonIcon: "bin",
+      onButtonClick: (data) => {
+        if (handleDeleteDetection) {
+          handleDeleteDetection(data);
+          return;
+        }
+        console.log("handleDeleteDetection not set", data);
+        alert("handleDeleteDetection not set");
       },
     },
   ];
@@ -166,7 +179,9 @@ export function DetectionsTable({
     return {
       detection,
       detectionTime:
-        new Date(detection.detectionTime).toLocaleDateString() +
+        new Date(detection.detectionTime).toLocaleDateString("it-IT", {
+          dateStyle: "short",
+        }) +
         ", " +
         new Date(detection.detectionTime).toLocaleTimeString([], {
           hour: "2-digit",
@@ -174,18 +189,28 @@ export function DetectionsTable({
         }),
       bbch: dd.bbch ?? "-",
       pointsNum: dd.points.length ?? "-",
-      infectedPercent: ds.infectedPercentStr,
-      statIntensityAvg: ds.intensityAvgStr,
+      infectedPercent: (
+        <span className="d-inline-block text-right" style={{ width: "3em" }}>
+          {ds.infectedPercentStr}
+        </span>
+      ),
+      statIntensityAvg: (
+        <span className="d-inline-block text-right" style={{ width: "3em" }}>
+          {ds.intensityAvgStr}
+        </span>
+      ),
       photosNum: dd.photos && dd.photos.length > 0 ? dd.photos.length : "–",
       notesNum: dd.notes && dd.notes.length > 0 ? "Sì" : "–",
       diseaseIndex: (
         <span>
+          <span className="d-inline-block text-right" style={{ width: "3em" }}>
+            {ds.diseaseIndexStr}
+          </span>
           <span
-            className="dot me-2"
+            className="dot mx-2"
             data-size="12"
             style={{ background: diseaseIndexColor }}
           ></span>
-          {ds.diseaseIndexStr}
         </span>
       ),
       counter1:

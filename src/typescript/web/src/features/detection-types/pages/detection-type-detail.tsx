@@ -113,9 +113,12 @@ export function DownloadDataButton({
 export function DetectionTypeDetail() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+
   const [tableIsOpen, setTableIsOpen] = React.useState<boolean>(false);
   const [notesDetailIsOpen, setNotesDetailIsOpen] = React.useState<boolean>(false);
   const [photosDetailIsOpen, setPhotosDetailIsOpen] = React.useState<boolean>(false);
+  const [mediaDetailIsOpen, setMediaDetailIsOpen] = React.useState<boolean>(false);
+
   const [selectedDetectionId, setSelectedDetectionId] = React.useState<string | null>(null);
   const [modalOpen, setModalOpen] = React.useState(false);
   const [modal, setModal] = React.useState<any>({});
@@ -296,9 +299,9 @@ export function DetectionTypeDetail() {
     return {
       id: detection.id,
       // Linear time mapping
-      // x: new Date(detection.detectionTime),
+      x: new Date(detection.detectionTime),
       // Sequential time mapping (better for debugging)
-      x: new Date(mapValues(index, 0, a.length, a[0].detectionTime, a[a.length - 1].detectionTime)),
+      // x: new Date(mapValues(index, 0, a.length, a[0].detectionTime, a[a.length - 1].detectionTime)),
       y: ds.type === "counters" ? ds.counterSumsTotal : ds.diseaseIndex,
       // color: getColor(groupStats.groupMin, groupStats.groupMax, ds.pointsAvg),
       color:
@@ -403,6 +406,10 @@ export function DetectionTypeDetail() {
     }
     setTableIsOpen(newIsOpen);
   }
+  function handleToggleMedia() {
+    const newIsOpen = !mediaDetailIsOpen;
+    setMediaDetailIsOpen(newIsOpen);
+  }
   function handleTogglePhotos() {
     const newIsOpen = !photosDetailIsOpen;
     if (newIsOpen === true && tableIsOpen) {
@@ -428,7 +435,7 @@ export function DetectionTypeDetail() {
           ? (currentIndex + 1) % graphDataVisx.length
           : (currentIndex - 1 + graphDataVisx.length) % graphDataVisx.length;
       setSelectedDetectionId(graphDataVisx[nextIndex].id);
-      scrollToGraphAndMap();
+      // scrollToGraphAndMap();
     }
   }
 
@@ -442,7 +449,7 @@ export function DetectionTypeDetail() {
         })
       }
     >
-      <span className="upper font-s-600">+ Rilevamento {observationType?.typology}</span>
+      <span className="font-m-600">+ Rilevamento {observationType?.typology}</span>
     </button>
   );
 
@@ -461,212 +468,171 @@ export function DetectionTypeDetail() {
 
   console.log("observationType", observationType);
 
+  function MediaItems() {
+    const itemsWithDate = [{} as { date: Date; item: JSX.Element }];
+
+    notes.forEach((note, index) => {
+      const item = (
+        <section className="soft nested-1 mt-2 p-3 pt-0">
+          <div className="mb-1 pt-2 d-flex align-items-baseline justify-content-between">
+            <strong>
+              <span
+                className="d-inline-block position-relative"
+                style={{ margin: "-8px -5px -8px -8px", top: "10px" }}
+              >
+                <Icon iconName="asterisk" color="black" />
+              </span>
+              {`Rilevamento ${new Date(note.detectionTime).toLocaleDateString([], {
+                day: "2-digit",
+                month: "2-digit",
+                year: "2-digit",
+              })}`}
+            </strong>
+
+            <button
+              className="trnt_btn slim-y narrow-x outlined font-s-600 text-transform-none px-2 type-rounded"
+              data-type="rounded"
+              style={{ top: "-3px", position: "relative" }}
+              onClick={() => {
+                setSelectedDetectionId(note.detection.id);
+                scrollToGraphAndMap();
+              }}
+            >
+              Evidenzia
+            </button>
+          </div>
+          <div key={index}>
+            <p className="ps-3 pe-md-5">{note.text}</p>
+          </div>
+        </section>
+      );
+      itemsWithDate.push({ date: new Date(note.detectionTime), item });
+    });
+
+    photos.forEach((photo, index) => {
+      const item = (
+        <section className="soft nested-1 mt-2 p-3 pt-0">
+          <div className="mb-1 pt-2 d-flex align-items-baseline justify-content-between">
+            <strong>
+              <span
+                className="d-inline-block position-relative"
+                style={{ margin: "-8px -5px -8px -8px", top: "10px" }}
+              >
+                <Icon iconName="asterisk" color="black" />
+              </span>
+              {`Rilevamento ${new Date(photo.detectionTime).toLocaleDateString([], {
+                day: "2-digit",
+                month: "2-digit",
+                year: "2-digit",
+              })}`}
+            </strong>
+
+            <button
+              className="trnt_btn slim-y narrow-x outlined font-s-600 text-transform-none px-2 type-rounded"
+              data-type="rounded"
+              style={{ top: "-3px", position: "relative" }}
+              onClick={() => {
+                setSelectedDetectionId(photo.detection.id);
+                scrollToGraphAndMap();
+              }}
+            >
+              Evidenzia
+            </button>
+          </div>
+          <div key={index} className="text-center">
+            <img
+              className="d-inline-block rounded"
+              src={photo.photo.url}
+              style={{ maxWidth: "300px", maxHeight: "300px" }}
+            />
+          </div>
+        </section>
+      );
+      itemsWithDate.push({ date: new Date(photo.detectionTime), item });
+    });
+
+    return <div>{itemsWithDate.sort((a, b) => a.date - b.date).map(({ item }) => item)}</div>;
+  }
+
   return (
     <div>
-      <Container>
+      <Container fluid>
         {modalOpen && <modal.component {...modal.componentProps} />}
-        <Row className="d-lg-none">
-          <Col xl={12}>
+        <Row>
+          <Col xs={6}>
             <button
               className="trnt_btn primary type-rounded"
               onClick={() => navigate(`/companies/${companyId}/fields/${fieldId}`)}
             >
-              {"← Dashboard campo"}
+              {"← Dashboard"}
             </button>
             <div className="space-05"></div>
+          </Col>
+          <Col xs={6} className="text-end">
+            {buttonNewDetection}
           </Col>
         </Row>
         <Row>
           <Col xl={12}>
             <section className="soft">
               <div className="d-flex align-items-start justify-content-between">
-                <Container className="px-0">
+                <Container fluid className="px-0">
                   <Row>
                     <Col md={6}>
+                      <div className="font-s-label mb-1">Rilevamenti di</div>
                       <div className="font-l-600">{`${observationType?.typology}  ›  ${observationType?.method}`}</div>
-                      <div className="debug">{observationType?.typology}</div>
+                      {/* <div className="debug">{observationType?.typology}</div> */}
                     </Col>
-                    <Col md={6} className="text-md-end d-none d-md-block">
-                      {buttonNewDetection}
-                    </Col>
-                  </Row>
-                </Container>
-              </div>
-              <div className="mt-4">
-                <Container className="px-0">
-                  <Row className="mt-4">
-                    <Col xs={"auto"} md={{ order: 1 }} className="me-4">
-                      <p className="font-s-label upper mb-2">Rilevamenti</p>
-                      <div className="font-l-600">
-                        <span className="me-1">{detections.length}</span>
-                        <button
-                          className="trnt_btn slim-y narrow-x outlined font-s-600 text-transform-none px-2 type-rounded"
-                          data-type="rounded"
-                          style={{ top: "-3px", position: "relative" }}
-                          onClick={handleToggleTable}
-                        >{`  ${tableIsOpen ? "Nascondi" : "Espandi"}  `}</button>
-                      </div>
-                    </Col>
-
-                    <Col xs={"auto"} md={{ order: 3 }} className="me-4">
-                      <p className="font-s-label upper mb-2">Note</p>
-                      <div className="font-l-600">
-                        <span className="me-1">{notes.length > 0 ? notes.length : "Nessuna"}</span>
-                        {notes.length > 0 && (
-                          <button
-                            className="trnt_btn slim-y narrow-x outlined font-s-600 text-transform-none px-2 type-rounded"
-                            data-type="rounded"
-                            style={{ top: "-3px", position: "relative" }}
-                            onClick={handleToggleNotes}
-                          >{`  ${notesDetailIsOpen ? "Nascondi" : "Espandi"}  `}</button>
-                        )}
-                      </div>
-                    </Col>
-
-                    <Col xs={12} md={{ span: "auto", order: 2 }} className="me-4 mt-3 mt-md-0">
-                      <p className="font-s-label upper mb-2">{`${photos.length ? photos.length + " " : ""}Fotografi${photos.length === 1 ? "a" : "e"}`}</p>
-                      <div className="font-l-600">
-                        <span onClick={handleTogglePhotos}>
-                          {photos.length > 0 && (
-                            <HorizontalPhotoStack photos={photos.map((item) => item.photo)} />
-                          )}
-                        </span>
-                        {photos.length === 0 && <div className="font-l-600">Nessuna</div>}
+                    <Col md={6} className="text-md-end">
+                      <div className="d-flex align-items-center justify-content-end">
+                        <div className="ms-3">
+                          <p className="font-s-label upper mb-1">
+                            {/* {`${photos.length ? photos.length + " " : ""}Fotografi${photos.length === 1 ? "a" : "e"}`} */}
+                            Foto e note
+                            {/* {`${photos.length ? photos.length + " " : ""}Foto e ${notes.length ? notes.length + " " : ""}Note`} */}
+                          </p>
+                          <div className="font-l-600">
+                            <span onClick={handleTogglePhotos}>
+                              {photos.length > 0 && (
+                                <>
+                                  <HorizontalPhotoStack photos={photos.map((item) => item.photo)} />
+                                  <button
+                                    className="trnt_btn slim-y narrow-x outlined font-s-600 text-transform-none px-2 type-rounded me-0"
+                                    data-type="rounded"
+                                    style={{ top: "-8px", position: "relative" }}
+                                    onClick={handleToggleMedia}
+                                  >{`  ${mediaDetailIsOpen ? "Nascondi" : "Espandi"}  `}</button>
+                                </>
+                              )}
+                            </span>
+                            {photos.length === 0 && <div className="font-l-600">Nessuna</div>}
+                          </div>
+                        </div>
+                        {/* <div className="d-none d-lg-block">{buttonNewDetection}</div> */}
                       </div>
                     </Col>
                   </Row>
-
-                  {photosDetailIsOpen && (
-                    <Row>
-                      <Col xl={12} className="mt-5">
-                        {photos.map((photo, index) => (
-                          <section className="soft nested-1 mt-2 p-3 pt-0">
-                            <div className="mb-1 pt-2 d-flex align-items-baseline justify-content-between">
-                              <strong>
-                                <span
-                                  className="d-inline-block position-relative"
-                                  style={{ margin: "-8px -5px -8px -8px", top: "10px" }}
-                                >
-                                  <Icon iconName="asterisk" color="black" />
-                                </span>
-                                {`Rilevamento ${new Date(photo.detectionTime).toLocaleDateString(
-                                  [],
-                                  {
-                                    day: "2-digit",
-                                    month: "2-digit",
-                                    year: "2-digit",
-                                  },
-                                )}`}
-                              </strong>
-
-                              <button
-                                className="trnt_btn slim-y narrow-x outlined font-s-600 text-transform-none px-2 type-rounded"
-                                data-type="rounded"
-                                style={{ top: "-3px", position: "relative" }}
-                                onClick={() => {
-                                  setSelectedDetectionId(photo.detection.id);
-                                  scrollToGraphAndMap();
-                                }}
-                              >
-                                Evidenzia
-                              </button>
-                            </div>
-                            <div key={index} className="text-center">
-                              <img
-                                className="d-inline-block rounded"
-                                src={photo.photo.url}
-                                style={{ maxWidth: "300px", maxHeight: "300px" }}
-                              />
-                            </div>
-                          </section>
-                        ))}
-                      </Col>
-                    </Row>
-                  )}
-                  {tableIsOpen && (
-                    <Row>
-                      <Col xl={12} className="mt-5">
-                        <DetectionsTable
-                          detections={sortedDetections}
-                          observationType={observationType?.observationType ?? ""}
-                          handleHighlightDetection={(row) =>
-                            setSelectedDetectionId(row.detection?.id ?? null)
-                          }
-                          handleDeleteDetection={handleDeleteClick}
-                        />
-                      </Col>
-                      <Col xl={12} className="my-2">
-                        <DownloadDataButton
-                          data={sortedDetections}
-                          format={"json"}
-                          filename={`campo ${fieldId}`}
-                        />
-                        <DownloadDataButton
-                          data={flatDetectionsData}
-                          format={"csv"}
-                          filename={`campo ${fieldId}`}
-                        />
-                      </Col>
-                    </Row>
-                  )}
-
-                  {notesDetailIsOpen && (
+                  {mediaDetailIsOpen && (
                     <Row>
                       <Col xl={12} className="mt-5">
                         {/* <h3 className="mb-3">
                           <strong>Dettaglio note</strong>
                         </h3> */}
-                        {notes.map((note, index) => (
-                          <section className="soft nested-1 mt-2 p-3 pt-0">
-                            <div className="mb-1 pt-2 d-flex align-items-baseline justify-content-between">
-                              <strong>
-                                <span
-                                  className="d-inline-block position-relative"
-                                  style={{ margin: "-8px -5px -8px -8px", top: "10px" }}
-                                >
-                                  <Icon iconName="asterisk" color="black" />
-                                </span>
-                                {`Rilevamento ${new Date(note.detectionTime).toLocaleDateString(
-                                  [],
-                                  {
-                                    day: "2-digit",
-                                    month: "2-digit",
-                                    year: "2-digit",
-                                  },
-                                )}`}
-                              </strong>
-
-                              <button
-                                className="trnt_btn slim-y narrow-x outlined font-s-600 text-transform-none px-2 type-rounded"
-                                data-type="rounded"
-                                style={{ top: "-3px", position: "relative" }}
-                                onClick={() => {
-                                  setSelectedDetectionId(note.detection.id);
-                                  scrollToGraphAndMap();
-                                }}
-                              >
-                                Evidenzia
-                              </button>
-                            </div>
-                            <div key={index}>
-                              <p className="ps-3 pe-md-5">{note.text}</p>
-                            </div>
-                          </section>
-                        ))}
+                        <MediaItems />
                       </Col>
                     </Row>
                   )}
-
-                  <Row>
-                    <Col xl={12} className="mt-4 d-md-none">
-                      {buttonNewDetection}
-                    </Col>
-                  </Row>
+                  {mediaDetailIsOpen && (
+                    <Row>
+                      <Col xl={12} className="mt-5"></Col>
+                    </Row>
+                  )}
                 </Container>
               </div>
             </section>
           </Col>
         </Row>
+
         <Row className="mt-4" id="graph-map-section">
           <Col xl={12}>
             <section className="soft">
@@ -733,6 +699,53 @@ export function DetectionTypeDetail() {
                   <div className="flex-grow-1 bg-white order-md-2"></div>
                 </Col>
               </Row>
+            </section>
+          </Col>
+        </Row>
+
+        <Row className="mt-4" id="graph-map-section">
+          {/* <Col xl={12} className="me-4">
+            <h3>
+              <strong>Tutti i rilevamenti</strong>
+            </h3>
+          </Col> */}
+          <Col xl={12}>
+            <section className="soft">
+              <div className="">
+                <Container fluid className="px-0">
+                  <Row>
+                    <Col xl={12} className="mt-0">
+                      <DetectionsTable
+                        detections={sortedDetections}
+                        observationType={observationType?.observationType ?? ""}
+                        handleHighlightDetection={(row) => {
+                          setSelectedDetectionId(row.detection?.id ?? null);
+                          scrollToGraphAndMap();
+                        }}
+                        handleDeleteDetection={handleDeleteClick}
+                      />
+                    </Col>
+                    <Col xl={12} className="my-2">
+                      <DownloadDataButton
+                        data={sortedDetections}
+                        format={"json"}
+                        filename={`campo ${fieldId}`}
+                      />
+                      <DownloadDataButton
+                        data={flatDetectionsData}
+                        format={"csv"}
+                        filename={`campo ${fieldId}`}
+                      />
+                    </Col>
+                  </Row>
+
+                  <Row>
+                    <Col xl={12} className="mt-4 d-md-none">
+                      {buttonNewDetection}
+                    </Col>
+                  </Row>
+                </Container>
+              </div>
             </section>
           </Col>
         </Row>

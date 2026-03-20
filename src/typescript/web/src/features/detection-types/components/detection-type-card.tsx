@@ -71,9 +71,9 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
     return {
       id: detection.id,
       // Linear time mapping
-      // x: new Date(detection.detectionTime),
+      x: new Date(detection.detectionTime),
       // Sequential time mapping (better for debugging)
-      x: new Date(mapValues(index, 0, a.length, a[0].detectionTime, a[a.length - 1].detectionTime)),
+      // x: new Date(mapValues(index, 0, a.length, a[0].detectionTime, a[a.length - 1].detectionTime)),
       y: ds.type === "counters" ? ds.counterSumsTotal : ds.diseaseIndex,
       // color: getColor(groupStats.groupMin, groupStats.groupMax, ds.pointsAvg),
       color:
