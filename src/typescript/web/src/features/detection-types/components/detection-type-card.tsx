@@ -4,8 +4,11 @@ import { useAppSelector } from "../../../hooks";
 import { detectionTypesSelectors } from "../state/detection-types-slice";
 import { observationTypesSelectors } from "../../observation-types/state/observation-types-slice";
 import { detectionsSelectors } from "../../detections/state/detections-slice";
-
-import { getColorDiseaseIndex, getDetectionStats } from "../../../helpers/detections";
+import {
+  getColorDiseaseIndex,
+  getDetectionStats,
+  shouldUseGradients,
+} from "../../../helpers/detections";
 import LineChartVisx from "../../../components/LineChartVisx";
 import { mapValues } from "../../../helpers/common";
 import Icon from "../../../components/Icon";
@@ -187,7 +190,8 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
           height={200}
           data={graphDataVisx}
           onSelectPoint={undefined}
-          gradients={observationType?.typology === "Peronospora"}
+          ticksFormatterName={observationType?.observationType}
+          gradients={shouldUseGradients(observationType?.typology)}
           selectedId={undefined}
         />
       </div>

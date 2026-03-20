@@ -22,6 +22,7 @@ export type LineChartVisxProps = {
   height: number;
   data: Datum[];
   selectedId?: string;
+  ticksFormatterName?: "counters" | "range";
   onSelectPoint?: (point: Datum) => void;
   gradients?: boolean;
   margin?: { top: number; right: number; bottom: number; left: number };
@@ -31,8 +32,9 @@ export default function LineChartVisx({
   width,
   height,
   data,
-  onSelectPoint,
   selectedId,
+  ticksFormatterName,
+  onSelectPoint,
   gradients = false,
   margin = { top: 20, right: 20, bottom: 40, left: 50 },
 }: LineChartVisxProps) {
@@ -40,6 +42,17 @@ export default function LineChartVisx({
   const { tooltipData, tooltipLeft, tooltipTop, showTooltip, hideTooltip } = useTooltip<Datum>();
   const innerWidth = width - margin.left - margin.right;
   const innerHeight = height - margin.top - margin.bottom;
+
+  const tickFormatter = (d: number) => {
+    switch (ticksFormatterName) {
+      case "counters":
+        return d.toString();
+      case "range":
+        return (d * 100).toFixed(0) + "%";
+      default:
+        return d.toString();
+    }
+  };
 
   // Accessors
   const xAccessor = (d: Datum) => d.x;
@@ -152,7 +165,11 @@ export default function LineChartVisx({
             }
           />
 
-          <AxisLeft scale={yScale} numTicks={5} />
+          <AxisLeft
+            scale={yScale}
+            tickFormat={(d) => (tickFormatter ? tickFormatter(d as number) : d.toString())}
+            numTicks={5}
+          />
 
           {/* grid */}
           {data.slice(0, -1).map((point, i) => {

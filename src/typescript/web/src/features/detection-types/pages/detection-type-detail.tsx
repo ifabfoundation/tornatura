@@ -464,7 +464,7 @@ export function DetectionTypeDetail() {
 
   const graphTitle = getGraphName(observationType?.typology ?? "");
   const graphLegend = getGraphLegend(observationType?.typology ?? "");
-  const graphHeight = isMobile ? 100 : 200;
+  const graphHeight = isMobile ? 150 : 200;
 
   const selectedDetection = detections.find((d) => d.id === selectedDetectionId);
   const selectedDate = selectedDetection
@@ -582,14 +582,14 @@ export function DetectionTypeDetail() {
               <div className="d-flex align-items-start justify-content-between">
                 <Container fluid className="px-0">
                   <Row>
-                    <Col md={6}>
+                    <Col sm={6}>
                       <div className="font-s-label mb-1">Rilevamenti di</div>
                       <div className="font-l-600">{`${observationType?.typology}  ›  ${observationType?.method}`}</div>
                       {/* <div className="debug">{observationType?.typology}</div> */}
                     </Col>
-                    <Col md={6} className="text-md-end">
-                      <div className="d-flex align-items-center justify-content-end">
-                        <div className="ms-3">
+                    <Col sm={6} className="text-sm-end">
+                      <div className="d-flex align-items-center justify-content-sm-end">
+                        <div className="ms-sm-3 mt-4 mt-sm-0">
                           <p className="font-s-label upper mb-1">
                             {/* {`${photos.length ? photos.length + " " : ""}Fotografi${photos.length === 1 ? "a" : "e"}`} */}
                             Foto e note
@@ -656,6 +656,7 @@ export function DetectionTypeDetail() {
                       data={graphDataVisx}
                       onSelectPoint={handleGraphPointClick}
                       gradients={shouldUseGradients(observationType?.typology)}
+                      ticksFormatterName={observationType?.observationType}
                       selectedId={selectedDetectionId ?? undefined}
                     />
                   </div>

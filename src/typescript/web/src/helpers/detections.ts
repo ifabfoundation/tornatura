@@ -12,7 +12,7 @@ import legend_indice_malattia from "../assets/images/legends/legend-peronospora.
 
 export function shouldUseGradients(typology: string | undefined): boolean {
   // Define which typologies should use gradients
-  const typologiesWithGradients = ["Peronospora", "Flavescenza"];
+  const typologiesWithGradients = ["Peronospora", "Flavescenza", "Giallumi"];
   return typology !== undefined && typologiesWithGradients.includes(typology);
 }
 
