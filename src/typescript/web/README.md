@@ -11,6 +11,10 @@
 - Tipo di linea per il grafico
 - Tipo di stats (Indice di malattia?)
 
+### NUTS data province
+
+https://ec.europa.eu/eurostat/web/gisco/geodata/statistical-units/territorial-units-statistics
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
