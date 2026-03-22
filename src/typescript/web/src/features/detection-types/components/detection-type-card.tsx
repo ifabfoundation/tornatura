@@ -10,7 +10,6 @@ import {
   shouldUseGradients,
 } from "../../../helpers/detections";
 import LineChartVisx from "../../../components/LineChartVisx";
-import { mapValues } from "../../../helpers/common";
 import Icon from "../../../components/Icon";
 
 export function getColor(min: number, max: number, value: number): string {
@@ -70,7 +69,7 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
     groupStats.groupMax = Math.max(groupStats.groupMax, ds.pointsMax);
   });
 
-  const graphDataVisx = sortedDetections.map((detection, index, a) => {
+  const graphDataVisx = sortedDetections.map((detection) => {
     const ds = getDetectionStats(detection);
     return {
       id: detection.id,
@@ -190,7 +189,7 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
           height={200}
           data={graphDataVisx}
           onSelectPoint={undefined}
-          ticksFormatterName={observationType?.observationType}
+          ticksFormatterName={observationType?.observationType as "counters" | "range" }
           gradients={shouldUseGradients(observationType?.typology)}
           selectedId={undefined}
         />

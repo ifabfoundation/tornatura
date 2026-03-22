@@ -20,6 +20,7 @@ import Stepper from "../components/Stepper";
 import SignupImpactQuestionnaireStep, {
   SignupImpactQuestionnaireFormData,
 } from "../features/auth/components/signup-impact-questionnaire-step";
+import Modal from "../components/Modal";
 
 const PhoneRegExp =
   /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
@@ -36,6 +37,45 @@ function readSignupStep(state: unknown): number | undefined {
   }
 
   return rawStep;
+}
+
+function getRegistrationErrorMessage(error: unknown): string {
+  const fallback =
+    "Si è verificato un errore durante la registrazione. Riprova tra qualche minuto.";
+
+  if (!error || typeof error !== "object") {
+    return fallback;
+  }
+
+  const candidateSources = [
+    (error as { body?: unknown }).body,
+    (error as { response?: unknown }).response,
+    (error as { data?: unknown }).data,
+    error,
+  ];
+
+  for (const source of candidateSources) {
+    if (!source || typeof source !== "object") {
+      continue;
+    }
+
+    const message = (source as { message?: unknown }).message;
+    if (typeof message === "string" && message.trim()) {
+      return message;
+    }
+
+    const detail = (source as { detail?: unknown }).detail;
+    if (typeof detail === "string" && detail.trim()) {
+      return detail;
+    }
+
+    const errorField = (source as { error?: unknown }).error;
+    if (typeof errorField === "string" && errorField.trim()) {
+      return errorField;
+    }
+  }
+
+  return fallback;
 }
 
 interface SignupProps {
@@ -65,7 +105,6 @@ function SignupStep4({
     validationSchema: Yup.object({
       privacy: Yup.boolean().oneOf([true], "È necessaria l'accettazione"),
       privacy2: Yup.boolean().oneOf([true], "È necessaria l'accettazione"),
-      privacy3: Yup.boolean().oneOf([true], "È necessaria l'accettazione"),
       privacy4: Yup.boolean().test(
         "privacy4-required",
         "È necessaria l'accettazione",
@@ -141,7 +180,7 @@ function SignupStep4({
                 <span className="my-2">
                   Ho preso visione della&nbsp;
                   <a
-                    href="https://tornatura.it/f/24-04-2025-informativa-privacy-app-tornatura.pdf"
+                    href="/18-03-2026-informativa-privacy-app-tornatura.pdf"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -151,29 +190,6 @@ function SignupStep4({
               </label>
               {formik.touched.privacy && formik.errors.privacy ? (
                 <div className="error">{formik.errors.privacy}</div>
-              ) : null}
-            </div>
-          </div>
-          <div className="row input-row">
-            <div className="col">
-              <label className="d-flex align-items-start">
-                <input
-                  id="privacy2"
-                  name="privacy2"
-                  type="checkbox"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  checked={formik.values.privacy2}
-                  className="d-inline"
-                />
-                <span className="my-2">
-                  {
-                    "Le informazioni e i dati conferiti nell’ambito del progetto Tornatura, tramite l’utilizzo dell'applicazione, devono essere veritieri, accurati e nella piena disponibilità di chi li fornisce. Tali dati saranno utilizzati per contribuire al progetto e saranno comunicati anche per scopi rendicontativi all’ente finanziatore. Pertanto, il dichiarante si assume la piena responsabilità di ogni informazione inserita sull'applicazione"
-                  }
-                </span>
-              </label>
-              {formik.touched.privacy2 && formik.errors.privacy2 ? (
-                <div className="error">{formik.errors.privacy2}</div>
               ) : null}
             </div>
           </div>
@@ -220,7 +236,7 @@ function SignupStep4({
                 <span className="my-2">
                   Ho preso visione della&nbsp;
                   <a
-                    href="https://tornatura.it/f/policy-newsletter-tornatura.pdf"
+                    href="/policy-newsletter-tornatura.pdf"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -230,6 +246,27 @@ function SignupStep4({
               </label>
               {formik.touched.privacy3 && formik.errors.privacy3 ? (
                 <div className="error">{formik.errors.privacy3}</div>
+              ) : null}
+            </div>
+          </div>
+          <div className="row input-row">
+            <div className="col">
+              <label className="d-flex align-items-start">
+                <input
+                  id="privacy2"
+                  name="privacy2"
+                  type="checkbox"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  checked={formik.values.privacy2}
+                  className="d-inline"
+                />
+                <span className="my-2">
+                  Le informazioni e i dati conferiti nell'ambito del progetto tornatura, tramite l'utilizzo dell'applicazione, devono essere veritieri, accurati e nella piena disponibilità di chi li fornisce. tali dati sanno utilizzati per contribuire al progetto e saranno comunicati anche per scopi rendicontativi all'ente finanziatore. pertanto, il dichiarante si assume la piena responsabilità  della veridicità, accuratezza e piena disponibilità di ogni informazione inserita.
+                </span>
+              </label>
+              {formik.touched.privacy2 && formik.errors.privacy2 ? (
+                <div className="error">{formik.errors.privacy2}</div>
               ) : null}
             </div>
           </div>
@@ -589,8 +626,7 @@ export function Signup() {
   const navigate = useNavigate();
   const [step, setStep] = React.useState(readSignupStep(location.state) || 1);
 
-  // const [flow, setFlow] = React.useState<string>("Standard");
-  const [flow, setFlow] = React.useState<string>("Simple");
+  const [flow, setFlow] = React.useState<string>("Standard");
 
   const [invitation, setInvitation] = React.useState<InvitationPublic>();
   const [invitationToken, setInvitationToken] = React.useState<string>();
@@ -625,6 +661,8 @@ export function Signup() {
     accountType: AccountTypeEnum.Agronomist,
     phone: "",
   });
+  const [registrationErrorMessage, setRegistrationErrorMessage] = React.useState("");
+  const [isRegistrationErrorModalOpen, setIsRegistrationErrorModalOpen] = React.useState(false);
 
   const goToStep = React.useCallback(
     (nextStep: number, replace = false) => {
@@ -757,16 +795,26 @@ export function Signup() {
   const createAccountAction = async (payload: UserCreatePayload) => {
     const apiConfig = new Configuration({ basePath: `${COREAPIS_BASE_PATH}` });
     const usersApi = new UsersApi(apiConfig);
-    const response = await usersApi.registerUser(payload);
+    try {
+      const response = await usersApi.registerUser(payload);
 
-    if (response.status === 201) {
-      if (flow === "Standard") {
-        goToStep(standardSuccessStep);
+      if (response.status === 201) {
+        if (flow === "Standard") {
+          goToStep(standardSuccessStep);
+        } else {
+          goToStep(simpleFlowSuccessStep);
+        }
       } else {
-        goToStep(simpleFlowSuccessStep);
+        console.error("Error creating account", response.data);
+        setRegistrationErrorMessage(
+          response.data.message || "Non è stato possibile completare la registrazione. Riprova più tardi.",
+        );
+        setIsRegistrationErrorModalOpen(true);
       }
-    } else {
-      console.error("Error creating account", response);
+    } catch (error) {
+      console.error("Error creating account", error);
+      setRegistrationErrorMessage(getRegistrationErrorMessage(error));
+      setIsRegistrationErrorModalOpen(true);
     }
   };
 
@@ -859,164 +907,220 @@ export function Signup() {
 
   if (flow === "Standard") {
     return (
-      <div id="app" className="main-app">
-        <div className="ui-right">
-          <TopHeader />
-          <div className="content-area">
-            <div className="content">
-              <Stepper
-                items={standardStepperSteps.map((stepItem) => stepItem.label)}
-                currentStep={currentStandardStepIndex}
-                handleStepClick={(stepIndex) => {
-                  goToStep(standardStepperSteps[stepIndex].step);
-                }}
-                handleBackClick={handleBackClick}
-                handleExitClick={() => {
-                  navigate("/");
-                }}
-              />
-              <div className="form-wrapper">
-                {step === 1 && (
-                  <SignupStep1
-                    formData={formData}
-                    action="Avanti"
-                    onNextClick={handleNextClick}
-                    onBackClick={handleBackClick}
-                  />
-                )}
-                {step === 2 && (
-                  <SignupStep2
-                    formData={formData}
-                    action="Avanti"
-                    onBackClick={handleBackClick}
-                    onNextClick={handleNextClick}
-                  />
-                )}
-                {step === 3 && (
-                  <SignupStep3
-                    formData={formData}
-                    action="Avanti"
-                    onBackClick={handleBackClick}
-                    onNextClick={handleNextClick}
-                  />
-                )}
-                {step === 4 && (
-                  <SignupStep4
-                    formData={formData}
-                    action={standardQuestionnaireStep !== undefined ? "Avanti" : "Iscriviti"}
-                    onBackClick={handleBackClick}
-                    onNextClick={handleNextClick}
-                    isCompanyOwnerInStandardFlow={isCompanyOwnerInStandardFlow}
-                  />
-                )}
-                {step === standardQuestionnaireStep && (
-                  <SignupImpactQuestionnaireStep
-                    initialValues={impactQuestionnaireData}
-                    action="Iscriviti"
-                    onBackClick={handleBackClick}
-                    onNextClick={handleNextClick}
-                  />
-                )}
-                {step === standardSuccessStep && (
-                  <Container>
-                    <Row>
-                      <Col></Col>
-                      <Col md="auto" className="text-center">
-                        <h1 className="mb-3">Registrazione</h1>
-                        <div className="bg-white p-4 rounded">
-                          <div
-                            className="spacer d-none d-md-block"
-                            style={{ width: "320px" }}
-                          ></div>
-                          <p className="my-3">
-                            Registrazione Avvenuta con successo. Riceverai una email di conferma
-                            dell'avvenuta registrazione
-                          </p>
-                          <Button className="trnt_btn accent wide" onClick={handleLoginClick}>
-                            Vai al Login
-                          </Button>
-                        </div>
-                      </Col>
-                      <Col></Col>
-                    </Row>
-                  </Container>
-                )}
+      <>
+        <div id="app" className="main-app">
+          <div className="ui-right">
+            <TopHeader />
+            <div className="content-area">
+              <div className="content">
+                <Stepper
+                  items={standardStepperSteps.map((stepItem) => stepItem.label)}
+                  currentStep={currentStandardStepIndex}
+                  handleStepClick={(stepIndex) => {
+                    goToStep(standardStepperSteps[stepIndex].step);
+                  }}
+                  handleBackClick={handleBackClick}
+                  handleExitClick={() => {
+                    navigate("/");
+                  }}
+                />
+                <div className="form-wrapper">
+                  {step === 1 && (
+                    <SignupStep1
+                      formData={formData}
+                      action="Avanti"
+                      onNextClick={handleNextClick}
+                      onBackClick={handleBackClick}
+                    />
+                  )}
+                  {step === 2 && (
+                    <SignupStep2
+                      formData={formData}
+                      action="Avanti"
+                      onBackClick={handleBackClick}
+                      onNextClick={handleNextClick}
+                    />
+                  )}
+                  {step === 3 && (
+                    <SignupStep3
+                      formData={formData}
+                      action="Avanti"
+                      onBackClick={handleBackClick}
+                      onNextClick={handleNextClick}
+                    />
+                  )}
+                  {step === 4 && (
+                    <SignupStep4
+                      formData={formData}
+                      action={standardQuestionnaireStep !== undefined ? "Avanti" : "Iscriviti"}
+                      onBackClick={handleBackClick}
+                      onNextClick={handleNextClick}
+                      isCompanyOwnerInStandardFlow={isCompanyOwnerInStandardFlow}
+                    />
+                  )}
+                  {step === standardQuestionnaireStep && (
+                    <SignupImpactQuestionnaireStep
+                      initialValues={impactQuestionnaireData}
+                      action="Iscriviti"
+                      onBackClick={handleBackClick}
+                      onNextClick={handleNextClick}
+                    />
+                  )}
+                  {step === standardSuccessStep && (
+                    <Container>
+                      <Row>
+                        <Col></Col>
+                        <Col md="auto" className="text-center">
+                          <h1 className="mb-3">Registrazione</h1>
+                          <div className="bg-white p-4 rounded">
+                            <div
+                              className="spacer d-none d-md-block"
+                              style={{ width: "320px" }}
+                            ></div>
+                            <p className="my-3">
+                              Registrazione Avvenuta con successo. Riceverai una email di conferma
+                              dell'avvenuta registrazione
+                            </p>
+                            <Button className="trnt_btn accent wide" onClick={handleLoginClick}>
+                              Vai al Login
+                            </Button>
+                          </div>
+                        </Col>
+                        <Col></Col>
+                      </Row>
+                    </Container>
+                  )}
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+        {isRegistrationErrorModalOpen && (
+          <Modal
+            closeModal={() => {
+              setIsRegistrationErrorModalOpen(false);
+            }}
+            title="Registrazione non completata"
+          >
+            <section>
+              <p className="font-m mb-4">
+                {registrationErrorMessage ||
+                  "Si è verificato un errore durante la registrazione. Riprova più tardi."}
+              </p>
+              <div className="buttons-wrapper text-center">
+                <button
+                  type="button"
+                  className="trnt_btn primary"
+                  onClick={() => {
+                    setIsRegistrationErrorModalOpen(false);
+                  }}
+                >
+                  Ho capito
+                </button>
+              </div>
+            </section>
+          </Modal>
+        )}
+      </>
     );
   } else {
     return (
-      <div id="app" className="main-app">
-        <div className="ui-right">
-          <TopHeader />
-          <div className="content-area">
-            <div className="content">
-              <Stepper
-                items={simpleFlowStepperSteps.map((stepItem) => stepItem.label)}
-                currentStep={currentSimpleFlowStepIndex}
-                handleStepClick={(stepIndex) => {
-                  goToStep(simpleFlowStepperSteps[stepIndex].step);
-                }}
-                handleBackClick={handleBackClick}
-                handleExitClick={() => {
-                  navigate("/");
-                }}
-              />
+      <>
+        <div id="app" className="main-app">
+          <div className="ui-right">
+            <TopHeader />
+            <div className="content-area">
+              <div className="content">
+                <Stepper
+                  items={simpleFlowStepperSteps.map((stepItem) => stepItem.label)}
+                  currentStep={currentSimpleFlowStepIndex}
+                  handleStepClick={(stepIndex) => {
+                    goToStep(simpleFlowStepperSteps[stepIndex].step);
+                  }}
+                  handleBackClick={handleBackClick}
+                  handleExitClick={() => {
+                    navigate("/");
+                  }}
+                />
 
-              <div className="form-wrapper">
-                {step === 1 && (
-                  <SignupStep2
-                    formData={formData}
-                    action="Avanti"
-                    onBackClick={handleBackClick}
-                    onNextClick={handleNextClick}
-                  />
-                )}
-                {step === 2 && (
-                  <SignupStep4
-                    formData={formData}
-                    action="Iscriviti"
-                    onBackClick={handleBackClick}
-                    onNextClick={handleNextClick}
-                    isCompanyOwnerInStandardFlow={isCompanyOwnerInStandardFlow}
-                  />
-                )}
-                {step === 3 && (
-                  <Container>
-                    <Row>
-                      <Col></Col>
-                      <Col md="auto" className="text-center">
-                        <h1 className="mb-3">Registrazione</h1>
-                        <div className="bg-white p-4 rounded">
-                          <div
-                            className="spacer d-none d-md-block"
-                            style={{ width: "320px" }}
-                          ></div>
-                          <p className="my-3">
-                            Registrazione Avvenuta con successo. Riceverai una email di conferma
-                            dell'avvenuta registrazione
-                          </p>
-                          <Button className="trnt_btn accent wide" onClick={handleLoginClick}>
-                            Vai al Login
-                          </Button>
-                        </div>
-                      </Col>
-                      <Col></Col>
-                    </Row>
-                  </Container>
-                )}
+                <div className="form-wrapper">
+                  {step === 1 && (
+                    <SignupStep2
+                      formData={formData}
+                      action="Avanti"
+                      onBackClick={handleBackClick}
+                      onNextClick={handleNextClick}
+                    />
+                  )}
+                  {step === 2 && (
+                    <SignupStep4
+                      formData={formData}
+                      action="Iscriviti"
+                      onBackClick={handleBackClick}
+                      onNextClick={handleNextClick}
+                      isCompanyOwnerInStandardFlow={isCompanyOwnerInStandardFlow}
+                    />
+                  )}
+                  {step === 3 && (
+                    <Container>
+                      <Row>
+                        <Col></Col>
+                        <Col md="auto" className="text-center">
+                          <h1 className="mb-3">Registrazione</h1>
+                          <div className="bg-white p-4 rounded">
+                            <div
+                              className="spacer d-none d-md-block"
+                              style={{ width: "320px" }}
+                            ></div>
+                            <p className="my-3">
+                              Registrazione Avvenuta con successo. Riceverai una email di conferma
+                              dell'avvenuta registrazione
+                            </p>
+                            <Button className="trnt_btn accent wide" onClick={handleLoginClick}>
+                              Vai al Login
+                            </Button>
+                          </div>
+                        </Col>
+                        <Col></Col>
+                      </Row>
+                    </Container>
+                  )}
+                </div>
+                {/*                 </Col>
+                    <Col></Col>
+                  </Row>
+                </Container> */}
               </div>
-              {/*                 </Col>
-                  <Col></Col>
-                </Row>
-              </Container> */}
             </div>
           </div>
         </div>
-      </div>
+        {isRegistrationErrorModalOpen && (
+          <Modal
+            closeModal={() => {
+              setIsRegistrationErrorModalOpen(false);
+            }}
+            title="Registrazione non completata"
+          >
+            <section>
+              <p className="font-m mb-4">
+                {registrationErrorMessage ||
+                  "Si è verificato un errore durante la registrazione. Riprova più tardi."}
+              </p>
+              <div className="buttons-wrapper text-center">
+                <button
+                  type="button"
+                  className="trnt_btn primary"
+                  onClick={() => {
+                    setIsRegistrationErrorModalOpen(false);
+                  }}
+                >
+                  Ho capito
+                </button>
+              </div>
+            </section>
+          </Modal>
+        )}
+      </>
     );
   }
 }

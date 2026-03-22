@@ -16,8 +16,6 @@ const CurrentPositionProvider = (props: PropsWithChildren) => {
   const [currentPosition, setCurrentPosition] = React.useState<Point>(initialState);
   const [options, setOptions] = React.useState({})
 
-  console.log(options, currentPosition);
-
   function success(pos: GeolocationPosition ) {
     const crd = pos.coords;
     setCurrentPosition({lat: crd.latitude, lng: crd.longitude});

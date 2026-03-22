@@ -55,8 +55,8 @@ interface DetectionProps {
   action?: string;
   onBackClick?: () => Promise<void>;
   onNextClick: (data: DetectionStepData) => Promise<void>;
-  pendingPhotos?: File[];
-  onPhotosChange?: (photos: File[]) => void;
+  pendingPhotos?: PendingDetectionPhoto[];
+  onPhotosChange?: (photos: PendingDetectionPhoto[]) => void;
 }
 
 type DetectionStepData =
@@ -93,9 +93,33 @@ type DetectionStepTreatmentData = {
 
 type DetectionStepPointsData = {
   points: ObservationPoint[];
-  photos?: File[];
+  photos?: PendingDetectionPhoto[];
   notes?: string;
 };
+
+type PendingDetectionPhoto = {
+  file: File;
+  caption: string;
+  position?: Point;
+};
+
+function getFieldCenter(field?: AgriField): Point | undefined {
+  if (!field?.map?.length) {
+    return undefined;
+  }
+
+  const areaPoints = field.map.map((point) => [point.lng, point.lat]);
+  if (areaPoints.length > 2) {
+    const polygon = turf.polygon([areaPoints]);
+    const centroid = turf.centroid(polygon);
+    return {
+      lng: centroid.geometry.coordinates[0],
+      lat: centroid.geometry.coordinates[1],
+    };
+  }
+
+  return field.map[0];
+}
 
 function readDetectionStepIndex(state: unknown): number | undefined {
   if (!state || typeof state !== "object") {
@@ -147,16 +171,26 @@ function ButtonGroupGrid({
 function CameraCapture({
   open,
   onClose,
+  resolvedPosition,
   onCapture,
 }: {
   open: boolean;
   onClose: () => void;
-  onCapture: (file: File) => void;
+  resolvedPosition?: Point;
+  onCapture: (photo: PendingDetectionPhoto) => void;
 }) {
   const videoRef = React.useRef<HTMLVideoElement>(null);
   const streamRef = React.useRef<MediaStream | null>(null);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const [error, setError] = React.useState<string | null>(null);
+  const [caption, setCaption] = React.useState("");
+
+  React.useEffect(() => {
+    if (open) {
+      setError(null);
+      setCaption("");
+    }
+  }, [open]);
 
   React.useEffect(() => {
     if (!open) {
@@ -212,7 +246,11 @@ function CameraCapture({
           return;
         }
         const file = new File([blob], `photo-${Date.now()}.jpg`, { type: "image/jpeg" });
-        onCapture(file);
+        onCapture({
+          file,
+          caption: caption.trim(),
+          position: resolvedPosition,
+        });
         onClose();
       },
       "image/jpeg",
@@ -225,7 +263,11 @@ function CameraCapture({
     if (!file) {
       return;
     }
-    onCapture(file);
+    onCapture({
+      file,
+      caption: caption.trim(),
+      position: resolvedPosition,
+    });
     onClose();
     event.target.value = "";
   };
@@ -264,11 +306,23 @@ function CameraCapture({
               className="d-none"
               onChange={handleUploadChange}
             />
+            <div className="input-row mb-3 mt-1">
+              <label className="w-100">
+                Caption
+                <textarea
+                  rows={3}
+                  value={caption}
+                  onChange={(event) => setCaption(event.target.value)}
+                  placeholder="Aggiungi una descrizione della foto"
+                />
+              </label>
+            </div>
             <div className="buttons-wrapper mt-3 text-center">
-              <button className="trnt_btn secondary" onClick={onClose}>
+              <button type="button" className="trnt_btn secondary" onClick={onClose}>
                 Chiudi
               </button>
               <button
+                type="button"
                 className="trnt_btn primary ms-2"
                 onClick={() => fileInputRef.current?.click()}
               >
@@ -292,17 +346,29 @@ function CameraCapture({
               className="d-none"
               onChange={handleUploadChange}
             />
+            <div className="input-row mb-3 mt-1">
+              <label className="w-100">
+                Caption
+                <textarea
+                  rows={3}
+                  value={caption}
+                  onChange={(event) => setCaption(event.target.value)}
+                  placeholder="Aggiungi una descrizione della foto"
+                />
+              </label>
+            </div>
             <div className="buttons-wrapper mt-3 text-center">
-              <button className="trnt_btn secondary" onClick={onClose}>
+              <button type="button" className="trnt_btn secondary" onClick={onClose}>
                 Annulla
               </button>
               <button
+                type="button"
                 className="trnt_btn secondary ms-2"
                 onClick={() => fileInputRef.current?.click()}
               >
                 Carica
               </button>
-              <button className="trnt_btn primary ms-2" onClick={handleCapture}>
+              <button type="button" className="trnt_btn primary ms-2" onClick={handleCapture}>
                 Scatta
               </button>
             </div>
@@ -1296,6 +1362,11 @@ function DetectionStepObservationPoints({
   const [infoPanelOpen, setInfoPanelOpen] = React.useState(false);
   const isMobile = useIsMobile();
   const guideValue = observationType?.locationAndScoreInstructions?.trim() ?? "";
+  const fieldAreaPoints = React.useMemo(
+    () => currentField?.map?.map((pt: Point) => [pt.lng, pt.lat]) ?? [],
+    [currentField],
+  );
+  const fieldCenter = React.useMemo(() => getFieldCenter(currentField), [currentField]);
 
   console.log("formData-----------------2", formData);
 
@@ -1350,6 +1421,34 @@ function DetectionStepObservationPoints({
     setMarkerPosition(point);
     setSource("map");
   };
+
+  const getResolvedPhotoPosition = React.useCallback(() => {
+    if (
+      currentPosition &&
+      fieldAreaPoints.length > 2 &&
+      isPointInsideField(currentPosition.lng, currentPosition.lat, fieldAreaPoints)
+    ) {
+      return {
+        position: currentPosition,
+        label: "Posizione attuale nel campo",
+      };
+    }
+
+    const lastInsertedPoint = points[points.length - 1]?.position;
+    if (lastInsertedPoint) {
+      return {
+        position: lastInsertedPoint,
+        label: "Ultima osservazione inserita",
+      };
+    }
+
+    return {
+      position: fieldCenter,
+      label: "Centro del campo",
+    };
+  }, [currentPosition, fieldAreaPoints, fieldCenter, points]);
+
+  const resolvedPhotoPosition = getResolvedPhotoPosition();
 
   const validatePointPosition = () => {
     console.log(">>> validatePointPosition source", source);
@@ -1638,7 +1737,8 @@ function DetectionStepObservationPoints({
       <CameraCapture
         open={cameraOpen}
         onClose={() => setCameraOpen(false)}
-        onCapture={(file) => onPhotosChange?.([...pendingPhotos, file])}
+        resolvedPosition={resolvedPhotoPosition.position}
+        onCapture={(photo) => onPhotosChange?.([...pendingPhotos, photo])}
       />
       <div className="remove-content-padding-x remove-content-padding-y">
         <div className="detection-observation-ui-container">
@@ -1985,7 +2085,7 @@ export function DetectionForm() {
       points: [],
     },
   });
-  const [pendingPhotos, setPendingPhotos] = React.useState<File[]>([]);
+  const [pendingPhotos, setPendingPhotos] = React.useState<PendingDetectionPhoto[]>([]);
   const [selectedTypology, setSelectedTypology] = React.useState(() =>
     hasPreselection ? preselectedTypology : "",
   );
@@ -2207,16 +2307,23 @@ export function DetectionForm() {
     }
   };
 
-  const uploadDetectionPhotos = async (files: File[]): Promise<DetectionPhotoPayload[]> => {
-    if (!companyId || files.length === 0) {
+  const uploadDetectionPhotos = async (
+    photos: PendingDetectionPhoto[],
+  ): Promise<DetectionPhotoPayload[]> => {
+    if (!companyId || photos.length === 0) {
       return [];
     }
     const apiConfig = await getCoreApiConfiguration();
     const filesApi = new FilesApi(apiConfig);
-    const response = await filesApi.uploadFilesForm(files, companyId, "data");
-    return response.data.map((photo) => ({
-      caption: "",
+    const response = await filesApi.uploadFilesForm(
+      photos.map((entry) => entry.file),
+      companyId,
+      "data",
+    );
+    return response.data.map((photo, index) => ({
+      caption: photos[index]?.caption ?? "",
       photo,
+      position: photos[index]?.position,
     }));
   };
 

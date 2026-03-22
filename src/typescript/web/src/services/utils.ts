@@ -5,7 +5,6 @@ const COREAPIS_BASE_PATH = process.env.REACT_APP_COREAPIS_SERVER_URL;
 
 export async function getCoreApiConfiguration() {
   await keycloakInstance.updateToken(10);
-  console.log(keycloakInstance.tokenParsed)
   return new Configuration({
     basePath: `${COREAPIS_BASE_PATH}`,
     baseOptions: { headers: { Authorization: `Bearer ${keycloakInstance.token}` } },

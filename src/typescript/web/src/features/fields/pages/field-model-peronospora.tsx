@@ -10,6 +10,7 @@ import {
   fetchPeronosporaForecast,
   PeronosporaResponse,
 } from "../../../services/model-api";
+import { capitalize } from "../../../services/utils";
 import { Container, Row, Col } from "react-bootstrap";
 import { getFieldMapGeoJson } from "../../companies/pages/company-fields";
 
@@ -35,6 +36,7 @@ function getFieldCentroid(field?: AgriField): { lat: number; lng: number } | nul
 export function FieldModelPeronospora() {
   const dispatch = useAppDispatch();
   const { fieldId } = useParams();
+  const iframeRef = React.useRef<HTMLIFrameElement>(null);
   const currentField = useAppSelector((state) =>
     fieldsSelectors.selectFieldbyId(state, fieldId ?? "default"),
   );
@@ -74,16 +76,41 @@ export function FieldModelPeronospora() {
       });
   }, [centroid]);
 
+  const syncIframeLeadButton = React.useCallback((nextType: ActiveDataType) => {
+    const iframe = iframeRef.current;
+    if (!iframe) {
+      return;
+    }
+
+    iframe.contentWindow?.postMessage(
+      {
+        type: "peronospora:setLead",
+        lead: nextType === "current" ? 0 : 1,
+      },
+      "*",
+    );
+  }, []);
+
+  const handleDataTypeChange = React.useCallback(
+    (nextType: ActiveDataType) => {
+      setActiveDataType(nextType);
+      syncIframeLeadButton(nextType);
+    },
+    [syncIframeLeadButton],
+  );
+
   const getRiskColor = (riskLevel?: number): string => {
     switch (riskLevel) {
-      case 1:
+      case 0:
         return "9FDC71"; // Green
-      case 2:
+      case 1:
         return "FFFF00"; // Yellow
-      case 3:
+      case 2:
         return "FFA500"; // Orange
-      case 4:
+      case 3:
         return "FF0000"; // Red
+      case 4:
+          return "FF0000"; // Red
       default:
         return "CCCCCC"; // Grey for unknown
     }
@@ -93,7 +120,7 @@ export function FieldModelPeronospora() {
     if (!payload?.detail) {
       return <div className="text-muted">Nessun dettaglio disponibile.</div>;
     }
-    const entries = Object.entries(payload.detail).filter(
+    const entries = Object.entries<any>(payload.detail).filter(
       ([, value]) => value !== null && value !== undefined && value !== "",
     );
     if (!entries.length) {
@@ -108,7 +135,7 @@ export function FieldModelPeronospora() {
                 <div className="font-s">{key}</div>
               </th>
               <td>
-                <div className="font-s">{String(value)}</div>
+                <div className="font-s">{key === 'risk_meta' ? String(value.descrizione) : String(value)}</div>
               </td>
             </tr>
           ))}
@@ -153,10 +180,15 @@ export function FieldModelPeronospora() {
     return dateStr ?? "-";
   };
   const processProvincePeronospora = (provinceStr?: string) => {
-    if (provinceStr === "bologna") {
-      return "Bologna";
+    if (!provinceStr) {
+      return "-";
     }
-    return provinceStr ?? "-";
+
+    return provinceStr
+      .split("_")
+      .filter(Boolean)
+      .map((part) => capitalize(part))
+      .join(" ");
   };
 
   console.log("Peronospora ---> ", data);
@@ -240,7 +272,7 @@ export function FieldModelPeronospora() {
                       <Col xl={12} className="iiinfo-col d-flex align-items-center mt-3 mb-2">
                         <button
                           className={`trnt_btn outlined type-rounded m-0 me-2 ${activeDataType === "current" ? "" : "opacity-02"}`}
-                          onClick={() => setActiveDataType("current")}
+                          onClick={() => handleDataTypeChange("current")}
                         >
                           {/* Dati Correnti */}
                           <span className="font-s-600">
@@ -249,7 +281,7 @@ export function FieldModelPeronospora() {
                         </button>
                         <button
                           className={`trnt_btn outlined type-rounded m-0 ${activeDataType === "forecast" ? "" : "opacity-02"}`}
-                          onClick={() => setActiveDataType("forecast")}
+                          onClick={() => handleDataTypeChange("forecast")}
                         >
                           {/* Previsioni */}
                           <span className="font-s-600">
@@ -265,6 +297,7 @@ export function FieldModelPeronospora() {
 
               <section className="soft bg-white">
                 <iframe
+                  ref={iframeRef}
                   src={`${process.env.REACT_APP_MODELAPIS_SERVER_URL}/v1/peronospora/risk/map`}
                   style={{
                     width: "100%",
@@ -273,6 +306,7 @@ export function FieldModelPeronospora() {
                     display: "block",
                   }}
                   scrolling="no"
+                  onLoad={() => syncIframeLeadButton(activeDataType)}
                 />
               </section>
 

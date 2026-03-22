@@ -23,7 +23,6 @@ import {
   shouldUseGradients,
 } from "../../../helpers/detections";
 import { ModalConfirm } from "../../../components/ModalConfirm";
-import { mapValues } from "../../../helpers/common";
 import { DetectionsTable } from "../../../components/DetectionsTable";
 import { useIsMobile } from "../../../helpers/common";
 
@@ -294,7 +293,7 @@ export function DetectionTypeDetail() {
     })
     .sort((a, b) => a.x - b.x);*/
 
-  const graphDataVisx = sortedDetections.map((detection, index, a) => {
+  const graphDataVisx = sortedDetections.map((detection) => {
     const ds = getDetectionStats(detection);
     return {
       id: detection.id,
@@ -323,7 +322,8 @@ export function DetectionTypeDetail() {
     // Scafoideo: `/companies/${companyId}/fields/${fieldId}/models/scafoideo`,
     // Diabrotica: `/companies/${companyId}/fields/${fieldId}/models/diabrotica`,
   };
-  let modelPath = null;
+  // @ts-ignore
+  let modelPath;
   type Typology = keyof typeof modelPaths;
   // "Peronospora" | "Cimice" | "Flavescenza"
   if (observationType && observationType.typology in modelPaths) {
@@ -349,9 +349,13 @@ export function DetectionTypeDetail() {
         };
         flatDetectionsData.push(entry);
       } else if (observationType?.observationType === "counters") {
+        // @ts-ignore
         const counter1Name = point?.data?.counters[0]?.counterName ?? "_1";
+        // @ts-ignore
         const counter2Name = point?.data?.counters[1]?.counterName ?? "_2";
+        // @ts-ignore
         const counter1Value = point?.data?.counters[0]?.counterValue;
+        // @ts-ignore
         const counter2Value = point?.data?.counters[1]?.counterValue;
         const entry = {
           detectionId: detection.id,
@@ -398,6 +402,8 @@ export function DetectionTypeDetail() {
       </div>
     );
   }
+  
+  // @ts-ignore
   function handleToggleTable() {
     const newIsOpen = !tableIsOpen;
     if (newIsOpen === true && notesDetailIsOpen) {
@@ -418,6 +424,7 @@ export function DetectionTypeDetail() {
     }
     setPhotosDetailIsOpen(newIsOpen);
   }
+  // @ts-ignore
   function handleToggleNotes() {
     const newIsOpen = !notesDetailIsOpen;
     if (newIsOpen === true && tableIsOpen) {
@@ -560,6 +567,7 @@ export function DetectionTypeDetail() {
       itemsWithDate.push({ date: new Date(photo.detectionTime), item });
     });
 
+    // @ts-ignore
     return <div>{itemsWithDate.sort((a, b) => a.date - b.date).map(({ item }) => item)}</div>;
   }
 
@@ -656,7 +664,7 @@ export function DetectionTypeDetail() {
                       data={graphDataVisx}
                       onSelectPoint={handleGraphPointClick}
                       gradients={shouldUseGradients(observationType?.typology)}
-                      ticksFormatterName={observationType?.observationType}
+                      ticksFormatterName={observationType?.observationType as "counters" | "range"}
                       selectedId={selectedDetectionId ?? undefined}
                     />
                   </div>
