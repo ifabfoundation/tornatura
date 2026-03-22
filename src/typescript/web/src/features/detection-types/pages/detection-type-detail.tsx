@@ -12,7 +12,8 @@ import { detectionsActions, detectionsSelectors } from "../../detections/state/d
 import { Container, Row, Col } from "react-bootstrap";
 import { headerbarActions } from "../../headerbar/state/headerbar-slice";
 import { FieldMaplet } from "../../../components/FieldMaplet";
-
+import { getFieldMapGeoJson } from "../../companies/pages/company-fields";
+import { fieldsSelectors } from "../../fields/state/fields-slice";
 import Icon from "../../../components/Icon";
 import LineChartVisx from "../../../components/LineChartVisx";
 import {
@@ -402,7 +403,7 @@ export function DetectionTypeDetail() {
       </div>
     );
   }
-  
+
   // @ts-ignore
   function handleToggleTable() {
     const newIsOpen = !tableIsOpen;
@@ -445,6 +446,10 @@ export function DetectionTypeDetail() {
       // scrollToGraphAndMap();
     }
   }
+
+  const currentField = useAppSelector((state) =>
+    fieldsSelectors.selectFieldbyId(state, fieldId ?? "default"),
+  );
 
   const ButtonDashboard = (
     <button
@@ -526,6 +531,9 @@ export function DetectionTypeDetail() {
     });
 
     photos.forEach((photo, index) => {
+      console.log("[O] photo", photo);
+      const lon = photo.photo.position?.lng ?? 0;
+      const lat = photo.photo.position?.lat ?? 0;
       const item = (
         <section className="soft nested-1 mt-2 p-3 pt-0">
           <div className="mb-1 pt-2 d-flex align-items-baseline justify-content-between">
@@ -561,6 +569,17 @@ export function DetectionTypeDetail() {
               src={photo.photo.url}
               style={{ maxWidth: "300px", maxHeight: "300px" }}
             />
+            <img
+              src={`https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v12/static/geojson(${JSON.stringify(
+                getFieldMapGeoJson(currentField),
+              )}),pin-s+eaff00(${lon},${lat})/auto/400x400?padding=60&access_token=${process.env.REACT_APP_MAPBOX_API_TOKEN}`}
+              alt="Field Map"
+              style={{ maxWidth: "300px", maxHeight: "300px" }}
+              className="img-fluid rounded ratio-1-1 d-inline-block"
+            />
+            {photo.photo.caption && (
+              <figcaption className="font-m mt-1 text-left">{photo.photo.caption}</figcaption>
+            )}
           </div>
         </section>
       );
