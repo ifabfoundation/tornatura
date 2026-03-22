@@ -39,7 +39,7 @@ VENV_PYTHON = SCRIPT_DIR / "venv" / "bin" / "python"
 CACHE_DIR = SCRIPT_DIR / "data" / "cache"
 
 # Scheduler settings
-SCHEDULE_HOUR = 8
+SCHEDULE_HOUR = 7
 SCHEDULE_MINUTE = 0
 TIMEZONE = "Europe/Rome"  # CET/CEST
 

@@ -640,8 +640,8 @@ class BollettiniProcessor:
         for disease_id, config in DISEASE_CONFIG.items():
             logger.info(f"  - {config['collection_name']}: {config['description']}")
         
-        # Trova tutti i PDF
-        pdf_files = list(INPUT_DIR.glob("*.pdf"))
+        # Trova tutti i PDF (nelle sottocartelle anno)
+        pdf_files = list(INPUT_DIR.glob("*/*.pdf"))
         
         if not pdf_files:
             logger.warning(f"Nessun PDF trovato in {INPUT_DIR}")

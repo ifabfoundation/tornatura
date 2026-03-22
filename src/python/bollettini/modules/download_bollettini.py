@@ -22,7 +22,7 @@ import re
 
 # ============= CONFIGURAZIONE =============
 BASE_DIR = Path(__file__).parent.parent
-OUTPUT_DIR = BASE_DIR / "data" / "1_collections" / "bollettini"
+BOLLETTINI_DIR = BASE_DIR / "data" / "1_collections" / "bollettini"
 LOG_DIR = BASE_DIR / "logs"
 CACHE_FILE = BASE_DIR / "data" / "bollettini_cache.json"
 
@@ -368,8 +368,8 @@ class BollettiniDownloader:
         self.logger.info(f"PROVINCIA: {provincia_name}")
         self.logger.info(f"{'='*70}\n")
 
-        # Crea directory output
-        output_dir = OUTPUT_DIR
+        # Crea directory output (organizzata per anno)
+        output_dir = BOLLETTINI_DIR / str(self.year)
         output_dir.mkdir(parents=True, exist_ok=True)
 
         # Recupera lista bollettini
