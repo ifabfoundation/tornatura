@@ -46,7 +46,6 @@ export function FieldDashboard() {
   const currentField = useAppSelector((state) =>
     fieldsSelectors.selectFieldbyId(state, fieldId ?? "default"),
   );
-  console.log(">>> Current Field:", currentField);
   const detections = useAppSelector((state) =>
     detectionsSelectors.selectDetectionbyFieldId(state, fieldId ?? "default"),
   );

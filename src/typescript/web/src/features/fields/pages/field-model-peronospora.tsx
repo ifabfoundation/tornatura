@@ -13,6 +13,7 @@ import {
 import { capitalize } from "../../../services/utils";
 import { Container, Row, Col } from "react-bootstrap";
 import { getFieldMapGeoJson } from "../../companies/pages/company-fields";
+import { MapNUTSData } from "../../../components/MapNUTSData";
 
 type ActiveDataType = "current" | "forecast";
 
@@ -49,7 +50,12 @@ export function FieldModelPeronospora() {
   const centroid = React.useMemo(() => getFieldCentroid(currentField), [currentField]);
 
   React.useEffect(() => {
-    dispatch(headerbarActions.setTitle({ title: "Peronospora", subtitle: "Modello previsivo" }));
+    dispatch(
+      headerbarActions.setTitle({
+        title: "Modello predittivo: Peronospora",
+        subtitle: "Modello predittivo",
+      }),
+    );
   }, []);
 
   React.useEffect(() => {
@@ -110,7 +116,7 @@ export function FieldModelPeronospora() {
       case 3:
         return "FF0000"; // Red
       case 4:
-          return "FF0000"; // Red
+        return "FF0000"; // Red
       default:
         return "CCCCCC"; // Grey for unknown
     }
@@ -135,7 +141,9 @@ export function FieldModelPeronospora() {
                 <div className="font-s">{key}</div>
               </th>
               <td>
-                <div className="font-s">{key === 'risk_meta' ? String(value.descrizione) : String(value)}</div>
+                <div className="font-s">
+                  {key === "risk_meta" ? String(value.descrizione) : String(value)}
+                </div>
               </td>
             </tr>
           ))}
@@ -160,7 +168,7 @@ export function FieldModelPeronospora() {
   };
 
   if (error) {
-    return <div className="container my-5">{error}</div>
+    return <div className="container my-5">{error}</div>;
   } else if (current === null || forecast === null) {
     return <div className="container my-5">Caricamento dati...</div>;
   }
@@ -191,6 +199,37 @@ export function FieldModelPeronospora() {
       .join(" ");
   };
 
+  const provinceData = [
+    { code: "MI", value: 0.666 },
+    { nuts_3_name: "Bologna", value: 0.666 },
+    { code: "MO", value: 0.666 },
+    { code: "RE", value: 0.666 },
+    { code: "FE", value: 0.666 },
+    { code: "RA", value: 0.666 },
+    { code: "RN", value: 0.666 },
+    { code: "FC", value: 0.666 },
+  ];
+
+  const Bollo = () => {
+    let description = null;
+    if (
+      data !== null &&
+      data.detail &&
+      data.detail.risk_meta &&
+      data.detail.risk_meta.hasOwnProperty("descrizione")
+    ) {
+      description = String(data.detail.risk_meta.descrizione);
+    }
+    return (
+      <div style={{ backgroundColor: "#" + riskColor }} className="p-3 rounded">
+        <p>
+          <small>{`⬤  `}</small>
+          <span className="font-m-600 upper">{String(data?.detail?.risk_label ?? "-")}</span>
+        </p>
+        {description && <p className="mt-2 mb-0">{description}</p>}
+      </div>
+    );
+  };
   console.log("Peronospora ---> ", data);
   return (
     <Container fluid className="mb-5">
@@ -204,12 +243,7 @@ export function FieldModelPeronospora() {
               <section className="soft bg-white">
                 <Row>
                   <Col xl={12} className="mb-4 d-md-none">
-                    <div style={{ backgroundColor: "#" + riskColor }} className="p-3 rounded">
-                      <small>{`⬤  `}</small>
-                      <span className="font-m-600 upper">
-                        {String(data?.detail?.risk_label ?? "-")}
-                      </span>
-                    </div>
+                    <Bollo />
                   </Col>
 
                   <Col md={6} xl={4} xxl={3}>
@@ -232,12 +266,7 @@ export function FieldModelPeronospora() {
                   <Col>
                     <Row>
                       <Col xl={12} className="mb-4 d-none d-md-block">
-                        <div style={{ backgroundColor: "#" + riskColor }} className="p-3 rounded">
-                          <small>{`⬤  `}</small>
-                          <span className="font-m-600 upper">
-                            {String(data?.detail?.risk_label ?? "-")}
-                          </span>
-                        </div>
+                        <Bollo />
                       </Col>
 
                       <Col className="col-6 col-lg-4 col-xl-3 iiinfo-col mt-2 mb-2">
@@ -296,6 +325,10 @@ export function FieldModelPeronospora() {
               </section>
 
               <section className="soft bg-white">
+                <MapNUTSData provinceData={provinceData} />
+              </section>
+
+              <section className="soft bg-white">
                 <iframe
                   ref={iframeRef}
                   src={`${process.env.REACT_APP_MODELAPIS_SERVER_URL}/v1/peronospora/risk/map`}
@@ -310,11 +343,13 @@ export function FieldModelPeronospora() {
                 />
               </section>
 
+              {/* 
               <section className="soft bg-white">
                 <Row>
                   <Col>{renderDetail(data)}</Col>
                 </Row>
               </section>
+               */}
             </Fragment>
           )}
         </Col>
