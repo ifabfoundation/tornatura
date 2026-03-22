@@ -1,6 +1,6 @@
 # Peronospora Risk Prediction - Inference Pipeline
 
-**Version**: 1.0  
+**Version**: 2.0  
 **Date**: $(date +%Y-%m-%d)
 
 ## Quick Start
@@ -37,9 +37,11 @@ See **DEVELOPER_GUIDE.md** for complete technical documentation.
 ├── backfill_predictions.py   # Historical predictions
 ├── requirements.txt          # Python dependencies
 ├── DEVELOPER_GUIDE.md        # Full technical guide
+├── CHANGELOG.md              # Version history
 ├── data/
 │   ├── phenology/            # Phenology models
 │   ├── weather/              # Weather data + cache
+│   ├── provinces_italy.json   # Province configuration
 │   └── prepare_inference_data.py
 ├── model/                    # Trained XGBoost models
 └── predictions/              # Output predictions

@@ -14,6 +14,7 @@ data/dataframe_inference/
 predictions/history/
 
 # Logs
+logs/
 *.log
 nohup.out
 

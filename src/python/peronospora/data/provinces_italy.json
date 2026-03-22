@@ -1,0 +1,1179 @@
+{
+  "agrigento": {
+    "display_name": "Agrigento",
+    "prov_acr": "AG",
+    "reg_name": "Sicilia",
+    "bbox": [
+      12.3199,
+      35.4937,
+      14.0386,
+      37.7426
+    ]
+  },
+  "alessandria": {
+    "display_name": "Alessandria",
+    "prov_acr": "AL",
+    "reg_name": "Piemonte",
+    "bbox": [
+      8.1093,
+      44.4649,
+      9.2142,
+      45.2046
+    ]
+  },
+  "ancona": {
+    "display_name": "Ancona",
+    "prov_acr": "AN",
+    "reg_name": "Marche",
+    "bbox": [
+      12.7468,
+      43.2099,
+      13.6584,
+      43.7502
+    ]
+  },
+  "arezzo": {
+    "display_name": "Arezzo",
+    "prov_acr": "AR",
+    "reg_name": "Toscana",
+    "bbox": [
+      11.3975,
+      43.1563,
+      12.3714,
+      43.8775
+    ]
+  },
+  "ascoli_piceno": {
+    "display_name": "Ascoli Piceno",
+    "prov_acr": "AP",
+    "reg_name": "Marche",
+    "bbox": [
+      13.1875,
+      42.6872,
+      13.9167,
+      43.0798
+    ]
+  },
+  "asti": {
+    "display_name": "Asti",
+    "prov_acr": "AT",
+    "reg_name": "Piemonte",
+    "bbox": [
+      7.8834,
+      44.5194,
+      8.5134,
+      45.1319
+    ]
+  },
+  "avellino": {
+    "display_name": "Avellino",
+    "prov_acr": "AV",
+    "reg_name": "Campania",
+    "bbox": [
+      14.5595,
+      40.7066,
+      15.5723,
+      41.2864
+    ]
+  },
+  "bari": {
+    "display_name": "Bari",
+    "prov_acr": "BA",
+    "reg_name": "Puglia",
+    "bbox": [
+      16.2025,
+      40.692,
+      17.3998,
+      41.2295
+    ]
+  },
+  "barletta_andria_trani": {
+    "display_name": "Barletta-Andria-Trani",
+    "prov_acr": "BT",
+    "reg_name": "Puglia",
+    "bbox": [
+      15.8703,
+      40.8977,
+      16.5423,
+      41.4417
+    ]
+  },
+  "belluno": {
+    "display_name": "Belluno",
+    "prov_acr": "BL",
+    "reg_name": "Veneto",
+    "bbox": [
+      11.6662,
+      45.8806,
+      12.732,
+      46.6805
+    ]
+  },
+  "benevento": {
+    "display_name": "Benevento",
+    "prov_acr": "BN",
+    "reg_name": "Campania",
+    "bbox": [
+      14.352,
+      40.9751,
+      15.1492,
+      41.4864
+    ]
+  },
+  "bergamo": {
+    "display_name": "Bergamo",
+    "prov_acr": "BG",
+    "reg_name": "Lombardia",
+    "bbox": [
+      9.4458,
+      45.4228,
+      10.2622,
+      46.0913
+    ]
+  },
+  "biella": {
+    "display_name": "Biella",
+    "prov_acr": "BI",
+    "reg_name": "Piemonte",
+    "bbox": [
+      7.8821,
+      45.3761,
+      8.3279,
+      45.7577
+    ]
+  },
+  "bologna": {
+    "display_name": "Bologna",
+    "prov_acr": "BO",
+    "reg_name": "Emilia-Romagna",
+    "bbox": [
+      10.8056,
+      44.0623,
+      11.8404,
+      44.8048
+    ]
+  },
+  "bolzano_bozen": {
+    "display_name": "Bolzano/Bozen",
+    "prov_acr": "BZ",
+    "reg_name": "Trentino-Alto Adige/Südtirol",
+    "bbox": [
+      10.3861,
+      46.2198,
+      12.4777,
+      47.0918
+    ]
+  },
+  "brescia": {
+    "display_name": "Brescia",
+    "prov_acr": "BS",
+    "reg_name": "Lombardia",
+    "bbox": [
+      9.8364,
+      45.2047,
+      10.8402,
+      46.3548
+    ]
+  },
+  "brindisi": {
+    "display_name": "Brindisi",
+    "prov_acr": "BR",
+    "reg_name": "Puglia",
+    "bbox": [
+      17.2953,
+      40.3796,
+      18.0974,
+      40.8923
+    ]
+  },
+  "cagliari": {
+    "display_name": "Cagliari",
+    "prov_acr": "CA",
+    "reg_name": "Sardegna",
+    "bbox": [
+      8.8202,
+      38.9156,
+      9.4864,
+      39.4234
+    ]
+  },
+  "caltanissetta": {
+    "display_name": "Caltanissetta",
+    "prov_acr": "CL",
+    "reg_name": "Sicilia",
+    "bbox": [
+      13.6506,
+      37.0016,
+      14.4764,
+      37.7451
+    ]
+  },
+  "campobasso": {
+    "display_name": "Campobasso",
+    "prov_acr": "CB",
+    "reg_name": "Molise",
+    "bbox": [
+      14.3777,
+      41.364,
+      15.1616,
+      42.0698
+    ]
+  },
+  "caserta": {
+    "display_name": "Caserta",
+    "prov_acr": "CE",
+    "reg_name": "Campania",
+    "bbox": [
+      13.7621,
+      40.899,
+      14.5344,
+      41.5074
+    ]
+  },
+  "catania": {
+    "display_name": "Catania",
+    "prov_acr": "CT",
+    "reg_name": "Sicilia",
+    "bbox": [
+      14.3522,
+      37.0501,
+      15.2581,
+      37.9609
+    ]
+  },
+  "catanzaro": {
+    "display_name": "Catanzaro",
+    "prov_acr": "CZ",
+    "reg_name": "Calabria",
+    "bbox": [
+      16.0939,
+      38.4633,
+      16.9206,
+      39.1942
+    ]
+  },
+  "chieti": {
+    "display_name": "Chieti",
+    "prov_acr": "CH",
+    "reg_name": "Abruzzo",
+    "bbox": [
+      14.0757,
+      41.7597,
+      14.783,
+      42.4449
+    ]
+  },
+  "como": {
+    "display_name": "Como",
+    "prov_acr": "CO",
+    "reg_name": "Lombardia",
+    "bbox": [
+      8.8947,
+      45.6425,
+      9.4408,
+      46.2396
+    ]
+  },
+  "cosenza": {
+    "display_name": "Cosenza",
+    "prov_acr": "CS",
+    "reg_name": "Calabria",
+    "bbox": [
+      15.7559,
+      39.0487,
+      17.0249,
+      40.1439
+    ]
+  },
+  "cremona": {
+    "display_name": "Cremona",
+    "prov_acr": "CR",
+    "reg_name": "Lombardia",
+    "bbox": [
+      9.4544,
+      44.9372,
+      10.5969,
+      45.5045
+    ]
+  },
+  "crotone": {
+    "display_name": "Crotone",
+    "prov_acr": "KR",
+    "reg_name": "Calabria",
+    "bbox": [
+      16.613,
+      38.8926,
+      17.2065,
+      39.4824
+    ]
+  },
+  "cuneo": {
+    "display_name": "Cuneo",
+    "prov_acr": "CN",
+    "reg_name": "Piemonte",
+    "bbox": [
+      6.8534,
+      44.0601,
+      8.266,
+      44.8566
+    ]
+  },
+  "enna": {
+    "display_name": "Enna",
+    "prov_acr": "EN",
+    "reg_name": "Sicilia",
+    "bbox": [
+      14.0559,
+      37.2917,
+      14.829,
+      37.8796
+    ]
+  },
+  "fermo": {
+    "display_name": "Fermo",
+    "prov_acr": "FM",
+    "reg_name": "Marche",
+    "bbox": [
+      13.2161,
+      42.8902,
+      13.8495,
+      43.2941
+    ]
+  },
+  "ferrara": {
+    "display_name": "Ferrara",
+    "prov_acr": "FE",
+    "reg_name": "Emilia-Romagna",
+    "bbox": [
+      11.2347,
+      44.5457,
+      12.3981,
+      44.9868
+    ]
+  },
+  "firenze": {
+    "display_name": "Firenze",
+    "prov_acr": "FI",
+    "reg_name": "Toscana",
+    "bbox": [
+      10.7111,
+      43.4514,
+      11.7529,
+      44.2392
+    ]
+  },
+  "foggia": {
+    "display_name": "Foggia",
+    "prov_acr": "FG",
+    "reg_name": "Puglia",
+    "bbox": [
+      14.9341,
+      41.0557,
+      16.2015,
+      42.2266
+    ]
+  },
+  "forli_cesena": {
+    "display_name": "Forlì-Cesena",
+    "prov_acr": "FC",
+    "reg_name": "Emilia-Romagna",
+    "bbox": [
+      11.6455,
+      43.7407,
+      12.4551,
+      44.3308
+    ]
+  },
+  "frosinone": {
+    "display_name": "Frosinone",
+    "prov_acr": "FR",
+    "reg_name": "Lazio",
+    "bbox": [
+      12.9924,
+      41.3014,
+      14.0276,
+      41.9544
+    ]
+  },
+  "genova": {
+    "display_name": "Genova",
+    "prov_acr": "GE",
+    "reg_name": "Liguria",
+    "bbox": [
+      8.5716,
+      44.2167,
+      9.5736,
+      44.6764
+    ]
+  },
+  "gorizia": {
+    "display_name": "Gorizia",
+    "prov_acr": "GO",
+    "reg_name": "Friuli-Venezia Giulia",
+    "bbox": [
+      13.2376,
+      45.6753,
+      13.6429,
+      46.0514
+    ]
+  },
+  "grosseto": {
+    "display_name": "Grosseto",
+    "prov_acr": "GR",
+    "reg_name": "Toscana",
+    "bbox": [
+      10.7063,
+      42.2382,
+      11.8187,
+      43.1891
+    ]
+  },
+  "imperia": {
+    "display_name": "Imperia",
+    "prov_acr": "IM",
+    "reg_name": "Liguria",
+    "bbox": [
+      7.4948,
+      43.776,
+      8.1354,
+      44.1409
+    ]
+  },
+  "isernia": {
+    "display_name": "Isernia",
+    "prov_acr": "IS",
+    "reg_name": "Molise",
+    "bbox": [
+      13.941,
+      41.3864,
+      14.5223,
+      41.9108
+    ]
+  },
+  "l_aquila": {
+    "display_name": "L'Aquila",
+    "prov_acr": "AQ",
+    "reg_name": "Abruzzo",
+    "bbox": [
+      13.0185,
+      41.6821,
+      14.2297,
+      42.5913
+    ]
+  },
+  "la_spezia": {
+    "display_name": "La Spezia",
+    "prov_acr": "SP",
+    "reg_name": "Liguria",
+    "bbox": [
+      9.4657,
+      44.0233,
+      10.071,
+      44.4381
+    ]
+  },
+  "latina": {
+    "display_name": "Latina",
+    "prov_acr": "LT",
+    "reg_name": "Lazio",
+    "bbox": [
+      12.5302,
+      40.7847,
+      13.8948,
+      41.7148
+    ]
+  },
+  "lecce": {
+    "display_name": "Lecce",
+    "prov_acr": "LE",
+    "reg_name": "Puglia",
+    "bbox": [
+      17.7625,
+      39.7915,
+      18.5204,
+      40.5154
+    ]
+  },
+  "lecco": {
+    "display_name": "Lecco",
+    "prov_acr": "LC",
+    "reg_name": "Lombardia",
+    "bbox": [
+      9.2433,
+      45.6497,
+      9.541,
+      46.1574
+    ]
+  },
+  "livorno": {
+    "display_name": "Livorno",
+    "prov_acr": "LI",
+    "reg_name": "Toscana",
+    "bbox": [
+      9.7913,
+      42.3142,
+      10.7962,
+      43.6346
+    ]
+  },
+  "lodi": {
+    "display_name": "Lodi",
+    "prov_acr": "LO",
+    "reg_name": "Lombardia",
+    "bbox": [
+      9.3104,
+      45.0526,
+      9.9011,
+      45.4697
+    ]
+  },
+  "lucca": {
+    "display_name": "Lucca",
+    "prov_acr": "LU",
+    "reg_name": "Toscana",
+    "bbox": [
+      10.1431,
+      43.7497,
+      10.7378,
+      44.2855
+    ]
+  },
+  "macerata": {
+    "display_name": "Macerata",
+    "prov_acr": "MC",
+    "reg_name": "Marche",
+    "bbox": [
+      12.8296,
+      42.8319,
+      13.7429,
+      43.4742
+    ]
+  },
+  "mantova": {
+    "display_name": "Mantova",
+    "prov_acr": "MN",
+    "reg_name": "Lombardia",
+    "bbox": [
+      10.3093,
+      44.9083,
+      11.4277,
+      45.4277
+    ]
+  },
+  "massa_carrara": {
+    "display_name": "Massa-Carrara",
+    "prov_acr": "MS",
+    "reg_name": "Toscana",
+    "bbox": [
+      9.6867,
+      43.9756,
+      10.2556,
+      44.4727
+    ]
+  },
+  "matera": {
+    "display_name": "Matera",
+    "prov_acr": "MT",
+    "reg_name": "Basilicata",
+    "bbox": [
+      15.9414,
+      40.0557,
+      16.8669,
+      40.838
+    ]
+  },
+  "messina": {
+    "display_name": "Messina",
+    "prov_acr": "ME",
+    "reg_name": "Sicilia",
+    "bbox": [
+      14.1835,
+      37.7953,
+      15.6529,
+      38.8121
+    ]
+  },
+  "milano": {
+    "display_name": "Milano",
+    "prov_acr": "MI",
+    "reg_name": "Lombardia",
+    "bbox": [
+      8.7061,
+      45.1615,
+      9.5503,
+      45.6426
+    ]
+  },
+  "modena": {
+    "display_name": "Modena",
+    "prov_acr": "MO",
+    "reg_name": "Emilia-Romagna",
+    "bbox": [
+      10.4701,
+      44.1147,
+      11.3686,
+      44.963
+    ]
+  },
+  "monza_e_della_brianza": {
+    "display_name": "Monza e della Brianza",
+    "prov_acr": "MB",
+    "reg_name": "Lombardia",
+    "bbox": [
+      9.0512,
+      45.5366,
+      9.4959,
+      45.7427
+    ]
+  },
+  "napoli": {
+    "display_name": "Napoli",
+    "prov_acr": "NA",
+    "reg_name": "Campania",
+    "bbox": [
+      13.851,
+      40.5368,
+      14.6697,
+      41.0198
+    ]
+  },
+  "novara": {
+    "display_name": "Novara",
+    "prov_acr": "NO",
+    "reg_name": "Piemonte",
+    "bbox": [
+      8.3106,
+      45.2921,
+      8.8429,
+      45.8766
+    ]
+  },
+  "nuoro": {
+    "display_name": "Nuoro",
+    "prov_acr": "NU",
+    "reg_name": "Sardegna",
+    "bbox": [
+      8.6111,
+      39.5492,
+      9.8284,
+      40.7061
+    ]
+  },
+  "oristano": {
+    "display_name": "Oristano",
+    "prov_acr": "OR",
+    "reg_name": "Sardegna",
+    "bbox": [
+      8.275,
+      39.6271,
+      9.1704,
+      40.4262
+    ]
+  },
+  "padova": {
+    "display_name": "Padova",
+    "prov_acr": "PD",
+    "reg_name": "Veneto",
+    "bbox": [
+      11.3907,
+      45.0954,
+      12.2062,
+      45.6872
+    ]
+  },
+  "palermo": {
+    "display_name": "Palermo",
+    "prov_acr": "PA",
+    "reg_name": "Sicilia",
+    "bbox": [
+      12.9289,
+      37.5393,
+      14.295,
+      38.7208
+    ]
+  },
+  "parma": {
+    "display_name": "Parma",
+    "prov_acr": "PR",
+    "reg_name": "Emilia-Romagna",
+    "bbox": [
+      9.4384,
+      44.3462,
+      10.5043,
+      45.0444
+    ]
+  },
+  "pavia": {
+    "display_name": "Pavia",
+    "prov_acr": "PV",
+    "reg_name": "Lombardia",
+    "bbox": [
+      8.4983,
+      44.6799,
+      9.5514,
+      45.3938
+    ]
+  },
+  "perugia": {
+    "display_name": "Perugia",
+    "prov_acr": "PG",
+    "reg_name": "Umbria",
+    "bbox": [
+      11.9124,
+      42.5968,
+      13.2642,
+      43.6173
+    ]
+  },
+  "pesaro_e_urbino": {
+    "display_name": "Pesaro e Urbino",
+    "prov_acr": "PU",
+    "reg_name": "Marche",
+    "bbox": [
+      12.1855,
+      43.4166,
+      13.1724,
+      43.9686
+    ]
+  },
+  "pescara": {
+    "display_name": "Pescara",
+    "prov_acr": "PE",
+    "reg_name": "Abruzzo",
+    "bbox": [
+      13.7653,
+      42.0731,
+      14.2545,
+      42.5445
+    ]
+  },
+  "piacenza": {
+    "display_name": "Piacenza",
+    "prov_acr": "PC",
+    "reg_name": "Emilia-Romagna",
+    "bbox": [
+      9.198,
+      44.5559,
+      10.0835,
+      45.1391
+    ]
+  },
+  "pisa": {
+    "display_name": "Pisa",
+    "prov_acr": "PI",
+    "reg_name": "Toscana",
+    "bbox": [
+      10.2584,
+      43.1088,
+      11.014,
+      43.835
+    ]
+  },
+  "pistoia": {
+    "display_name": "Pistoia",
+    "prov_acr": "PT",
+    "reg_name": "Toscana",
+    "bbox": [
+      10.6234,
+      43.7888,
+      11.0715,
+      44.1601
+    ]
+  },
+  "pordenone": {
+    "display_name": "Pordenone",
+    "prov_acr": "PN",
+    "reg_name": "Friuli-Venezia Giulia",
+    "bbox": [
+      12.3209,
+      45.7908,
+      12.9906,
+      46.4122
+    ]
+  },
+  "potenza": {
+    "display_name": "Potenza",
+    "prov_acr": "PZ",
+    "reg_name": "Basilicata",
+    "bbox": [
+      15.335,
+      39.8948,
+      16.3988,
+      41.1399
+    ]
+  },
+  "prato": {
+    "display_name": "Prato",
+    "prov_acr": "PO",
+    "reg_name": "Toscana",
+    "bbox": [
+      10.9641,
+      43.7584,
+      11.2049,
+      44.1124
+    ]
+  },
+  "ragusa": {
+    "display_name": "Ragusa",
+    "prov_acr": "RG",
+    "reg_name": "Sicilia",
+    "bbox": [
+      14.3379,
+      36.6857,
+      15.0004,
+      37.1396
+    ]
+  },
+  "ravenna": {
+    "display_name": "Ravenna",
+    "prov_acr": "RA",
+    "reg_name": "Emilia-Romagna",
+    "bbox": [
+      11.5249,
+      44.1012,
+      12.3835,
+      44.6292
+    ]
+  },
+  "reggio_di_calabria": {
+    "display_name": "Reggio di Calabria",
+    "prov_acr": "RC",
+    "reg_name": "Calabria",
+    "bbox": [
+      15.6301,
+      37.9158,
+      16.5827,
+      38.5738
+    ]
+  },
+  "reggio_nell_emilia": {
+    "display_name": "Reggio nell'Emilia",
+    "prov_acr": "RE",
+    "reg_name": "Emilia-Romagna",
+    "bbox": [
+      10.142,
+      44.2261,
+      10.898,
+      44.992
+    ]
+  },
+  "rieti": {
+    "display_name": "Rieti",
+    "prov_acr": "RI",
+    "reg_name": "Lazio",
+    "bbox": [
+      12.4364,
+      42.0893,
+      13.4097,
+      42.741
+    ]
+  },
+  "rimini": {
+    "display_name": "Rimini",
+    "prov_acr": "RN",
+    "reg_name": "Emilia-Romagna",
+    "bbox": [
+      12.0962,
+      43.7319,
+      12.7556,
+      44.1625
+    ]
+  },
+  "roma": {
+    "display_name": "Roma",
+    "prov_acr": "RM",
+    "reg_name": "Lazio",
+    "bbox": [
+      11.7338,
+      41.4101,
+      13.2963,
+      42.296
+    ]
+  },
+  "rovigo": {
+    "display_name": "Rovigo",
+    "prov_acr": "RO",
+    "reg_name": "Veneto",
+    "bbox": [
+      11.1735,
+      44.7907,
+      12.5541,
+      45.1638
+    ]
+  },
+  "salerno": {
+    "display_name": "Salerno",
+    "prov_acr": "SA",
+    "reg_name": "Campania",
+    "bbox": [
+      14.4287,
+      39.9906,
+      15.8064,
+      40.8487
+    ]
+  },
+  "sassari": {
+    "display_name": "Sassari",
+    "prov_acr": "SS",
+    "reg_name": "Sardegna",
+    "bbox": [
+      8.1338,
+      40.2966,
+      9.7789,
+      41.3133
+    ]
+  },
+  "savona": {
+    "display_name": "Savona",
+    "prov_acr": "SV",
+    "reg_name": "Liguria",
+    "bbox": [
+      7.9774,
+      43.939,
+      8.6709,
+      44.5287
+    ]
+  },
+  "siena": {
+    "display_name": "Siena",
+    "prov_acr": "SI",
+    "reg_name": "Toscana",
+    "bbox": [
+      10.9083,
+      42.7858,
+      11.9824,
+      43.5484
+    ]
+  },
+  "siracusa": {
+    "display_name": "Siracusa",
+    "prov_acr": "SR",
+    "reg_name": "Sicilia",
+    "bbox": [
+      14.773,
+      36.6465,
+      15.3367,
+      37.4127
+    ]
+  },
+  "sondrio": {
+    "display_name": "Sondrio",
+    "prov_acr": "SO",
+    "reg_name": "Lombardia",
+    "bbox": [
+      9.2465,
+      46.0114,
+      10.6305,
+      46.6352
+    ]
+  },
+  "sud_sardegna": {
+    "display_name": "Sud Sardegna",
+    "prov_acr": "SU",
+    "reg_name": "Sardegna",
+    "bbox": [
+      8.2196,
+      38.8592,
+      9.6598,
+      39.9187
+    ]
+  },
+  "taranto": {
+    "display_name": "Taranto",
+    "prov_acr": "TA",
+    "reg_name": "Puglia",
+    "bbox": [
+      16.6965,
+      40.2946,
+      17.8001,
+      40.8034
+    ]
+  },
+  "teramo": {
+    "display_name": "Teramo",
+    "prov_acr": "TE",
+    "reg_name": "Abruzzo",
+    "bbox": [
+      13.3486,
+      42.4201,
+      14.1463,
+      42.8951
+    ]
+  },
+  "terni": {
+    "display_name": "Terni",
+    "prov_acr": "TR",
+    "reg_name": "Umbria",
+    "bbox": [
+      11.8919,
+      42.3642,
+      12.8963,
+      42.9431
+    ]
+  },
+  "torino": {
+    "display_name": "Torino",
+    "prov_acr": "TO",
+    "reg_name": "Piemonte",
+    "bbox": [
+      6.6266,
+      44.7138,
+      8.1519,
+      45.6023
+    ]
+  },
+  "trapani": {
+    "display_name": "Trapani",
+    "prov_acr": "TP",
+    "reg_name": "Sicilia",
+    "bbox": [
+      11.9262,
+      36.7344,
+      13.1003,
+      38.1896
+    ]
+  },
+  "trento": {
+    "display_name": "Trento",
+    "prov_acr": "TN",
+    "reg_name": "Trentino-Alto Adige/Südtirol",
+    "bbox": [
+      10.4521,
+      45.6731,
+      11.9627,
+      46.5328
+    ]
+  },
+  "treviso": {
+    "display_name": "Treviso",
+    "prov_acr": "TV",
+    "reg_name": "Veneto",
+    "bbox": [
+      11.7427,
+      45.5305,
+      12.685,
+      46.0822
+    ]
+  },
+  "trieste": {
+    "display_name": "Trieste",
+    "prov_acr": "TS",
+    "reg_name": "Friuli-Venezia Giulia",
+    "bbox": [
+      13.5788,
+      45.5809,
+      13.9189,
+      45.8079
+    ]
+  },
+  "udine": {
+    "display_name": "Udine",
+    "prov_acr": "UD",
+    "reg_name": "Friuli-Venezia Giulia",
+    "bbox": [
+      12.4925,
+      45.6434,
+      13.7173,
+      46.6478
+    ]
+  },
+  "valle_d_aosta_vallee_d_aoste": {
+    "display_name": "Valle d'Aosta/Vallée d'Aoste",
+    "prov_acr": "AO",
+    "reg_name": "Valle d'Aosta/Vallée d'Aoste",
+    "bbox": [
+      6.8013,
+      45.467,
+      7.9395,
+      45.9876
+    ]
+  },
+  "varese": {
+    "display_name": "Varese",
+    "prov_acr": "VA",
+    "reg_name": "Lombardia",
+    "bbox": [
+      8.5523,
+      45.5583,
+      9.0644,
+      46.1221
+    ]
+  },
+  "venezia": {
+    "display_name": "Venezia",
+    "prov_acr": "VE",
+    "reg_name": "Veneto",
+    "bbox": [
+      11.9619,
+      45.0556,
+      13.1021,
+      45.8544
+    ]
+  },
+  "verbano_cusio_ossola": {
+    "display_name": "Verbano-Cusio-Ossola",
+    "prov_acr": "VB",
+    "reg_name": "Piemonte",
+    "bbox": [
+      7.8684,
+      45.7669,
+      8.7291,
+      46.4641
+    ]
+  },
+  "vercelli": {
+    "display_name": "Vercelli",
+    "prov_acr": "VC",
+    "reg_name": "Piemonte",
+    "bbox": [
+      7.8614,
+      45.1595,
+      8.5812,
+      45.9504
+    ]
+  },
+  "verona": {
+    "display_name": "Verona",
+    "prov_acr": "VR",
+    "reg_name": "Veneto",
+    "bbox": [
+      10.6236,
+      45.0528,
+      11.4911,
+      45.8328
+    ]
+  },
+  "vibo_valentia": {
+    "display_name": "Vibo Valentia",
+    "prov_acr": "VV",
+    "reg_name": "Calabria",
+    "bbox": [
+      15.8267,
+      38.4289,
+      16.432,
+      38.8244
+    ]
+  },
+  "vicenza": {
+    "display_name": "Vicenza",
+    "prov_acr": "VI",
+    "reg_name": "Veneto",
+    "bbox": [
+      11.1359,
+      45.2553,
+      11.834,
+      46.0133
+    ]
+  },
+  "viterbo": {
+    "display_name": "Viterbo",
+    "prov_acr": "VT",
+    "reg_name": "Lazio",
+    "bbox": [
+      11.4494,
+      42.1462,
+      12.5196,
+      42.8387
+    ]
+  }
+}

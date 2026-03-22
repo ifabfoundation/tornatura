@@ -1,4 +1,5 @@
 import logging
+import json
 import os
 import re
 import threading
@@ -32,6 +33,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 _PROVINCE_GDF: Optional[gpd.GeoDataFrame] = None
+_RISK_LEVELS: Optional[Dict[str, Any]] = None
 
 
 @app.get("/v1/health")
@@ -52,6 +54,7 @@ def _format_predictions(df: pd.DataFrame) -> Dict[str, Any]:
     if df.empty:
         return {"forecast_date": None, "target_week": None, "provinces": []}
 
+    df = _enrich_prediction_rows(df)
     df = df.where(pd.notnull(df), None)
     return {
         "forecast_date": df["forecast_base"].iloc[0],
@@ -71,20 +74,55 @@ def _normalize_province(value: str) -> str:
     return normalized
 
 
-def _load_emilia_romagna_shapefile() -> gpd.GeoDataFrame:
+def _load_risk_levels() -> Dict[str, Any]:
+    global _RISK_LEVELS
+    if _RISK_LEVELS is not None:
+        return _RISK_LEVELS
+
+    risk_levels_path = paths.PACKAGE_DIR / "risk_levels.json"
+    if not risk_levels_path.exists():
+        raise HTTPException(status_code=500, detail=f"Risk levels file not found: {risk_levels_path}")
+
+    with risk_levels_path.open(encoding="utf-8") as f:
+        _RISK_LEVELS = json.load(f)
+
+    return _RISK_LEVELS
+
+
+def _normalize_risk_level(value: Any) -> Optional[str]:
+    if value is None or pd.isna(value):
+        return None
+    if isinstance(value, float) and value.is_integer():
+        return str(int(value))
+    return str(value)
+
+
+def _enrich_prediction_rows(df: pd.DataFrame) -> pd.DataFrame:
+    if "risk_level" not in df.columns:
+        return df
+
+    risk_levels = _load_risk_levels()
+    df = df.copy()
+    df["risk_meta"] = df["risk_level"].apply(
+        lambda value: risk_levels.get(_normalize_risk_level(value))
+    )
+    return df
+
+
+def _load_province_shapefile() -> gpd.GeoDataFrame:
     global _PROVINCE_GDF
     if _PROVINCE_GDF is not None:
         return _PROVINCE_GDF
 
-    static_shapefile = paths.STATIC_DATA_DIR / "weather" / "shapefiles" / "province_emilia_romagna.shp"
-    local_shapefile = paths.WEATHER_DIR / "shapefiles" / "province_emilia_romagna.shp"
+    shapefile_candidates = (
+        paths.STATIC_DATA_DIR / "weather" / "shapefiles" / "province_italia.shp",
+    )
 
-    if static_shapefile.exists():
-        gdf = gpd.read_file(static_shapefile)
-    elif local_shapefile.exists():
-        gdf = gpd.read_file(local_shapefile)
-    else:
+    shapefile_path = next((path for path in shapefile_candidates if path.exists()), None)
+    if shapefile_path is None:
         raise HTTPException(status_code=500, detail="Province shapefile not found")
+
+    gdf = gpd.read_file(shapefile_path)
 
     if "prov_name" in gdf.columns:
         gdf = gdf.rename(columns={"prov_name": "province_name"})
@@ -102,7 +140,7 @@ def _load_emilia_romagna_shapefile() -> gpd.GeoDataFrame:
 
 
 def _province_from_point(lat: float, lng: float) -> Optional[str]:
-    gdf = _load_emilia_romagna_shapefile()
+    gdf = _load_province_shapefile()
     point = Point(lng, lat)
     matches = gdf[gdf.geometry.intersects(point)]
     if matches.empty:
@@ -213,13 +251,14 @@ def weather_forecast(province: str) -> Dict[str, Any]:
 def _risk_by_location(lat: float, lng: float, lead: int) -> Dict[str, Any]:
     province = _province_from_point(lat, lng)
     if not province:
-        raise HTTPException(status_code=404, detail="Location not in Emilia-Romagna province")
+        raise HTTPException(status_code=404, detail="Location not in an Italian province")
 
     df = _load_predictions(lead)
     df = df[df["NUTS_3"].astype(str).str.lower() == province]
     if df.empty:
         raise HTTPException(status_code=404, detail=f"Prediction not found for province: {province}")
 
+    df = _enrich_prediction_rows(df)
     row = df.where(pd.notnull(df), None).to_dict(orient="records")[0]
     return {
         "forecast_date": row.get("forecast_base"),

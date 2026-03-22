@@ -15,8 +15,26 @@ with open(paths.PACKAGE_DIR / "risk_levels.json", 'r', encoding='utf-8') as f:
 
 
 def get_risk_level(score: float) -> int:
-    """Convert continuous score to discrete risk level (1-5) using rounding."""
-    return int(np.clip(np.round(score), 1, 5))
+    """
+    Convert continuous score to discrete risk level (0-4) using range thresholds.
+    
+    Ranges:
+        0.0 - 1.0  → Level 0 (Nessun rischio)
+        1.0 - 2.0  → Level 1 (Sorveglianza)
+        2.0 - 3.0  → Level 2 (Attenzione)
+        3.0 - 3.5  → Level 3 (Rischio elevato)
+        3.5 - 4.0  → Level 4 (Rischio molto elevato)
+    """
+    if score < 1.0:
+        return 0
+    elif score < 2.0:
+        return 1
+    elif score < 3.0:
+        return 2
+    elif score < 3.5:
+        return 3
+    else:
+        return 4
 
 
 def get_risk_label(level: int) -> str:
@@ -100,8 +118,9 @@ class PeronospotaPredictor:
         results = df[['NUTS_3', 'forecast_base', 'target_period_start',
                       'target_period_end', 'lead_weeks']].copy()
 
-        # Risk score (continuous, clipped to 1-5)
-        results['risk_score'] = np.clip(predictions, 1, 5).round(2)
+        # Risk score (continuous, clipped to 0-4)
+        # Il modello predice 1-5, sottraiamo 1 per ottenere scala 0-4
+        results['risk_score'] = np.clip(predictions - 1, 0, 4).round(2)
 
         # Risk level (discrete 1-5, rounded)
         results['risk_level'] = results['risk_score'].apply(get_risk_level)
@@ -109,15 +128,15 @@ class PeronospotaPredictor:
         # Risk label from config
         results['risk_label'] = results['risk_level'].apply(get_risk_label)
 
+        # Fenologia
+        results['bbch_code'] = df['bbch_code'].round(0).astype(int)
+        results['plant_susceptibility'] = df['plant_susceptibility'].round(2)
+
         # Meteo features per diagnostica
         results['temp'] = df['temp'].round(1)
         results['prec'] = df['prec'].round(1)
         results['rh'] = df['rh'].round(1)
         results['lw'] = df['lw'].round(0).astype(int)
-        
-        # Fenologia                                                                                                              
-        results['bbch_code'] = df['bbch_code'].round(0).astype(int)                                                              
-        results['plant_susceptibility'] = df['plant_susceptibility'].round(2)  
 
         return results
 
@@ -158,7 +177,7 @@ class PeronospotaPredictor:
 
         # Risk distribution
         print(f"\nRisk distribution:")
-        for level in [1, 2, 3, 4, 5]:
+        for level in [0, 1, 2, 3, 4]:
             count = (agg['risk_level'] == level).sum()
             if count > 0:
                 label = get_risk_label(level)
@@ -204,9 +223,9 @@ def main():
                         help='Run predictions for all lead times (0, 1)')
     parser.add_argument('--data_path', type=str, default=None,
                         help='Path to inference data CSV')
-    parser.add_argument('--data_dir', type=str, default='data/dataframe_inference',
+    parser.add_argument('--data_dir', type=str, default=paths.INFERENCE_DIR,
                         help='Directory containing inference data files')
-    parser.add_argument('--model_dir', type=str, default='model',
+    parser.add_argument('--model_dir', type=str, default=paths.MODEL_DIR,
                         help='Directory containing trained models')
     parser.add_argument('--output_dir', type=str, default=paths.PREDICTIONS_DIR,
                         help='Directory for output predictions')
@@ -217,10 +236,7 @@ def main():
 
     args = parser.parse_args()
 
-    output_dir = Path(args.output_dir)
-    if not output_dir.is_absolute():
-        output_dir = paths.RUNTIME_DIR / output_dir
-    output_dir.mkdir(parents=True, exist_ok=True)
+    os.makedirs(args.output_dir, exist_ok=True)
 
     predictor = PeronospotaPredictor(model_dir=args.model_dir, verbose=True)
 

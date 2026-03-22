@@ -1,16 +1,16 @@
 RAG Bollettini - Transfer Package
 =================================
 
-Package: rag_bollettini_20260121
-Created: 2026-01-21 17:43:37
-Total Files: 209
-Total Size: 295M
+Package: rag_bollettini_20260310
+Created: 2026-03-10 10:09:24
+Total Files: 260
+Total Size: 387M
 
 Contents:
 ---------
 ✓ Python scripts (run_pipeline.py, scheduler.py)
 ✓ Modules (download, process, cimice, flavescenza, normativa)
-✓ Bollettini PDF (181 files)
+✓ Bollettini PDF (organizzati per anno)
 ✓ ChromaDB (vector database pre-indicizzato)
 ✓ Documentation (CLAUDE.md, REPORT.md)
 ✓ Requirements.txt

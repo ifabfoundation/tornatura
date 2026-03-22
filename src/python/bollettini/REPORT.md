@@ -438,12 +438,15 @@ Ogni report viene salvato in **due formati**:
 
 **1. Endpoint da esporre**:
 ```python
-# Ritorna ultimo report per posizione
-GET /v1/bollettini/cimice/location?lat=44.4949&lng=11.3426
-GET /v1/bollettini/flavescenza/location?lat=44.4949&lng=11.3426
+# Ritorna ultimo report per provincia
+GET /api/bollettini/cimice/{provincia}
+GET /api/bollettini/flavescenza/{provincia}
 
-# Health check
-GET /v1/bollettini/health
+# Ritorna lista province disponibili
+GET /api/bollettini/province
+
+# Forza refresh (chiama run_pipeline)
+POST /api/bollettini/refresh
 ```
 
 **2. Lettura report**:

@@ -45,7 +45,7 @@ sys.path.insert(0, str(PACKAGE_ROOT))
 
 from peronospora import paths
 
-SCRIPT_DIR = paths.DATA_DIR
+DATA_DIR = paths.DATA_DIR
 WEATHER_DIR = paths.WEATHER_DIR
 CACHE_DIR = paths.CACHE_DIR
 CACHE_HOURLY_DIR = paths.CACHE_HOURLY_DIR
@@ -56,24 +56,21 @@ TEMP_DIR = paths.TEMP_DIR
 
 S3_BUCKET = 'ecmwf-data-forecast'
 
-# Target provinces - Emilia-Romagna
+# Target provinces - All Italy (loaded from config)
+_PROVINCES_CONFIG_FILE = DATA_DIR / "provinces_italy.json"
+with open(_PROVINCES_CONFIG_FILE, 'r', encoding='utf-8') as _f:
+    _provinces_config = json.load(_f)
+
 TARGET_PROVINCES = {
-    "bologna": (10.5, 44.0, 12.0, 45.0),
-    "ferrara": (11.0, 44.5, 12.5, 45.0),
-    "forli_cesena": (11.5, 43.7, 12.5, 44.3),
-    "modena": (10.5, 44.0, 11.5, 44.8),
-    "parma": (9.5, 44.3, 10.5, 45.0),
-    "piacenza": (9.0, 44.5, 10.0, 45.2),
-    "ravenna": (11.5, 44.0, 12.5, 44.7),
-    "reggio_nell_emilia": (10.0, 44.3, 11.0, 44.9),
-    "rimini": (12.0, 43.8, 12.8, 44.2)
+    slug: tuple(info["bbox"])
+    for slug, info in _provinces_config.items()
 }
 
 HISTORICAL_MAX_HOURS = 24
 FORECAST_MAX_HOURS = 240
 
 # Add phenology module path
-PHENOLOGY_DIR = SCRIPT_DIR / "phenology"
+PHENOLOGY_DIR = DATA_DIR / "phenology"
 sys.path.insert(0, str(PHENOLOGY_DIR))
 sys.path.insert(0, str(PHENOLOGY_DIR / 'infections'))
 

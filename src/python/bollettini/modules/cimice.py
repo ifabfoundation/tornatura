@@ -429,14 +429,15 @@ class CimiceQueryProcessor:
     def get_latest_bollettini_by_province(self) -> List[Dict]:
         """Recupera solo l'ultimo bollettino per ogni provincia."""
         bollettini = self.get_available_bollettini()
-        
+
         latest_by_province = {}
         for b in bollettini:
             province = b['province']
-            numero = int(b['numero_bollettino'])
-            if province not in latest_by_province or numero > int(latest_by_province[province]['numero_bollettino']):
+            # Usa data (YYYY-MM-DD) per confronto: il numero si resetta ogni anno
+            data = b.get('data', '') or ''
+            if province not in latest_by_province or data > (latest_by_province[province].get('data', '') or ''):
                 latest_by_province[province] = b
-        
+
         return list(latest_by_province.values())
     
     def get_new_bollettini(self) -> List[Dict]:
@@ -579,15 +580,14 @@ DOCUMENTI:
         
         # Retrieval keyword-based (prende TUTTI i chunks con info cimice)
         chunks = self._retrieve_cimice_chunks(doc_name)
-        
+
         if not chunks:
-            self.logger.warning(f"  No cimice info found in {doc_name}")
-            return None
-        
-        self.logger.info(f"  Found {len(chunks)} chunks with cimice info")
-        
-        # LLM Generation (singola chiamata con TUTTI i chunks cimice)
-        report_content = self._generate_report(bollettino, chunks)
+            self.logger.info(f"  No cimice info in {doc_name} (normal for winter bulletins)")
+            report_content = "## 📊 Situazione Settimanale\n\n📅 **Periodo di svernamento** - nessuna attività cimice rilevata in questo bollettino.\n\nMonitoraggio riprende tipicamente ad aprile."
+        else:
+            self.logger.info(f"  Found {len(chunks)} chunks with cimice info")
+            # LLM Generation (singola chiamata con TUTTI i chunks cimice)
+            report_content = self._generate_report(bollettino, chunks)
         
         # Salva markdown
         md_path = self._save_markdown(province, bollettino, report_content)

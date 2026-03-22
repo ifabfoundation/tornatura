@@ -77,19 +77,34 @@ def get_logger():
 
 # ============= SYSTEM PROMPT OTTIMIZZATO =============
 SYSTEM_PROMPT = """Sei un esperto fitosanitario che prepara report concisi per agronomi viticoltori.
-Estrai dai documenti TUTTE le informazioni su Flavescenza Dorata e Scaphoideus titanus.
+Il report DEVE avere DUE PARTI ben distinte. Usa esattamente questa struttura Markdown:
 
-FORMATO OUTPUT (usa esattamente questa struttura Markdown):
+---
+
+# PARTE 1 - DAL BOLLETTINO
+
+Questa sezione riporta ESCLUSIVAMENTE le informazioni contenute nel bollettino provinciale.
 
 ## 📊 Monitoraggio Scafoideo
-- **Forme giovanili**: [stadio, presenza, trend ↑↓→]
-- **Catture adulti**: [livello, trend ↑↓→]
-- **Fase biologica**: [neanidi | ninfe | adulti | svernamento]
+[Riporta SOLO dati reali dal bollettino: stadio, catture, trend.
+Se il bollettino NON contiene informazioni su Scaphoideus titanus, scrivi:
+"📅 **Periodo pre-volo** - Nessuna informazione su Scaphoideus titanus in questo bollettino.
+Il monitoraggio dello scafoideo inizia tipicamente a maggio."]
 
-RIFERIMENTO STAGIONALE:
-- Primavera (mag-giu): neanidi → ninfe, inizio trattamenti
-- Estate (lug-ago): adulti, PICCO trattamenti
-- Autunno (set-ott): declino, focus su estirpo sintomatiche
+## 📋 Indicazioni Operative dal Bollettino
+[Riporta SOLO indicazioni presenti nel bollettino: estirpo piante, scadenze, avvisi.
+Se non ci sono indicazioni specifiche, scrivi:
+"Nessuna indicazione operativa su flavescenza/scafoideo in questo bollettino."]
+
+## 📋 Deroghe Menzionate nel Bollettino
+[Solo se il bollettino cita deroghe specifiche. Altrimenti OMETTI questa sezione.]
+
+---
+
+# PARTE 2 - DALLA NORMATIVA (Determinazione 2025)
+
+Questa sezione riporta le disposizioni dalla Determinazione Regionale vigente.
+La Determinazione 2026 sarà riportata appena disponibile (prevista maggio 2026).
 
 ## ⚠️ Scadenze Trattamenti Obbligatori
 | Tipo azienda | 1° trattamento | 2° trattamento |
@@ -123,11 +138,6 @@ RIFERIMENTO STAGIONALE:
 - 2° trattamento: Piretrine pure (OBBLIGATORIO)
 - ⚠️ Almeno 1 dei 2 trattamenti DEVE essere con piretrine
 
-## 📋 Deroghe Attive
-| Prodotto (s.a.) | Coltura | Validità |
-|-----------------|---------|----------|
-| [nome + s.a.] | VITE | [dal-al] |
-
 ## 🔧 Accorgimenti Operativi
 - Volume acqua: [minimo lt/ha]
 - pH soluzione: [requisito]
@@ -139,8 +149,8 @@ RIFERIMENTO STAGIONALE:
 - Divieto in presenza fioriture spontanee sottostanti (sfalciare prima)
 - Trattare nelle ore serali
 
-## 🗺️ Zone Delimitate (da Determinazione N.9016)
-- **Zona infestata**: [comuni principali o "vedi determinazione"]
+## 🗺️ Zone Delimitate
+- **Zona infestata**: [comuni principali o "vedi Determinazione"]
 - **Zona cuscinetto**: [comuni o "500m perimetrale"]
 
 ## 🌿 Gestione Piante Sintomatiche
@@ -151,79 +161,46 @@ RIFERIMENTO STAGIONALE:
 ## ⚖️ Sanzioni
 €1.000 - €6.000 (D.Lgs. 19/2021, art. 55)
 
+---
+
 ## ✅ Azione Consigliata
-[2-3 frasi operative: cosa deve fare l'agronomo ADESSO]
+[2-3 frasi operative: cosa deve fare l'agronomo ADESSO, considerando sia bollettino che normativa]
 
 REGOLE:
 1. Basati SOLO sui documenti forniti (bollettino + normativa)
 2. Ignora altre avversità (cimice, oidio, peronospora, etc.)
-3. INVERNO/INIZIO PRIMAVERA (gen-apr): se non ci sono info scafoideo, scrivi:
-   "📅 Periodo pre-volo - monitoraggio scafoideo inizia a maggio."
-4. NON ripetere le stesse informazioni in sezioni diverse
-5. DISTINGUI tra info da [BOLLETTINO] e info da [NORMATIVA]
+3. PARTE 1: riporta SOLO ciò che è scritto nel bollettino. Se non ci sono info, dillo chiaramente. NON inventare dati placeholder.
+4. PARTE 2: riporta le informazioni dalla normativa. Tabelle con SOLO righe con dati reali trovati.
+5. NON ripetere le stesse informazioni in sezioni diverse
 6. Sii CONCISO: l'agronomo vuole info operative, non testi lunghi
-7. Tabelle: SOLO righe con dati reali trovati
-8. Per zone delimitate con molti comuni, indica "Vedi Determinazione N.9016"
-9. Per strategie difesa: indica SEMPRE quale prodotto per quale trattamento
+7. Per zone delimitate con molti comuni, indica "Vedi Determinazione"
+8. Per strategie difesa: indica SEMPRE quale prodotto per quale trattamento
 """
 
-QUERY_AGGREGATA = """Estrai dal bollettino e dalla normativa TUTTE le informazioni su Flavescenza Dorata e Scaphoideus titanus:
+QUERY_AGGREGATA = """Genera il report su Flavescenza Dorata e Scaphoideus titanus con DUE PARTI DISTINTE:
 
-1. MONITORAGGIO SCAFOIDEO:
-   - Presenza/stadio forme giovanili (neanidi, ninfe)
-   - Catture adulti (livello, trend)
-   - Fase biologica attuale
+PARTE 1 - DAL BOLLETTINO:
+Estrai SOLO ciò che il bollettino dice su flavescenza/scafoideo:
+- Monitoraggio scafoideo (stadio, catture, trend) - SOLO se presenti dati reali
+- Indicazioni operative (estirpo, scadenze, avvisi menzionati nel bollettino)
+- Deroghe citate nel bollettino
+Se il bollettino non contiene info su scafoideo/flavescenza, dichiaralo esplicitamente.
+NON inventare dati placeholder come "[stadio non specificato]" o "[trend →]".
 
-2. SCADENZE TRATTAMENTI:
-   - Data inizio lotta obbligatoria
-   - Condizioni preliminari (sfioritura, sfalcio)
-   - Scadenza 1° trattamento (integrata e biologica)
-   - Scadenza 2° trattamento (integrata e biologica)
+PARTE 2 - DALLA NORMATIVA:
+Estrai dalla normativa (Determinazione Regionale):
+- Scadenze trattamenti obbligatori (date, condizioni)
+- Prodotti autorizzati (integrata e biologica, con limitazioni)
+- Strategia difesa raccomandata (quale prodotto per quale trattamento)
+- Accorgimenti operativi (volume acqua, pH, timing, preparazione)
+- Tutela api
+- Zone delimitate (zona infestata, zona cuscinetto)
+- Gestione piante sintomatiche (estirpo, capitozzatura)
+- Sanzioni
 
-3. PRODOTTI AUTORIZZATI:
-   - Lista prodotti difesa INTEGRATA con limitazioni
-   - Lista prodotti difesa BIOLOGICA con limitazioni
-   - Note su piretroidi (max interventi/anno)
+Infine: AZIONE CONSIGLIATA (2-3 frasi operative per l'agronomo).
 
-4. STRATEGIA DIFESA:
-   - Quali prodotti per 1° trattamento (integrata vs biologica)
-   - Quali prodotti per 2° trattamento (integrata vs biologica)
-   - Obbligo piretrine per biologico
-
-5. DEROGHE ATTIVE:
-   - Nome formulato + sostanza attiva
-   - Date validità (dal-al)
-
-6. ACCORGIMENTI OPERATIVI:
-   - Volume acqua minimo (lt/ha)
-   - Correzione pH
-   - Timing trattamento (ore serali per fotolabili)
-   - Preparazione (cimatura, spollonatura)
-
-7. TUTELA API:
-   - Divieti durante fioritura
-   - Sfalcio fioriture spontanee
-   - Orario trattamenti
-
-8. ZONE DELIMITATE (da normativa):
-   - Comuni zona infestata
-   - Comuni zona cuscinetto
-
-9. PIANTE SINTOMATICHE:
-   - Obbligo estirpo (quando, come)
-   - Capitozzatura ammessa?
-   - Obblighi per piante madri/barbatellai
-
-10. SANZIONI:
-    - Importo min-max
-    - Riferimento normativo
-
-11. AZIONE CONSIGLIATA:
-    - Monitoraggio (quando, come)
-    - Trattamenti (se previsti nel periodo)
-    - Ispezione piante (se post-raccolta)
-
-NOTA: Bollettini N.1-12 (gen-apr) tipicamente hanno poche info scafoideo (pre-volo).
+NOTA: Bollettini N.1-12 (gen-apr) tipicamente hanno poche/nessuna info scafoideo (pre-volo).
       Bollettini N.13+ (mag-ott) hanno info complete su lotta obbligatoria."""
 # ==========================================
 
@@ -501,14 +478,15 @@ class FlavescenzaQueryProcessor:
     def get_latest_bollettini_by_province(self) -> List[Dict]:
         """Recupera solo l'ultimo bollettino per ogni provincia."""
         bollettini = self.get_available_bollettini()
-        
+
         latest_by_province = {}
         for b in bollettini:
             province = b['province']
-            numero = int(b['numero_bollettino'])
-            if province not in latest_by_province or numero > int(latest_by_province[province]['numero_bollettino']):
+            # Usa data (YYYY-MM-DD) per confronto: il numero si resetta ogni anno
+            data = b.get('data', '') or ''
+            if province not in latest_by_province or data > (latest_by_province[province].get('data', '') or ''):
                 latest_by_province[province] = b
-        
+
         return list(latest_by_province.values())
     
     def get_new_bollettini(self) -> List[Dict]:
@@ -674,10 +652,11 @@ DOCUMENTI:
         # Retrieval keyword-based (solo bollettino, normativa da modulo Python)
         chunks = self._retrieve_bollettino_chunks(doc_name)
 
-        # Nota: chunks vuoti sono OK per bollettini invernali (gen-apr)
-        # La normativa viene sempre inclusa dal modulo normativa_flavescenza
+        if not chunks:
+            self.logger.info(f"  No flavescenza info in {doc_name} (normal for winter bulletins)")
 
-        # LLM Generation (singola chiamata)
+        # LLM Generation (singola chiamata) - anche senza chunks bollettino,
+        # per generare report completo con normativa e senza dati inventati
         report_content = self._generate_report(bollettino, chunks)
 
         # Salva markdown

@@ -46,7 +46,9 @@ RAG_bollettini/
 │   └── normativa_flavescenza.py # Dati normativa strutturati
 │
 ├── data/
-│   ├── 1_collections/bollettini/  # PDF scaricati
+│   ├── 1_collections/bollettini/  # PDF scaricati (organizzati per anno)
+│   │   ├── 2025/                  # PDF del 2025
+│   │   └── 2026/                  # PDF del 2026
 │   ├── chromadb/                  # Vector database
 │   ├── cache/                     # Cache query
 │   ├── output/
@@ -95,7 +97,7 @@ python modules/flavescenza.py           # Solo report flavescenza
 
 ```
 1. download_bollettini.py
-   └─> Scarica PDF da API Regione → data/1_collections/bollettini/
+   └─> Scarica PDF da API Regione → data/1_collections/bollettini/{anno}/
 
 2. process_bollettini.py
    └─> PDF → Markdown (Docling) → Chunks → ChromaDB
