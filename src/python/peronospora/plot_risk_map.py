@@ -491,6 +491,17 @@ def create_satellite_map_all_weeks(all_predictions, gdf, output_file='risk_map_s
             showLead(0);
         }}, 300);
     }});
+
+    window.addEventListener('message', function(event) {{
+        var data = event.data || {{}};
+        if (data.type !== 'peronospora:setLead') {{
+            return;
+        }}
+
+        if (data.lead === 0 || data.lead === 1) {{
+            showLead(data.lead);
+        }}
+    }});
     </script>
     '''
     m.get_root().html.add_child(folium.Element(title_html))
