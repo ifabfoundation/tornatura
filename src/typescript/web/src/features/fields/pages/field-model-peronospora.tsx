@@ -6,6 +6,8 @@ import { fieldsSelectors } from "../state/fields-slice";
 import { AgriField, Point } from "@tornatura/coreapis";
 import * as turf from "@turf/turf";
 import {
+  fetchPeronosporaAllCurrent,
+  fetchPeronosporaAllForecast,
   fetchPeronosporaCurrent,
   fetchPeronosporaForecast,
   PeronosporaResponse,
@@ -43,6 +45,8 @@ export function FieldModelPeronospora() {
   );
   const [current, setCurrent] = React.useState<PeronosporaResponse | null>(null);
   const [forecast, setForecast] = React.useState<PeronosporaResponse | null>(null);
+  const [allCurrent, setAllCurrent] = React.useState<any[]>([]);
+  const [allForecast, setAllForecast] = React.useState<any[]>([]);
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const [activeDataType, setActiveDataType] = React.useState<ActiveDataType>("current");
@@ -56,6 +60,17 @@ export function FieldModelPeronospora() {
         subtitle: "Modello predittivo",
       }),
     );
+  }, []);
+
+  React.useEffect(() => {
+    async function fetchAllData() {
+      const dataCurrent = await fetchPeronosporaAllCurrent();
+      setAllCurrent(dataCurrent);
+      const dataForecast = await fetchPeronosporaAllForecast();
+      setAllForecast(dataForecast);
+    }
+
+    fetchAllData();
   }, []);
 
   React.useEffect(() => {
@@ -158,6 +173,7 @@ export function FieldModelPeronospora() {
 
   const geoJson = getFieldMapGeoJson(currentField);
   const riskLevel = typeof data?.detail?.risk_level === "number" ? data.detail.risk_level : 0;
+  const riskMeta = data?.detail?.risk_meta as any;
   const riskColor = getRiskColor(riskLevel);
   geoJson.properties = {
     fill: `%23${riskColor}`,
@@ -187,6 +203,7 @@ export function FieldModelPeronospora() {
     }
     return dateStr ?? "-";
   };
+
   const processProvincePeronospora = (provinceStr?: string) => {
     if (!provinceStr) {
       return "-";
@@ -199,16 +216,15 @@ export function FieldModelPeronospora() {
       .join(" ");
   };
 
-  const provinceData = [
-    { code: "MI", value: 0.666 },
-    { nuts_3_name: "Bologna", value: 0.666 },
-    { code: "MO", value: 0.666 },
-    { code: "RE", value: 0.666 },
-    { code: "FE", value: 0.666 },
-    { code: "RA", value: 0.666 },
-    { code: "RN", value: 0.666 },
-    { code: "FC", value: 0.666 },
-  ];
+  const getProvinceData = () => {
+    const values = activeDataType === "current" ? allCurrent : allForecast;
+    return values.map((d) => {
+      return {
+        nuts_3_name: processProvincePeronospora(d.NUTS_3), 
+        value: d.risk_score
+      }
+    })
+  }
 
   const Bollo = () => {
     let description = null;
@@ -218,7 +234,7 @@ export function FieldModelPeronospora() {
       data.detail.risk_meta &&
       data.detail.risk_meta.hasOwnProperty("descrizione")
     ) {
-      description = String(data.detail.risk_meta.descrizione);
+      description = String(riskMeta.descrizione);
     }
     return (
       <div style={{ backgroundColor: "#" + riskColor }} className="p-3 rounded">
@@ -230,7 +246,8 @@ export function FieldModelPeronospora() {
       </div>
     );
   };
-  console.log("Peronospora ---> ", data);
+ 
+
   return (
     <Container fluid className="mb-5">
       <Row>
@@ -325,7 +342,7 @@ export function FieldModelPeronospora() {
               </section>
 
               <section className="soft bg-white">
-                <MapNUTSData provinceData={provinceData} />
+                <MapNUTSData provinceData={getProvinceData()} />
               </section>
 
               <section className="soft bg-white">

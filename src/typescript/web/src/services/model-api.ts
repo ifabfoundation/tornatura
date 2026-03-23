@@ -4,7 +4,7 @@ type PeronosporaResponse = {
     start?: string;
     end?: string;
   };
-  detail?: Record<string, unknown>;
+  detail?: Record<string, any>;
   location?: {
     lat: number;
     lng: number;
@@ -120,6 +120,16 @@ export async function fetchCimiceReport(lat: number, lng: number) {
 
 export async function fetchFlavescenzaReport(lat: number, lng: number) {
   return fetchJson<BollettinoResponse>("/v1/bollettini/flavescenza/location", { lat, lng });
+}
+
+export async function fetchPeronosporaAllCurrent() {
+  const response = await fetchJson<any>("/v1/peronospora/risk/current");
+  return response.provinces as any[];
+}
+
+export async function fetchPeronosporaAllForecast() {
+  const response = await fetchJson<any>("/v1/peronospora/risk/forecast");
+  return response.provinces as any[];
 }
 
 export type { PeronosporaResponse, BollettinoResponse };

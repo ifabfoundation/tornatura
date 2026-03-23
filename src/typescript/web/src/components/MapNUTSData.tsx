@@ -8,7 +8,7 @@ import { useAppSelector } from "../hooks";
 import { fieldsSelectors } from "../features/fields/state/fields-slice";
 import { gpsStore } from "../providers/gps-providers";
 import * as nuts from "../helpers/nuts.json";
-import { get } from "lodash";
+
 
 const modelValueToRiskLevel = (value: number): number => {
   if (value > 80) return 4;
@@ -146,7 +146,7 @@ const dataMap = [
 ];
 
 interface MapNUTSDataProps {
-  provinceData?: { id: string; value: number }[];
+  provinceData?: { nuts_3_name: string; value: number }[];
 }
 
 export const MapNUTSData = ({ provinceData }: MapNUTSDataProps) => {
@@ -161,9 +161,10 @@ export const MapNUTSData = ({ provinceData }: MapNUTSDataProps) => {
 
   console.log("DEBUG NUTS", nuts);
 
-  const getProvinceDS = (inputData) => {
-    const passedFeatures = [];
-    nuts.features.forEach((f) => {
+  const getProvinceDS = (inputData?: any[]) => {
+    let passedFeatures: any[] = [];
+    // @ts-ignore
+    nuts.features.forEach((f: any) => {
       const id = f.properties.NUTS_ID;
       const nuts_3_name = f.properties.NUTS_NAME;
       const level = f.properties.LEVL_CODE;
@@ -174,7 +175,7 @@ export const MapNUTSData = ({ provinceData }: MapNUTSDataProps) => {
       if (level == 3) {
         pass++;
       }
-      if (pass == 2) {
+      if (pass == 2 && inputData) {
         const code = dataMap.find((d) => d.id === id)?.code || "??";
         f.properties.code = code;
         let value = inputData.find((d) => d.code === code)?.value || null;
@@ -528,7 +529,8 @@ export const MapNUTSData = ({ provinceData }: MapNUTSDataProps) => {
           features: getProvinceDS(provinceData),
         };
         console.log("••• italy_NUTS_3", italy_NUTS_3);
-
+        
+        // @ts-ignore
         source.setData(italy_NUTS_3);
       }
     }
