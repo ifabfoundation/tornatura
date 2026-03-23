@@ -220,11 +220,11 @@ export function FieldModelPeronospora() {
     const values = activeDataType === "current" ? allCurrent : allForecast;
     return values.map((d) => {
       return {
-        nuts_3_name: processProvincePeronospora(d.NUTS_3), 
-        value: d.risk_score
-      }
-    })
-  }
+        nuts_3_name: processProvincePeronospora(d.NUTS_3),
+        value: d.risk_score,
+      };
+    });
+  };
 
   const Bollo = () => {
     let description = null;
@@ -246,7 +246,6 @@ export function FieldModelPeronospora() {
       </div>
     );
   };
- 
 
   return (
     <Container fluid className="mb-5">
@@ -342,7 +341,7 @@ export function FieldModelPeronospora() {
               </section>
 
               <section className="soft bg-white">
-                <MapNUTSData provinceData={getProvinceData()} />
+                <MapNUTSData provinceData={getProvinceData()} selectedProvinceData={data} />
               </section>
 
               <section className="soft bg-white">

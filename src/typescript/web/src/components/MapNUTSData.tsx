@@ -9,7 +9,6 @@ import { fieldsSelectors } from "../features/fields/state/fields-slice";
 import { gpsStore } from "../providers/gps-providers";
 import * as nuts from "../helpers/nuts.json";
 
-
 const modelValueToRiskLevel = (value: number): number => {
   if (value > 80) return 4;
   else if (value > 60) return 3;
@@ -147,9 +146,10 @@ const dataMap = [
 
 interface MapNUTSDataProps {
   provinceData?: { nuts_3_name: string; value: number }[];
+  selectedProvinceData?: any;
 }
 
-export const MapNUTSData = ({ provinceData }: MapNUTSDataProps) => {
+export const MapNUTSData = ({ provinceData, selectedProvinceData }: MapNUTSDataProps) => {
   const { fieldId } = useParams();
   const currentField = useAppSelector((state) =>
     fieldsSelectors.selectFieldbyId(state, fieldId ?? "default"),
@@ -160,6 +160,45 @@ export const MapNUTSData = ({ provinceData }: MapNUTSDataProps) => {
   const currentPosition = React.useContext(gpsStore);
 
   console.log("DEBUG NUTS", nuts);
+
+  type Coord = [number, number];
+
+  function extractCoords(input: any, out: Coord[] = []): Coord[] {
+    if (Array.isArray(input)) {
+      // If this is a coordinate pair
+      if (typeof input[0] === "number" && typeof input[1] === "number") {
+        out.push([input[0], input[1]]);
+      } else {
+        // Otherwise recurse into nested arrays
+        input.forEach((item) => extractCoords(item, out));
+      }
+    }
+    return out;
+  }
+
+  function getBoundingBox(geometry: any) {
+    const coords = extractCoords(geometry.coordinates);
+
+    let minX = Infinity,
+      minY = Infinity;
+    let maxX = -Infinity,
+      maxY = -Infinity;
+
+    coords.forEach(([x, y]) => {
+      if (x < minX) minX = x;
+      if (y < minY) minY = y;
+      if (x > maxX) maxX = x;
+      if (y > maxY) maxY = y;
+    });
+
+    return {
+      minX,
+      minY,
+      maxX,
+      maxY,
+      bbox: [minX, minY, maxX, maxY] as [number, number, number, number],
+    };
+  }
 
   const getProvinceDS = (inputData?: any[]) => {
     let passedFeatures: any[] = [];
@@ -339,7 +378,7 @@ export const MapNUTSData = ({ provinceData }: MapNUTSDataProps) => {
             "text-field": labelExpression,
             "text-size": 12,
             "text-font": ["Inter Bold", "Open Sans Bold", "Arial Unicode MS Bold"],
-            "text-allow-overlap": true,
+            "text-allow-overlap": false,
           },
           paint: {
             "text-color": "#222",
@@ -370,7 +409,7 @@ export const MapNUTSData = ({ provinceData }: MapNUTSDataProps) => {
           source: "fieldShape",
           layout: {},
           paint: {
-            "fill-color": "rgba(0, 0, 0, 0.05)", // fill color
+            "fill-color": "rgba(0, 0, 0, 0.15)", // fill color
             "fill-opacity": 1.0, // fill opacity
           },
         });
@@ -383,6 +422,50 @@ export const MapNUTSData = ({ provinceData }: MapNUTSDataProps) => {
             "line-color": "rgba(0, 0, 0, 0.9)", // outline color
             "line-width": 2,
             "line-opacity": 1.0, // outline opacity
+          },
+        });
+
+        // --------------------------------------------------
+        // Add source + layer for field marker
+        // --------------------------------------------------
+        mapRef.current!.addSource("marker-source", {
+          type: "geojson",
+          data: {
+            type: "FeatureCollection",
+            features: [
+              {
+                type: "Feature",
+                geometry: {
+                  type: "Point",
+                  coordinates: centroid,
+                },
+              },
+            ],
+          },
+        });
+        mapRef.current!.addLayer({
+          id: "my-marker",
+          type: "circle",
+          source: "marker-source",
+          paint: {
+            "circle-radius": 8,
+            "circle-color": "#000",
+            "circle-stroke-width": 2,
+            "circle-stroke-color": "#fff",
+            "circle-opacity": [
+              "step",
+              ["zoom"],
+              1, // opacity when zoom < 10
+              10,
+              0, // opacity when zoom >= 10
+            ],
+            "circle-stroke-opacity": [
+              "step",
+              ["zoom"],
+              1, // opacity when zoom < 10
+              10,
+              0, // opacity when zoom >= 10
+            ],
           },
         });
 
@@ -464,28 +547,42 @@ export const MapNUTSData = ({ provinceData }: MapNUTSDataProps) => {
         // --------------------------------------------------
 
         const bologna = italy_NUTS_3.features.find((f) => f.properties.NUTS_ID === "ITH55");
+
+        // console.log("selectedProvinceData", selectedProvinceData?.detail?.NUTS_3);
+        const zoomProvinceName = selectedProvinceData?.detail?.NUTS_3 || null;
+        const zoomProvinceData = italy_NUTS_3.features.find(
+          (f) => f.properties.NUTS_NAME.toLowerCase() === zoomProvinceName.toLowerCase(),
+        );
+        console.log("zoomProvinceData", zoomProvinceData);
+
+        // V2
+        const zoomBbox = getBoundingBox(zoomProvinceData.geometry);
+        console.log("zoomBbox", zoomBbox);
+
+        // V1
+
         // console.error(bologna);
-        // let bolognaAreaPoints: number[][] = [];
+        // let zoomAreaPoints: number[][] = [];
         // bologna.geometry.coordinates[0].forEach((point: Point) => {
-        //   bolognaAreaPoints.push(point);
+        //   zoomAreaPoints.push(point);
         // });
-        let bolognaAreaPoints: number[][] = bologna.geometry.coordinates[0];
-        if (bolognaAreaPoints.length <= 2) {
-          console.log("••• not enough points in bolognaAreaPoints", bolognaAreaPoints);
-          return;
-        }
-        let BolognaBbox: any;
-        if (bolognaAreaPoints.length > 2) {
-          const polygon = turf.polygon([bolognaAreaPoints]);
-          const result = turf.centroid(polygon);
-          centroid = [result.geometry.coordinates[0], result.geometry.coordinates[1]];
-          BolognaBbox = turf.bbox(polygon);
-          console.log("••• bologna_bbox", BolognaBbox);
-        }
+        // let zoomAreaPoints: number[][] = zoomProvinceData.geometry.coordinates[0];
+        // if (zoomAreaPoints.length <= 2) {
+        //   console.log("••• not enough points in zoomAreaPoints", zoomAreaPoints);
+        //   return;
+        // }
+        // let zoomBbox: any;
+        // if (zoomAreaPoints.length > 2) {
+        //   const polygon = turf.polygon([zoomAreaPoints]);
+        //   // const result = turf.centroid(polygon);
+        //   // centroid = [result.geometry.coordinates[0], result.geometry.coordinates[1]];
+        //   zoomBbox = turf.bbox(polygon);
+        //   console.log("••• bologna_bbox", zoomBbox);
+        // }
 
         //merge a default object with optional parameter
         const padding = { top: 50, bottom: 50, left: 50, right: 50 };
-        mapRef.current.fitBounds(BolognaBbox, {
+        mapRef.current.fitBounds(zoomBbox.bbox, {
           padding: padding,
         });
         // mapRef.current.setZoom(7);
@@ -529,7 +626,7 @@ export const MapNUTSData = ({ provinceData }: MapNUTSDataProps) => {
           features: getProvinceDS(provinceData),
         };
         console.log("••• italy_NUTS_3", italy_NUTS_3);
-        
+
         // @ts-ignore
         source.setData(italy_NUTS_3);
       }
