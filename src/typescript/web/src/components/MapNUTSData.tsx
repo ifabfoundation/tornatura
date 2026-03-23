@@ -546,7 +546,7 @@ export const MapNUTSData = ({ provinceData, selectedProvinceData }: MapNUTSDataP
         animatePulse(performance.now());
         // --------------------------------------------------
 
-        const bologna = italy_NUTS_3.features.find((f) => f.properties.NUTS_ID === "ITH55");
+        // const bologna = italy_NUTS_3.features.find((f) => f.properties.NUTS_ID === "ITH55");
 
         // console.log("selectedProvinceData", selectedProvinceData?.detail?.NUTS_3);
         const zoomProvinceName = selectedProvinceData?.detail?.NUTS_3 || null;
@@ -625,7 +625,6 @@ export const MapNUTSData = ({ provinceData, selectedProvinceData }: MapNUTSDataP
           type: "FeatureCollection",
           features: getProvinceDS(provinceData),
         };
-        console.log("••• italy_NUTS_3", italy_NUTS_3);
 
         // @ts-ignore
         source.setData(italy_NUTS_3);
