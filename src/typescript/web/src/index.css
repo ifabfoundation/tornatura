@@ -13360,12 +13360,21 @@ small, .small {
   }
 }
 
-#app a.button:disabled,
+#app a.button:disabled, #app a.button[data-disabled-like="true"],
 #app input[type="submit"]:disabled,
-#app button.trnt_btn:disabled {
+#app input[type="submit"][data-disabled-like="true"],
+#app button.trnt_btn:disabled,
+#app button.trnt_btn[data-disabled-like="true"] {
   background-color: #d8d8d8 !important;
-  pointer-events: none !important;
   color: #bbbbbb !important;
+}
+
+#app a.button:disabled:disabled, #app a.button[data-disabled-like="true"]:disabled,
+#app input[type="submit"]:disabled:disabled,
+#app input[type="submit"][data-disabled-like="true"]:disabled,
+#app button.trnt_btn:disabled:disabled,
+#app button.trnt_btn[data-disabled-like="true"]:disabled {
+  pointer-events: none !important;
 }
 
 #app a.button[data-type="round"], #app a.button.type-round,

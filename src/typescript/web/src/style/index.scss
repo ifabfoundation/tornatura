@@ -344,10 +344,13 @@ small {
     @include font-m-600;
     transition: all 100ms;
     text-decoration: none;
-    &:disabled {
+    &:disabled,
+    &[data-disabled-like="true"] {
       background-color: $c-grey_2 !important;
-      pointer-events: none !important;
       color: $c-grey_3 !important;
+      &:disabled {
+        pointer-events: none !important;
+      }
     }
     &:hover {
     }

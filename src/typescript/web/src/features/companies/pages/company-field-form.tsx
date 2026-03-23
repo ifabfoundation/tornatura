@@ -608,10 +608,15 @@ export const FieldFormMap = ({ action, onNextClick }: FieldProps) => {
           <button
             className="trnt_btn accent-stronger"
             onClick={() => {
-              onNextClick(map);
+              if (buttonDisabled) {
+                alert("Disegna l'area del campo sulla mappa prima di procedere");
+              } else {
+                onNextClick(map);
+              }
             }}
-            disabled={buttonDisabled}
-            title={buttonDisabled ? "Seleziona un'area sulla mappa" : ""}
+            // disabled={buttonDisabled}
+            data-disabled-like={buttonDisabled ? "true" : "false"}
+            title={buttonDisabled ? "Disegna l'area del campo sulla mappa" : ""}
           >
             {action}
           </button>
