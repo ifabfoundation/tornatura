@@ -8,6 +8,7 @@ import { useAppSelector } from "../hooks";
 import { fieldsSelectors } from "../features/fields/state/fields-slice";
 import { gpsStore } from "../providers/gps-providers";
 import * as nuts from "../helpers/nuts.json";
+import legend_peronospora_model from "../assets/images/legends/legend-peronospora-model.svg";
 
 const modelValueToRiskLevel = (value: number): number => {
   if (value > 80) return 4;
@@ -150,6 +151,7 @@ interface MapNUTSDataProps {
 }
 
 export const MapNUTSData = ({ provinceData, selectedProvinceData }: MapNUTSDataProps) => {
+  // console.log("MapNUTSData props", { provinceData, selectedProvinceData });
   const { fieldId } = useParams();
   const currentField = useAppSelector((state) =>
     fieldsSelectors.selectFieldbyId(state, fieldId ?? "default"),
@@ -217,14 +219,24 @@ export const MapNUTSData = ({ provinceData, selectedProvinceData }: MapNUTSDataP
       if (pass == 2 && inputData) {
         const code = dataMap.find((d) => d.id === id)?.code || "??";
         f.properties.code = code;
-        let value = inputData.find((d) => d.code === code)?.value || null;
-        if (value === null) {
-          value =
+        let datum = inputData.find((d) => d.code === code) || null;
+        if (datum === null) {
+          datum =
             inputData.find(
               (d) => d.nuts_3_name?.trim().toLowerCase() === nuts_3_name?.trim().toLowerCase(),
-            )?.value || null;
+            ) || null;
         }
+        let value = datum?.value || null;
+        // console.log("@@Datum", datum, "for", id, nuts_3_name);
+        f.properties.prec = datum?.prec || null;
+        f.properties.rh = datum?.rh || null;
+        f.properties.risk_label = datum?.risk_label || null;
+        f.properties.risk_meta_descrizione = datum?.risk_meta?.descrizione || null;
+        f.properties.risk_score = datum?.risk_score || null;
+        f.properties.temp = datum?.temp || null;
         f.properties.value = value !== null ? value : 0.0;
+
+        console.log("@@Datum", f);
         passedFeatures.push(f);
       }
     });
@@ -318,6 +330,47 @@ export const MapNUTSData = ({ provinceData, selectedProvinceData }: MapNUTSDataP
         });
 
         // --------------------------------------------------
+        // Add popup and handle interactions
+        // --------------------------------------------------
+
+        const popup = new mapboxgl.Popup({
+          closeButton: true,
+          closeOnClick: true,
+        });
+
+        mapRef.current!.on("click", "nuts3-fill", (e) => {
+          const feature = e.features[0];
+          const props = feature.properties;
+
+          mapRef.current!.getSource("highlight").setData({
+            type: "FeatureCollection",
+            features: [feature],
+          });
+
+          popup
+            .setLngLat(e.lngLat)
+            .setHTML(
+              `
+              <strong>${props.NUTS_NAME}</strong><br>
+              prec: ${props.prec}<br />
+              rh: ${props.rh}<br />
+              risk_label: ${props.risk_label}<br />
+              risk_meta_descrizione: ${props.risk_meta_descrizione}<br />
+              risk_score: ${props.risk_score}<br />
+              temp: ${props.temp}<br />
+            `,
+            )
+            .addTo(mapRef.current!);
+        });
+        mapRef.current!.on("mouseenter", "nuts3-fill", () => {
+          mapRef.current!.getCanvas().style.cursor = "pointer";
+        });
+
+        mapRef.current!.on("mouseleave", "nuts3-fill", () => {
+          mapRef.current!.getCanvas().style.cursor = "";
+        });
+
+        // --------------------------------------------------
         // Add source + layer for areas
         // --------------------------------------------------
 
@@ -382,6 +435,29 @@ export const MapNUTSData = ({ provinceData, selectedProvinceData }: MapNUTSDataP
           },
           paint: {
             "text-color": "#222",
+          },
+        });
+
+        // --------------------------------------------------
+        // Add source + layer for highlighted selected area
+        // --------------------------------------------------
+
+        mapRef.current!.addSource("highlight", {
+          type: "geojson",
+          data: {
+            type: "FeatureCollection",
+            features: [],
+          },
+        });
+
+        mapRef.current!.addLayer({
+          id: "highlight-fill",
+          type: "line",
+          source: "highlight",
+          paint: {
+            "line-color": "#000",
+            "line-width": 2.5,
+            "line-opacity": 1.0,
           },
         });
 
@@ -636,5 +712,12 @@ export const MapNUTSData = ({ provinceData, selectedProvinceData }: MapNUTSDataP
     // ----------------------------------
   }, [mapLoaded, provinceData]);
 
-  return <div ref={mapContainerRef} className="map-observations"></div>;
+  return (
+    <div className="map-observations-wrapper">
+      <div ref={mapContainerRef} className="map-observations"></div>
+      <div className="map-legend">
+        <img src={legend_peronospora_model} alt="Map Legend" />
+      </div>
+    </div>
+  );
 };

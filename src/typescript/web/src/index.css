@@ -14475,6 +14475,11 @@ small, .small {
   }
 }
 
+#app input[type="date"]:not(:focus):before {
+  content: attr(placeholder);
+  color: #999;
+}
+
 @media (max-width: 767.98px) {
   #app .input-row .col-md-6.input-row-margin-fix + .col-md-6.input-row-margin-fix {
     margin-top: 20px;
@@ -15577,7 +15582,11 @@ small, .small {
   height: 100%;
 }
 
-#app .map-observations {
+#app .map-observations-wrapper {
+  position: relative;
+}
+
+#app .map-observations-wrapper .map-observations {
   width: 100%;
   height: 100%;
   overflow: hidden;
@@ -15586,10 +15595,25 @@ small, .small {
 }
 
 @media (max-width: 575.98px) {
-  #app .map-observations {
+  #app .map-observations-wrapper .map-observations {
     min-height: auto;
     aspect-ratio: 1 / 1;
   }
+}
+
+#app .map-observations-wrapper .map-legend {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  border-radius: 10px;
+  overflow: hidden;
+  padding: 10px;
+  background-color: white;
+  box-shadow: 0 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+#app .map-observations-wrapper .map-legend img {
+  display: block;
 }
 
 #app .stepper-container {
@@ -17660,6 +17684,16 @@ table.model-table tr th:last-child {
   border-radius: 10px;
   overflow: hidden;
   /* Remove borders on the outside edges */
+  display: block;
+  /* allow overflow on the element itself */
+  max-width: 100%;
+  /* respect container width */
+  overflow-x: auto;
+  /* enable horizontal scrolling */
+  overflow-y: hidden;
+  /* avoid vertical scrollbars */
+  -webkit-overflow-scrolling: touch;
+  /* smoother on mobile */
 }
 
 #model-markdown table th,
@@ -17737,6 +17771,10 @@ table.model-table tr th:last-child {
 
 #app .mapboxgl-ctrl {
   opacity: 0.5;
+}
+
+#app .mapboxgl-popup-content {
+  border-radius: 10px;
 }
 
 #app #map[data-map-type="area-drawing"] .mapboxgl-ctrl-top-right .mapboxgl-ctrl-group.mapboxgl-ctrl {

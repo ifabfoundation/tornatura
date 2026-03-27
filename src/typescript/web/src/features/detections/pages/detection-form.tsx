@@ -28,6 +28,7 @@ import { ModalConfirm } from "../../../components/ModalConfirm";
 import { Accordion, AccordionItem } from "../../../components/Accordion";
 import CozyButton from "../../../components/CozyButton";
 import Icon from "../../../components/Icon";
+import { AutoHeightIframe } from "../../../components/AutoHeightIframe";
 import {
   detectionTypesActions,
   detectionTypesSelectors,
@@ -58,6 +59,14 @@ interface DetectionProps {
   pendingPhotos?: PendingDetectionPhoto[];
   onPhotosChange?: (photos: PendingDetectionPhoto[]) => void;
 }
+
+type AddPointFn = (lng: number, lat: number) => void;
+
+const eventBus: {
+  addPointAnimation: AddPointFn;
+} = {
+  addPointAnimation: () => {},
+};
 
 type DetectionStepData =
   | DetectionStepPositionData
@@ -706,6 +715,29 @@ function DetectionFormMapPosition({
         });
 
         // --------------------------------------------------
+        // Add source + layer for highlighted new point
+        // --------------------------------------------------
+
+        mapRef.current!.addSource("new-point", {
+          type: "geojson",
+          data: {
+            type: "FeatureCollection",
+            features: [],
+          },
+        });
+
+        mapRef.current!.addLayer({
+          id: "new-point-layer",
+          type: "circle",
+          source: "new-point",
+          paint: {
+            "circle-radius": 8,
+            "circle-color": "#fff",
+            "circle-opacity": 0.7,
+          },
+        });
+
+        // --------------------------------------------------
         // Add source + layer for current location
         // --------------------------------------------------
 
@@ -826,11 +858,60 @@ function DetectionFormMapPosition({
         setMapLoaded(true);
       });
 
+      eventBus.addPointAnimation = addPointAnimation;
+
       return () => {
         mapRef.current.remove();
       };
     }
   }, [mapContainerRef, currentField]);
+
+  function addPointAnimation(lng: number, lat: number) {
+    mapRef.current!.getSource("new-point").setData({
+      type: "FeatureCollection",
+      features: [
+        {
+          type: "Feature",
+          geometry: { type: "Point", coordinates: [lng, lat] },
+        },
+      ],
+    });
+    startPulseAnimation();
+  }
+
+  // function startPulseAnimation() {
+  //   let t = 0;
+  //   function animate() {
+  //     t += 0.02;
+  //     const radius = 8 + Math.sin(t) * 4; // oscillates between 4 and 12
+  //     const opacity = 0.7 + Math.sin(t) * 0.3;
+  //     mapRef.current!.setPaintProperty("new-point-layer", "circle-radius", radius);
+  //     mapRef.current!.setPaintProperty("new-point-layer", "circle-opacity", opacity);
+  //     requestAnimationFrame(animate);
+  //   }
+  //   animate();
+  // }
+  function startPulseAnimation() {
+    let t = 0;
+    const animate = () => {
+      t += 0.15;
+      const radius = 8 + Math.sin(t) * 16;
+      const opacity = 0.1 + Math.sin(t) * 0.5;
+      const map = mapRef.current;
+      if (!map) return;
+      map.setPaintProperty("new-point-layer", "circle-radius", radius);
+      map.setPaintProperty("new-point-layer", "circle-opacity", opacity);
+      // Stop after one full sine wave (≈ 2π)
+      if (t < Math.PI * 2) {
+        requestAnimationFrame(animate);
+      } else {
+        // Reset to stable final state
+        map.setPaintProperty("new-point-layer", "circle-radius", 8);
+        map.setPaintProperty("new-point-layer", "circle-opacity", 0);
+      }
+    };
+    animate();
+  }
 
   React.useEffect(() => {
     // Update source data
@@ -968,66 +1049,6 @@ function DetectionStepMetodo({
     </div>
   );
 }
-
-// -----------------------------------------------------------------------------
-// via chat-gpt
-interface AutoHeightIframeProps {
-  src: string;
-  className?: string;
-}
-export function AutoHeightIframe({ src, className }: AutoHeightIframeProps) {
-  const iframeRef = useRef<HTMLIFrameElement | null>(null);
-
-  // Resize on initial load (same‑origin only)
-  useEffect(() => {
-    const iframe = iframeRef.current;
-    if (!iframe) return;
-
-    const handleLoad = () => {
-      try {
-        const doc = iframe.contentDocument || iframe.contentWindow?.document;
-        if (!doc) return;
-
-        const height = doc.documentElement.scrollHeight;
-        iframe.style.height = `${height}px`;
-      } catch {
-        // Cross-origin → cannot access height
-      }
-    };
-
-    iframe.addEventListener("load", handleLoad);
-    return () => iframe.removeEventListener("load", handleLoad);
-  }, []);
-
-  // Listen for postMessage height updates (for dynamic content)
-  useEffect(() => {
-    const handleMessage = (event: MessageEvent) => {
-      const data = event.data as { iframeHeight?: number };
-      if (typeof data?.iframeHeight === "number") {
-        if (iframeRef.current) {
-          iframeRef.current.style.height = `${data.iframeHeight}px`;
-        }
-      }
-    };
-
-    window.addEventListener("message", handleMessage);
-    return () => window.removeEventListener("message", handleMessage);
-  }, []);
-
-  return (
-    <iframe
-      ref={iframeRef}
-      src={src}
-      className={className}
-      style={{
-        width: "100%",
-        border: "none",
-        display: "block",
-      }}
-      scrolling="no"
-    />
-  );
-} // -----------------------------------------------------------------------------
 
 function DetectionStepGuide({
   observationType,
@@ -1261,7 +1282,7 @@ function DetectionStepTreatment({ formData, onNextClick }: DetectionProps) {
             <div className="input-row mt-4">
               <label>
                 Quando è stato eseguito?
-                <input
+                {/* <input
                   type="text"
                   value={treatmentDate}
                   placeholder="gg/mm/aaaa"
@@ -1270,12 +1291,12 @@ function DetectionStepTreatment({ formData, onNextClick }: DetectionProps) {
                     setTreatmentDate(normalizeDateInput(event.target.value));
                     setError("");
                   }}
-                />
-              </label>
-              <div className="mt-2">
+                /> */}
                 <input
                   type="date"
+                  className="pe-2"
                   value={toPickerDate(treatmentDate)}
+                  placeholder="Select a date"
                   onChange={(event) => {
                     const value = event.target.value;
                     if (value === "") {
@@ -1287,7 +1308,7 @@ function DetectionStepTreatment({ formData, onNextClick }: DetectionProps) {
                     setError("");
                   }}
                 />
-              </div>
+              </label>
               <small className="d-block mt-2 text-muted">
                 Se non ricordi il giorno esatto, inserisci una data approssimativa.
               </small>
@@ -1507,6 +1528,8 @@ function DetectionStepObservationPoints({
       console.log(">>> points updated", newPoints);
       return newPoints;
     });
+
+    eventBus.addPointAnimation(point.position.lng, point.position.lat);
 
     if (
       observationType &&
