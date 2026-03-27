@@ -204,7 +204,7 @@ export default function SignupImpactQuestionnaireStep({
                   ))}
                 </select>
               </label>
-              <p>
+              <p className="font-s">
                 Fatturato per vendita di beni e servizi della Vostra impresa nell'anno 2024?
                 Includere i ricavi derivanti da: vendita di beni e/o servizi dell'impresa,
                 lavorazioni eseguite per conto di terzi, vendita di prodotti rivenduti senza
@@ -219,15 +219,12 @@ export default function SignupImpactQuestionnaireStep({
           <div className="row input-row">
             <div className="col">
               <label>
-                Ad oggi qual è l'incidenza di danni da malattia / insetto fitofago per le colture
-                della Vostra impresa? Fate una stima basata sulla media degli ultimi 4/5 anni.
-                (indicare un numero %). Per incidenza di danni si intende la percentuale di piante
-                estirpate / danneggiate o la percentuale di frutti non commercializzabili per ettaro
-                di terreno per flavescenza dorata, cimice asiatica, peronospora, diabrotica..
+                Incidenza dei danni da avversità delle piante
                 <input
                   id="damageIncidencePercent"
                   name="damageIncidencePercent"
                   type="number"
+                  style={{ minWidth: "180px" }}
                   min="0"
                   max="100"
                   placeholder="Percentuale"
@@ -236,6 +233,13 @@ export default function SignupImpactQuestionnaireStep({
                   value={formik.values.damageIncidencePercent}
                 />
               </label>
+              <p className="font-s">
+                Ad oggi qual è l'incidenza di danni da malattia / insetto fitofago per le colture
+                della Vostra impresa? Fate una stima basata sulla media degli ultimi 4/5 anni.
+                (indicare un numero %). Per incidenza di danni si intende la percentuale di piante
+                estirpate / danneggiate o la percentuale di frutti non commercializzabili per ettaro
+                di terreno per flavescenza dorata, cimice asiatica, peronospora, diabrotica..
+              </p>
               {formik.touched.damageIncidencePercent && formik.errors.damageIncidencePercent ? (
                 <div className="error">{formik.errors.damageIncidencePercent}</div>
               ) : null}
@@ -249,7 +253,7 @@ export default function SignupImpactQuestionnaireStep({
                 Vostre colture?
               </label>
               {defenseActionOptions.map((option) => (
-                <label className="d-flex align-items-start" key={option}>
+                <div className="d-flex align-items-center" key={option}>
                   <input
                     type="checkbox"
                     name="defenseActions"
@@ -259,8 +263,8 @@ export default function SignupImpactQuestionnaireStep({
                     checked={formik.values.defenseActions.includes(option)}
                     className="d-inline"
                   />
-                  <span className="my-2">{option}</span>
-                </label>
+                  <span className="font-m font-weight-400">{option}</span>
+                </div>
               ))}
               {formik.touched.defenseActions && formik.errors.defenseActions ? (
                 <div className="error">{formik.errors.defenseActions}</div>
@@ -273,57 +277,77 @@ export default function SignupImpactQuestionnaireStep({
               <label className="mb-2">
                 Quanto spende la Vostra impresa annualmente per questa attività? (in Euro)
               </label>
-              <input
-                id="annualSpendAgrochemicals"
-                name="annualSpendAgrochemicals"
-                type="number"
-                min="0"
-                placeholder="Acquisto di agrofarmaci"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.annualSpendAgrochemicals}
-              />
-              <input
-                id="annualSpendAgronomists"
-                name="annualSpendAgronomists"
-                type="number"
-                min="0"
-                placeholder="Consulenze di agronomi"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.annualSpendAgronomists}
-              />
-              <input
-                id="annualSpendOperators"
-                name="annualSpendOperators"
-                type="number"
-                min="0"
-                placeholder="Lavoro operatori per sopralluoghi e trattamenti"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.annualSpendOperators}
-              />
-              <input
-                id="annualSpendPreventiveTools"
-                name="annualSpendPreventiveTools"
-                type="number"
-                min="0"
-                placeholder="Strumenti preventivi"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.annualSpendPreventiveTools}
-              />
-              <input
-                id="annualSpendOther"
-                name="annualSpendOther"
-                type="number"
-                min="0"
-                placeholder="Altro"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.annualSpendOther}
-              />
-              <label className="d-flex align-items-start">
+              <div>
+                <input
+                  className="d-inline-block"
+                  id="annualSpendAgrochemicals"
+                  name="annualSpendAgrochemicals"
+                  type="number"
+                  min="0"
+                  placeholder="Spesa in euro"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.annualSpendAgrochemicals}
+                />
+                <span className="ms-2">Acquisto di agrofarmaci</span>
+              </div>
+              <div>
+                <input
+                  className="d-inline-block"
+                  id="annualSpendAgronomists"
+                  name="annualSpendAgronomists"
+                  type="number"
+                  min="0"
+                  placeholder="Spesa in euro"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.annualSpendAgronomists}
+                />
+                <span className="ms-2">Consulenze di agronomi</span>
+              </div>
+              <div>
+                <input
+                  className="d-inline-block"
+                  id="annualSpendOperators"
+                  name="annualSpendOperators"
+                  type="number"
+                  min="0"
+                  placeholder="Spesa in euro"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.annualSpendOperators}
+                />
+                <span className="ms-2">Lavoro operatori per sopralluoghi e trattamenti</span>
+              </div>
+              <div>
+                <input
+                  className="d-inline-block"
+                  id="annualSpendPreventiveTools"
+                  name="annualSpendPreventiveTools"
+                  type="number"
+                  min="0"
+                  placeholder="Spesa in euro"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.annualSpendPreventiveTools}
+                />
+                <span className="ms-2">Strumenti preventivi</span>
+              </div>
+              <div>
+                <input
+                  className="d-inline-block"
+                  id="annualSpendOther"
+                  name="annualSpendOther"
+                  type="number"
+                  min="0"
+                  placeholder="Spesa in euro"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.annualSpendOther}
+                />
+                <span className="ms-2">Altro</span>
+              </div>
+              <div className="d-flex align-items-center">
                 <input
                   id="annualSpendNone"
                   name="annualSpendNone"
@@ -334,7 +358,7 @@ export default function SignupImpactQuestionnaireStep({
                   className="d-inline"
                 />
                 <span className="my-2">Nessuna</span>
-              </label>
+              </div>
             </div>
           </div>
 
@@ -353,6 +377,7 @@ export default function SignupImpactQuestionnaireStep({
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.satisfactionEffectiveness}
+                  style={{ minWidth: "180px" }}
                 />
               </label>
               {formik.touched.satisfactionEffectiveness &&
@@ -376,6 +401,7 @@ export default function SignupImpactQuestionnaireStep({
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.satisfactionCostBenefit}
+                  style={{ minWidth: "180px" }}
                 />
               </label>
               {formik.touched.satisfactionCostBenefit && formik.errors.satisfactionCostBenefit ? (
@@ -395,14 +421,20 @@ export default function SignupImpactQuestionnaireStep({
                   onBlur={formik.handleBlur}
                   value={formik.values.productionProblemOutcome}
                 >
-                  <option value="">Seleziona...</option>
-                  {productionProblemOutcomeOptions.map((item) => (
+                  <option value="">Seleziona tra le seguenti opzioni...</option>
+                  {productionProblemOutcomeOptions.map((item, index) => (
                     <option key={item} value={item}>
-                      {item}
+                      Opzione {index + 1}
                     </option>
                   ))}
                 </select>
               </label>
+              <p>Opzioni</p>
+              {productionProblemOutcomeOptions.map((item, index) => (
+                <p key={index}>
+                  <span>{`${index + 1}. ${item}`}</span>
+                </p>
+              ))}
               {formik.touched.productionProblemOutcome && formik.errors.productionProblemOutcome ? (
                 <div className="error">{formik.errors.productionProblemOutcome}</div>
               ) : null}
