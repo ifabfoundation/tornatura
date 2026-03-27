@@ -1279,8 +1279,8 @@ function DetectionStepTreatment({ formData, onNextClick }: DetectionProps) {
         </div>
         {treatment && (
           <Fragment>
-            <div className="input-row mt-4">
-              <label>
+            <div className="input-row mt-4 position-relative">
+              <label className="position-relative">
                 Quando è stato eseguito?
                 {/* <input
                   type="text"
@@ -1292,23 +1292,24 @@ function DetectionStepTreatment({ formData, onNextClick }: DetectionProps) {
                     setError("");
                   }}
                 /> */}
-                <input
-                  type="date"
-                  className="pe-2"
-                  value={toPickerDate(treatmentDate)}
-                  placeholder="Select a date"
-                  onChange={(event) => {
-                    const value = event.target.value;
-                    if (value === "") {
-                      setTreatmentDate("");
-                      return;
-                    }
-                    const [year, month, day] = value.split("-");
-                    setTreatmentDate(`${day}/${month}/${year}`);
-                    setError("");
-                  }}
-                />
               </label>
+              <input
+                type="date"
+                className="pe-2"
+                style={{ width: "60%" }}
+                value={toPickerDate(treatmentDate)}
+                placeholder="Select a date... "
+                onChange={(event) => {
+                  const value = event.target.value;
+                  if (value === "") {
+                    setTreatmentDate("");
+                    return;
+                  }
+                  const [year, month, day] = value.split("-");
+                  setTreatmentDate(`${day}/${month}/${year}`);
+                  setError("");
+                }}
+              />
               <small className="d-block mt-2 text-muted">
                 Se non ricordi il giorno esatto, inserisci una data approssimativa.
               </small>

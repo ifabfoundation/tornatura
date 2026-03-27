@@ -15589,9 +15589,8 @@ small, .small {
 #app .map-observations-wrapper .map-observations {
   width: 100%;
   height: 100%;
-  overflow: hidden;
-  border-radius: 10px;
   min-height: 400px;
+  height: 30vw;
 }
 
 @media (max-width: 575.98px) {
@@ -15601,7 +15600,16 @@ small, .small {
   }
 }
 
+#app .map-observations-wrapper .map-observations canvas {
+  border-radius: 10px;
+}
+
+#app .map-observations-wrapper .map-observations .mapboxgl-map {
+  overflow: visible;
+}
+
 #app .map-observations-wrapper .map-legend {
+  z-index: 3;
   position: absolute;
   top: 12px;
   right: 12px;
@@ -15614,6 +15622,10 @@ small, .small {
 
 #app .map-observations-wrapper .map-legend img {
   display: block;
+}
+
+#app .map-observations-wrapper .mapboxgl-popup {
+  z-index: 3;
 }
 
 #app .stepper-container {
@@ -17404,6 +17416,10 @@ ul.list-group li.list-group-item:hover {
   .llist-group .llist-group-item + .llist-group-item {
     border-top: 1px solid #efefef;
   }
+}
+
+.llist-group .llist-group-item.h-s {
+  height: 24px !important;
 }
 
 .cardlet {

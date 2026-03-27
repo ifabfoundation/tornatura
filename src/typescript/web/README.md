@@ -15,6 +15,8 @@
 
 https://ec.europa.eu/eurostat/web/gisco/geodata/statistical-units/territorial-units-statistics
 
+IMPORTANT: Choose `EPSG: 4326` from the `Coordinate reference system` dropdown to get the correct coordinate format.
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.

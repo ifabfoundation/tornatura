@@ -16,6 +16,7 @@ import { capitalize } from "../../../services/utils";
 import { Container, Row, Col } from "react-bootstrap";
 import { getFieldMapGeoJson } from "../../companies/pages/company-fields";
 import { MapNUTSData } from "../../../components/MapNUTSData";
+import { getRiskColor } from "../../../helpers/detections";
 
 type ActiveDataType = "current" | "forecast";
 
@@ -119,23 +120,6 @@ export function FieldModelPeronospora() {
     },
     [syncIframeLeadButton],
   );
-
-  const getRiskColor = (riskLevel?: number): string => {
-    switch (riskLevel) {
-      case 0:
-        return "9FDC71"; // Green
-      case 1:
-        return "FFFF00"; // Yellow
-      case 2:
-        return "FFA500"; // Orange
-      case 3:
-        return "FF0000"; // Red
-      case 4:
-        return "FF0000"; // Red
-      default:
-        return "CCCCCC"; // Grey for unknown
-    }
-  };
 
   const renderDetail = (payload?: PeronosporaResponse | null) => {
     if (!payload?.detail) {
@@ -322,7 +306,11 @@ export function FieldModelPeronospora() {
                         >
                           {/* Dati Correnti */}
                           <span className="font-s-600">
-                            {current.target_week?.start ?? "-"} → {current.target_week?.end ?? "-"}
+                            <span className="">Settimana</span>
+                            <span style={{ opacity: 0.5 }}>
+                              {current.target_week?.start ?? "-"} →{" "}
+                              {current.target_week?.end ?? "-"}
+                            </span>
                           </span>
                         </button>
                         <button
@@ -331,8 +319,11 @@ export function FieldModelPeronospora() {
                         >
                           {/* Previsioni */}
                           <span className="font-s-600">
-                            {forecast.target_week?.start ?? "-"} →{" "}
-                            {forecast.target_week?.end ?? "-"}
+                            <span className="">Settimana</span>
+                            <span style={{ opacity: 0.5 }}>
+                              {forecast.target_week?.start ?? "-"} →{" "}
+                              {forecast.target_week?.end ?? "-"}
+                            </span>
                           </span>
                         </button>
                       </Col>

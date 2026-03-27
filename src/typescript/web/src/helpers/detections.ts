@@ -10,6 +10,22 @@ import legend_indice_malattia from "../assets/images/legends/legend-peronospora.
  * - observationType
  */
 
+export function getRiskColor(riskLevel: number): string {
+  if (riskLevel >= 0 && riskLevel < 1) {
+    return "9FDC71"; // Green
+  } else if (riskLevel >= 1 && riskLevel < 2) {
+    return "FFFF00"; // Yellow
+  } else if (riskLevel >= 2 && riskLevel < 3) {
+    return "FFA500"; // Orange light
+  } else if (riskLevel >= 3 && riskLevel < 3.5) {
+    return "EB663A"; // Orange dark
+  } else if (riskLevel >= 3.5 && riskLevel <= 4) {
+    return "E1102B"; // Red
+  } else {
+    return "CCCCCC"; // Grey for unknown
+  }
+}
+
 export function shouldUseGradients(typology: string | undefined): boolean {
   // Define which typologies should use gradients
   const typologiesWithGradients = ["Peronospora", "Flavescenza", "Giallumi"];
