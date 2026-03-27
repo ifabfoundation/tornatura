@@ -7,33 +7,9 @@ import { Point } from "@tornatura/coreapis";
 import { useAppSelector } from "../hooks";
 import { fieldsSelectors } from "../features/fields/state/fields-slice";
 import { gpsStore } from "../providers/gps-providers";
-import * as nuts from "../helpers/nuts.json";
 import legend_peronospora_model from "../assets/images/legends/legend-peronospora-model.svg";
-
-const modelValueToRiskLevel = (value: number): number => {
-  if (value > 80) return 4;
-  else if (value > 60) return 3;
-  else if (value > 40) return 2;
-  else if (value > 20) return 1;
-  else return 0;
-};
-
-const getRiskColor = (riskLevel?: number): string => {
-  switch (riskLevel) {
-    case 0:
-      return "9FDC71"; // Green
-    case 1:
-      return "FFFF00"; // Yellow
-    case 2:
-      return "FFA500"; // Orange
-    case 3:
-      return "FF0000"; // Red
-    case 4:
-      return "FF0000"; // Red
-    default:
-      return "CCCCCC"; // Grey for unknown
-  }
-};
+import { getRiskColor } from "../helpers/detections";
+import * as nuts from "../data/NUTS_RG_10M_2024_4326_Filtered-IT.json";
 
 const dataMap = [
   { id: "ITC11", code: "TO", name: "Torino" },
@@ -151,7 +127,7 @@ interface MapNUTSDataProps {
 }
 
 export const MapNUTSData = ({ provinceData, selectedProvinceData }: MapNUTSDataProps) => {
-  // console.log("MapNUTSData props", { provinceData, selectedProvinceData });
+  console.log("MapNUTSData props", { provinceData, selectedProvinceData });
   const { fieldId } = useParams();
   const currentField = useAppSelector((state) =>
     fieldsSelectors.selectFieldbyId(state, fieldId ?? "default"),
@@ -227,16 +203,19 @@ export const MapNUTSData = ({ provinceData, selectedProvinceData }: MapNUTSDataP
             ) || null;
         }
         let value = datum?.value || null;
-        // console.log("@@Datum", datum, "for", id, nuts_3_name);
-        f.properties.prec = datum?.prec || null;
-        f.properties.rh = datum?.rh || null;
-        f.properties.risk_label = datum?.risk_label || null;
-        f.properties.risk_meta_descrizione = datum?.risk_meta?.descrizione || null;
-        f.properties.risk_score = datum?.risk_score || null;
-        f.properties.temp = datum?.temp || null;
+        // console.log("@@---------------Datum", datum, "for", id, nuts_3_name);
+        f.properties.lw = datum?.lw; // leaf wetness
+        f.properties.bbch_code = datum?.bbch_code;
+        f.properties.plant_susceptibility = datum?.plant_susceptibility;
+        f.properties.prec = datum?.prec;
+        f.properties.rh = datum?.rh;
+        f.properties.risk_label = datum?.risk_label;
+        f.properties.risk_meta_descrizione = datum?.risk_meta?.descrizione;
+        f.properties.risk_score = datum?.risk_score;
+        f.properties.temp = datum?.temp;
         f.properties.value = value !== null ? value : 0.0;
 
-        console.log("@@Datum", f);
+        // console.log("@@Datum", f);
         passedFeatures.push(f);
       }
     });
@@ -296,7 +275,7 @@ export const MapNUTSData = ({ provinceData, selectedProvinceData }: MapNUTSDataP
         // --------------------------------------------------
         // Add source + layer for dark cover
         // --------------------------------------------------
-
+        /*  
         let fullGlobeSource = {
           type: "geojson",
           data: {
@@ -328,6 +307,7 @@ export const MapNUTSData = ({ provinceData, selectedProvinceData }: MapNUTSDataP
             "fill-color": "rgba(28, 28, 28, 0.4)",
           },
         });
+        */
 
         // --------------------------------------------------
         // Add popup and handle interactions
@@ -338,7 +318,7 @@ export const MapNUTSData = ({ provinceData, selectedProvinceData }: MapNUTSDataP
           closeOnClick: true,
         });
 
-        mapRef.current!.on("click", "nuts3-fill", (e) => {
+        mapRef.current!.on("click", "nuts3-fill", (e: any) => {
           const feature = e.features[0];
           const props = feature.properties;
 
@@ -347,17 +327,26 @@ export const MapNUTSData = ({ provinceData, selectedProvinceData }: MapNUTSDataP
             features: [feature],
           });
 
+          const riskStyle = `
+            background-color: #${getRiskColor(Number(props.risk_score))};
+            padding: 0 0.2em;
+            border-radius: 2px;
+          `;
+
           popup
             .setLngLat(e.lngLat)
             .setHTML(
               `
-              <strong>${props.NUTS_NAME}</strong><br>
-              prec: ${props.prec}<br />
-              rh: ${props.rh}<br />
-              risk_label: ${props.risk_label}<br />
-              risk_meta_descrizione: ${props.risk_meta_descrizione}<br />
-              risk_score: ${props.risk_score}<br />
-              temp: ${props.temp}<br />
+              <h4 class="mb-2"><strong>${props.NUTS_NAME}</strong></h4>
+              <div class="llist-group">
+                <div class="llist-group-item p-0 h-s"><span class="me-4">Temperatura</span><span>${props.temp}°C</span></div>
+                <div class="llist-group-item p-0 h-s"><span class="me-4">Precipitazioni</span><span>${props.prec}mm</span></div>
+                <div class="llist-group-item p-0 h-s"><span class="me-4">Umidità relativa</span><span>${props.rh}%</span></div>
+                <div class="llist-group-item p-0 h-s"><span class="me-4">Bagnatura fogliare</span><span>${props.lw}h</span></div>
+                <div class="llist-group-item p-0 h-s"><span class="me-4">BBCH</span><span>${props.bbch_code}</span></div>
+                <div class="llist-group-item p-0 h-s"><span class="me-4">Suscettibilità</span><span>${props.plant_susceptibility}%</span></div>
+                <div class="llist-group-item p-0 h-s"><span class="me-4">Risk score</span><span style="${riskStyle}">${props.risk_score}</span></div>
+              </div>
             `,
             )
             .addTo(mapRef.current!);
@@ -385,8 +374,7 @@ export const MapNUTSData = ({ provinceData, selectedProvinceData }: MapNUTSDataP
         italy_NUTS_3.features.forEach((d) => {
           const id = d.properties.NUTS_ID;
           const value = d.properties.value;
-          const riskLevel = modelValueToRiskLevel(value);
-          let color = "#" + getRiskColor(riskLevel);
+          let color = "#" + getRiskColor(Number(value));
           colorExpression.push(id, color);
         });
         colorExpression.push("#e0e0e0"); // default color
@@ -427,6 +415,7 @@ export const MapNUTSData = ({ provinceData, selectedProvinceData }: MapNUTSDataP
           id: "nuts3-labels",
           type: "symbol",
           source: "italy_NUTS_3_source",
+          minzoom: 6, // labels appear only when zoom >= 6
           layout: {
             "text-field": labelExpression,
             "text-size": 12,
@@ -657,7 +646,11 @@ export const MapNUTSData = ({ provinceData, selectedProvinceData }: MapNUTSDataP
         // }
 
         //merge a default object with optional parameter
-        const padding = { top: 50, bottom: 50, left: 50, right: 50 };
+
+        console.log("SIZES");
+        const temph = mapContainerRef.current!.clientHeight || 10000;
+        const p = Math.max(50, temph * 0.2);
+        const padding = { top: p, bottom: p, left: p, right: p };
         mapRef.current.fitBounds(zoomBbox.bbox, {
           padding: padding,
         });

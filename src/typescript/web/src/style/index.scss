@@ -1819,15 +1819,23 @@ small {
     .map-observations {
       width: 100%;
       height: 100%;
-      overflow: hidden;
-      border-radius: 10px;
+      // overflow: hidden;
+      // border-radius: 10px;
       min-height: 400px;
+      height: 30vw;
       @include media-breakpoint-down(sm) {
         min-height: auto;
         aspect-ratio: 1 / 1;
       }
+      canvas {
+        border-radius: 10px;
+      }
+      .mapboxgl-map {
+        overflow: visible;
+      }
     }
     .map-legend {
+      z-index: 3;
       position: absolute;
       top: 12px;
       right: 12px;
@@ -1839,6 +1847,9 @@ small {
       img {
         display: block;
       }
+    }
+    .mapboxgl-popup {
+      z-index: 3;
     }
   }
   // ---------------------------------------------------------------------------
@@ -2973,6 +2984,9 @@ $hb-color-on-hover: #eee;
       & + .llist-group-item {
         border-top: 1px solid $c-grey_1;
       }
+    }
+    &.h-s {
+      height: $hs !important;
     }
   }
 }
