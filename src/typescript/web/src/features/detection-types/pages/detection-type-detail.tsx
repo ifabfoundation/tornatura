@@ -26,6 +26,8 @@ import {
 import { ModalConfirm } from "../../../components/ModalConfirm";
 import { DetectionsTable } from "../../../components/DetectionsTable";
 import { useIsMobile } from "../../../helpers/common";
+import { Infopanel } from "../../../components/Infopanel";
+import { AutoHeightIframe } from "../../../components/AutoHeightIframe";
 
 interface HorizontalPhotoStackProps {
   photos: DetectionPhoto[];
@@ -118,6 +120,7 @@ export function DetectionTypeDetail() {
   const [notesDetailIsOpen, setNotesDetailIsOpen] = React.useState<boolean>(false);
   const [photosDetailIsOpen, setPhotosDetailIsOpen] = React.useState<boolean>(false);
   const [mediaDetailIsOpen, setMediaDetailIsOpen] = React.useState<boolean>(false);
+  const [infoPanelOpen, setInfoPanelOpen] = React.useState<boolean>(false);
 
   const [selectedDetectionId, setSelectedDetectionId] = React.useState<string | null>(null);
   const [modalOpen, setModalOpen] = React.useState(false);
@@ -735,7 +738,7 @@ export function DetectionTypeDetail() {
               <div className="">
                 <Container fluid className="px-0">
                   <Row>
-                    <Col xl={12} className="mt-0">
+                    <Col xl={12} className="mt-0" style={{ overflowX: "auto" }}>
                       <DetectionsTable
                         detections={sortedDetections}
                         observationType={observationType?.observationType ?? ""}
@@ -746,18 +749,30 @@ export function DetectionTypeDetail() {
                         handleDeleteDetection={handleDeleteClick}
                       />
                     </Col>
-                    <Col xl={12} className="mt-3 d-flex align-items-center justify-content-end">
-                      <div className="font-s-600 me-2">Esporta dati</div>
-                      <DownloadDataButton
-                        data={sortedDetections}
-                        format={"json"}
-                        filename={`campo ${fieldId}`}
-                      />
-                      <DownloadDataButton
-                        data={flatDetectionsData}
-                        format={"csv"}
-                        filename={`campo ${fieldId}`}
-                      />
+                    <Col xl={12} className="mt-3 d-flex align-items-center justify-content-between">
+                      <div>
+                        <button
+                          // className="trnt_btn small narrow-x primary type-rounded px-1 px-md-2"
+                          className="trnt_btn narrow-x slim-y outlined ps-0 type-rounded"
+                          onClick={() => setInfoPanelOpen(true)}
+                        >
+                          <Icon iconName={"info"} color={"black"} />
+                          <span className="ms-1">Info</span>
+                        </button>
+                      </div>
+                      <div>
+                        <div className="font-s-600 me-2">Esporta dati</div>
+                        <DownloadDataButton
+                          data={sortedDetections}
+                          format={"json"}
+                          filename={`campo ${fieldId}`}
+                        />
+                        <DownloadDataButton
+                          data={flatDetectionsData}
+                          format={"csv"}
+                          filename={`campo ${fieldId}`}
+                        />
+                      </div>
                     </Col>
                   </Row>
                 </Container>
@@ -790,6 +805,20 @@ export function DetectionTypeDetail() {
           <Col xl={12} className="spacer my-4"></Col>
         </Row>
       </Container>
+
+      <Infopanel
+        title="Istruzioni per il rilevamento"
+        isOpen={infoPanelOpen}
+        closeInfopanel={() => {
+          setInfoPanelOpen(false);
+        }}
+      >
+        <AutoHeightIframe
+          src={
+            "https://www.tornatura.it/v/3-with-instructions/instructions/260326-tutorial-dati-rilevamento?partial=1"
+          }
+        />
+      </Infopanel>
     </div>
   );
 }

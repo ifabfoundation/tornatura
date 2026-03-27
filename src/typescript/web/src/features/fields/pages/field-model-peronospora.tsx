@@ -222,6 +222,7 @@ export function FieldModelPeronospora() {
       return {
         nuts_3_name: processProvincePeronospora(d.NUTS_3),
         value: d.risk_score,
+        ...d,
       };
     });
   };
@@ -301,7 +302,7 @@ export function FieldModelPeronospora() {
                             style={{ color: "#" + riskColor }}
                             className="small"
                           >{`⬤  `}</small>
-                          {`${data?.detail?.risk_score ?? "-"} / 5.0`}
+                          {`${data?.detail?.risk_score ?? "-"} / 4.0`}
                         </div>
                       </Col>
 
@@ -344,6 +345,7 @@ export function FieldModelPeronospora() {
                 <MapNUTSData provinceData={getProvinceData()} selectedProvinceData={data} />
               </section>
 
+              {/* 
               <section className="soft bg-white">
                 <iframe
                   ref={iframeRef}
@@ -358,6 +360,7 @@ export function FieldModelPeronospora() {
                   onLoad={() => syncIframeLeadButton(activeDataType)}
                 />
               </section>
+              */}
 
               {/* 
               <section className="soft bg-white">
