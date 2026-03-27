@@ -21,6 +21,7 @@ import SignupImpactQuestionnaireStep, {
   SignupImpactQuestionnaireFormData,
 } from "../features/auth/components/signup-impact-questionnaire-step";
 import Modal from "../components/Modal";
+import axios from "axios";
 
 const PhoneRegExp =
   /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
@@ -37,45 +38,6 @@ function readSignupStep(state: unknown): number | undefined {
   }
 
   return rawStep;
-}
-
-function getRegistrationErrorMessage(error: unknown): string {
-  const fallback =
-    "Si è verificato un errore durante la registrazione. Riprova tra qualche minuto.";
-
-  if (!error || typeof error !== "object") {
-    return fallback;
-  }
-
-  const candidateSources = [
-    (error as { body?: unknown }).body,
-    (error as { response?: unknown }).response,
-    (error as { data?: unknown }).data,
-    error,
-  ];
-
-  for (const source of candidateSources) {
-    if (!source || typeof source !== "object") {
-      continue;
-    }
-
-    const message = (source as { message?: unknown }).message;
-    if (typeof message === "string" && message.trim()) {
-      return message;
-    }
-
-    const detail = (source as { detail?: unknown }).detail;
-    if (typeof detail === "string" && detail.trim()) {
-      return detail;
-    }
-
-    const errorField = (source as { error?: unknown }).error;
-    if (typeof errorField === "string" && errorField.trim()) {
-      return errorField;
-    }
-  }
-
-  return fallback;
 }
 
 interface SignupProps {
@@ -180,7 +142,7 @@ function SignupStep4({
                 <span className="my-2">
                   Ho preso visione della&nbsp;
                   <a
-                    href="/18-03-2026-informativa-privacy-app-tornatura.pdf"
+                    href={`${OBJECT_STORAGE_ENDPOINT}/public/media/18-03-2026-informativa-privacy-app-tornatura.pdf`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -236,7 +198,7 @@ function SignupStep4({
                 <span className="my-2">
                   Ho preso visione della&nbsp;
                   <a
-                    href="/policy-newsletter-tornatura.pdf"
+                    href={`${OBJECT_STORAGE_ENDPOINT}/public/media/policy-newsletter-tornatura.pdf`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -619,6 +581,7 @@ function SignupStep1({ formData, action, onBackClick, onNextClick }: SignupProps
 }
 
 const COREAPIS_BASE_PATH = process.env.REACT_APP_COREAPIS_SERVER_URL;
+const OBJECT_STORAGE_ENDPOINT = process.env.REACT_APP_OBJECT_STORAGE_ENDPOINT;
 
 export function Signup() {
   const dispatch = useAppDispatch();
@@ -796,24 +759,28 @@ export function Signup() {
     const apiConfig = new Configuration({ basePath: `${COREAPIS_BASE_PATH}` });
     const usersApi = new UsersApi(apiConfig);
     try {
-      const response = await usersApi.registerUser(payload);
-
-      if (response.status === 201) {
-        if (flow === "Standard") {
-          goToStep(standardSuccessStep);
-        } else {
-          goToStep(simpleFlowSuccessStep);
-        }
+      await usersApi.registerUser(payload);
+      if (flow === "Standard") {
+        goToStep(standardSuccessStep);
       } else {
-        console.error("Error creating account", response.data);
-        setRegistrationErrorMessage(
-          response.data.message || "Non è stato possibile completare la registrazione. Riprova più tardi.",
-        );
-        setIsRegistrationErrorModalOpen(true);
+        goToStep(simpleFlowSuccessStep);
       }
     } catch (error) {
-      console.error("Error creating account", error);
-      setRegistrationErrorMessage(getRegistrationErrorMessage(error));
+      let message = "Non è stato possibile completare la registrazione. Riprova più tardi."
+      if (axios.isAxiosError(error)) {
+        console.log(error.response);
+        // @ts-ignore
+        const detail = error.response.data.detail;
+        if (detail.startsWith("User with admin account type cannot be created")){
+          message = "Non è possibile creare un utente di tipo amministratore."
+        } else if (detail.startsWith("User with the same email already exists")) {
+          message = "Un utente con la stessa email è già registrato sulla piattaforma."
+        } else if (detail.startsWith("Organization with the same name already exists")) {
+          message = "Un'azienda con lo stesso nome esiste già sulla piattaforma."
+        } 
+      }
+      console.log("Error creating account", error);
+      setRegistrationErrorMessage(message);
       setIsRegistrationErrorModalOpen(true);
     }
   };
@@ -913,6 +880,7 @@ export function Signup() {
             <TopHeader />
             <div className="content-area">
               <div className="content">
+                {isRegistrationErrorModalOpen && <ErrorModal message={registrationErrorMessage} handleCloseClick={() => setIsRegistrationErrorModalOpen(false)}/>}
                 <Stepper
                   items={standardStepperSteps.map((stepItem) => stepItem.label)}
                   currentStep={currentStandardStepIndex}
@@ -995,32 +963,6 @@ export function Signup() {
             </div>
           </div>
         </div>
-        {isRegistrationErrorModalOpen && (
-          <Modal
-            closeModal={() => {
-              setIsRegistrationErrorModalOpen(false);
-            }}
-            title="Registrazione non completata"
-          >
-            <section>
-              <p className="font-m mb-4">
-                {registrationErrorMessage ||
-                  "Si è verificato un errore durante la registrazione. Riprova più tardi."}
-              </p>
-              <div className="buttons-wrapper text-center">
-                <button
-                  type="button"
-                  className="trnt_btn primary"
-                  onClick={() => {
-                    setIsRegistrationErrorModalOpen(false);
-                  }}
-                >
-                  Ho capito
-                </button>
-              </div>
-            </section>
-          </Modal>
-        )}
       </>
     );
   } else {
@@ -1031,6 +973,7 @@ export function Signup() {
             <TopHeader />
             <div className="content-area">
               <div className="content">
+                {isRegistrationErrorModalOpen && <ErrorModal message={registrationErrorMessage} handleCloseClick={() => setIsRegistrationErrorModalOpen(false)}/>}
                 <Stepper
                   items={simpleFlowStepperSteps.map((stepItem) => stepItem.label)}
                   currentStep={currentSimpleFlowStepIndex}
@@ -1094,33 +1037,33 @@ export function Signup() {
             </div>
           </div>
         </div>
-        {isRegistrationErrorModalOpen && (
-          <Modal
-            closeModal={() => {
-              setIsRegistrationErrorModalOpen(false);
-            }}
-            title="Registrazione non completata"
-          >
-            <section>
-              <p className="font-m mb-4">
-                {registrationErrorMessage ||
-                  "Si è verificato un errore durante la registrazione. Riprova più tardi."}
-              </p>
-              <div className="buttons-wrapper text-center">
-                <button
-                  type="button"
-                  className="trnt_btn primary"
-                  onClick={() => {
-                    setIsRegistrationErrorModalOpen(false);
-                  }}
-                >
-                  Ho capito
-                </button>
-              </div>
-            </section>
-          </Modal>
-        )}
       </>
     );
   }
+}
+
+
+interface ErrorModalProps {
+  message?: string;
+  handleCloseClick: () => void;
+}
+
+export function ErrorModal({message, handleCloseClick}: ErrorModalProps) {
+  return (
+    <Modal
+      closeModal={handleCloseClick}
+      title="Registrazione non completata"
+    >
+      <div className="font-m ms-2 mr-2">{message ||"Si è verificato un errore durante la registrazione. Riprova più tardi."}</div>
+      <hr />
+      <div className="buttons-wrapper text-center">
+        <button className="trnt_btn secondary" onClick={handleCloseClick}>
+          Chiudi
+        </button>
+        <button className={`trnt_btn primary`} onClick={handleCloseClick}>
+          Ho capito
+        </button>
+      </div>
+    </Modal>
+  );
 }
