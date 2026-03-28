@@ -226,7 +226,6 @@ export const MapNUTSData = ({ provinceData, selectedProvinceData }: MapNUTSDataP
     type: "FeatureCollection",
     features: getProvinceDS(provinceData),
   };
-  console.log("••• italy_NUTS_3", italy_NUTS_3);
 
   React.useEffect(() => {
     if (mapContainerRef.current && currentField) {
@@ -697,6 +696,24 @@ export const MapNUTSData = ({ provinceData, selectedProvinceData }: MapNUTSDataP
 
         // @ts-ignore
         source.setData(italy_NUTS_3);
+
+        const colorExpression: any[] = ["match", ["get", "NUTS_ID"]];
+        italy_NUTS_3.features.forEach((feature: any) => {
+          const id = feature.properties.NUTS_ID;
+          const value = feature.properties.value;
+          colorExpression.push(id, "#" + getRiskColor(Number(value)));
+        });
+        colorExpression.push("#e0e0e0");
+        mapRef.current!.setPaintProperty("nuts3-fill", "fill-color", colorExpression);
+
+        const labelExpression: any[] = ["match", ["get", "NUTS_ID"]];
+        italy_NUTS_3.features.forEach((feature: any) => {
+          const id = feature.properties.NUTS_ID;
+          const value = feature.properties.value;
+          labelExpression.push(id, String(value));
+        });
+        labelExpression.push("");
+        mapRef.current!.setLayoutProperty("nuts3-labels", "text-field", labelExpression);
       }
     }
     // Optionally recenter map

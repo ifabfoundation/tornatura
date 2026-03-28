@@ -63,12 +63,38 @@ export function FieldModelPeronospora() {
     );
   }, []);
 
+  
+  const processProvincePeronospora = (provinceStr?: string) => {
+    if (!provinceStr) {
+      return "-";
+    }
+
+    return provinceStr
+      .split("_")
+      .filter(Boolean)
+      .map((part) => capitalize(part))
+      .join(" ");
+  };
+
   React.useEffect(() => {
     async function fetchAllData() {
       const dataCurrent = await fetchPeronosporaAllCurrent();
-      setAllCurrent(dataCurrent);
+      setAllCurrent(dataCurrent.map((d) => {
+        return {
+          nuts_3_name: processProvincePeronospora(d.NUTS_3),
+          value: d.risk_score,
+          ...d,
+        };
+      }));
+
       const dataForecast = await fetchPeronosporaAllForecast();
-      setAllForecast(dataForecast);
+      setAllForecast(dataForecast.map((d) => {
+        return {
+          nuts_3_name: processProvincePeronospora(d.NUTS_3),
+          value: d.risk_score,
+          ...d,
+        };
+      }));
     }
 
     fetchAllData();
@@ -154,6 +180,7 @@ export function FieldModelPeronospora() {
   let title = "Peronospora";
 
   let data = activeDataType === "current" ? current : forecast;
+  const provinceData = activeDataType === "current" ? allCurrent : allForecast;
 
   const geoJson = getFieldMapGeoJson(currentField);
   const riskLevel = typeof data?.detail?.risk_level === "number" ? data.detail.risk_level : 0;
@@ -186,29 +213,6 @@ export function FieldModelPeronospora() {
       });
     }
     return dateStr ?? "-";
-  };
-
-  const processProvincePeronospora = (provinceStr?: string) => {
-    if (!provinceStr) {
-      return "-";
-    }
-
-    return provinceStr
-      .split("_")
-      .filter(Boolean)
-      .map((part) => capitalize(part))
-      .join(" ");
-  };
-
-  const getProvinceData = () => {
-    const values = activeDataType === "current" ? allCurrent : allForecast;
-    return values.map((d) => {
-      return {
-        nuts_3_name: processProvincePeronospora(d.NUTS_3),
-        value: d.risk_score,
-        ...d,
-      };
-    });
   };
 
   const Bollo = () => {
@@ -333,7 +337,7 @@ export function FieldModelPeronospora() {
               </section>
 
               <section className="soft bg-white">
-                <MapNUTSData provinceData={getProvinceData()} selectedProvinceData={data} />
+                <MapNUTSData provinceData={provinceData} selectedProvinceData={data} />
               </section>
 
               {/* 
