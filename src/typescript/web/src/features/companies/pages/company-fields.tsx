@@ -9,6 +9,7 @@ import { AgriField, Point } from "@tornatura/coreapis";
 import Icon from "../../../components/Icon";
 import _ from "lodash";
 import { detectionsSelectors } from "../../detections/state/detections-slice";
+import keycloakInstance from "../../../providers/keycloak";
 
 export function getFieldMapGeoJson(field: AgriField) {
   let data: number[][] = [];
@@ -64,6 +65,14 @@ export function CompanyFields() {
     if (s.length === 0) return s;
     return s.charAt(0).toUpperCase() + s.slice(1);
   }
+
+  const canCreateField = () => {
+    if (keycloakInstance.tokenParsed && companyId) {
+      return keycloakInstance.tokenParsed.organizations[companyId]["roles"].includes("manage-agrifields") 
+      || keycloakInstance.tokenParsed.organizations[companyId]["roles"].includes("manage-detections")
+    }
+  }
+
   return (
     <Container fluid>
       <Row>
@@ -104,13 +113,13 @@ export function CompanyFields() {
             </Col>
           );
         })}
-        <Col xs={6} md={4} xxl={3}>
+        {canCreateField() && <Col xs={6} md={4} xxl={3}>
           <Card
             className="add-item with-hover-effect"
             data-text="Aggiungi un campo"
             onClick={() => navigate(`/companies/${companyId}/new-field`)}
           ></Card>
-        </Col>
+        </Col>}
       </Row>
     </Container>
   );

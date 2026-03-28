@@ -358,7 +358,7 @@ class InvitationServices:
                 elif invitation.role == ClientRole.CompanyStandard.value:
                     organization_services.assign_role(invitation.orgId, user_id, OrganizationDefaultRole.ViewOrganization)
                     organization_services.assign_role(invitation.orgId, user_id, OrganizationCustomRole.ViewAgrifields)
-                    organization_services.assign_role(invitation.orgId, user_id, OrganizationCustomRole.ManageAgrifields)
+                    organization_services.assign_role(invitation.orgId, user_id, OrganizationCustomRole.ManageDetections)
                     organization_services.assign_role(invitation.orgId, user_id, role=OrganizationCustomRole.ManageDataFiles)
             except Exception as e:
                 raise HTTPException(status_code=500, detail=f"Failed to add member: {str(e)}")

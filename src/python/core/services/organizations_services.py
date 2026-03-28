@@ -30,6 +30,8 @@ class OrganizationCustomRole(Enum):
     ViewAgrifields = "view-agrifields"
     ViewDataFiles = "view-datafiles"
     ManageDataFiles = "manage-datafiles"
+    ViewDetections = "view-detections"
+    ManageDetections = "manage-detections"
 
 
 def get_service_access_token():

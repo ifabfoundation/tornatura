@@ -1,6 +1,6 @@
 from typing import Annotated
 from fastapi import APIRouter, Depends, Path, Query
-from core.permissions import CanManageOrganizationAgrifields, CanViewOrganizationAgrifields, IsAuthenticated
+from core.permissions import CanManageOrganizationDetections, CanViewOrganizationDetections, IsAuthenticated
 from core.security import SecurityChecker
 from core.serializers import ErrorResponse, PaginatedResponse, Detection, DetectionMutationPayload, StatusResponse
 from core.services.agrifields_services import AgriFieldServices
@@ -30,7 +30,7 @@ async def list_detections(
     organization = organization_services.get(org_id)
 
     # Check object-level permissions
-    checker = SecurityChecker(CanViewOrganizationAgrifields)
+    checker = SecurityChecker(CanViewOrganizationDetections)
     checker.check_object_permission(token_info, organization)
 
     agrifield_service = AgriFieldServices()
@@ -59,7 +59,7 @@ async def create_detection(
     organization = organization_services.get(org_id)
 
     # Check object-level permissions
-    checker = SecurityChecker(CanManageOrganizationAgrifields)
+    checker = SecurityChecker(CanManageOrganizationDetections)
     checker.check_object_permission(token_info, organization)
 
     agrifield_service = AgriFieldServices()
@@ -86,7 +86,7 @@ async def delete_detection(
     organization = organization_services.get(org_id)
 
     # Check object-level permissions
-    checker = SecurityChecker(CanManageOrganizationAgrifields)
+    checker = SecurityChecker(CanManageOrganizationDetections)
     checker.check_object_permission(token_info, organization)
 
     agrifield_service = AgriFieldServices()
