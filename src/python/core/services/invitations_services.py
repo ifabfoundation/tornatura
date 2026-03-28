@@ -67,6 +67,13 @@ class InvitationServices:
         current = self._get_current_timestamp()
         return current + (days * 24 * 60 * 60 * 1000)
 
+    def _format_date_it(self, value: datetime.datetime) -> str:
+        months = [
+            "gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno",
+            "luglio", "agosto", "settembre", "ottobre", "novembre", "dicembre",
+        ]
+        return f"{value.day} {months[value.month - 1]} {value.year}"
+
     @catch_api_exception
     def create(self, org_id: Optional[str], payload: InvitationCreatePayload, token_info: dict):
         """
@@ -488,10 +495,11 @@ class InvitationServices:
         """Send invitation email using Jinja2 template"""
         template = env.get_template('email_invitation.html')
 
-        expires_date = datetime.datetime.fromtimestamp(
+        expires_at = datetime.datetime.fromtimestamp(
             invitation.expiresAt / 1000,
             tz=datetime.timezone.utc
-        ).strftime('%B %d, %Y')
+        )
+        expires_date = self._format_date_it(expires_at)
 
         # Link goes to invitation accept page
         invitation_link = f"{config.APIConfig.FRONTEND_URL}/invitations/accept?token={invitation.token}"

@@ -12,8 +12,10 @@
 <body style="font-family: 'Inter', Arial, sans-serif;">
     <img style="width: 150px;" width="150" src="https://tornatura.it/tmp-storage/assets/images/logo-color-black.png" />
     <h3>Ciao {{realmName}}</h3>
-    <p>Benvenuto in Tornatura!</p>
-    <p>La tua password per accedere: {{ pwd }}</p>
-    <p><a style="padding: 10px 15px; border-radius: 5px; text-decoration: none; display: inline-block; background-color: #3D401A; color: #EAFF00;" href="{{link}}">Accedi</a></p>
+    <p>Benvenuto su Tornatura!<br/>La tua password per accedere è:</p>
+    <p><span style="padding: 5px 5px; border-radius: 5px; text-decoration: none; display: inline-block; background-color: rgb(199, 192, 192, 0.4);"><strong>{{ pwd }}</strong></span></p>
+    <p>Usala per fare il primo login. Ti verrà subito chiesto di creare una nuova password</p>
+    <p></p>
+    <p style="margin-top: 25px;"><a style="padding: 10px 15px; border-radius: 5px; text-decoration: none; display: inline-block; background-color: #3D401A; color: #EAFF00;" href="{{link}}">Accedi</a></p>
 </body>
 </html>
