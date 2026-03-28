@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useRef } from "react";
+import React, { Fragment } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 // import { useFormik } from "formik";
 // import * as Yup from "yup";
@@ -58,6 +58,7 @@ interface DetectionProps {
   onNextClick: (data: DetectionStepData) => Promise<void>;
   pendingPhotos?: PendingDetectionPhoto[];
   onPhotosChange?: (photos: PendingDetectionPhoto[]) => void;
+  onDraftChange?: (data: Partial<DetectionStepPointsData>) => void;
 }
 
 type AddPointFn = (lng: number, lat: number) => void;
@@ -93,7 +94,7 @@ type DetectionStepMethodData = {
 type DetectionStepGuideData = Record<string, never>;
 
 type DetectionStepBbchData = {
-  bbch?: string;
+  bbch: string;
 };
 
 type DetectionStepTreatmentData = {
@@ -102,8 +103,8 @@ type DetectionStepTreatmentData = {
 
 type DetectionStepPointsData = {
   points: ObservationPoint[];
-  photos?: PendingDetectionPhoto[];
-  notes?: string;
+  photos: PendingDetectionPhoto[];
+  notes: string;
 };
 
 type PendingDetectionPhoto = {
@@ -1099,8 +1100,8 @@ function DetectionStepGuide({
 }
 
 function DetectionStepBbch({ field, onNextClick }: DetectionProps & { field: AgriField }) {
-  const handleBbchSelection = (value: string) => {
-    onNextClick({ bbch: value });
+  const handleBbchSelection = async (value: string) => {
+    await onNextClick({ bbch: value });
   };
 
   let items: AccordionItem[] = [];
@@ -1130,7 +1131,6 @@ function DetectionStepBbch({ field, onNextClick }: DetectionProps & { field: Agr
             let contentNode = <span>{bbchItem.name}</span>;
             if (bbchItem.thumbnail) {
               const thumbUrl = thumbnailBaseUrl + bbchItem.thumbnail;
-              console.log("XXXX thumbnail", thumbUrl);
               contentNode = (
                 <div className="d-flex align-items-center justify-content-start">
                   <img
@@ -1158,8 +1158,6 @@ function DetectionStepBbch({ field, onNextClick }: DetectionProps & { field: Agr
     };
   });
 
-  console.log("XXXX items", items);
-
   return (
     <div className="narrow-container my-5">
       <h3 className="mb-4 pb-2 text-center">
@@ -1170,25 +1168,35 @@ function DetectionStepBbch({ field, onNextClick }: DetectionProps & { field: Agr
   );
 }
 
-function DetectionStepTreatment({ formData, onNextClick }: DetectionProps) {
+function DetectionStepTreatment({ formData, onNextClick, action }: DetectionProps) {
   const { fieldId } = useParams();
   const previousDetections = useAppSelector((state) =>
     detectionsSelectors.selectDetectionbyFieldId(state, fieldId ?? "default"),
   );
-  const [treatment, setTreatment] = React.useState(formData.detectionData.treatment.treatment);
-  const [treatmentDate, setTreatmentDate] = React.useState(
-    formData.detectionData.treatment.treatmentDate ?? "",
+  const hasSavedTreatment = action === "restore";
+  const [treatment, setTreatment] = React.useState<boolean | undefined>(() =>
+    hasSavedTreatment ? formData.detectionData.treatment.treatment : undefined,
   );
-  const [treatmentProduct, setTreatmentProduct] = React.useState(
-    formData.detectionData.treatment.treatmentProduct ?? "",
+  const [treatmentDate, setTreatmentDate] = React.useState(() =>
+    hasSavedTreatment ? (formData.detectionData.treatment.treatmentDate ?? "") : "",
+  );
+  const [treatmentProduct, setTreatmentProduct] = React.useState(() =>
+    hasSavedTreatment ? (formData.detectionData.treatment.treatmentProduct ?? "") : "",
   );
   const [error, setError] = React.useState("");
 
   React.useEffect(() => {
-    setTreatment(formData.detectionData.treatment.treatment);
-    setTreatmentDate(formData.detectionData.treatment.treatmentDate ?? "");
-    setTreatmentProduct(formData.detectionData.treatment.treatmentProduct ?? "");
-  }, [formData]);
+    if (hasSavedTreatment) {
+      setTreatment(formData.detectionData.treatment.treatment);
+      setTreatmentDate(formData.detectionData.treatment.treatmentDate ?? "");
+      setTreatmentProduct(formData.detectionData.treatment.treatmentProduct ?? "");
+      return;
+    }
+
+    setTreatment(undefined);
+    setTreatmentDate("");
+    setTreatmentProduct("");
+  }, [formData.detectionData.treatment, hasSavedTreatment]);
 
   const productSuggestions = React.useMemo(() => {
     return Array.from(
@@ -1200,7 +1208,7 @@ function DetectionStepTreatment({ formData, onNextClick }: DetectionProps) {
     ).sort((a, b) => a.localeCompare(b));
   }, [previousDetections]);
 
-  const normalizeDateInput = (value: string) => {
+  /*const normalizeDateInput = (value: string) => {
     const digits = value.replace(/\D/g, "").slice(0, 8);
     if (digits.length <= 2) {
       return digits;
@@ -1209,7 +1217,7 @@ function DetectionStepTreatment({ formData, onNextClick }: DetectionProps) {
       return `${digits.slice(0, 2)}/${digits.slice(2)}`;
     }
     return `${digits.slice(0, 2)}/${digits.slice(2, 4)}/${digits.slice(4)}`;
-  };
+  };*/
 
   const toPickerDate = (value: string) => {
     const match = value.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
@@ -1221,6 +1229,11 @@ function DetectionStepTreatment({ formData, onNextClick }: DetectionProps) {
   };
 
   const handleSubmit = () => {
+    if (treatment === undefined) {
+      setError("Scelta sul trattamento non specificata.");
+      return;
+    }
+
     if (treatment && treatmentDate.trim() === "") {
       setError("Specifica la data del trattamento.");
       return;
@@ -1261,7 +1274,7 @@ function DetectionStepTreatment({ formData, onNextClick }: DetectionProps) {
           <div className="d-flex gap-2">
             <CozyButton
               content="No"
-              additionalClasses={["mt-0", !treatment ? "trnt_btn primary" : "trnt_btn secondary"]}
+              additionalClasses={["mt-0", treatment === false ? "trnt_btn primary" : "trnt_btn secondary"]}
               onClick={() => {
                 setTreatment(false);
                 setError("");
@@ -1269,7 +1282,7 @@ function DetectionStepTreatment({ formData, onNextClick }: DetectionProps) {
             />
             <CozyButton
               content="Sì"
-              additionalClasses={["mt-0", treatment ? "trnt_btn primary" : "trnt_btn secondary"]}
+              additionalClasses={["mt-0", treatment === true ? "trnt_btn primary" : "trnt_btn secondary"]}
               onClick={() => {
                 setTreatment(true);
                 setError("");
@@ -1358,7 +1371,8 @@ function DetectionStepObservationPoints({
   onNextClick,
   pendingPhotos = [],
   onPhotosChange,
-}: DetectionProps & { observationType?: ObservationType }) {
+  onDraftChange,
+}: DetectionProps & { observationType: ObservationType }) {
   const navigate = useNavigate();
   const { companyId, fieldId } = useParams();
   const currentField = useAppSelector((state) =>
@@ -1382,6 +1396,8 @@ function DetectionStepObservationPoints({
   const [noteDraft, setNoteDraft] = React.useState(noteValue);
   const [noteModalOpen, setNoteModalOpen] = React.useState(false);
   const [infoPanelOpen, setInfoPanelOpen] = React.useState(false);
+  const pointsRef = React.useRef(points);
+  const noteValueRef = React.useRef(noteValue);
   const isMobile = useIsMobile();
   const guideValue = observationType?.locationAndScoreInstructions?.trim() ?? "";
   const fieldAreaPoints = React.useMemo(
@@ -1390,12 +1406,27 @@ function DetectionStepObservationPoints({
   );
   const fieldCenter = React.useMemo(() => getFieldCenter(currentField), [currentField]);
 
-  console.log("formData-----------------2", formData);
-
   React.useEffect(() => {
     setPoints(formData.detectionData.points ?? []);
     setNoteValue(formData.detectionData.notes ?? "");
   }, [formData]);
+
+  React.useEffect(() => {
+    pointsRef.current = points;
+  }, [points]);
+
+  React.useEffect(() => {
+    noteValueRef.current = noteValue;
+  }, [noteValue]);
+
+  React.useEffect(() => {
+    return () => {
+      onDraftChange?.({
+        points: pointsRef.current,
+        notes: noteValueRef.current,
+      });
+    };
+  }, [onDraftChange]);
 
   React.useEffect(() => {
     if (!observationType || !observationType.counters) {
@@ -2118,8 +2149,44 @@ export function DetectionForm() {
   );
   const [useShortFlow, setUseShortFlow] = React.useState(false);
   const [stepperRecapValues, setStepperRecapValues] = React.useState<Record<string, string>>({});
+  const [modalOpen, setModalOpen] = React.useState(false);
+  const [modal, setModal] = React.useState<any>({});
+  const openAbandonModal = React.useCallback(
+    (onConfirm: () => void) => {
+      setModal({
+        component: ModalConfirm,
+        componentProps: {
+          title: "Abbandona rilevamento",
+          content: "Se torni indietro perderai i dati inseriti finora. Sei sicuro di voler continuare?",
+          action: "Abbandona",
+          handleCancel: () => setModalOpen(false),
+          handleConfirm: () => {
+            setModalOpen(false);
+            onConfirm();
+          },
+        },
+      });
+      setModalOpen(true);
+    },
+    [],
+  );
   const goToStep = React.useCallback(
     (nextStep: number, replace = false) => {
+      if (!replace && nextStep === 0 && stepIndex > 0) {
+        openAbandonModal(() => {
+          setStepIndex(nextStep);
+          navigate(`${location.pathname}${location.search}${location.hash}`, {
+            replace,
+            state: {
+              ...((location.state && typeof location.state === "object"
+                ? location.state
+                : {}) as Record<string, unknown>),
+              detectionStepIndex: nextStep,
+            },
+          });
+        });
+        return;
+      }
       setStepIndex(nextStep);
       navigate(`${location.pathname}${location.search}${location.hash}`, {
         replace,
@@ -2131,7 +2198,7 @@ export function DetectionForm() {
         },
       });
     },
-    [location.hash, location.pathname, location.search, location.state, navigate],
+    [location.hash, location.pathname, location.search, location.state, navigate, openAbandonModal, stepIndex],
   );
 
   const detectionTypes = useAppSelector((state) =>
@@ -2389,10 +2456,10 @@ export function DetectionForm() {
         ...prev,
         detectionData: {
           ...prev.detectionData,
-          bbch: bbchData.bbch ?? "",
+          bbch: bbchData.bbch,
         },
       }));
-      updateStepperRecaps(stepIndex + 1, { bbch: bbchData.bbch ?? "" });
+      updateStepperRecaps(stepIndex + 1, { bbch: bbchData.bbch });
       goToStep(stepIndex + 1);
       return;
     }
@@ -2405,6 +2472,7 @@ export function DetectionForm() {
           treatment: treatmentData.treatment,
         },
       }));
+      updateStepperRecaps(stepIndex + 1, { treatment: "✓" });
       goToStep(stepIndex + 1);
       return;
     }
@@ -2468,7 +2536,7 @@ export function DetectionForm() {
         detectionData: {
           ...formData.detectionData,
           notes: notesToSave,
-          points: pointsData.points ?? [],
+          points: pointsData.points,
           photos: uploadedPhotos,
         },
       };
@@ -2478,7 +2546,13 @@ export function DetectionForm() {
   };
 
   const handleBackClick = async () => {
-    navigate(-1);
+    if (stepIndex === 0) {
+      openAbandonModal(() => {
+        navigate(`/companies/${companyId}/fields/${fieldId}`, { replace: true });
+      });
+      return;
+    }
+    goToStep(stepIndex - 1);
   };
 
   // const stepperItems = ["Tipologia", "Metodo", "Guida", "BBCH", "Rilevamento"];
@@ -2496,6 +2570,7 @@ export function DetectionForm() {
 
   return (
     <Fragment>
+      {modalOpen && <modal.component {...modal.componentProps} />}
       {!["points", "done"].includes(currentStepKey) && (
         <Stepper
           items={stepperItems}
@@ -2543,7 +2618,11 @@ export function DetectionForm() {
           />
         )}
         {currentStepKey === "treatment" && (
-          <DetectionStepTreatment formData={formData} onNextClick={handleNextClick} />
+          <DetectionStepTreatment 
+            formData={formData} 
+            onNextClick={handleNextClick} 
+            action={stepperRecapValues.treatment ? "restore" : undefined}
+            />
         )}
         {currentStepKey === "points" && (
           <DetectionStepObservationPoints
@@ -2553,6 +2632,16 @@ export function DetectionForm() {
             onNextClick={handleNextClick}
             pendingPhotos={pendingPhotos}
             onPhotosChange={setPendingPhotos}
+            onDraftChange={(draft) => {
+              setFormData((prev) => ({
+                ...prev,
+                detectionData: {
+                  ...prev.detectionData,
+                  points: draft.points ?? prev.detectionData.points,
+                  notes: draft.notes ?? prev.detectionData.notes,
+                },
+              }));
+            }}
           />
         )}
         {currentStepKey === "done" && (

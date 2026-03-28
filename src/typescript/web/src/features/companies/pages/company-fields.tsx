@@ -71,7 +71,10 @@ export function CompanyFields() {
       return keycloakInstance.tokenParsed.organizations[companyId]["roles"].includes("manage-agrifields") 
       || keycloakInstance.tokenParsed.organizations[companyId]["roles"].includes("manage-detections")
     }
+    return false;
   }
+
+  console.log(canCreateField())
 
   return (
     <Container fluid>

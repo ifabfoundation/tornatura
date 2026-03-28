@@ -4,7 +4,7 @@ import { Configuration } from "@tornatura/coreapis";
 const COREAPIS_BASE_PATH = process.env.REACT_APP_COREAPIS_SERVER_URL;
 
 export async function getCoreApiConfiguration() {
-  await keycloakInstance.updateToken(10);
+  await keycloakInstance.updateToken(7200);
   return new Configuration({
     basePath: `${COREAPIS_BASE_PATH}`,
     baseOptions: { headers: { Authorization: `Bearer ${keycloakInstance.token}` } },
