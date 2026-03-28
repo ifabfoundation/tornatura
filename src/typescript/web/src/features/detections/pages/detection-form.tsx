@@ -1408,8 +1408,11 @@ function DetectionStepObservationPoints({
 
   React.useEffect(() => {
     setPoints(formData.detectionData.points ?? []);
+  }, [formData.detectionData.points]);
+
+  React.useEffect(() => {
     setNoteValue(formData.detectionData.notes ?? "");
-  }, [formData]);
+  }, [formData.detectionData.notes]);
 
   React.useEffect(() => {
     pointsRef.current = points;
@@ -2172,21 +2175,6 @@ export function DetectionForm() {
   );
   const goToStep = React.useCallback(
     (nextStep: number, replace = false) => {
-      if (!replace && nextStep === 0 && stepIndex > 0) {
-        openAbandonModal(() => {
-          setStepIndex(nextStep);
-          navigate(`${location.pathname}${location.search}${location.hash}`, {
-            replace,
-            state: {
-              ...((location.state && typeof location.state === "object"
-                ? location.state
-                : {}) as Record<string, unknown>),
-              detectionStepIndex: nextStep,
-            },
-          });
-        });
-        return;
-      }
       setStepIndex(nextStep);
       navigate(`${location.pathname}${location.search}${location.hash}`, {
         replace,
@@ -2198,7 +2186,7 @@ export function DetectionForm() {
         },
       });
     },
-    [location.hash, location.pathname, location.search, location.state, navigate, openAbandonModal, stepIndex],
+    [location.hash, location.pathname, location.search, location.state, navigate],
   );
 
   const detectionTypes = useAppSelector((state) =>
@@ -2555,6 +2543,17 @@ export function DetectionForm() {
     goToStep(stepIndex - 1);
   };
 
+  const handlePointsDraftChange = React.useCallback((draft: Partial<DetectionStepPointsData>) => {
+    setFormData((prev) => ({
+      ...prev,
+      detectionData: {
+        ...prev.detectionData,
+        points: draft.points ?? prev.detectionData.points,
+        notes: draft.notes ?? prev.detectionData.notes,
+      },
+    }));
+  }, []);
+
   // const stepperItems = ["Tipologia", "Metodo", "Guida", "BBCH", "Rilevamento"];
   const stepperItems = useShortFlow
     ? ["BBCH", "Trattamenti", "Rilevamento"]
@@ -2632,16 +2631,7 @@ export function DetectionForm() {
             onNextClick={handleNextClick}
             pendingPhotos={pendingPhotos}
             onPhotosChange={setPendingPhotos}
-            onDraftChange={(draft) => {
-              setFormData((prev) => ({
-                ...prev,
-                detectionData: {
-                  ...prev.detectionData,
-                  points: draft.points ?? prev.detectionData.points,
-                  notes: draft.notes ?? prev.detectionData.notes,
-                },
-              }));
-            }}
+            onDraftChange={handlePointsDraftChange}
           />
         )}
         {currentStepKey === "done" && (
