@@ -73,6 +73,7 @@ class AgriFieldModel(Document):
     description = StringField(required=True, max_length=100)
     orgId = StringField(required=True)
     deleted = BooleanField(default=False)
+    createdBy = StringField(null=True)
     creationTime = IntField()
     lastUpdateTime = IntField()
 
@@ -130,6 +131,7 @@ class DetectionType(Document):
     """The object Detection Type stored in the Database"""
     agrifieldId = StringField(required=True)
     observationTypeId = StringField(required=True)
+    createdBy = StringField(null=True)
     creationTime = IntField()
     meta = {
         'ordering': ['-creationTime']
@@ -146,6 +148,7 @@ class DetectionModel(Document):
     detectionTypeId = StringField(required=True)
     detectionData = EmbeddedDocumentField(DetectionData, required=True)
     deleted = BooleanField(default=False)
+    createdBy = StringField(null=True)
     creationTime = IntField()
     lastUpdateTime = IntField()
 

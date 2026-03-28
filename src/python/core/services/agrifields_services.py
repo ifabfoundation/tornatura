@@ -56,7 +56,7 @@ class AgriFieldServices:
     
 
     @catch_api_exception
-    def create(self, org_id: str, payload: AgriFieldMutationPayload):
+    def create(self, org_id: str, payload: AgriFieldMutationPayload, user_id: str):
         """Create agriField
         :rtype: AgriField
         """
@@ -66,6 +66,7 @@ class AgriFieldServices:
         data["map"] = [Point(lng=point.lng, lat=point.lat) for point in payload.map]
         data.update({
             "orgId": org_id,
+            "createdBy": user_id,
             "creationTime": current_time,
             "lastUpdateTime": current_time
         })

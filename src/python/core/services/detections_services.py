@@ -115,7 +115,7 @@ class DetectionServices:
         return self._serialize(detections, many=True)
     
     @catch_api_exception
-    def create(self, agrifield_id: str, payload: DetectionMutationPayload):
+    def create(self, agrifield_id: str, payload: DetectionMutationPayload, user_id: str):
         """Create detection
         
         Args:
@@ -182,6 +182,7 @@ class DetectionServices:
                 photos=photos,
                 points=points,
             ),
+            createdBy=user_id,
             creationTime=current_time,
             lastUpdateTime=current_time,
         ).save()

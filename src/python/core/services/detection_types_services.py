@@ -43,7 +43,7 @@ class DetectionTypeServices:
         return self._serialize(detection_type)
 
     @catch_api_exception
-    def create(self, agrifield_id: str, payload: DetectionTypeCreatePayload):
+    def create(self, agrifield_id: str, payload: DetectionTypeCreatePayload, user_id: str):
         """Create detection type."""
         data = payload.model_dump()
         observation_type = ObservationType.objects(id=data["observationTypeId"]).first()
@@ -57,13 +57,12 @@ class DetectionTypeServices:
             observationTypeId=data["observationTypeId"],
         ).first()
         if existing_type:
-            raise HTTPException(
-                status_code=status.HTTP_409_CONFLICT,
-                detail="Detection type already exists for this agrifield and observation type"
-            )
+            # Detection type already exists for this agrifield and observation type
+            return self._serialize(existing_type)
         current_time = int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp() * 1000)
         data.update({
             "agrifieldId": agrifield_id,
+            "createdBy": user_id,
             "creationTime": current_time,
         })
         detection_type = self.model(**data).save()

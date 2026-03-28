@@ -60,7 +60,7 @@ async def create_agrifield(
     checker.check_object_permission(token_info, organization)
 
     agrifield_service = AgriFieldServices()
-    agrifield = agrifield_service.create(org_id, payload)
+    agrifield = agrifield_service.create(org_id, payload, token_info["sub"])
 
 
     return agrifield   

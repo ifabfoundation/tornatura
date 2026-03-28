@@ -70,7 +70,7 @@ async def create_detection_type(
     agrifield_service.get(agrifield_id)
 
     detection_type_services = DetectionTypeServices()
-    detection_type = detection_type_services.create(agrifield_id, payload)
+    detection_type = detection_type_services.create(agrifield_id, payload, token_info["sub"])
     return detection_type
 
 
