@@ -47,11 +47,13 @@ from docling.document_converter import DocumentConverter
 from sentence_transformers import SentenceTransformer
 import chromadb
 
+from bollettini import paths
+
 # ============= CONFIGURAZIONE =============
 BASE_DIR = Path(__file__).parent.parent
-INPUT_DIR = BASE_DIR / "data" / "1_collections" / "bollettini"
-CHROMADB_DIR = BASE_DIR / "data" / "chromadb"
-CACHE_FILE = BASE_DIR / "data" / "processing_cache.json"
+INPUT_DIR = paths.DATA_DIR  / "1_collections" / "bollettini"
+CHROMADB_DIR = paths.DATA_DIR  / "chromadb"
+CACHE_FILE = paths.DATA_DIR / "processing_cache.json"
 
 # ============= CONFIGURAZIONE MALATTIE =============
 # Ogni malattia ha la sua collezione ChromaDB

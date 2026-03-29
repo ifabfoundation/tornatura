@@ -33,10 +33,10 @@ from bollettini import paths
 
 # ============= CONFIGURAZIONE =============
 BASE_DIR = Path(__file__).parent.parent
-CHROMADB_DIR = BASE_DIR / "data" / "chromadb"
+CHROMADB_DIR = paths.DATA_DIR / "chromadb"
 OUTPUT_DIR = paths.OUTPUT_CIMICE_DIR
 HISTORY_DIR = OUTPUT_DIR / "history"
-CACHE_FILE = BASE_DIR / "data" / "cache" / "cimice_processed.json"
+CACHE_FILE = paths.DATA_DIR / "cache" / "cimice_processed.json"
 COLLECTION_NAME = "cimice_asiatica"
 
 # Modello LLM

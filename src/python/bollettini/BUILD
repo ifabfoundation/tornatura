@@ -21,6 +21,7 @@ resources(
     name="bollettini_resources",
     sources=[
         "data/**",
+        "shapefiles/**",
         "modules/**",
         "MANIFEST.txt",
         "REPORT.md",

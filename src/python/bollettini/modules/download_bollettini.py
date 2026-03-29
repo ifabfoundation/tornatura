@@ -20,11 +20,13 @@ import json
 from datetime import datetime
 import re
 
+from bollettini import paths
+
 # ============= CONFIGURAZIONE =============
 BASE_DIR = Path(__file__).parent.parent
-BOLLETTINI_DIR = BASE_DIR / "data" / "1_collections" / "bollettini"
+BOLLETTINI_DIR = paths.DATA_DIR  / "1_collections" / "bollettini"
 LOG_DIR = BASE_DIR / "logs"
-CACHE_FILE = BASE_DIR / "data" / "bollettini_cache.json"
+CACHE_FILE = paths.DATA_DIR / "bollettini_cache.json"
 
 # Province disponibili (slug URL)
 PROVINCE_URLS = {

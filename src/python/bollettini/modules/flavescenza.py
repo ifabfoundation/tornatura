@@ -40,10 +40,10 @@ except ImportError:
 
 # ============= CONFIGURAZIONE =============
 BASE_DIR = Path(__file__).parent.parent
-CHROMADB_DIR = BASE_DIR / "data" / "chromadb"
+CHROMADB_DIR = paths.DATA_DIR  / "chromadb"
 OUTPUT_DIR = paths.OUTPUT_FLAVESCENZA_DIR
 HISTORY_DIR = OUTPUT_DIR / "history"
-CACHE_FILE = BASE_DIR / "data" / "cache" / "flavescenza_processed.json"
+CACHE_FILE = paths.DATA_DIR  / "cache" / "flavescenza_processed.json"
 COLLECTION_NAME = "flavescenza_dorata"
 
 # Modello LLM
