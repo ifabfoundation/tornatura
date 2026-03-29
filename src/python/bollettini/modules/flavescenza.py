@@ -452,7 +452,8 @@ class FlavescenzaQueryProcessor:
         """Recupera lista bollettini disponibili da ChromaDB (esclusa normativa)."""
         self._init_models()
         
-        all_docs = self._collection.get(limit=5000, include=["metadatas"])
+        total_chunks = self._collection.count()
+        all_docs = self._collection.get(limit=total_chunks, include=["metadatas"])
         
         bollettini_map = {}
         for meta in all_docs['metadatas']:
