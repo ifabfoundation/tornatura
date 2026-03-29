@@ -1814,6 +1814,19 @@ small {
     height: 100%;
   }
   // ---------------------------------------------------------------------------
+
+  .field-maplet {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border-radius: 10px;
+    min-height: 400px;
+    @include media-breakpoint-down(sm) {
+      min-height: auto;
+      aspect-ratio: 1 / 1;
+    }
+  }
+
   .map-observations-wrapper {
     position: relative;
     .map-observations {

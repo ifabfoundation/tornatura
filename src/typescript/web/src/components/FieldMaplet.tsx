@@ -486,6 +486,6 @@ export const FieldMaplet = ({ detectionId, padding, interactions }: FieldMapletP
   if (!selectedDetection && !mapLoaded) {
     return <div>Detection not found</div>;
   } else {
-    return <div ref={mapContainerRef} className="map-observations"></div>;
+    return <div ref={mapContainerRef} className="field-maplet"></div>;
   }
 };

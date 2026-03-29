@@ -760,8 +760,8 @@ export function DetectionTypeDetail() {
                           <span className="ms-1">Info</span>
                         </button>
                       </div>
-                      <div>
-                        <div className="font-s-600 me-2">Esporta dati</div>
+                      <div className="d-flex align-items-center">
+                        <div className="font-s-600 me-2 text-right">Esporta dati</div>
                         <DownloadDataButton
                           data={sortedDetections}
                           format={"json"}
