@@ -96,8 +96,27 @@ export function FieldModelFlavescenza() {
     if (provinceStr === "bologna_ferrara") {
       return "Bologna e Ferrara";
     }
-    return provinceStr ?? "-";
+   
+    if (!provinceStr) {
+      return "-";
+    }
+
+    const specialCases: Record<string, string> = {
+      forli_cesena: "Forlì-Cesena",
+      reggio_emilia: "Reggio Emilia",
+    };
+  
+    if (specialCases[provinceStr]) {
+      return specialCases[provinceStr];
+    }
+  
+    return provinceStr
+      .split("_")
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+    
   };
+
   return (
     <Container fluid className="mb-5">
       <Row>

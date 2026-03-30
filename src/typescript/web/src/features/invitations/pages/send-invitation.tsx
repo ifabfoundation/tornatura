@@ -21,11 +21,6 @@ const ROLE_OPTIONS = [
     description: "Accesso completo all'organizzazione",
   },
   {
-    value: "company-manager-access",
-    label: "Manager azienda",
-    description: "Gestione dell'organizzazione e dei campi",
-  },
-  {
     value: "company-standard-access",
     label: "Collaboratore",
     description: "Visualizzazione e modifica limitata",

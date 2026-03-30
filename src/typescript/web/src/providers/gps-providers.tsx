@@ -18,6 +18,7 @@ const CurrentPositionProvider = (props: PropsWithChildren) => {
 
   function success(pos: GeolocationPosition ) {
     const crd = pos.coords;
+    console.log(crd)
     setCurrentPosition({lat: crd.latitude, lng: crd.longitude});
   }
   
@@ -41,10 +42,12 @@ const CurrentPositionProvider = (props: PropsWithChildren) => {
   }, []);
 
   React.useEffect(() => {
-    navigator.geolocation.getCurrentPosition(success);
-    const id = navigator.geolocation.watchPosition(success, error, options);
-    return () => {
-      navigator.geolocation.clearWatch(id);
+    if (Object.keys(options).length){
+      navigator.geolocation.getCurrentPosition(success);
+      const id = navigator.geolocation.watchPosition(success, error, options);
+      return () => {
+        navigator.geolocation.clearWatch(id);
+      }
     }
   }, [options]);
 

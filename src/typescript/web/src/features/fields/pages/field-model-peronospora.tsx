@@ -12,7 +12,6 @@ import {
   fetchPeronosporaForecast,
   PeronosporaResponse,
 } from "../../../services/model-api";
-import { capitalize } from "../../../services/utils";
 import { Container, Row, Col } from "react-bootstrap";
 import { getFieldMapGeoJson } from "../../companies/pages/company-fields";
 import { MapNUTSData } from "../../../components/MapNUTSData";
@@ -69,10 +68,31 @@ export function FieldModelPeronospora() {
       return "-";
     }
 
+    const specialCases: Record<string, string> = {
+      bolzano_bozen: "Bolzano-Bozen",
+      forli_cesena: "Forlì-Cesena",
+      l_aquila: "L’Aquila",
+      massa_carrara: "Massa-Carrara",
+      monza_e_della_brianza: "Monza e della Brianza",
+      pesaro_e_urbino: "Pesaro e Urbino",
+      reggio_di_calabria: "Reggio Calabria",
+      reggio_nell_emilia: "Reggio nell’Emilia",
+      sud_sardegna: "Sud Sardegna",
+      valle_d_aosta_vallee_d_aoste: "Valle d’Aosta/Vallée d’Aoste",
+      verbano_cusio_ossola: "Verbano-Cusio-Ossola",
+      barletta_andria_trani: "Barletta-Andria-Trani",
+      la_spezia: "La Spezia",
+      vibo_valentia: "Vibo Valentia",
+      ascoli_piceno: "Ascoli Piceno",
+    };
+  
+    if (specialCases[provinceStr]) {
+      return specialCases[provinceStr];
+    }
+  
     return provinceStr
       .split("_")
-      .filter(Boolean)
-      .map((part) => capitalize(part))
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ");
   };
 

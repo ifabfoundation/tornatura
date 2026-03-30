@@ -68,13 +68,10 @@ export function CompanyFields() {
 
   const canCreateField = () => {
     if (keycloakInstance.tokenParsed && companyId) {
-      return keycloakInstance.tokenParsed.organizations[companyId]["roles"].includes("manage-agrifields") 
-      || keycloakInstance.tokenParsed.organizations[companyId]["roles"].includes("manage-detections")
+      return keycloakInstance.tokenParsed.organizations[companyId]["roles"].includes("manage-agrifields")
     }
     return false;
   }
-
-  console.log(canCreateField())
 
   return (
     <Container fluid>

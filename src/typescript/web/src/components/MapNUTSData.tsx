@@ -127,7 +127,6 @@ interface MapNUTSDataProps {
 }
 
 export const MapNUTSData = ({ provinceData, selectedProvinceData }: MapNUTSDataProps) => {
-  console.log("MapNUTSData props", { provinceData, selectedProvinceData });
   const { fieldId } = useParams();
   const currentField = useAppSelector((state) =>
     fieldsSelectors.selectFieldbyId(state, fieldId ?? "default"),
@@ -136,8 +135,6 @@ export const MapNUTSData = ({ provinceData, selectedProvinceData }: MapNUTSDataP
   const mapRef = React.useRef<any>(null);
   const [mapLoaded, setMapLoaded] = React.useState(false);
   const currentPosition = React.useContext(gpsStore);
-
-  console.log("DEBUG NUTS", nuts);
 
   type Coord = [number, number];
 
