@@ -178,6 +178,9 @@ $ms-sidebar-transition: 100ms;
 .upper {
   text-transform: uppercase !important;
 }
+.font-weight-600 {
+  font-weight: 600 !important;
+}
 
 @mixin noselect {
   -webkit-user-select: none; /* Safari, Chrome (WebKit) */
@@ -540,14 +543,23 @@ small {
     display: flex;
     align-items: stretch;
     justify-content: flex-start;
+    &.h-auto {
+      height: auto;
+      border-radius: 8px;
+      .tab {
+        border-radius: 3px;
+      }
+    }
     .tab {
       display: inline-flex;
       text-decoration: none;
       align-items: center;
       justify-content: center;
       width: 50%;
-      color: rgba(white, 0.5);
+      cursor: pointer;
+      color: rgba(white, 0.8);
       border-radius: 18px;
+      transition: all 0.15s;
       &.hover {
         background-color: rgba(white, 0.1);
         // color: $c-yelo;
@@ -1837,6 +1849,7 @@ small {
       min-height: 400px;
       height: 30vw;
       @include media-breakpoint-down(sm) {
+        height: auto;
         min-height: auto;
         aspect-ratio: 1 / 1;
       }
@@ -1849,14 +1862,21 @@ small {
     }
     .map-legend {
       z-index: 3;
-      position: absolute;
-      top: 12px;
-      right: 12px;
+      position: relative;
+      top: 0;
+      right: 0;
+      margin-top: 20px;
       border-radius: 10px;
       overflow: hidden;
       padding: 10px;
       background-color: white;
       box-shadow: 0 0px 10px rgba(0, 0, 0, 0.1);
+      @include media-breakpoint-up(xl) {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        margin-top: 0;
+      }
       img {
         display: block;
       }

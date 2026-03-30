@@ -265,8 +265,18 @@ export const MapNUTSData = ({ provinceData, selectedProvinceData }: MapNUTSDataP
       });
       mapRef.current.addControl(new MapboxLanguage({ defaultLanguage: "it" }));
 
+      // add + / - zoom buttons in the top-left corner
+      const nav = new mapboxgl.NavigationControl({
+        showCompass: false, // hide compass if you only want zoom
+        showZoom: true,
+      });
+      mapRef.current.addControl(nav, "top-left");
+      console.log("nav", nav);
+
       mapRef.current.on("load", () => {
         console.log("map loaded", mapRef);
+
+        // nav.querySelector('.mapboxgl-ctrl.mapboxgl-ctrl-group');
 
         // --------------------------------------------------
         // Add source + layer for dark cover

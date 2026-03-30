@@ -62,7 +62,6 @@ export function FieldModelPeronospora() {
     );
   }, []);
 
-  
   const processProvincePeronospora = (provinceStr?: string) => {
     if (!provinceStr) {
       return "-";
@@ -85,36 +84,40 @@ export function FieldModelPeronospora() {
       vibo_valentia: "Vibo Valentia",
       ascoli_piceno: "Ascoli Piceno",
     };
-  
+
     if (specialCases[provinceStr]) {
       return specialCases[provinceStr];
     }
-  
+
     return provinceStr
       .split("_")
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ");
   };
 
   React.useEffect(() => {
     async function fetchAllData() {
       const dataCurrent = await fetchPeronosporaAllCurrent();
-      setAllCurrent(dataCurrent.map((d) => {
-        return {
-          nuts_3_name: processProvincePeronospora(d.NUTS_3),
-          value: d.risk_score,
-          ...d,
-        };
-      }));
+      setAllCurrent(
+        dataCurrent.map((d) => {
+          return {
+            nuts_3_name: processProvincePeronospora(d.NUTS_3),
+            value: d.risk_score,
+            ...d,
+          };
+        }),
+      );
 
       const dataForecast = await fetchPeronosporaAllForecast();
-      setAllForecast(dataForecast.map((d) => {
-        return {
-          nuts_3_name: processProvincePeronospora(d.NUTS_3),
-          value: d.risk_score,
-          ...d,
-        };
-      }));
+      setAllForecast(
+        dataForecast.map((d) => {
+          return {
+            nuts_3_name: processProvincePeronospora(d.NUTS_3),
+            value: d.risk_score,
+            ...d,
+          };
+        }),
+      );
     }
 
     fetchAllData();
@@ -143,6 +146,15 @@ export function FieldModelPeronospora() {
         setLoading(false);
       });
   }, [centroid]);
+
+  const formatDate = (dateStr?: string) => {
+    // dateStr example: "2025-10-01" or "2026-01-26T07:24:30.177695"
+    if (!dateStr) return "-";
+    const input = dateStr.split("T")[0]; // Get only the date part
+    const [year, month, day] = input.split("-");
+    const formatted = `${day}/${month}/${year.slice(-2)}`;
+    return formatted;
+  };
 
   const syncIframeLeadButton = React.useCallback((nextType: ActiveDataType) => {
     const iframe = iframeRef.current;
@@ -294,14 +306,14 @@ export function FieldModelPeronospora() {
                         <Bollo />
                       </Col>
 
-                      <Col className="col-6 col-lg-4 col-xl-3 iiinfo-col mt-2 mb-2">
+                      <Col className="col-6 col-xl-4 iiinfo-col mt-2 mb-2">
                         <div className="iiinfo-label font-s-label mb-1 color-grey">Provincia</div>
                         <div className="iiinfo-value font-l-600">
                           {processProvincePeronospora(data?.province)}
                         </div>
                       </Col>
 
-                      <Col className="col-6 col-lg-4 col-xl-3 iiinfo-col mt-2 mb-2">
+                      <Col className="col-6 col-xl-4 iiinfo-col mt-2 mb-2">
                         <div className="iiinfo-label font-s-label mb-1 color-grey">
                           Punteggio rischio
                         </div>
@@ -314,7 +326,7 @@ export function FieldModelPeronospora() {
                         </div>
                       </Col>
 
-                      <Col className="col-6 col-lg-4 col-xl-3 iiinfo-col mt-2 mb-2">
+                      <Col className="col-6 col-xl-4 iiinfo-col mt-2 mb-2">
                         <div className="iiinfo-label font-s-label mb-1 color-grey">
                           Data del report
                         </div>
@@ -323,34 +335,70 @@ export function FieldModelPeronospora() {
                         </div>
                       </Col>
 
+                      {/* V2 — UI test: Switch */}
+
+                      <Col xl={12} className="iiinfo-col d-flex align-items-center mt-3 mb-2">
+                        <div className="tabs-switch h-auto" style={{ width: "100%" }}>
+                          <a
+                            className={`tab ${activeDataType === "current" ? "active" : ""}`}
+                            onClick={() => handleDataTypeChange("current")}
+                          >
+                            <div className="font-s">
+                              <span className="d-block text-center my-1 font-weight-600 upper">
+                                Settimana corrente
+                              </span>
+                              <span className="d-block text-center my-1 opacity-05">
+                                {formatDate(current.target_week?.start) ?? "-"} →{" "}
+                                {formatDate(current.target_week?.end) ?? "-"}
+                              </span>
+                            </div>
+                          </a>
+                          <a
+                            className={`tab ${activeDataType === "forecast" ? "active" : ""}`}
+                            onClick={() => handleDataTypeChange("forecast")}
+                          >
+                            <div className="font-s">
+                              <span className="d-block text-center my-1 font-weight-600 upper">
+                                Settimana successiva
+                              </span>
+                              <span className="d-block text-center my-1 opacity-05">
+                                {formatDate(forecast.target_week?.start) ?? "-"} →{" "}
+                                {formatDate(forecast.target_week?.end) ?? "-"}
+                              </span>
+                            </div>
+                          </a>
+                        </div>
+                      </Col>
+
+                      {/* V1 — 2 buttons */}
+                      {/* 
                       <Col xl={12} className="iiinfo-col d-flex align-items-center mt-3 mb-2">
                         <button
-                          className={`trnt_btn outlined type-rounded m-0 me-2 ${activeDataType === "current" ? "" : "opacity-02"}`}
+                          className={`trnt_btn primary m-0 me-2 ${activeDataType === "current" ? "" : "opacity-02"}`}
                           onClick={() => handleDataTypeChange("current")}
                         >
-                          {/* Dati Correnti */}
                           <span className="font-s-600">
-                            <span className="">Settimana</span>
-                            <span style={{ opacity: 0.5 }}>
-                              {current.target_week?.start ?? "-"} →{" "}
-                              {current.target_week?.end ?? "-"}
+                            <span className="d-block my-1">Settimana corrente</span>
+                            <span className="d-block my-1 opacity-05">
+                              {formatDate(current.target_week?.start) ?? "-"} →{" "}
+                              {formatDate(current.target_week?.end) ?? "-"}
                             </span>
                           </span>
                         </button>
                         <button
-                          className={`trnt_btn outlined type-rounded m-0 ${activeDataType === "forecast" ? "" : "opacity-02"}`}
+                          className={`trnt_btn primary m-0 ${activeDataType === "forecast" ? "" : "opacity-02"}`}
                           onClick={() => handleDataTypeChange("forecast")}
                         >
-                          {/* Previsioni */}
                           <span className="font-s-600">
-                            <span className="">Settimana</span>
-                            <span style={{ opacity: 0.5 }}>
-                              {forecast.target_week?.start ?? "-"} →{" "}
-                              {forecast.target_week?.end ?? "-"}
+                            <span className="d-block my-1">Settimana successiva</span>
+                            <span className="d-block my-1 opacity-05">
+                              {formatDate(forecast.target_week?.start) ?? "-"} →{" "}
+                              {formatDate(forecast.target_week?.end) ?? "-"}
                             </span>
                           </span>
                         </button>
                       </Col>
+                       */}
                     </Row>
                   </Col>
                 </Row>
