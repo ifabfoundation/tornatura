@@ -179,7 +179,7 @@ function App() {
       loadData();
       ReactGA.event("login");
       if (getBrowsingOrigin() === "PWA") {
-        ReactGA.event("originPWA");
+        ReactGA.event("login_from_mobile");
       }
     }
   }, [authenticated, initialized]);

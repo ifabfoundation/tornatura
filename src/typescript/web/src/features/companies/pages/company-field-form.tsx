@@ -113,12 +113,14 @@ export function FieldFormInfo({ formData, action, onNextClick, onBackClick }: Fi
     scorrimento: "A scorrimento",
     pioggia: "A pioggia",
     goccia: "A goccia",
+    "n/a": "Non applicabile"
   };
   const form_options_inerbimento = {
     misto_spoglio: "Misto / Spoglio",
     brassicaceae: "Brassicaceae",
     graminaceae: "Graminaceae",
     fabaceae: "Fabaceae",
+    "n/a": "Non applicabile"
   };
   const form_options_tessitura = {
     misto: "Misto",

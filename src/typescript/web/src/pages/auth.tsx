@@ -22,6 +22,7 @@ import SignupImpactQuestionnaireStep, {
 } from "../features/auth/components/signup-impact-questionnaire-step";
 import Modal from "../components/Modal";
 import axios from "axios";
+import ReactGA from "react-ga4";
 
 const PhoneRegExp =
   /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
@@ -762,6 +763,9 @@ export function Signup() {
       await usersApi.registerUser(payload);
       if (flow === "Standard") {
         goToStep(standardSuccessStep);
+        if (isCompanyOwnerInStandardFlow) {
+          ReactGA.event("company_registration");
+        }
       } else {
         goToStep(simpleFlowSuccessStep);
       }

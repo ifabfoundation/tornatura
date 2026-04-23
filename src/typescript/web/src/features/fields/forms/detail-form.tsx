@@ -128,19 +128,21 @@ export function FieldDetailForm({ field }: FieldDetailProps) {
     scorrimento: "A scorrimento",
     pioggia: "A pioggia",
     goccia: "A goccia",
+    "n/a": "Non applicabile"
   };
   const form_options_inerbimento = {
     misto_spoglio: "Misto / Spoglio",
     brassicaceae: "Brassicaceae",
     graminaceae: "Graminaceae",
     fabaceae: "Fabaceae",
+    "n/a": "Non applicabile"
   };
   const form_options_tessitura = {
     misto: "Misto",
     argilla: "Argilla",
     sabbia: "Sabbia",
     limo: "Limo",
-  };
+  }; 
 
   const handleFieldDelete = async () => {
     setModal({
