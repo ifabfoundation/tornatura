@@ -24,6 +24,7 @@ export interface TableColumn {
   id: string;
   headerText: string;
   sortable?: boolean;
+  sortValueId?: string;
   type: "text" | "button";
   style?: string;
   shrink?: boolean;
@@ -72,7 +73,9 @@ const TableCozy: React.FC<TableCozyProps> = ({ columns, data, options }) => {
     }
   });
   const rowsClickable = hasRowCallback && !buttonsAreValid;
-  const sortedData = _.orderBy(data, [sortCol], [sortDir]);
+  const activeSortColumn = columns.find((col) => col.id === sortCol);
+  const sortValueId = activeSortColumn?.sortValueId ?? sortCol;
+  const sortedData = _.orderBy(data, [sortValueId], [sortDir]);
 
   const handleSortClick = (id: string) => {
     if (sortCol !== id) {

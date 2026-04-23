@@ -3,6 +3,8 @@ import { useAppDispatch } from "../../../hooks";
 import { Outlet, useParams } from "react-router-dom";
 import { MenuItemEntry } from "../../../components/Sidebar";
 import { SidebarActions } from "../../sidebar/state/sidebar-slice";
+import { fieldsActions } from "../../fields/state/fields-slice";
+import { companiesActions } from "../state/companies-slice";
 
 export function CompanyDetail() {
   const dispatch = useAppDispatch();
@@ -76,6 +78,8 @@ export function CompanyDetail() {
       ];
       dispatch(SidebarActions.setMenuEntriesAction(menuEntries));
       dispatch(SidebarActions.setMenuBottomEntriesAction(menuBottomEntries));
+      dispatch(companiesActions.getCompanyAction(companyId));
+      dispatch(fieldsActions.fetchCompanyFieldsAction(companyId));
     }
   }, [companyId, fieldId]);
 

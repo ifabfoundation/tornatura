@@ -8,8 +8,13 @@ import {
   detectionTypesActions,
   detectionTypesSelectors,
 } from "../../detection-types/state/detection-types-slice";
-import { observationTypesSelectors } from "../../observation-types/state/observation-types-slice";
+import {
+  observationTypesActions,
+  observationTypesSelectors,
+} from "../../observation-types/state/observation-types-slice";
 import { detectionsActions } from "../../detections/state/detections-slice";
+import { companiesActions } from "../../companies/state/companies-slice";
+import { fieldsActions } from "../state/fields-slice";
 
 export function FieldDetail() {
   const dispatch = useAppDispatch();
@@ -18,6 +23,16 @@ export function FieldDetail() {
     detectionTypesSelectors.selectDetectionTypesByField(state, fieldId ?? "default"),
   );
   const observationsTypes = useAppSelector(observationTypesSelectors.selectObservationTypes);
+
+  const fetchData = React.useCallback(() => {
+    if (companyId && fieldId) {
+      dispatch(companiesActions.getCompanyAction(companyId));
+      dispatch(fieldsActions.fetchCompanyFieldsAction(companyId));
+      dispatch(detectionTypesActions.fetchDetectionTypesAction({ orgId: companyId, fieldId }));
+      dispatch(detectionsActions.fetchFieldDetectionsAction({ orgId: companyId, fieldId }));
+    }
+    dispatch(observationTypesActions.fetchObservationTypesAction({}));
+  }, [companyId, fieldId, dispatch]);
 
   React.useEffect(() => {
     if (!companyId || !fieldId) {
@@ -130,13 +145,8 @@ export function FieldDetail() {
   }, [companyId, fieldId, observationsTypes, detectionTypes]);
 
   React.useEffect(() => {
-    if (companyId && fieldId) {
-      dispatch(detectionTypesActions.fetchDetectionTypesAction({ orgId: companyId, fieldId }));
-      dispatch(
-        detectionsActions.fetchFieldDetectionsAction({ orgId: companyId, fieldId: fieldId }),
-      );
-    }
-  }, [companyId, fieldId]);
+    fetchData();
+  }, [fetchData]);
 
   return <Outlet />;
 }

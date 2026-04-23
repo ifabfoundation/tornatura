@@ -12,16 +12,12 @@ import UserMenu from "./components/UserMenu";
 import SideBar, { MenuItemEntry } from "./components/Sidebar";
 import MobileHeaderBar from "./components/MobileHeaderBar";
 import { companiesActions } from "./features/companies/state/companies-slice";
-import { AccountTypeEnum, AgriField } from "@tornatura/coreapis";
+import { AccountTypeEnum } from "@tornatura/coreapis";
 import { feedbacksActions } from "./features/feedbacks/state/feedbacks-slice";
-import { fieldsActions } from "./features/fields/state/fields-slice";
-import { unwrapResult } from "@reduxjs/toolkit";
-import { detectionsActions } from "./features/detections/state/detections-slice";
 import { SidebarActions } from "./features/sidebar/state/sidebar-slice";
 import Loading from "./components/Loading";
 import { invitationsActions } from "./features/invitations/state/invitations-slice";
 import { observationTypesActions } from "./features/observation-types/state/observation-types-slice";
-import { detectionTypesActions } from "./features/detection-types/state/detection-types-slice";
 import ReactGA from "react-ga4";
 import { getBrowsingOrigin } from "./helpers/common";
 
@@ -82,7 +78,7 @@ function MainApp() {
           {
             id: "user",
             icon: "users",
-            text: "Profilo Utente fck",
+            text: "Profilo Utente",
             path: "/profile",
             type: 'single',
             familyItems: []
@@ -155,18 +151,6 @@ function App() {
         if (profile.organizations) {
           for (let org of profile.organizations) {
             await dispatch(companiesActions.getCompanyAction(org.id));
-            const response = await dispatch(fieldsActions.fetchCompanyFieldsAction(org.id));
-            const responseData = await unwrapResult(response);
-            const fields = responseData.data as AgriField[];
-            for (let field of fields) {
-              await dispatch(
-                detectionsActions.fetchFieldDetectionsAction({
-                  orgId: org.id,
-                  fieldId: field.id,
-                }),
-              );
-              await dispatch(detectionTypesActions.fetchDetectionTypesAction({ orgId: org.id, fieldId: field.id}));
-            }
           }
         }
       }

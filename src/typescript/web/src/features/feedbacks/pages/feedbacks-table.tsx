@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { headerbarActions } from "../../headerbar/state/headerbar-slice";
 import TableCozy, { TableColumn, TableOptions } from "../../../components/TableCozy";
@@ -13,12 +13,12 @@ export function FeedbackTable() {
   const feedbacks = useAppSelector(feedbacksSelectors.selectAllFeedbacks);
 
   React.useEffect(() => {
-    dispatch(headerbarActions.setTitle({title: "Feedbacks", subtitle: "Subtitle"}));
-  }, []); 
+    dispatch(headerbarActions.setTitle({ title: "Feedback", subtitle: "Vista amministrazione" }));
+  }, []);
 
   const options: TableOptions = {
-    defaultSortCol: "name",
-    defaultSortDir: 'desc',
+    defaultSortCol: "creationTime",
+    defaultSortDir: "desc",
   };
 
   const columns: TableColumn[] = [
@@ -28,11 +28,12 @@ export function FeedbackTable() {
       sortable: true,
       style: "normal",
       type: "text",
-    }, {
+    },
+    {
       headerText: "",
       id: "feedback",
       sortable: false,
-      style: "small-grey",
+      style: "normal",
       type: "text",
     },
     {
@@ -45,15 +46,14 @@ export function FeedbackTable() {
     {
       headerText: "Data Invio",
       id: "creationTime",
+      sortValueId: "creationTimeRaw",
       sortable: true,
       style: "normal",
       type: "text",
     }
-  ]
+  ];
 
-  const tableOptions = options;
-  const tableColumns = columns;
-  const data = feedbacks.map((f) => { 
+  const data = feedbacks.map((f) => {
     const d = new Date(f.creationTime);
     const u = users.find((u) => u.id === f.author);
     const c = u ? u.email : "N/A";
@@ -63,16 +63,11 @@ export function FeedbackTable() {
       "feedback": f.feedback,
       "author": c,
       "creationTime": d.toLocaleString('it-IT'),
-    }
+      "creationTimeRaw": f.creationTime,
+    };
   } );
 
   return (
-   <Fragment>
-      <TableCozy
-        columns={tableColumns}
-        data={data}
-        options={tableOptions}
-      />
-   </Fragment>
+    <TableCozy columns={columns} data={data} options={options} />
   );
 }

@@ -5,11 +5,12 @@ import { useNavigate, useParams } from "react-router-dom";
 import { headerbarActions } from "../../headerbar/state/headerbar-slice";
 import { Card, Col, Container, Row } from "react-bootstrap";
 import { fieldsSelectors } from "../../fields/state/fields-slice";
-import { AgriField, Point } from "@tornatura/coreapis";
+import { AccountTypeEnum, AgriField, Point } from "@tornatura/coreapis";
 import Icon from "../../../components/Icon";
 import _ from "lodash";
 import { detectionsSelectors } from "../../detections/state/detections-slice";
 import keycloakInstance from "../../../providers/keycloak";
+import { userSelectors } from "../../users/state/user-slice";
 
 export function getFieldMapGeoJson(field: AgriField) {
   let data: number[][] = [];
@@ -42,6 +43,7 @@ export function CompanyFields() {
   const fields = useAppSelector((state) =>
     fieldsSelectors.selectFieldsByOrgId(state, currentCompany.orgId),
   );
+  const currentUser = useAppSelector(userSelectors.selectCurrentUser);
   // sort by name
   fields
     .sort((a, b) => {
@@ -67,11 +69,15 @@ export function CompanyFields() {
   }
 
   const canCreateField = () => {
+    if (currentUser.accountType === AccountTypeEnum.Admin) {
+      return true;
+    }
+
     if (keycloakInstance.tokenParsed && companyId) {
-      return keycloakInstance.tokenParsed.organizations[companyId]["roles"].includes("manage-agrifields")
+      return keycloakInstance.tokenParsed.organizations[companyId]["roles"].includes("manage-agrifields");
     }
     return false;
-  }
+  };
 
   return (
     <Container fluid>

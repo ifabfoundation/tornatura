@@ -74,7 +74,7 @@ export function FieldDashboard() {
         <Row>
           <Col xs={12}>
             <section className="soft bg-white">
-              <Row>
+              {currentField && <Row>
                 <Col md={6} xl={4} xxl={3}>
                   <div className="position-relative me-md-4 mb-2 mb-md-0">
                     <img
@@ -146,7 +146,7 @@ export function FieldDashboard() {
                     </Col>
                   </Row>
                 </Col>
-              </Row>
+              </Row>}
             </section>
           </Col>
         </Row>

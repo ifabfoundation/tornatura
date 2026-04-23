@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { headerbarActions } from "../../headerbar/state/headerbar-slice";
 import TableCozy, { TableColumn, TableOptions } from "../../../components/TableCozy";
@@ -10,12 +10,12 @@ export function UserTable() {
   const users = useAppSelector(userSelectors.selectAllUsers);
 
   React.useEffect(() => {
-    dispatch(headerbarActions.setTitle({title: "Utenti", subtitle: "Subtitle"}));
-  }, []); 
+    dispatch(headerbarActions.setTitle({ title: "Utenti", subtitle: "Vista amministrazione" }));
+  }, []);
 
   const options: TableOptions = {
-    defaultSortCol: "name",
-    defaultSortDir: 'desc',
+    defaultSortCol: "lastName",
+    defaultSortDir: "asc",
   };
 
   const columns: TableColumn[] = [
@@ -53,18 +53,9 @@ export function UserTable() {
       style: "normal",
       type: "text",
     }
-  ]
-
-  const tableOptions = options;
-  const tableColumns = columns;
+  ];
 
   return (
-   <Fragment>
-      <TableCozy
-        columns={tableColumns}
-        data={users}
-        options={tableOptions}
-      />
-   </Fragment>
+    <TableCozy columns={columns} data={users} options={options} />
   );
 }
