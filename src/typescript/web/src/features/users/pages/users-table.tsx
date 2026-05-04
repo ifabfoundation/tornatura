@@ -3,6 +3,7 @@ import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { headerbarActions } from "../../headerbar/state/headerbar-slice";
 import TableCozy, { TableColumn, TableOptions } from "../../../components/TableCozy";
 import { userSelectors } from "../state/user-slice";
+import { Container, Row, Col } from "react-bootstrap";
 
 
 export function UserTable() {
@@ -45,17 +46,22 @@ export function UserTable() {
       sortable: true,
       style: "normal",
       type: "text",
-    },
-    {
-      headerText: "Tipo",
-      id: "accountType",
-      sortable: true,
-      style: "normal",
-      type: "text",
     }
   ];
 
   return (
-    <TableCozy columns={columns} data={users} options={options} />
+    <div>
+      <section className="soft pb-3">
+        <div className="">
+          <Container fluid className="px-0">
+            <Row>
+              <Col xl={12} className="mt-0" style={{ overflowX: "auto" }}>
+                <TableCozy columns={columns} data={users} options={options} />
+              </Col>
+            </Row>
+          </Container>
+        </div>
+      </section>
+    </div>
   );
 }

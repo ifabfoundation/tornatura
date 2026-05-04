@@ -3,12 +3,11 @@ import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { companiesSelectors } from "../state/companies-slice";
 import { headerbarActions } from "../../headerbar/state/headerbar-slice";
 import TableCozy, { TableColumn, TableOptions } from "../../../components/TableCozy";
-import { useNavigate } from "react-router-dom";
+import { Col, Container, Row } from "react-bootstrap";
 
 
 export function CompanyTable() {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
   const companies = useAppSelector(companiesSelectors.selectAllCompanies);
 
   const formatDateTime = (value?: number) => {
@@ -32,7 +31,6 @@ export function CompanyTable() {
   const options: TableOptions = {
     defaultSortCol: "creationTime",
     defaultSortDir: "desc",
-    onRowClick: (rowData) => navigate(`/companies/${rowData.orgId}`),
   };
 
   const columns: TableColumn[] = [
@@ -65,7 +63,7 @@ export function CompanyTable() {
       type: "text",
     },
     {
-      headerText: "Creazione",
+      headerText: "Data Di Registrazione",
       id: "creationTime",
       sortValueId: "creationTimeRaw",
       sortable: true,
@@ -87,6 +85,18 @@ export function CompanyTable() {
   });
 
   return (
-    <TableCozy columns={columns} data={data} options={options} />
+    <div>
+      <section className="soft pb-3">
+        <div className="">
+          <Container fluid className="px-0">
+            <Row>
+              <Col xl={12} className="mt-0" style={{ overflowX: "auto" }}>
+                <TableCozy columns={columns} data={data} options={options} />
+              </Col>
+            </Row>
+          </Container>
+        </div>
+      </section>
+    </div>
   );
 }

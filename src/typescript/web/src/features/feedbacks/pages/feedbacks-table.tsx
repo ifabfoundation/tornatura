@@ -4,6 +4,7 @@ import { headerbarActions } from "../../headerbar/state/headerbar-slice";
 import TableCozy, { TableColumn, TableOptions } from "../../../components/TableCozy";
 import { feedbacksSelectors } from "../state/feedbacks-slice";
 import { userSelectors } from "../../users/state/user-slice";
+import { Container, Row, Col } from "react-bootstrap";
 
 
 
@@ -68,6 +69,18 @@ export function FeedbackTable() {
   } );
 
   return (
-    <TableCozy columns={columns} data={data} options={options} />
+    <div>
+      <section className="soft pb-3">
+        <div className="">
+          <Container fluid className="px-0">
+            <Row>
+              <Col xl={12} className="mt-0" style={{ overflowX: "auto" }}>
+                <TableCozy columns={columns} data={data} options={options} />
+              </Col>
+            </Row>
+          </Container>
+        </div>
+      </section>
+    </div>
   );
 }
