@@ -18,6 +18,7 @@ from core.models import ObservationType
 def connect_db():
     connect(
         host=APIConfig.MONGO_DATABASE_HOST,
+        db=APIConfig.MONGO_DATABASE_NAME,
         port=27017,
         username=APIConfig.MONGO_USER,
         password=APIConfig.MONGO_PASSWORD,

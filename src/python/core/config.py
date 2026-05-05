@@ -19,6 +19,7 @@ class APIConfig(object):
     AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY', default='')
 
     MONGO_DATABASE_HOST = config('MONGO_DATABASE_HOST', default='')
+    MONGO_DATABASE_NAME = config('MONGO_DATABASE_NAME', default='tornatura')
     MONGO_PASSWORD = config('MONGO_PASSWORD', default='')
     MONGO_USER = config('MONGO_USER', default='')
 

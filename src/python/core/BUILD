@@ -18,6 +18,42 @@ pex_binary(
     dependencies=[":pysource", ":statics"],
 )
 
+pex_binary(
+    name="backfill-organization-roles",
+    entry_point="scripts/backfill_organization_roles.py",
+    dependencies=[":pysource", ":statics"],
+)
+
+pex_binary(
+    name="cleanup-organization-fields",
+    entry_point="scripts/cleanup_organization_fields.py",
+    dependencies=[":pysource", ":statics"],
+)
+
+pex_binary(
+    name="delete-user-and-orgs",
+    entry_point="scripts/delete_user_and_orgs.py",
+    dependencies=[":pysource", ":statics"],
+)
+
+pex_binary(
+    name="migrate-detection-photos",
+    entry_point="scripts/migrate_detection_photos.py",
+    dependencies=[":pysource", ":statics"],
+)
+
+pex_binary(
+    name="migrate-detection-types",
+    entry_point="scripts/migrate_detection_types.py",
+    dependencies=[":pysource", ":statics"],
+)
+
+pex_binary(
+    name="sync-deleted-organizations-from-keycloak",
+    entry_point="scripts/sync_deleted_organizations_from_keycloak.py",
+    dependencies=[":pysource", ":statics"],
+)
+
 resources(
     name="statics",
     sources=["media/**", ".env", "templates/**"],

@@ -33,6 +33,7 @@ ALLOWED_FIELDS = {
 def connect_db() -> None:
     connect(
         host=APIConfig.MONGO_DATABASE_HOST,
+        db=APIConfig.MONGO_DATABASE_NAME,
         port=27017,
         username=APIConfig.MONGO_USER,
         password=APIConfig.MONGO_PASSWORD,
