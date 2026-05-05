@@ -32,6 +32,7 @@ export interface TableColumn {
   buttonText?: string;
   buttonIcon?: IconName;
   onButtonClick?: (data: any) => void;
+  buttonVisible?: (data: any) => boolean;
 }
 
 export interface TableOptions {
@@ -133,6 +134,9 @@ const TableCozy: React.FC<TableCozyProps> = ({ columns, data, options }) => {
                   </div>
                 );
               } else if (col.type === "button") {
+                if (col.buttonVisible && !col.buttonVisible(d)) {
+                  return <div className={`cell${col.shrink ? " shrink" : ""}`} key={j}></div>;
+                }
                 const buttonCallback = () => {
                   if (col.onButtonClick) {
                     col.onButtonClick(d);

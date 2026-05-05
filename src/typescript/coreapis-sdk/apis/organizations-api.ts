@@ -23,6 +23,7 @@ import { OrganizationCreatePayload } from '../models';
 import { OrganizationMember } from '../models';
 import { OrganizationUpdatePayload } from '../models';
 import { PaginatedResponse } from '../models';
+import { StatusResponse } from '../models';
 /**
  * OrganizationsApi - axios parameter creator
  * @export
@@ -234,6 +235,56 @@ export const OrganizationsApiAxiosParamCreator = function (configuration?: Confi
         },
         /**
          * 
+         * @summary Remove Organization Member
+         * @param {string} orgId Organization ID
+         * @param {string} userId User ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        removeOrganizationMember: async (orgId: string, userId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            if (orgId === null || orgId === undefined) {
+                throw new RequiredError('orgId','Required parameter orgId was null or undefined when calling removeOrganizationMember.');
+            }
+            if (userId === null || userId === undefined) {
+                throw new RequiredError('userId','Required parameter userId was null or undefined when calling removeOrganizationMember.');
+            }
+            const localVarPath = `/v1/organizations/{org_id}/members/{user_id}`
+                .replace(`{${"org_id"}}`, encodeURIComponent(String(orgId)))
+                .replace(`{${"user_id"}}`, encodeURIComponent(String(userId)));
+            const localVarUrlObj = new URL(localVarPath, 'https://example.com');
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions :AxiosRequestConfig = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (configuration && configuration.accessToken) {
+                const accessToken = typeof configuration.accessToken === 'function'
+                    ? await configuration.accessToken()
+                    : await configuration.accessToken;
+                localVarHeaderParameter["Authorization"] = "Bearer " + accessToken;
+            }
+
+            const query = new URLSearchParams(localVarUrlObj.search);
+            for (const key in localVarQueryParameter) {
+                query.set(key, localVarQueryParameter[key]);
+            }
+            for (const key in options.params) {
+                query.set(key, options.params[key]);
+            }
+            localVarUrlObj.search = (new URLSearchParams(query)).toString();
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: localVarUrlObj.pathname + localVarUrlObj.search + localVarUrlObj.hash,
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Update Organization Info
          * @param {OrganizationUpdatePayload} body 
          * @param {string} orgId Organization ID
@@ -358,6 +409,21 @@ export const OrganizationsApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Remove Organization Member
+         * @param {string} orgId Organization ID
+         * @param {string} userId User ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async removeOrganizationMember(orgId: string, userId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => Promise<AxiosResponse<StatusResponse>>> {
+            const localVarAxiosArgs = await OrganizationsApiAxiosParamCreator(configuration).removeOrganizationMember(orgId, userId, options);
+            return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
+                const axiosRequestArgs :AxiosRequestConfig = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
+                return axios.request(axiosRequestArgs);
+            };
+        },
+        /**
+         * 
          * @summary Update Organization Info
          * @param {OrganizationUpdatePayload} body 
          * @param {string} orgId Organization ID
@@ -420,6 +486,17 @@ export const OrganizationsApiFactory = function (configuration?: Configuration, 
          */
         async listOrganizationMembers(orgId: string, options?: AxiosRequestConfig): Promise<AxiosResponse<Array<OrganizationMember>>> {
             return OrganizationsApiFp(configuration).listOrganizationMembers(orgId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Remove Organization Member
+         * @param {string} orgId Organization ID
+         * @param {string} userId User ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async removeOrganizationMember(orgId: string, userId: string, options?: AxiosRequestConfig): Promise<AxiosResponse<StatusResponse>> {
+            return OrganizationsApiFp(configuration).removeOrganizationMember(orgId, userId, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -486,6 +563,18 @@ export class OrganizationsApi extends BaseAPI {
      */
     public async listOrganizationMembers(orgId: string, options?: AxiosRequestConfig) : Promise<AxiosResponse<Array<OrganizationMember>>> {
         return OrganizationsApiFp(this.configuration).listOrganizationMembers(orgId, options).then((request) => request(this.axios, this.basePath));
+    }
+    /**
+     * 
+     * @summary Remove Organization Member
+     * @param {string} orgId Organization ID
+     * @param {string} userId User ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof OrganizationsApi
+     */
+    public async removeOrganizationMember(orgId: string, userId: string, options?: AxiosRequestConfig) : Promise<AxiosResponse<StatusResponse>> {
+        return OrganizationsApiFp(this.configuration).removeOrganizationMember(orgId, userId, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      * 

@@ -1,8 +1,8 @@
 from typing import Annotated, List
 from fastapi import APIRouter, Depends, HTTPException, Path, Query, status
-from core.permissions import CanManageOrganization, CanViewOrganization, CanViewOrganizationMembers, IsAdmin, IsAgronomist, IsAuthenticated
+from core.permissions import CanManageOrganization, CanManageOrganizationMembers, CanViewOrganization, CanViewOrganizationMembers, IsAdmin, IsAgronomist, IsAuthenticated
 from core.security import SecurityChecker
-from core.serializers import AccountTypeEnum, ErrorResponse, Organization, OrganizationCreatePayload, OrganizationUpdatePayload, PaginatedResponse, OrganizationMember
+from core.serializers import AccountTypeEnum, ErrorResponse, Organization, OrganizationCreatePayload, OrganizationUpdatePayload, PaginatedResponse, OrganizationMember, StatusResponse
 
 from core.services.organizations_services import OrganizationCustomRole, OrganizationDefaultRole, OrganizationServices
 from core.services.users_services import UserServices
@@ -112,3 +112,23 @@ async def list_organization_members(
     checker.check_object_permission(token_info, organization)
 
     return organization_services.list_members(org_id)
+
+
+@router.delete(
+    "/{org_id}/members/{user_id}",
+    operation_id="remove_organization_member",
+    summary="Remove Organization Member",
+    response_description="Removal status",
+)
+async def remove_organization_member(
+    token_info: Annotated[dict, Depends(SecurityChecker(IsAuthenticated))],
+    org_id: str = Path(..., description="Organization ID"),
+    user_id: str = Path(..., description="User ID"),
+    ) -> StatusResponse:
+    organization_services = OrganizationServices()
+    organization = organization_services.get(org_id)
+
+    checker = SecurityChecker(CanManageOrganizationMembers)
+    checker.check_object_permission(token_info, organization)
+
+    return organization_services.remove_member(token_info["sub"], org_id, user_id)

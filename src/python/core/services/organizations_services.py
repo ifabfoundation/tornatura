@@ -9,10 +9,11 @@ import phasetwo
 from phasetwo.apis.tags import organizations_api, organization_roles_api, organization_memberships_api
 from phasetwo.model.organization_representation import OrganizationRepresentation
 from phasetwo.model.organization_role_representation import OrganizationRoleRepresentation
+from urllib import error, request
 from core import config
 from core.decorators import catch_api_exception
 from core.models import OrganizationModel
-from core.serializers import Organization, OrganizationCreatePayload, OrganizationUpdatePayload, OrganizationMember
+from core.serializers import Organization, OrganizationCreatePayload, OrganizationUpdatePayload, OrganizationMember, StatusResponse
 from core.services.files_services import FileServices
 from core.services.users_services import UserServices
 
@@ -188,6 +189,69 @@ class OrganizationServices:
             )
         except phasetwo.ApiException as e:
             print("Exception when calling OrganizationMembershipsApi->add_organization_member: %s\n" % e)
+
+    @classmethod
+    def _get_member_roles(cls, org_id: str, user_id: str) -> list[str]:
+        user = UserServices().get_by_id(user_id)
+        for membership in user.organizations:
+            if membership.id == org_id:
+                return membership.roles
+        return []
+
+    @classmethod
+    def get_member_role(cls, org_id: str, user_id: str) -> str:
+        user = UserServices().get_by_id(user_id)
+        member_roles = cls._get_member_roles(org_id, user_id)
+        return cls._map_member_role(user, member_roles)
+
+    @classmethod
+    def _ensure_member_removal_allowed(cls, actor_id: str, org_id: str, user_id: str):
+        if actor_id == user_id:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="You cannot remove yourself from this organization",
+            )
+
+        actor = UserServices().get_by_id(actor_id)
+        actor_role = cls.get_member_role(org_id, actor_id)
+        target_role = cls.get_member_role(org_id, user_id)
+
+        if actor.accountType == "Agronomist" and target_role in {"company-owner", "company-manager"}:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Agronomists cannot remove company owners or company managers",
+            )
+
+        if actor_role == "company-manager" and target_role == "company-owner":
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Company managers cannot remove company owners",
+            )
+
+    @classmethod
+    def remove_member(cls, actor_id: str, org_id: str, user_id: str):
+        cls._ensure_member_removal_allowed(actor_id, org_id, user_id)
+        token = get_service_access_token()
+        configuration = phasetwo.Configuration(
+            host=f"{config.APIConfig.KEYCLOAK_ENDPOINT}/realms",
+            access_token = token
+        )
+
+        client = phasetwo.ApiClient(configuration)
+        memberships_api = organization_memberships_api.OrganizationMembershipsApi(client)
+
+        try:
+            memberships_api.remove_organization_member(
+                path_params={
+                    "realm": config.APIConfig.KEYCLOAK_REALM,
+                    "userId": user_id,
+                    "orgId": org_id,
+                },
+            )
+            return StatusResponse(status=200, message="User successfully removed")
+        except phasetwo.ApiException as e:
+            print("Exception when calling OrganizationMembershipsApi->remove_organization_member: %s\n" % e)
+            raise HTTPException(status_code=e.status, detail=e.reason)
 
     @catch_api_exception
     def list(self):

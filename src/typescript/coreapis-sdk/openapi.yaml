@@ -625,6 +625,62 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /v1/organizations/{org_id}/members/{user_id}:
+    delete:
+      tags:
+      - Organizations
+      summary: Remove Organization Member
+      operationId: remove_organization_member
+      security:
+      - SecurityChecker: []
+      parameters:
+      - name: org_id
+        in: path
+        required: true
+        schema:
+          type: string
+          description: Organization ID
+          title: Org Id
+        description: Organization ID
+      - name: user_id
+        in: path
+        required: true
+        schema:
+          type: string
+          description: User ID
+          title: User Id
+        description: User ID
+      responses:
+        '200':
+          description: Removal status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+        '401':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /v1/organizations/{org_id}/agrifields/{agrifield_id}/detections:
     get:
       tags:

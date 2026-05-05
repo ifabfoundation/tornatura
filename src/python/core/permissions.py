@@ -143,7 +143,33 @@ class CanViewOrganizationMembers(BasePermission):
         except Exception as ex:
             logger.logger.error(f"Error checking view organization members permission: {ex}")
             return False
-        
+
+
+class CanManageOrganizationMembers(BasePermission):
+    """
+    Permission to manage an organization's members
+    """
+    @classmethod
+    def has_object_permission(cls, token_info, organization):
+        try:
+            if IsAdmin.has_permission(token_info):
+                return True
+
+            org_id = organization.orgId if hasattr(organization, 'orgId') else organization
+
+            if "organizations" not in token_info:
+                return False
+
+            if org_id not in token_info["organizations"]:
+                return False
+
+            roles = token_info["organizations"][org_id]["roles"]
+            return OrganizationDefaultRole.ManageMembers.value in roles
+
+        except Exception as ex:
+            logger.logger.error(f"Error checking manage organization members permission: {ex}")
+            return False
+
 
 class CanViewOrganizationAgrifields(BasePermission):
     """
