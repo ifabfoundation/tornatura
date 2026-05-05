@@ -1,44 +1,69 @@
-<html>
-  <head>
-    <!-- Embed web font with fallback -->
-    <style type="text/css">
-      /* For supported email clients */
-      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap");
-      *,
-      body,
-      table,
-      td,
-      a {
-        font-family: "Inter", Arial, sans-serif;
-      }
-    </style>
-  </head>
-  <body style="font-family: 'Inter', Arial, sans-serif">
-    <img
-      style="width: 150px"
-      width="150"
-      src="https://tornatura.it/tmp-storage/assets/images/logo-color-black.png"
-    />
-    <h3>Buongiorno Team</h3>
-    <p>&Egrave; stato ricevuto un nuovo feedback</p>
-    <p>
-      <strong>Nome:</strong> {{name}}<br />
-      <strong>Email:</strong> {{email}}<br />
-      <strong>Telefono:</strong> {{phone}}<br />
-      <strong>Messaggio:</strong> {{message}}
-    <p>
-      <a
-        style="
-          padding: 10px 15px;
-          border-radius: 5px;
-          text-decoration: none;
-          display: inline-block;
-          background-color: #3d401a;
-          color: #eaff00;
-        "
-        href="{{link}}"
-        >Accedi</a
-      >
-    </p>
-  </body>
+<!DOCTYPE html>
+<html lang="it" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="x-apple-disable-message-reformatting">
+  <title>Nuovo Feedback - Tornatura</title>
+</head>
+<body style="margin:0; padding:0; background-color:#F5F1EA; font-family:Arial, Helvetica, sans-serif; color:#2C2A22;">
+  <div style="display:none; font-size:1px; color:#F5F1EA; line-height:1px; max-height:0; max-width:0; opacity:0; overflow:hidden;">
+    Nuovo feedback ricevuto tramite il modulo di contatto Tornatura.
+  </div>
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F5F1EA; margin:0; padding:0; width:100%;">
+    <tr>
+      <td align="center" style="padding:32px 12px;">
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:560px; background-color:#FFFFFF; border-collapse:collapse;">
+          <tr>
+            <td align="center" style="background-color:#484848; padding:28px 24px;">
+              <img src="https://www.tornatura.it/tmp-storage/assets/images/logo-color-white.png" alt="Tornatura" width="160" style="display:block; width:160px; max-width:160px; height:auto; border:0;">
+            </td>
+          </tr>
+          <tr>
+            <td style="background-color:#3D6B27; padding:36px 24px 32px 24px; text-align:center;">
+              <div style="font-size:12px; line-height:18px; letter-spacing:1px; text-transform:uppercase; color:#DDE8D1; margin-bottom:10px;">Tornatura &middot; Notifica Interna</div>
+              <div style="font-family:Georgia, 'Times New Roman', serif; font-size:30px; line-height:38px; color:#FFFFFF; font-weight:bold; margin-bottom:12px;">Nuovo feedback ricevuto</div>
+              <div style="font-size:15px; line-height:24px; color:#EDF4E7;">Un utente ha inviato un nuovo messaggio tramite il modulo di contatto.</div>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:36px 24px 12px 24px; font-size:15px; line-height:25px; color:#3A3A30;">Buongiorno Team, &egrave; arrivato un nuovo feedback. Di seguito i dettagli del contatto.</td>
+          </tr>
+          <tr>
+            <td style="padding:0 24px 24px 24px;">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse; background-color:#F7F4EE; border:1px solid #D8D0C0;">
+                <tr><td style="padding:18px 20px 10px 20px; font-size:11px; line-height:16px; letter-spacing:1px; text-transform:uppercase; color:#8A9E7A; font-weight:bold;">Dati del Contatto</td></tr>
+                <tr><td style="padding:0 20px 8px 20px; font-size:14px; line-height:22px; color:#3A3A30;"><strong style="color:#9A9080; display:inline-block; min-width:80px;">Nome</strong> {{name}}</td></tr>
+                <tr><td style="padding:0 20px 8px 20px; font-size:14px; line-height:22px; color:#3A3A30;"><strong style="color:#9A9080; display:inline-block; min-width:80px;">Email</strong> <a href="mailto:{{email}}" style="color:#3D6B27; text-decoration:none;">{{email}}</a></td></tr>
+                <tr><td style="padding:0 20px 18px 20px; font-size:14px; line-height:22px; color:#3A3A30;"><strong style="color:#9A9080; display:inline-block; min-width:80px;">Telefono</strong> {{phone}}</td></tr>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:0 24px 24px 24px;">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse; background-color:#F7F4EE; border:1px solid #D8D0C0;">
+                <tr><td style="padding:18px 20px 10px 20px; font-size:11px; line-height:16px; letter-spacing:1px; text-transform:uppercase; color:#8A9E7A; font-weight:bold;">Messaggio</td></tr>
+                <tr><td style="padding:0 20px 18px 20px; font-family:Georgia, 'Times New Roman', serif; font-size:15px; line-height:24px; color:#3A3A30; font-style:italic;">&ldquo;{{message}}&rdquo;</td></tr>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td align="center" style="padding:0 24px 32px 24px;">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:separate;">
+                <tr><td align="center" bgcolor="#3D6B27" style="border-radius:6px;"><a href="{{link}}" style="display:inline-block; padding:15px 28px; font-size:15px; line-height:20px; font-weight:bold; color:#FFFFFF; text-decoration:none; background-color:#3D6B27; border-radius:6px;">Accedi</a></td></tr>
+              </table>
+              <div style="padding-top:10px; font-size:12px; line-height:18px; color:#9A9080;">app.tornatura.it &middot; accesso sicuro HTTPS</div>
+            </td>
+          </tr>
+          <tr>
+            <td style="background-color:#484848; padding:24px; text-align:center;">
+              <div style="font-size:12px; line-height:20px; margin-bottom:12px;"><a href="#" style="color:#D4D4D4; text-decoration:none;">Privacy Policy</a><span style="color:#8F8F8F;">&nbsp;|&nbsp;</span><a href="#" style="color:#D4D4D4; text-decoration:none;">Termini di Servizio</a><span style="color:#8F8F8F;">&nbsp;|&nbsp;</span><a href="#" style="color:#D4D4D4; text-decoration:none;">Supporto</a></div>
+              <div style="font-size:11px; line-height:18px; color:#B8B8B8;">&copy; 2025 Tornatura &middot; Tutti i diritti riservati<br>Hai ricevuto questa email perch&eacute; sei registrato su Tornatura.</div>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
 </html>
