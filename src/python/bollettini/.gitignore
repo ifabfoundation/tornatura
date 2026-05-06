@@ -9,11 +9,10 @@ __pycache__/
 *.so
 
 # Data (large files, generated)
-data/1_collections/bollettini/2025/*.pdf
-data/1_collections/bollettini/2026/*.pdf
+data/input_bollettini/
 data/chromadb/
 data/cache/
-data/output/
+data/output_bollettini/
 logs/
 
 # IDE

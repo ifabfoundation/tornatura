@@ -1,33 +1,38 @@
-RAG Bollettini - Transfer Package
-=================================
+RAG Colture - Transfer Package
+==============================
 
-Package: rag_bollettini_20260310
-Created: 2026-03-10 10:09:24
-Total Files: 260
-Total Size: 387M
+Package: rag_colture_20260420
+Creato:  2026-04-20 12:19:44
+File:    649
+Size:    496M
 
-Contents:
+Contenuto
 ---------
-✓ Python scripts (run_pipeline.py, scheduler.py)
-✓ Modules (download, process, cimice, flavescenza, normativa)
-✓ Bollettini PDF (organizzati per anno)
-✓ ChromaDB (vector database pre-indicizzato)
-✓ Documentation (CLAUDE.md, REPORT.md)
-✓ Requirements.txt
-✓ Setup script
-✓ .env (API keys configurate)
+OK Codice Python (run_pipeline.py + modules/)
+OK PDF bollettini (ER + Campania)
+OK ChromaDB pre-indicizzato (~228 MB)
+OK Cache (download + processing + query)
+OK Report gia' generati (data/output_bollettini)
+OK Documentazione (report.md + CLAUDE.md + README.md)
+OK Requirements.txt
+OK Setup script
+OK .env con OPENAI_API_KEY (NB: sostituire con la chiave del cliente)
 
-NOT Included:
--------------
-✗ venv/ (create with: ./setup.sh)
-✗ Generated reports (will be created on first run)
+NON incluso
+-----------
+NO venv/
+NO __pycache__/
+NO log/
 
-Instructions:
--------------
-1. Extract this package on target server
-2. Run ./setup.sh
-3. Configure .env with OPENAI_API_KEY
+Istruzioni
+----------
+1. Estrarre l'archivio sul server target
+2. ./setup.sh
+3. Modificare .env con OPENAI_API_KEY
 4. Test: python run_pipeline.py --query-only
-5. Production: python scheduler.py
+5. Produzione: python run_pipeline.py (o cron giornaliero)
 
-Documentation: CLAUDE.md
+Documentazione
+--------------
+- report.md  — handoff tecnico completo
+- CLAUDE.md  — doc operativa

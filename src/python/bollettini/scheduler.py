@@ -19,27 +19,27 @@ Author: Vito (with AI assistance)
 Date: January 2026
 """
 
-import os
 import sys
-import subprocess
 import logging
-from datetime import datetime, timezone, timedelta
+import json
+from datetime import datetime
 from pathlib import Path
 from apscheduler.schedulers.blocking import BlockingScheduler
 from apscheduler.triggers.cron import CronTrigger
+
+from bollettini import paths
+from bollettini.modules.config import REGIONI
 
 # =============================================================================
 # CONFIGURATION
 # =============================================================================
 
 SCRIPT_DIR = Path(__file__).parent.resolve()
-PIPELINE_SCRIPT = SCRIPT_DIR / "run_pipeline.py"
-LOG_DIR = SCRIPT_DIR / "logs"
-VENV_PYTHON = SCRIPT_DIR / "venv" / "bin" / "python"
-CACHE_DIR = SCRIPT_DIR / "data" / "cache"
+LOG_DIR = paths.RUNTIME_DIR / "logs"
+CACHE_DIR = paths.DATA_DIR / "cache"
 
 # Scheduler settings
-SCHEDULE_HOUR = 7
+SCHEDULE_HOUR = 8
 SCHEDULE_MINUTE = 0
 TIMEZONE = "Europe/Rome"  # CET/CEST
 
@@ -82,52 +82,56 @@ if not logger.handlers:
 
 def get_cache_status():
     """Get status of all caches"""
-    import json
-    
-    status = {}
-    data_dir = SCRIPT_DIR / "data"
-    
-    # Bollettini download cache (in data/, not data/cache/)
-    bollettini_cache = data_dir / "bollettini_cache.json"
-    if bollettini_cache.exists():
-        with open(bollettini_cache) as f:
-            data = json.load(f)
-        total = sum(len(p.get('downloaded_ids', [])) for p in data.get('provinces', {}).values())
-        status['bollettini_downloaded'] = total
-        status['last_download_check'] = data.get('last_updated', 'N/A')
-    else:
-        status['bollettini_downloaded'] = 0
-        status['last_download_check'] = 'Never'
-    
-    # Processing cache (in data/, not data/cache/)
-    processing_cache = data_dir / "processing_cache.json"
+
+    status = {
+        "downloads_by_region": {},
+        "reports_by_region": {},
+        "bollettini_downloaded": 0,
+        "bollettini_indexed": 0,
+        "colture_reports": 0,
+        "last_download_check": "Never",
+        "last_processing": "Never",
+        "last_report_run": "Never",
+    }
+
+    last_download_checks: list[str] = []
+    last_report_runs: list[str] = []
+
+    for region_id in REGIONI:
+        download_cache = paths.DATA_DIR / "input_bollettini" / region_id / "cache_download.json"
+        downloaded = 0
+        if download_cache.exists():
+            with open(download_cache, encoding="utf-8") as f:
+                data = json.load(f)
+            downloaded = sum(len(entry.get("downloaded_ids", [])) for entry in data.get("provinces", {}).values())
+            if data.get("last_updated"):
+                last_download_checks.append(data["last_updated"])
+        status["downloads_by_region"][region_id] = downloaded
+        status["bollettini_downloaded"] += downloaded
+
+        report_cache = CACHE_DIR / f"colture_{region_id}_processed.json"
+        report_count = 0
+        if report_cache.exists():
+            with open(report_cache, encoding="utf-8") as f:
+                data = json.load(f)
+            report_count = len(data.get("processed", {}))
+            if data.get("last_run"):
+                last_report_runs.append(data["last_run"])
+        status["reports_by_region"][region_id] = report_count
+        status["colture_reports"] += report_count
+
+    processing_cache = CACHE_DIR / "processing_cache.json"
     if processing_cache.exists():
-        with open(processing_cache) as f:
+        with open(processing_cache, encoding="utf-8") as f:
             data = json.load(f)
-        status['bollettini_indexed'] = len(data.get('processed_files', []))
-        status['last_processing'] = data.get('last_updated', 'N/A')
-    else:
-        status['bollettini_indexed'] = 0
-        status['last_processing'] = 'Never'
-    
-    # Cimice query cache (in data/cache/)
-    cimice_cache = CACHE_DIR / "cimice_processed.json"
-    if cimice_cache.exists():
-        with open(cimice_cache) as f:
-            data = json.load(f)
-        status['cimice_reports'] = len(data.get('processed', {}))
-    else:
-        status['cimice_reports'] = 0
-    
-    # Flavescenza query cache
-    flavescenza_cache = CACHE_DIR / "flavescenza_processed.json"
-    if flavescenza_cache.exists():
-        with open(flavescenza_cache) as f:
-            data = json.load(f)
-        status['flavescenza_reports'] = len(data.get('processed', {}))
-    else:
-        status['flavescenza_reports'] = 0
-    
+        status["bollettini_indexed"] = len(data.get("processed_files", []))
+        status["last_processing"] = data.get("last_updated", "Never")
+
+    if last_download_checks:
+        status["last_download_check"] = max(last_download_checks)
+    if last_report_runs:
+        status["last_report_run"] = max(last_report_runs)
+
     return status
 
 
@@ -140,11 +144,18 @@ def print_status():
     print("="*60)
     print(f"Bollettini scaricati:    {status['bollettini_downloaded']}")
     print(f"Bollettini indicizzati:  {status['bollettini_indexed']}")
-    print(f"Report Cimice:           {status['cimice_reports']}")
-    print(f"Report Flavescenza:      {status['flavescenza_reports']}")
+    print(f"Report colture:          {status['colture_reports']}")
+    print("-"*60)
+    for region_id, region_data in REGIONI.items():
+        print(
+            f"{region_data['nome']:<22}"
+            f"download={status['downloads_by_region'][region_id]:<4} "
+            f"report={status['reports_by_region'][region_id]}"
+        )
     print("-"*60)
     print(f"Ultimo check download:   {status['last_download_check']}")
     print(f"Ultimo processing:       {status['last_processing']}")
+    print(f"Ultima query colture:    {status['last_report_run']}")
     print("="*60 + "\n")
 
 
@@ -152,79 +163,38 @@ def print_status():
 # PIPELINE EXECUTION
 # =============================================================================
 
-def run_pipeline():
+def run_pipeline_job():
     """Execute the RAG pipeline"""
     start_time = datetime.now()
     logger.info("="*60)
     logger.info("STARTING RAG BOLLETTINI PIPELINE")
     logger.info("="*60)
-    
-    # Check if pipeline script exists
-    if not PIPELINE_SCRIPT.exists():
-        logger.error(f"Pipeline script not found: {PIPELINE_SCRIPT}")
-        return False, "Pipeline script not found"
-    
-    # Check if venv python exists
-    python_exec = str(VENV_PYTHON) if VENV_PYTHON.exists() else sys.executable
-    logger.info(f"Using Python: {python_exec}")
-    
-    # Run the pipeline
+
     try:
-        logger.info(f"Executing: {PIPELINE_SCRIPT}")
-        
-        result = subprocess.run(
-            [python_exec, str(PIPELINE_SCRIPT)],
-            cwd=str(SCRIPT_DIR),
-            capture_output=True,
-            text=True,
-            timeout=1800  # 30 minute timeout
-        )
-        
-        # Log output (summarized)
-        if result.stdout:
-            lines = result.stdout.strip().split('\n')
-            # Log only key lines (skip duplicates and verbose OCR logs)
-            seen = set()
-            for line in lines:
-                # Skip OCR/RapidOCR verbose logs
-                if '[RapidOCR]' in line or 'onnxruntime' in line:
-                    continue
-                # Skip duplicate lines
-                clean_line = line.split(' - ')[-1] if ' - ' in line else line
-                if clean_line in seen:
-                    continue
-                seen.add(clean_line)
-                logger.info(f"[PIPELINE] {line[:200]}")  # Truncate long lines
-        
-        if result.stderr:
-            for line in result.stderr.strip().split('\n'):
-                if line.strip() and 'RapidOCR' not in line and 'onnxruntime' not in line:
-                    logger.warning(f"[STDERR] {line[:200]}")
-        
+        logger.info("Executing bollettini.run_pipeline")
+        from bollettini.run_pipeline import run_pipeline as execute_pipeline
+
+        exit_code = execute_pipeline()
         elapsed = datetime.now() - start_time
-        
-        if result.returncode == 0:
+
+        if exit_code == 0:
             logger.info(f"Pipeline completed: NEW DATA PROCESSED ({elapsed.total_seconds():.1f}s)")
             return True, "New data processed"
-        elif result.returncode == 1:
+        if exit_code == 1:
             logger.info(f"Pipeline completed: No new data ({elapsed.total_seconds():.1f}s)")
             return True, "No new data"
-        else:
-            logger.error(f"Pipeline failed with return code: {result.returncode}")
-            return False, f"Failed with code {result.returncode}"
-    
-    except subprocess.TimeoutExpired:
-        logger.error("Pipeline timed out after 30 minutes")
-        return False, "Timeout"
+
+        logger.error(f"Pipeline failed with return code: {exit_code}")
+        return False, f"Failed with code {exit_code}"
     except Exception as e:
-        logger.error(f"Pipeline execution error: {str(e)}")
+        logger.exception(f"Pipeline execution error: {str(e)}")
         return False, str(e)
 
 
 def scheduled_job():
     """Wrapper for scheduled execution with error handling"""
     try:
-        success, message = run_pipeline()
+        success, message = run_pipeline_job()
         if success:
             logger.info(f"Scheduled job completed: {message}")
         else:
@@ -243,15 +213,14 @@ def start_scheduler():
     logger.info("RAG BOLLETTINI SCHEDULER")
     logger.info("="*60)
     logger.info(f"Schedule: Daily at {SCHEDULE_HOUR:02d}:{SCHEDULE_MINUTE:02d} {TIMEZONE}")
-    logger.info(f"Pipeline: {PIPELINE_SCRIPT}")
+    logger.info("Pipeline: bollettini.run_pipeline")
     logger.info(f"Logs: {LOG_DIR}")
     
     # Print current status
     status = get_cache_status()
     logger.info(f"Current status: {status['bollettini_downloaded']} downloaded, "
                 f"{status['bollettini_indexed']} indexed, "
-                f"{status['cimice_reports']} cimice reports, "
-                f"{status['flavescenza_reports']} flavescenza reports")
+                f"{status['colture_reports']} culture reports")
     logger.info("="*60)
     
     scheduler = BlockingScheduler(timezone=TIMEZONE)
@@ -318,7 +287,7 @@ Examples:
     
     if args.run_now:
         logger.info("Running pipeline immediately (--run-now)")
-        success, message = run_pipeline()
+        success, message = run_pipeline_job()
         print(f"\nResult: {'SUCCESS' if success else 'FAILED'} - {message}")
         sys.exit(0 if success else 1)
     

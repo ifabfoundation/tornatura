@@ -1,51 +1,53 @@
-# RAG Bollettini - Sistema di Produzione
+# RAG Colture — Transfer Package
 
-Sistema RAG per estrazione automatica informazioni dai bollettini fitosanitari
-della Regione Emilia-Romagna.
+Sistema RAG per l'estrazione automatica di informazioni per coltura dai
+bollettini fitosanitari (Emilia-Romagna + Campania).
 
 ## Quick Start
 
 ```bash
-# 1. Setup
+# 1. Setup (crea venv + installa dipendenze)
 ./setup.sh
-# oppure manualmente:
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
 
 # 2. Configura API key
-cp .env.example .env
-# Modifica .env con la tua OPENAI_API_KEY
+# Modifica .env e inserisci OPENAI_API_KEY
 
-# 3. Test
+# 3. Test (solo query RAG, senza download)
+source venv/bin/activate
 python run_pipeline.py --query-only
 
-# 4. Produzione (scheduler giornaliero)
-python scheduler.py
+# 4. Run completo (download + process + query)
+python run_pipeline.py
 ```
 
-## Documentazione Completa
+## Documentazione tecnica
 
-Vedi **CLAUDE.md** per la documentazione tecnica completa.
+- **`report.md`** — documento completo per handoff back/front end
+  (architettura, formati dati, punti di integrazione, API, costi)
+- **`CLAUDE.md`** — documentazione operativa sintetica
+
+## Output
+
+Report generati in:
+```
+data/output_bollettini/{regione}/{coltura}/{province}_{DD-MM-YYYY}.md
+data/output_bollettini/{regione}/{coltura}/{province}_{DD-MM-YYYY}.html
+```
+
+Vedi `report.md` sezione 4 per il formato dettagliato.
 
 ## Struttura
 
 ```
 .
-├── run_pipeline.py      # Pipeline principale
-├── scheduler.py         # Scheduler giornaliero (08:00)
-├── modules/             # Moduli Python
+├── run_pipeline.py           # Entry point (orchestratore)
+├── modules/                  # Moduli Python
 ├── data/
-│   ├── 1_collections/   # PDF bollettini
-│   ├── chromadb/        # Vector database
-│   └── output/          # Report generati
-└── logs/                # Log scheduler
+│   ├── input_bollettini/     # PDF sorgenti
+│   ├── chromadb/             # Vector DB pre-indicizzato
+│   ├── cache/                # JSON cache (download/processing/query)
+│   └── output_bollettini/    # Report generati per coltura
+├── report.md                 # Doc tecnica
+├── CLAUDE.md                 # Doc operativa
+└── requirements.txt
 ```
-
-## Output
-
-I report vengono generati in:
-- `data/output/cimice/` - Report Cimice Asiatica
-- `data/output/flavescenza/` - Report Flavescenza Dorata
-
-Formato: `{provincia}_{DD-MM-YYYY}.md`

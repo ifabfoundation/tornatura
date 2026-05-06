@@ -14,7 +14,10 @@ type PeronosporaResponse = {
 
 type BollettinoResponse = {
   type?: string;
+  culture?: string;
+  region?: string;
   province?: string;
+  report_slug?: string;
   filename?: string;
   report_date?: string;
   last_modified?: string;
@@ -36,8 +39,17 @@ type ModelApiErrorPayload = {
 const MODEL_API_ERROR_MAP: Record<string, string> = {
   "Location not in Emilia-Romagna province":
     "Il punto selezionato non si trova in una provincia dell'Emilia-Romagna.",
+  "Location not in supported province":
+    "Il campo selezionato non rientra in un'area coperta dai bollettini fitosanitari.",
   "Report not available for province": "Bollettino non disponibile per la provincia selezionata.",
   "Report not found": "Bollettino non trovato.",
+  "Culture report not available for province":
+    "Il bollettino per la coltura del campo non è disponibile per questa provincia.",
+  "Culture reports not found":
+    "Non ci sono ancora bollettini disponibili per la coltura del campo.",
+  "Region not supported for culture reports":
+    "La regione del campo non è ancora supportata dai bollettini fitosanitari.",
+  "Invalid culture": "La coltura del campo non è supportata dai bollettini fitosanitari.",
   "start must be before end": "La data di inizio deve essere precedente alla data di fine.",
 };
 
@@ -64,10 +76,10 @@ function mapModelApiError(detail: string | undefined, status: number) {
     return "Richiesta non valida.";
   }
   if (status === 404) {
-    return "Risorsa non trovata.";
+    return "Bollettino non disponibile per il campo selezionato.";
   }
   if (status >= 500) {
-    return "Errore del server dei modelli.";
+    return "Il servizio bollettini non è al momento disponibile.";
   }
   return `Errore del servizio modelli (${status}).`;
 }
@@ -114,12 +126,11 @@ export async function fetchPeronosporaForecast(lat: number, lng: number) {
   return fetchJson<PeronosporaResponse>("/v1/peronospora/risk/location/forecast", { lat, lng });
 }
 
-export async function fetchCimiceReport(lat: number, lng: number) {
-  return fetchJson<BollettinoResponse>("/v1/bollettini/cimice/location", { lat, lng });
-}
-
-export async function fetchFlavescenzaReport(lat: number, lng: number) {
-  return fetchJson<BollettinoResponse>("/v1/bollettini/flavescenza/location", { lat, lng });
+export async function fetchCultureReport(culture: string, lat: number, lng: number) {
+  return fetchJson<BollettinoResponse>(`/v1/bollettini/culture/${encodeURIComponent(culture)}/location`, {
+    lat,
+    lng,
+  });
 }
 
 export async function fetchPeronosporaAllCurrent() {

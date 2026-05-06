@@ -43,7 +43,7 @@ logging.getLogger("sentence_transformers").setLevel(logging.ERROR)
 logging.getLogger("httpx").setLevel(logging.ERROR)
 warnings.filterwarnings("ignore")
 
-from docling.document_converter import DocumentConverter
+from docling.document_converter import DocumentConverter, PdfFormatOption
 from sentence_transformers import SentenceTransformer
 import chromadb
 
@@ -51,9 +51,9 @@ from bollettini import paths
 
 # ============= CONFIGURAZIONE =============
 BASE_DIR = Path(__file__).parent.parent
-INPUT_DIR = paths.DATA_DIR  / "1_collections" / "bollettini"
+INPUT_DIR = paths.DATA_DIR  / "input_bollettini" / "emilia_romagna" / "bollettini"
 CHROMADB_DIR = paths.DATA_DIR  / "chromadb"
-CACHE_FILE = paths.DATA_DIR / "processing_cache.json"
+CACHE_FILE = paths.DATA_DIR / "cache" / "processing_cache.json"
 
 # ============= CONFIGURAZIONE MALATTIE =============
 # Ogni malattia ha la sua collezione ChromaDB
@@ -81,11 +81,21 @@ SECTION_PATTERN = re.compile(r"^#{1,3}\s+.+")
 
 # Sezioni da NON unire (colture e sezioni importanti) - mantienile intere
 PROTECTED_SECTIONS = {
-    # Colture
+    # Colture (ER + Campania)
     'MELO', 'PERO', 'PESCO', 'SUSINO', 'CILIEGIO', 'ALBICOCCO',
     'ACTINIDIA', 'KAKI', 'VITE', 'NOCE', 'NOCCIOLO', 'OLIVO',
     'FRUMENTO', 'ORZO', 'COLZA', 'MAIS', 'SOIA',
     'POMODORO', 'PATATA', 'CIPOLLA', 'CAROTA',
+    'AGRUMI', 'CASTAGNO', 'OLIVICOLTURA', 'CORILICOLTURA',
+    # Varianti Campania con prefisso "COLTURA:"
+    'COLTURA: PESCO', 'COLTURA:PESCO',
+    'COLTURA: OLIVO', 'COLTURA:OLIVO',
+    'COLTURA:ACTINIDIA', 'COLTURA: ACTINIDIA',
+    'COLTURA MELO', 'COLTURA: MELO',
+    'COLTURA NOCCIOLO', 'COLTURA: NOCCIOLO',
+    'COLTURA CASTAGNO', 'COLTURA: CASTAGNO',
+    'COLTURA CILIEGIO', 'COLTURA: CILIEGIO',
+    'COLTURA SUSINO', 'COLTURA: SUSINO',
     # Cimice asiatica
     'INFORMAZIONI RIGUARDANTI LA CIMICE ASIATICA',
     # Flavescenza dorata e Scafoideo
@@ -167,11 +177,64 @@ def mark_processed(cache: Dict, pdf_name: str):
 
 
 # ============= PDF TO MARKDOWN ============
-def convert_pdf_to_markdown(pdf_path: Path) -> str | None:
-    """Converte un PDF in Markdown usando Docling (in memoria)"""
+
+# Converter con OCR ottimizzato (lazy init, riusato tra conversioni)
+_converter_default = None
+_converter_ocr_enhanced = None
+
+
+def _get_converter(enhanced_ocr: bool = False) -> DocumentConverter:
+    """
+    Ritorna un DocumentConverter, creandolo solo al primo uso.
+
+    Args:
+        enhanced_ocr: Se True, usa OCR ottimizzato per PDF con immagini/tabelle
+                      (force_full_page_ocr + images_scale 2x).
+                      Usato per bollettini Campania e futuri bollettini con tabelle-immagine.
+    """
+    global _converter_default, _converter_ocr_enhanced
+
+    if not enhanced_ocr:
+        if _converter_default is None:
+            _converter_default = DocumentConverter()
+        return _converter_default
+
+    if _converter_ocr_enhanced is None:
+        from docling.datamodel.pipeline_options import PdfPipelineOptions, RapidOcrOptions
+        from docling.datamodel.base_models import InputFormat
+
+        pipeline_options = PdfPipelineOptions(
+            do_ocr=True,
+            ocr_options=RapidOcrOptions(
+                force_full_page_ocr=True,
+                lang=['it', 'en'],
+            ),
+            images_scale=2.0,
+        )
+
+        _converter_ocr_enhanced = DocumentConverter(
+            format_options={
+                InputFormat.PDF: PdfFormatOption(
+                    pipeline_options=pipeline_options
+                )
+            }
+        )
+    return _converter_ocr_enhanced
+
+
+def convert_pdf_to_markdown(pdf_path: Path, enhanced_ocr: bool = False) -> str | None:
+    """
+    Converte un PDF in Markdown usando Docling (in memoria).
+
+    Args:
+        pdf_path: Path al file PDF
+        enhanced_ocr: Se True, usa OCR ottimizzato (force_full_page_ocr + scale 2x).
+                      Consigliato per PDF con tabelle-immagine (es. bollettini Campania).
+    """
     try:
-        logger.info(f"  Conversione PDF -> Markdown...")
-        converter = DocumentConverter()
+        mode = "enhanced OCR" if enhanced_ocr else "standard"
+        logger.info(f"  Conversione PDF -> Markdown ({mode})...")
+        converter = _get_converter(enhanced_ocr=enhanced_ocr)
         result = converter.convert(str(pdf_path))
         doc = result.document
         return doc.export_to_markdown()
@@ -183,13 +246,38 @@ def convert_pdf_to_markdown(pdf_path: Path) -> str | None:
 
 # ============= CHUNKING ===================
 def extract_metadata_from_filename(filename: str) -> Dict:
-    """Estrae metadata dal nome del file"""
+    """
+    Estrae metadata dal nome del file.
+
+    Supporta due formati:
+    - Emilia-Romagna: "Bollettino 30 del 1° ottobre 2025 di Bologna e Ferrara.pdf"
+    - Campania: "Campania_{area}_{DD-MM-YYYY}.pdf"
+    """
     metadata = {
         "numero_bollettino": None,
         "data": None,
         "province": [],
-        "tipo_documento": "bollettino"
+        "tipo_documento": "bollettino",
+        "regione": None,
     }
+
+    # === Formato Campania: Campania_{area}_{DD-MM-YYYY}.pdf ===
+    campania_match = re.match(
+        r"Campania_([^_]+)_(\d{2})-(\d{2})-(\d{4})(?:\.pdf)?$",
+        filename, re.IGNORECASE
+    )
+    if campania_match:
+        area = campania_match.group(1)
+        dd = campania_match.group(2)
+        mm = campania_match.group(3)
+        yyyy = campania_match.group(4)
+        metadata["regione"] = "campania"
+        metadata["province"] = [area]
+        metadata["data"] = f"{yyyy}-{mm}-{dd}"
+        return metadata
+
+    # === Formato Emilia-Romagna (originale) ===
+    metadata["regione"] = "emilia_romagna"
 
     # Pattern per numero bollettino
     numero_match = re.search(r"Bollettino\s+(\d+)", filename, re.IGNORECASE)
@@ -263,6 +351,228 @@ def preprocess_normativa_markdown(md_text: str) -> str:
         )
 
     return md_text
+
+
+def preprocess_campania_markdown(md_text: str) -> str:
+    """
+    Pre-processa markdown dei bollettini Campania per segmentare correttamente
+    le sezioni coltura.
+
+    Approccio a due passate:
+    1. PASSATA 1 - Trova i confini delle sezioni coltura usando due marker:
+       a) Tabelle di monitoraggio (contengono "Stadio" - ogni coltura ne ha una)
+       b) Header/testo con nomi coltura (## COLTURA: X, COLTURA X, etc.)
+    2. PASSATA 2 - Per ogni confine trovato, determina il nome della coltura
+       dal contesto circostante e inserisce un header ## NOMECOLTURA normalizzato.
+
+    Ogni sezione coltura in un bollettino Campania segue questo pattern:
+      [COLTURA header/marker]  <- variabile, inconsistente
+      [Tabella monitoraggio]   <- SEMPRE presente (N°, Comune, Varietà, Stadio)
+      [CONSIGLI DI DIFESA]     <- contenuto difesa fitosanitaria
+      ...contenuto fino alla prossima coltura...
+    """
+    lines = md_text.splitlines()
+
+    # Nomi colture conosciute
+    CROP_NAMES = {
+        'PESCO', 'OLIVO', 'VITE', 'NOCCIOLO', 'ACTINIDIA', 'MELO',
+        'CASTAGNO', 'CILIEGIO', 'SUSINO', 'AGRUMI', 'POMODORO',
+        'PERO', 'ALBICOCCO', 'KAKI', 'NOCE',
+    }
+
+    # Varieta' note -> coltura (per identificazione da tabella dati)
+    VARIETA_TO_CROP = {
+        'hayward': 'ACTINIDIA', 'soreli': 'ACTINIDIA',
+        'annurca': 'MELO', 'golden': 'MELO', 'fuji': 'MELO', 'gala': 'MELO',
+        'aglianico': 'VITE', 'falanghina': 'VITE', 'fiano': 'VITE',
+        'greco': 'VITE', 'piedirosso': 'VITE', 'coda di volpe': 'VITE',
+        'tonda di giffoni': 'NOCCIOLO', 'san giovanni': 'NOCCIOLO',
+        'mortarella': 'NOCCIOLO', 'camponica': 'NOCCIOLO',
+        'napoletana': 'CASTAGNO', 'bouche de betizac': 'CASTAGNO',
+        'durone': 'CILIEGIO', 'ferrovia': 'CILIEGIO',
+        'rotondella': 'OLIVO', 'carpellese': 'OLIVO', 'sessana': 'OLIVO',
+        'frantoio': 'OLIVO', 'leccino': 'OLIVO', 'olivella': 'OLIVO',
+        'tonda': 'OLIVO',  # Tonda senza "di Giffoni" = Olivo in contesto olivicolo
+        'olivicola': 'OLIVO',
+    }
+
+    def _is_monitoring_table_header(line: str) -> bool:
+        """Riga header di tabella con 'Stadio' = inizio sezione monitoraggio."""
+        return '|' in line and 'stadio' in line.lower()
+
+    def _is_table_separator(line: str) -> bool:
+        return line.strip().startswith('|') and set(line.strip().replace('|', '').strip()) <= {'-', ' ', ':'}
+
+    def _extract_crop_from_context(line_idx: int) -> str | None:
+        """
+        Determina il nome coltura guardando il contesto attorno a una tabella di monitoraggio.
+        Cerca nelle 8 righe precedenti e nella tabella stessa.
+        """
+        # 1. Cerca nelle righe precedenti (header o testo)
+        for j in range(line_idx - 1, max(line_idx - 8, -1), -1):
+            prev = lines[j].strip()
+            if not prev or prev.startswith('<!--') or _is_table_separator(prev):
+                continue
+            if prev.startswith('|'):
+                # Potrebbe essere un'altra tabella - ferma
+                break
+
+            prev_upper = prev.lstrip('#').strip().upper()
+
+            # "COLTURA: PESCO" o "COLTURA:ACTINIDIA"
+            m = re.match(r'COLTURA\s*:?\s*(\w+)', prev_upper)
+            if m and m.group(1) in CROP_NAMES:
+                return m.group(1)
+
+            # "## PESCO" o "PESCO" standalone
+            for name in CROP_NAMES:
+                if prev_upper == name:
+                    return name
+                # "CONSIGLI DI DIFESA FITOSANITARIA INTEGRATA DEL CASTAGNO"
+                # Ma NON "Ticchiolatura del melo" o "Bolla del pesco" (nomi malattie)
+                if (f'DEL {name}' in prev_upper or f"DELL'{name}" in prev_upper):
+                    if 'DIFESA' in prev_upper or 'CONSIGLI' in prev_upper:
+                        return name
+
+            # Se troviamo "COLTURA" generico, continuiamo a cercare
+            if prev_upper == 'COLTURA':
+                continue
+            # Se troviamo un altro ## header non-coltura, ferma
+            if prev.startswith('##'):
+                break
+
+        # 2. Cerca nella tabella stessa (righe dati con varietà)
+        for j in range(line_idx, min(line_idx + 5, len(lines))):
+            row = lines[j].strip()
+            if not row.startswith('|'):
+                break
+            # Controlla nella riga per nomi coltura espliciti
+            row_upper = row.upper()
+            for name in CROP_NAMES:
+                # Match esatto in cella tabella: "| VITE |" o "| COLTURA | VITE |"
+                if re.search(rf'\|\s*{name}\s*\|', row_upper):
+                    return name
+
+            # Controlla per varietà conosciute
+            row_lower = row.lower()
+            for varieta, crop in VARIETA_TO_CROP.items():
+                if varieta in row_lower:
+                    return crop
+
+        return None
+
+    # === PASSATA 1: Trova tutti i confini di sezione coltura ===
+    # Un confine e' definito da: tabella monitoraggio (con Stadio) O header coltura esplicito
+    boundaries = []  # lista di (line_idx, crop_name)
+
+    for i, line in enumerate(lines):
+        stripped = line.strip()
+
+        # Tabella di monitoraggio = confine affidabile
+        if _is_monitoring_table_header(stripped):
+            crop = _extract_crop_from_context(i)
+            if crop:
+                boundaries.append((i, crop))
+            continue
+
+        # Header espliciti come confine secondario (per colture senza tabella)
+        stripped_upper = stripped.lstrip('#').strip().upper()
+
+        # "## COLTURA: PESCO"
+        m = re.match(r'^#+\s+COLTURA\s*:\s*(\w+)', stripped, re.IGNORECASE)
+        if m and m.group(1).upper() in CROP_NAMES:
+            boundaries.append((i, m.group(1).upper()))
+            continue
+
+        # "## COLTURA NOCCIOLO"
+        m = re.match(r'^#+\s+COLTURA\s+(\w+)', stripped, re.IGNORECASE)
+        if m and m.group(1).upper() in CROP_NAMES:
+            boundaries.append((i, m.group(1).upper()))
+            continue
+
+    # === PASSATA 2: Ricostruisci il markdown con header normalizzati ===
+    # Strategia: per ogni boundary, inseriamo un header "## NOMECOLTURA" e
+    # rimuoviamo le righe "COLTURA"/"## COLTURA" ridondanti che precedono la tabella.
+
+    # Calcola la posizione di inserimento per ogni boundary:
+    # L'header va PRIMA della tabella, ma DOPO il preambolo del bollettino
+    # Cerchiamo il punto piu' in alto dove inizia il blocco coltura
+    insert_points = {}  # line_idx -> crop_name (dove inserire l'header)
+    lines_to_remove = set()  # righe da rimuovere (COLTURA generici)
+
+    for bound_idx, crop_name in boundaries:
+        # Risali dalle righe sopra la tabella per trovare il punto di inserimento
+        # e rimuovi le righe "COLTURA" ridondanti
+        insert_at = bound_idx
+        for j in range(bound_idx - 1, max(bound_idx - 8, -1), -1):
+            prev = lines[j].strip()
+            if not prev or prev.startswith('<!--'):
+                continue
+            prev_clean = prev.lstrip('#').strip().upper()
+
+            # Righe da rimuovere: "COLTURA", "## COLTURA", "## COLTURA: X", "## X"
+            if prev_clean == 'COLTURA':
+                lines_to_remove.add(j)
+                insert_at = j
+            elif re.match(r'COLTURA\s*:?\s*\w*', prev_clean) and any(
+                n in prev_clean for n in CROP_NAMES | {'COLTURA'}
+            ):
+                lines_to_remove.add(j)
+                insert_at = j
+            elif prev_clean in CROP_NAMES:
+                lines_to_remove.add(j)
+                insert_at = j
+            elif prev.startswith('## Stato fitosanitario'):
+                # Non rimuovere, ma l'header coltura va subito dopo
+                insert_at = j + 1
+                break
+            else:
+                break
+
+        insert_points[insert_at] = crop_name
+
+    # Ordina i boundaries per indice riga per determinare le zone coltura
+    sorted_boundaries = sorted(insert_points.items(), key=lambda x: x[0])
+
+    # Per ogni boundary, calcola l'intervallo fino al prossimo boundary
+    crop_zones = []  # lista di (start, end, crop_name)
+    for idx, (start, crop_name) in enumerate(sorted_boundaries):
+        if idx + 1 < len(sorted_boundaries):
+            end = sorted_boundaries[idx + 1][0]
+        else:
+            end = len(lines)
+        crop_zones.append((start, end, crop_name))
+
+    # Set di righe che sono DENTRO una zona coltura (per declassare ## -> ###)
+    in_crop_zone = {}
+    for start, end, crop_name in crop_zones:
+        for j in range(start, end):
+            in_crop_zone[j] = crop_name
+
+    # Ricostruisci l'output
+    result = []
+    for i, line in enumerate(lines):
+        # Inserisci header coltura normalizzato
+        if i in insert_points:
+            result.append(f"\n## {insert_points[i]}\n")
+
+        # Salta righe COLTURA ridondanti
+        if i in lines_to_remove:
+            continue
+
+        # Dentro una zona coltura: declassa ## -> #### per mantenere
+        # le sotto-sezioni (malattie, insetti) attaccate alla coltura.
+        # Uso #### (non ###) perche' SECTION_PATTERN matcha #{1,3}
+        if i in in_crop_zone and line.strip().startswith('## '):
+            clean_header = line.strip().lstrip('#').strip()
+            # Non declassare se e' il nome della coltura stessa
+            if clean_header.upper() not in CROP_NAMES:
+                result.append(f"#### {clean_header}")
+                continue
+
+        result.append(line)
+
+    return "\n".join(result)
 
 
 def extract_sections_from_markdown(md_text: str) -> Dict[str, str]:
@@ -394,6 +704,10 @@ def create_chunks_from_markdown(md_text: str, doc_name: str) -> List[Dict]:
     if file_metadata["tipo_documento"] == "normativa":
         md_text = preprocess_normativa_markdown(md_text)
 
+    # Pre-processa documenti Campania per normalizzare intestazioni colture
+    if file_metadata.get("regione") == "campania":
+        md_text = preprocess_campania_markdown(md_text)
+
     sections = extract_sections_from_markdown(md_text)
 
     # Unisci sezioni piccole
@@ -422,7 +736,8 @@ def create_chunks_from_markdown(md_text: str, doc_name: str) -> List[Dict]:
                 "numero_bollettino": file_metadata["numero_bollettino"],
                 "data": file_metadata["data"],
                 "province": ",".join(file_metadata["province"]) if file_metadata["province"] else "",
-                "tipo_documento": file_metadata["tipo_documento"]
+                "tipo_documento": file_metadata["tipo_documento"],
+                "regione": file_metadata.get("regione", "emilia_romagna") or "emilia_romagna",
             }
         }
 
@@ -523,7 +838,9 @@ def process_single_pdf(pdf_path: Path, model: SentenceTransformer, collections: 
     """
     try:
         # Step 1: PDF -> Markdown (in memoria)
-        md_text = convert_pdf_to_markdown(pdf_path)
+        # Usa OCR enhanced per bollettini con tabelle-immagine (es. Campania)
+        needs_enhanced_ocr = pdf_path.name.startswith("Campania_")
+        md_text = convert_pdf_to_markdown(pdf_path, enhanced_ocr=needs_enhanced_ocr)
         if not md_text:
             return False
 
@@ -565,8 +882,14 @@ class BollettiniProcessor:
     Classe per processare i bollettini fitosanitari.
     Gestisce conversione PDF, chunking, embeddings e upload a ChromaDB.
     """
-    
-    def __init__(self):
+
+    def __init__(self, input_dir: Path = None):
+        """
+        Args:
+            input_dir: Directory con i PDF da processare.
+                       Se None, usa INPUT_DIR di default (Emilia-Romagna).
+        """
+        self.input_dir = input_dir or INPUT_DIR
         self.model = None  # Lazy loading
         self.client = None
         self.collections = None
@@ -642,11 +965,12 @@ class BollettiniProcessor:
         for disease_id, config in DISEASE_CONFIG.items():
             logger.info(f"  - {config['collection_name']}: {config['description']}")
         
-        # Trova tutti i PDF (nelle sottocartelle anno)
-        pdf_files = list(INPUT_DIR.glob("*/*.pdf"))
+        # Trova tutti i PDF (supporta anche sottodirectory per anno)
+        pdf_files = list(self.input_dir.glob("*.pdf"))
+        pdf_files.extend(self.input_dir.glob("*/*.pdf"))
         
         if not pdf_files:
-            logger.warning(f"Nessun PDF trovato in {INPUT_DIR}")
+            logger.warning(f"Nessun PDF trovato in {self.input_dir}")
             return False, {'processed': 0, 'total': 0, 'cached': 0}
         
         # Filtra già processati

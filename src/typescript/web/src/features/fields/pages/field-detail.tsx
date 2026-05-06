@@ -14,11 +14,25 @@ import {
 } from "../../observation-types/state/observation-types-slice";
 import { detectionsActions } from "../../detections/state/detections-slice";
 import { companiesActions } from "../../companies/state/companies-slice";
-import { fieldsActions } from "../state/fields-slice";
+import { fieldsActions, fieldsSelectors } from "../state/fields-slice";
+
+function formatHarvestName(harvest?: string) {
+  if (!harvest) {
+    return "Bollettini";
+  }
+
+  return harvest
+    .split("_")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
 
 export function FieldDetail() {
   const dispatch = useAppDispatch();
   const { companyId, fieldId } = useParams();
+  const currentField = useAppSelector((state) =>
+    fieldsSelectors.selectFieldbyId(state, fieldId ?? "default"),
+  );
   const detectionTypes = useAppSelector((state) =>
     detectionTypesSelectors.selectDetectionTypesByField(state, fieldId ?? "default"),
   );
@@ -35,7 +49,7 @@ export function FieldDetail() {
   }, [companyId, fieldId, dispatch]);
 
   React.useEffect(() => {
-    if (!companyId || !fieldId) {
+    if (!companyId || !fieldId || !currentField) {
       return;
     }
 
@@ -90,34 +104,18 @@ export function FieldDetail() {
             text: "Peronospora",
             path: `/companies/${companyId}/fields/${fieldId}/models/peronospora`,
           },
-          // {
-          //   text: "Cimice asiatica",
-          //   path: `/companies/${companyId}/fields/${fieldId}/models/cimice-asiatica`,
-          // },
-          // {
-          //   text: "Flavescenza dorata",
-          //   path: `/companies/${companyId}/fields/${fieldId}/models/flavescenza-dorata`,
-          // },
         ],
       },
       {
         id: "field-bulletins",
         icon: "bulletin" as IconName,
         text: "Bollettini fitosanitari",
-        path: `/companies/${companyId}/fields/${fieldId}/models`,
+        path: `/companies/${companyId}/fields/${fieldId}/bulletins`,
         type: "family",
         familyItems: [
-          // {
-          //   text: "Peronospora",
-          //   path: `/companies/${companyId}/fields/${fieldId}/models/peronospora`,
-          // },
           {
-            text: "Cimice asiatica",
-            path: `/companies/${companyId}/fields/${fieldId}/models/cimice-asiatica`,
-          },
-          {
-            text: "Flavescenza dorata",
-            path: `/companies/${companyId}/fields/${fieldId}/models/flavescenza-dorata`,
+            text: formatHarvestName(currentField.harvest),
+            path: `/companies/${companyId}/fields/${fieldId}/bulletins/${currentField.harvest}`,
           },
         ],
       },
@@ -142,7 +140,7 @@ export function FieldDetail() {
     ];
     dispatch(SidebarActions.setMenuEntriesAction(menuEntries));
     dispatch(SidebarActions.setMenuBottomEntriesAction(menuBottomEntries));
-  }, [companyId, fieldId, observationsTypes, detectionTypes]);
+  }, [companyId, fieldId, observationsTypes, detectionTypes, currentField]);
 
   React.useEffect(() => {
     fetchData();

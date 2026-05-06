@@ -1,186 +1,169 @@
-# CLAUDE.md
-
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
-
----
-
-# RAG Bollettini - Sistema di Produzione
+# RAG Colture - Sistema di Produzione (Multi-regione)
 
 ## Descrizione
-Sistema RAG per estrazione automatica informazioni dai bollettini fitosanitari della Regione Emilia-Romagna.
-Estrae informazioni su **Cimice Asiatica** e **Flavescenza Dorata/Scaphoideus titanus**.
-
-## Setup
-
-```bash
-# Clona e entra nella directory
-cd RAG_bollettini
-
-# Crea virtual environment
-python3 -m venv venv
-source venv/bin/activate
-
-# Installa dipendenze
-pip install -r requirements.txt
-
-# Configura API key
-cp .env.example .env
-# Modifica .env con la tua OPENAI_API_KEY
-```
+Sistema RAG per estrazione automatica informazioni colturali dai bollettini fitosanitari.
+Supporta **Emilia-Romagna** (API REST Plone) e **Campania** (scraping HTML).
 
 ## Struttura Progetto
 
 ```
-RAG_bollettini/
-├── run_pipeline.py              # MAIN: orchestrator pipeline completa
-├── scheduler.py                 # Scheduler giornaliero (APScheduler)
+RAG_colture/
+├── run_pipeline.py              # MAIN: orchestrator pipeline multi-regione
 ├── requirements.txt             # Dipendenze Python
-├── .env.example                 # Template variabili ambiente
 ├── CLAUDE.md                    # Documentazione
 │
 ├── modules/
-│   ├── download_bollettini.py   # Download PDF da sito Regione
-│   ├── process_bollettini.py    # Conversione PDF → ChromaDB
-│   ├── cimice.py                # Query RAG Cimice Asiatica
-│   ├── flavescenza.py           # Query RAG Flavescenza Dorata
-│   └── normativa_flavescenza.py # Dati normativa strutturati
+│   ├── config.py                # Configurazione multi-regione e colture
+│   ├── downloaders/
+│   │   ├── __init__.py
+│   │   └── base.py              # Classe astratta BaseDownloader
+│   ├── download_bollettini.py   # Downloader Emilia-Romagna (API Plone)
+│   ├── download_campania.py     # Downloader Campania (scraping HTML)
+│   ├── process_bollettini.py    # PDF -> Markdown -> ChromaDB
+│   └── colture.py               # Query RAG per colture (multi-regione)
 │
 ├── data/
-│   ├── 1_collections/bollettini/  # PDF scaricati (organizzati per anno)
-│   │   ├── 2025/                  # PDF del 2025
-│   │   └── 2026/                  # PDF del 2026
-│   ├── chromadb/                  # Vector database
-│   ├── cache/                     # Cache query
-│   ├── output/
-│   │   ├── cimice/              # Report MD + history/
-│   │   └── flavescenza/         # Report MD + history/
-│   ├── bollettini_cache.json    # Cache download
-│   └── processing_cache.json    # Cache indicizzazione
+│   ├── input_bollettini/
+│   │   ├── emilia_romagna/
+│   │   │   ├── bollettini/       # PDF (symlink -> RAG_bollettini)
+│   │   │   └── cache_download.json
+│   │   └── campania/
+│   │       ├── bollettini/2026/  # PDF scaricati per anno
+│   │       └── cache_download.json
+│   ├── chromadb/                  # Symlink -> RAG_bollettini
+│   ├── cache/
+│   │   ├── processing_cache.json
+│   │   ├── colture_emilia_romagna_processed.json
+│   │   └── colture_campania_processed.json
+│   └── output_bollettini/
+│       ├── emilia_romagna/
+│       │   ├── vite/          # Report ER per coltura
+│       │   ├── pero/
+│       │   ├── pesco/
+│       │   ├── mais/
+│       │   └── barbabietola/
+│       └── campania/
+│           ├── vite/          # Report Campania per coltura
+│           ├── pesco/
+│           ├── olivo/
+│           ├── nocciolo/
+│           ├── actinidia/
+│           ├── melo/
+│           ├── castagno/
+│           ├── ciliegio/
+│           ├── susino/
+│           ├── agrumi/
+│           └── pomodoro/
 │
-└── venv/                        # Virtual environment
+├── .env                         # File indipendente
+└── venv/                        # Virtual environment indipendente
 ```
 
 ## Uso in Produzione
 
 ### Attivazione ambiente
 ```bash
-cd RAG_bollettini
+cd /home/vito/projects/tornatura/RAG_colture
 source venv/bin/activate
 ```
 
 ### Pipeline completa (consigliato)
 ```bash
-# Esegue: download → indicizzazione → generazione report
+# Tutte le regioni
 python run_pipeline.py
+
+# Solo una regione
+python run_pipeline.py --regione campania
+python run_pipeline.py --regione emilia_romagna
 ```
 
 ### Opzioni pipeline
 ```bash
-python run_pipeline.py --force      # Ignora cache, riprocessa tutto
-python run_pipeline.py --query-only # Solo generazione report (no download)
+python run_pipeline.py --force              # Ignora cache, riprocessa tutto
+python run_pipeline.py --query-only         # Solo generazione report (no download)
+python run_pipeline.py --download-only      # Solo download
 ```
 
-### Scheduler automatico
+### Modulo singolo (debug/test)
 ```bash
-python scheduler.py --start         # Avvia scheduler giornaliero
+python modules/download_campania.py    # Download solo Campania
+python modules/colture.py              # Solo report colture
 ```
 
-### Moduli singoli (debug/test)
-```bash
-python modules/download_bollettini.py   # Solo download nuovi PDF
-python modules/process_bollettini.py    # Solo indicizzazione in ChromaDB
-python modules/cimice.py                # Solo report cimice
-python modules/flavescenza.py           # Solo report flavescenza
-```
+## Regioni e Colture
+
+### Emilia-Romagna (5 colture)
+| ID | Nome |
+|----|------|
+| VITE | Vite |
+| PERO | Pero |
+| PESCO | Pesco |
+| MAIS | Mais |
+| BARBABIETOLA | Barbabietola |
+
+### Campania (11 colture)
+| ID | Nome |
+|----|------|
+| VITE | Vite |
+| OLIVO | Olivo |
+| PESCO | Pesco |
+| ACTINIDIA | Actinidia |
+| MELO | Melo |
+| CASTAGNO | Castagno |
+| CILIEGIO | Ciliegio |
+| SUSINO | Susino |
+| NOCCIOLO | Nocciolo |
+| AGRUMI | Agrumi |
+| POMODORO | Pomodoro |
 
 ## Pipeline di Esecuzione
 
 ```
-1. download_bollettini.py
-   └─> Scarica PDF da API Regione → data/1_collections/bollettini/{anno}/
+Per ogni regione:
+1. download (ER: API Plone / Campania: scraping HTML)
+   └-> Scarica PDF nuovi
 
 2. process_bollettini.py
-   └─> PDF → Markdown (Docling) → Chunks → ChromaDB
+   └-> PDF -> Markdown (Docling) -> Chunks -> ChromaDB (con metadata regione)
 
-3. cimice.py / flavescenza.py
-   └─> Retrieval keyword-based → GPT-4o-mini → Report MD
+3. colture.py
+   └-> Per ogni bollettino (filtrato per regione):
+       └-> Per ogni coltura della regione:
+           └-> Retrieval sezione-based -> GPT-4o-mini -> Report MD + HTML
 ```
 
 ## Approccio Retrieval
 
-**Keyword-based** (non semantic search):
-- Recupera chunks del bollettino
-- Filtra per keywords specifiche
-- Passa al LLM senza reranking
+**Sezione-based con fallback keyword e filtro anti-contaminazione**:
 
-| Modulo | Keywords |
-|--------|----------|
-| cimice.py | `cimice, halyomorpha, halys, hhal, cimici` |
-| flavescenza.py | `flavescenza, scaphoideus, scafoideo, titanus, giallumi, fitoplasm` |
+1. **PRIMA**: Match esatto su `section_title` (alta precisione)
+2. **POI**: Se pochi risultati (<2), cerca keywords nel contenuto
+3. **FILTRA**: Escludi sezioni di ALTRE colture (anti-contaminazione)
 
-## Normativa Flavescenza
+## Differenze chiave tra regioni
 
-La normativa (Determinazione Regionale) è gestita da `normativa_flavescenza.py`:
-- Dati strutturati in Python (non in ChromaDB)
-- Filtrati per provincia prima del LLM
-- Zero query database per la normativa
-
-### Aggiornamento annuale (Maggio)
-Quando esce la nuova Determinazione:
-```python
-# In modules/normativa_flavescenza.py
-NORMATIVA_2026 = { ... }  # Aggiorna con nuovi dati
-NORMATIVA_CORRENTE = NORMATIVA_2026
-```
-
-## Collezioni ChromaDB
-
-| Collezione | Contenuto |
-|------------|-----------|
-| `cimice_asiatica` | Chunks bollettini |
-| `flavescenza_dorata` | Chunks bollettini |
-
-## Output
-
-I report vengono salvati in:
-- `data/output/cimice/` - Report cimice per provincia
-- `data/output/flavescenza/` - Report flavescenza per provincia
-
-Formato nome file: `{provincia}_{DD-MM-YYYY}.md` (data in formato italiano)
-
-### History automatica
-
-Quando arriva un nuovo bollettino, il report precedente viene spostato automaticamente in history:
-
-```
-output/
-├── cimice/
-│   ├── bologna_ferrara_15-11-2025.md      ← report corrente
-│   └── history/
-│       └── 2025/
-│           └── bologna_ferrara/
-│               └── 01-10-2025.md          ← report precedente
-```
-
-La history è organizzata per `{anno}/{provincia}/` e viene creata dinamicamente.
+| | Emilia-Romagna | Campania |
+|--|----------------|----------|
+| Fonte | API REST Plone | Pagine HTML statiche |
+| Aree | 4 province raggruppate | 19 aree/comuni in 5 province |
+| Formato PDF | `Bollettino N del data di Province.pdf` | `Campania_{area}_{DD-MM-YYYY}.pdf` |
+| N. bollettino | Si | No (solo data) |
 
 ## Cache
 
-Il sistema usa cache per evitare riprocessamento:
-- `data/bollettini_cache.json` - PDF già scaricati
-- `data/processing_cache.json` - PDF già indicizzati
-- `data/cache/cimice_processed.json` - Bollettini già processati (cimice)
-- `data/cache/flavescenza_processed.json` - Bollettini già processati (flavescenza)
+- `data/bollettini_cache.json` - Download ER
+- `data/campania_cache.json` - Download Campania
+- `data/processing_cache.json` - Processing (tutte le regioni)
+- `data/cache/colture_{regione}_processed.json` - Report per regione
+- Per forzare riprocessamento: `python run_pipeline.py --force`
 
-Per forzare riprocessamento: `python run_pipeline.py --force`
+## Dipendenze da RAG_bollettini
+
+- **ChromaDB**: Symlink a `../RAG_bollettini/data/chromadb/`
+- **Collezione**: Usa `cimice_asiatica` (contiene tutti i bollettini)
 
 ## Note operative
 
-1. **Frequenza bollettini**: ogni ~2 settimane
-2. **Scheduler**: gira giornalmente, processa solo novità
-3. **Costi LLM**: ~$0.002 per query con GPT-4o-mini
-4. **Pattern stagionali**:
-   - Inverno (N.1-8): poche info scafoideo/cimice
-   - Primavera (N.9-15): inizio monitoraggio
-   - Estate (N.16-23): PICCO attività
-   - Autunno (N.24-30): declino
+1. **Frequenza bollettini ER**: ogni ~2 settimane
+2. **Frequenza bollettini Campania**: variabile per area
+3. Le colture Campania (OLIVO, AGRUMI, POMODORO, NOCCIOLO) vanno affinate dopo analisi PDF reali

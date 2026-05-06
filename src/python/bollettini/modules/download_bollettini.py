@@ -24,9 +24,9 @@ from bollettini import paths
 
 # ============= CONFIGURAZIONE =============
 BASE_DIR = Path(__file__).parent.parent
-BOLLETTINI_DIR = paths.DATA_DIR  / "1_collections" / "bollettini"
+OUTPUT_DIR = paths.DATA_DIR / "input_bollettini" / "emilia_romagna" / "bollettini"
 LOG_DIR = BASE_DIR / "logs"
-CACHE_FILE = paths.DATA_DIR / "bollettini_cache.json"
+CACHE_FILE = paths.DATA_DIR / "input_bollettini" / "emilia_romagna" / "cache_download.json"
 
 # Province disponibili (slug URL)
 PROVINCE_URLS = {
@@ -370,8 +370,8 @@ class BollettiniDownloader:
         self.logger.info(f"PROVINCIA: {provincia_name}")
         self.logger.info(f"{'='*70}\n")
 
-        # Crea directory output (organizzata per anno)
-        output_dir = BOLLETTINI_DIR / str(self.year)
+        # Crea directory output
+        output_dir = OUTPUT_DIR
         output_dir.mkdir(parents=True, exist_ok=True)
 
         # Recupera lista bollettini

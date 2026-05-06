@@ -1,5 +1,5 @@
 python_sources(
-    name="bollettini_sources",
+    name="pysource",
     dependencies=[
         "3rdparty/python:bollettini#APScheduler",
         "3rdparty/python:bollettini#chromadb",
@@ -20,7 +20,6 @@ python_sources(
 resources(
     name="bollettini_resources",
     sources=[
-        "data/**",
         "shapefiles/**",
         "modules/**",
         "MANIFEST.txt",
@@ -34,7 +33,7 @@ pex_binary(
     name="scheduler",
     entry_point="scheduler.py",
     execution_mode="venv",
-    dependencies=[":bollettini_sources", ":bollettini_resources"],
+    dependencies=[":pysource", ":bollettini_resources"],
     resolve="bollettini",
     layout="packed"
 )
@@ -43,7 +42,7 @@ pex_binary(
     name="api",
     entry_point="api.py",
     execution_mode="venv",
-    dependencies=[":bollettini_sources", ":bollettini_resources"],
+    dependencies=[":pysource", ":bollettini_resources"],
     resolve="bollettini",
     layout="packed"
 )

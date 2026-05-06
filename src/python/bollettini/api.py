@@ -13,6 +13,7 @@ from shapely.geometry import Point
 import uvicorn
 
 from bollettini import paths
+from bollettini.modules.config import COLTURE, REGIONI
 
 
 logger = logging.getLogger("bollettini_api")
@@ -30,18 +31,36 @@ app.add_middleware(
 
 _PROVINCE_GDF: Optional[gpd.GeoDataFrame] = None
 
-_REPORT_SLUG_BY_PROVINCE = {
-    "bologna": "bologna_ferrara",
-    "ferrara": "bologna_ferrara",
-    "forli_cesena": "forli_cesena_ravenna_rimini",
-    "ravenna": "forli_cesena_ravenna_rimini",
-    "rimini": "forli_cesena_ravenna_rimini",
-    "modena": "modena",
-    "reggio_nell_emilia": "reggio_emilia",
-    "reggio_emilia": "reggio_emilia",
-    "parma": "parma",
-    "piacenza": "piacenza",
+_REGION_ID_BY_CODE = {
+    "8": "emilia_romagna",
+    "08": "emilia_romagna",
+    "15": "campania",
 }
+
+_REPORT_SLUG_CANDIDATES_BY_REGION_AND_PROVINCE = {
+    "emilia_romagna": {
+        "bologna": ["bologna_ferrara"],
+        "ferrara": ["bologna_ferrara"],
+        "forli_cesena": ["forli_cesena_ravenna_rimini"],
+        "ravenna": ["forli_cesena_ravenna_rimini"],
+        "rimini": ["forli_cesena_ravenna_rimini"],
+        "modena": ["modena"],
+        "reggio_nell_emilia": ["reggio_emilia"],
+        "reggio_emilia": ["reggio_emilia"],
+        "parma": ["parma"],
+        "piacenza": ["piacenza"],
+    },
+    "campania": {
+        "avellino": ["av"],
+        "benevento": ["bn"],
+        "caserta": ["ce"],
+        "napoli": ["na"],
+        "salerno": ["sa"],
+    },
+}
+
+_ITALY_PROVINCE_NAME_COLUMNS = ("province_name", "prov_name", "DEN_UTS", "NAME", "name")
+_ITALY_REGION_NAME_COLUMNS = ("region_name", "regione", "REGIONE", "COD_REG", "NUTS1")
 
 
 @app.get("/v1/bollettini/health")
@@ -57,21 +76,41 @@ def _normalize_text(value: str) -> str:
     return normalized
 
 
-def _report_slug_from_province_name(name: str) -> Optional[str]:
-    normalized = _normalize_text(name)
-    return _REPORT_SLUG_BY_PROVINCE.get(normalized)
+def _normalize_culture_id(value: str) -> Optional[str]:
+    normalized = _normalize_text(value).upper()
+    if normalized in COLTURE:
+        return normalized
+    for culture_id, culture_data in COLTURE.items():
+        if _normalize_text(culture_data["nome"]).upper() == normalized:
+            return culture_id
+    return None
+
+
+def _report_slug_candidates(region_id: str, province_name: str) -> list[str]:
+    normalized_province = _normalize_text(province_name)
+    candidates = _REPORT_SLUG_CANDIDATES_BY_REGION_AND_PROVINCE.get(region_id, {}).get(
+        normalized_province,
+        [],
+    )
+    if candidates:
+        return candidates
+    return [normalized_province]
 
 
 def _shapefile_candidates() -> list[Path]:
     local_shapefile = paths.SHAPEFILE_DIR / "province_emilia_romagna.shp"
-    peronospora_shapefile = (
-        Path(__file__).resolve().parent.parent
-        / "peronospora"
-        / "weather"
-        / "shapefiles"
-        / "province_emilia_romagna.shp"
-    )
-    return [local_shapefile, peronospora_shapefile]
+    italy_shapefile = paths.SHAPEFILE_DIR / "province_italia.shp"
+        
+    return [local_shapefile, italy_shapefile]
+
+
+def _rename_first_matching_column(gdf: gpd.GeoDataFrame, candidates: tuple[str, ...], target: str) -> gpd.GeoDataFrame:
+    if target in gdf.columns:
+        return gdf
+    for candidate in candidates:
+        if candidate in gdf.columns:
+            return gdf.rename(columns={candidate: target})
+    return gdf
 
 
 def _load_emilia_romagna_shapefile() -> gpd.GeoDataFrame:
@@ -86,13 +125,14 @@ def _load_emilia_romagna_shapefile() -> gpd.GeoDataFrame:
     else:
         raise HTTPException(status_code=500, detail="Province shapefile not found")
 
-    if "prov_name" in gdf.columns:
-        gdf = gdf.rename(columns={"prov_name": "province_name"})
-    elif "DEN_UTS" in gdf.columns:
-        gdf = gdf.rename(columns={"DEN_UTS": "province_name"})
+    gdf = _rename_first_matching_column(gdf, _ITALY_PROVINCE_NAME_COLUMNS, "province_name")
+    gdf = _rename_first_matching_column(gdf, _ITALY_REGION_NAME_COLUMNS, "region_name")
 
     if "province_name" not in gdf.columns:
         raise HTTPException(status_code=500, detail="Province shapefile missing province_name column")
+
+    if "region_name" not in gdf.columns:
+        gdf["region_name"] = ""
 
     if gdf.crs != "EPSG:4326":
         gdf = gdf.to_crs("EPSG:4326")
@@ -101,13 +141,17 @@ def _load_emilia_romagna_shapefile() -> gpd.GeoDataFrame:
     return gdf
 
 
-def _province_from_point(lat: float, lng: float) -> Optional[str]:
+def _location_from_point(lat: float, lng: float) -> Optional[Dict[str, str]]:
     gdf = _load_emilia_romagna_shapefile()
     point = Point(lng, lat)
     matches = gdf[gdf.geometry.intersects(point)]
     if matches.empty:
         return None
-    return str(matches.iloc[0]["province_name"])
+    match = matches.iloc[0]
+    return {
+        "province_name": str(match["province_name"]),
+        "region_name": str(match.get("region_name", "")),
+    }
 
 
 def _parse_date_from_filename(filename: str) -> Optional[datetime]:
@@ -120,69 +164,80 @@ def _parse_date_from_filename(filename: str) -> Optional[datetime]:
         return None
 
 
-def _latest_report_path(report_type: str, report_slug: str) -> Path:
-    if report_type == "cimice":
-        output_dir = paths.OUTPUT_CIMICE_DIR
-    elif report_type == "flavescenza":
-        output_dir = paths.OUTPUT_FLAVESCENZA_DIR
-    else:
-        raise HTTPException(status_code=400, detail="Invalid report type")
+def _region_id_from_name(region_name: str, province_name: str) -> Optional[str]:
+    normalized_region = _normalize_text(region_name)
+    if normalized_region in _REGION_ID_BY_CODE:
+        return _REGION_ID_BY_CODE[normalized_region]
+    for region_id, region_data in REGIONI.items():
+        if _normalize_text(region_data["nome"]) == normalized_region:
+            return region_id
+    normalized_province = _normalize_text(province_name)
+    for region_id, province_map in _REPORT_SLUG_CANDIDATES_BY_REGION_AND_PROVINCE.items():
+        if normalized_province in province_map:
+            return region_id
+    return None
 
-    files = list(output_dir.glob(f"{report_slug}_*.md"))
-    if not files:
-        raise HTTPException(status_code=404, detail="Report not found")
 
-    def sort_key(path: Path):
+def _latest_colture_report_path(culture_id: str, region_id: str, province_name: str) -> tuple[Path, str]:
+    culture_dir = paths.OUTPUT_DIR / region_id / culture_id.lower()
+    if not culture_dir.exists():
+        raise HTTPException(status_code=404, detail="Culture reports not found")
+
+    candidate_paths: list[tuple[Path, str]] = []
+    for slug in _report_slug_candidates(region_id, province_name):
+        files = list(culture_dir.glob(f"{slug}_*.md"))
+        candidate_paths.extend((path, slug) for path in files)
+
+    if not candidate_paths:
+        raise HTTPException(status_code=404, detail="Culture report not available for province")
+
+    def sort_key(item: tuple[Path, str]):
+        path, _ = item
         date_value = _parse_date_from_filename(path.name)
-        return (date_value or datetime.fromtimestamp(path.stat().st_mtime))
+        return date_value or datetime.fromtimestamp(path.stat().st_mtime)
 
-    return max(files, key=sort_key)
+    return max(candidate_paths, key=sort_key)
 
 
-def _load_report(report_type: str, report_slug: str) -> Dict[str, Any]:
-    report_path = _latest_report_path(report_type, report_slug)
+def _load_colture_report(culture_id: str, lat: float, lng: float) -> Dict[str, Any]:
+    location = _location_from_point(lat, lng)
+    if not location:
+        raise HTTPException(status_code=404, detail="Location not in supported province")
+
+    province_name = location["province_name"]
+    region_id = _region_id_from_name(location.get("region_name", ""), province_name)
+    if not region_id:
+        raise HTTPException(status_code=404, detail="Region not supported for culture reports")
+
+    report_path, report_slug = _latest_colture_report_path(culture_id, region_id, province_name)
     content_md = report_path.read_text(encoding="utf-8")
     report_date = _parse_date_from_filename(report_path.name)
     if report_date is None:
         report_date = datetime.fromtimestamp(report_path.stat().st_mtime)
+
     return {
-        "type": report_type,
-        "province": report_slug,
+        "type": "culture",
+        "culture": culture_id.lower(),
+        "region": region_id,
+        "province": province_name,
+        "report_slug": report_slug,
         "filename": report_path.name,
         "report_date": report_date.date().isoformat(),
         "last_modified": datetime.fromtimestamp(report_path.stat().st_mtime).isoformat(),
         "content": content_md,
+        "location": {"lat": lat, "lng": lng},
     }
 
-
-def _report_for_location(report_type: str, lat: float, lng: float) -> Dict[str, Any]:
-    province_name = _province_from_point(lat, lng)
-    if not province_name:
-        raise HTTPException(status_code=404, detail="Location not in Emilia-Romagna province")
-
-    report_slug = _report_slug_from_province_name(province_name)
-    if not report_slug:
-        raise HTTPException(status_code=404, detail="Report not available for province")
-
-    payload = _load_report(report_type, report_slug)
-    payload["location"] = {"lat": lat, "lng": lng}
-    return payload
-
-
-@app.get("/v1/bollettini/cimice/location")
-def cimice_by_location(
+@app.get("/v1/bollettini/culture/{culture}/location")
+def culture_by_location(
+    culture: str,
     lat: float = Query(..., ge=-90, le=90),
     lng: float = Query(..., ge=-180, le=180),
 ) -> Dict[str, Any]:
-    return _report_for_location("cimice", lat, lng)
-
-
-@app.get("/v1/bollettini/flavescenza/location")
-def flavescenza_by_location(
-    lat: float = Query(..., ge=-90, le=90),
-    lng: float = Query(..., ge=-180, le=180),
-) -> Dict[str, Any]:
-    return _report_for_location("flavescenza", lat, lng)
+    culture_id = _normalize_culture_id(culture)
+    if not culture_id:
+        raise HTTPException(status_code=400, detail="Invalid culture")
+    return _load_colture_report(culture_id, lat, lng)
 
 
 if __name__ == "__main__":

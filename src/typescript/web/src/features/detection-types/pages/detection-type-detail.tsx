@@ -320,8 +320,8 @@ export function DetectionTypeDetail() {
 
   const modelPaths = {
     Peronospora: `/companies/${companyId}/fields/${fieldId}/models/peronospora`,
-    Flavescenza: `/companies/${companyId}/fields/${fieldId}/models/flavescenza-dorata`,
-    Cimice: `/companies/${companyId}/fields/${fieldId}/models/cimice-asiatica`,
+    Flavescenza: `/companies/${companyId}/fields/${fieldId}/models/bollettini`,
+    Cimice: `/companies/${companyId}/fields/${fieldId}/models/bollettini`,
     // Lisso: `/companies/${companyId}/fields/${fieldId}/models/lisso`,
     // Scafoideo: `/companies/${companyId}/fields/${fieldId}/models/scafoideo`,
     // Diabrotica: `/companies/${companyId}/fields/${fieldId}/models/diabrotica`,
