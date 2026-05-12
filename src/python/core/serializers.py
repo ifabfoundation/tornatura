@@ -184,6 +184,7 @@ class Organization(BaseModel):
 class Detection(BaseModel):
     id: str
     agrifieldId: str
+    sessionId: Optional[str] = None
     detectionTime: int
     detectionTypeId: str
     detectionData: DetectionData
@@ -234,6 +235,23 @@ class DetectionMutationPayload(BaseModel):
     detectionTime: int
     detectionTypeId: str
     detectionData: DetectionDataPayload
+
+class MultiDetectionEntryPayload(BaseModel):
+    detectionTypeId: str
+    notes: str
+    photos: List[DetectionPhotoPayload]
+    points: List[ObservationPoint]
+    done: bool = False
+
+class MultiDetectionMutationPayload(BaseModel):
+    detectionTime: int
+    bbch: str
+    treatment: ObservationTreatment = ObservationTreatment()
+    entries: List[MultiDetectionEntryPayload]
+
+class MultiDetectionCreateResponse(BaseModel):
+    sessionId: str
+    detections: List[Detection]
 
 class UserCreatePayload(BaseModel):
     firstName: str

@@ -144,6 +144,7 @@ class DetectionType(Document):
 class DetectionModel(Document):
     """The object Detection stored in the Database"""
     agrifieldId = StringField(required=True)
+    sessionId = StringField()
     detectionTime = IntField(default=None)
     detectionTypeId = StringField(required=True)
     detectionData = EmbeddedDocumentField(DetectionData, required=True)
@@ -153,6 +154,7 @@ class DetectionModel(Document):
     lastUpdateTime = IntField()
 
     meta = {
+        'indexes': ['sessionId'],
         'ordering': ['-creationTime']
     }
 

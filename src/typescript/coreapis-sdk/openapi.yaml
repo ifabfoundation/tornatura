@@ -827,6 +827,68 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /v1/organizations/{org_id}/agrifields/{agrifield_id}/detections/bulk:
+    post:
+      tags:
+      - Detections
+      summary: Create Bulk Detections
+      operationId: create_bulk_detections
+      security:
+      - SecurityChecker: []
+      parameters:
+      - name: org_id
+        in: path
+        required: true
+        schema:
+          type: string
+          description: Organization ID
+          title: Org Id
+        description: Organization ID
+      - name: agrifield_id
+        in: path
+        required: true
+        schema:
+          type: string
+          description: Agriculture Field ID
+          title: Agrifield Id
+        description: Agriculture Field ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MultiDetectionMutationPayload'
+      responses:
+        '200':
+          description: Created detections for one multi-detection session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MultiDetectionCreateResponse'
+        '401':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /v1/organizations/{org_id}/agrifields/{agrifield_id}/detections/{detection_id}:
     delete:
       tags:
@@ -2407,6 +2469,11 @@ components:
         agrifieldId:
           type: string
           title: Agrifieldid
+        sessionId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Sessionid
         detectionTime:
           type: integer
           title: Detectiontime
@@ -2447,6 +2514,72 @@ components:
       - detectionTypeId
       - detectionData
       title: DetectionMutationPayload
+    MultiDetectionCreateResponse:
+      properties:
+        sessionId:
+          type: string
+          title: Sessionid
+        detections:
+          items:
+            $ref: '#/components/schemas/Detection'
+          type: array
+          title: Detections
+      type: object
+      required:
+      - sessionId
+      - detections
+      title: MultiDetectionCreateResponse
+    MultiDetectionEntryPayload:
+      properties:
+        detectionTypeId:
+          type: string
+          title: Detectiontypeid
+        notes:
+          type: string
+          title: Notes
+        photos:
+          items:
+            $ref: '#/components/schemas/DetectionPhotoPayload'
+          type: array
+          title: Photos
+        points:
+          items:
+            $ref: '#/components/schemas/ObservationPoint'
+          type: array
+          title: Points
+        done:
+          type: boolean
+          title: Done
+          default: false
+      type: object
+      required:
+      - detectionTypeId
+      - notes
+      - photos
+      - points
+      title: MultiDetectionEntryPayload
+    MultiDetectionMutationPayload:
+      properties:
+        detectionTime:
+          type: integer
+          title: Detectiontime
+        bbch:
+          type: string
+          title: Bbch
+        treatment:
+          $ref: '#/components/schemas/ObservationTreatment'
+        entries:
+          items:
+            $ref: '#/components/schemas/MultiDetectionEntryPayload'
+          type: array
+          title: Entries
+      type: object
+      required:
+      - detectionTime
+      - bbch
+      - treatment
+      - entries
+      title: MultiDetectionMutationPayload
     DetectionData:
       properties:
         bbch:

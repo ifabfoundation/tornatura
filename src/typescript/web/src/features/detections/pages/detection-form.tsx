@@ -1,10 +1,11 @@
 import React, { Fragment } from "react";
-import { Col, Container, Row } from "react-bootstrap";
+import { Col, Container, Row, Tab, Tabs } from "react-bootstrap";
 // import { useFormik } from "formik";
 // import * as Yup from "yup";
 import {
   DetectionMutationPayload,
   DetectionPhotoPayload,
+  MultiDetectionMutationPayload,
   ObservationPoint,
   ObservationType,
   FilesApi,
@@ -59,6 +60,7 @@ interface DetectionProps {
   pendingPhotos?: PendingDetectionPhoto[];
   onPhotosChange?: (photos: PendingDetectionPhoto[]) => void;
   onDraftChange?: (data: Partial<DetectionStepPointsData>) => void;
+  activeEntryIndex?: number;
 }
 
 type AddPointFn = (lng: number, lat: number) => void;
@@ -112,6 +114,33 @@ type PendingDetectionPhoto = {
   caption: string;
   position?: Point;
 };
+
+type MultiDetectionEntryDraft = {
+  key: string;
+  typology: string;
+  method: string;
+  observationTypeId: string;
+  detectionTypeId: string;
+  notes: string;
+  points: ObservationPoint[];
+  pendingPhotos: PendingDetectionPhoto[];
+  done: boolean;
+};
+  
+function createEntryKey() {
+  return `entry-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+}
+
+function buildEntryLabel(entry: { typology: string; method: string }, index: number) {
+  return `${index + 1}. ${entry.typology} > ${entry.method}`;
+}
+
+function areObservationPointsEqual(a: ObservationPoint[] = [], b: ObservationPoint[] = []) {
+  if (a === b) {
+    return true;
+  }
+  return JSON.stringify(a) === JSON.stringify(b);
+}
 
 function getFieldCenter(field?: AgriField): Point | undefined {
   if (!field?.map?.length) {
@@ -999,7 +1028,33 @@ type TypologyGroup = {
 function DetectionStepTipologia({
   typologyGroups,
   onNextClick,
-}: DetectionProps & { typologyGroups: TypologyGroup[] }) {
+  allowMultiSelection = false,
+  isMultiFlow = false,
+  onSelectMulti,
+  selectedTypology = "",
+  methods = [],
+  entries = [],
+  onSelectTypology,
+  onSelectMethod,
+  onAddDetection,
+  onRemoveEntry,
+  onProceedMulti,
+  isSelectingMultiEntry = false,
+}: DetectionProps & {
+  typologyGroups: TypologyGroup[];
+  allowMultiSelection?: boolean;
+  isMultiFlow?: boolean;
+  onSelectMulti?: () => void;
+  selectedTypology?: string;
+  methods?: string[];
+  entries?: MultiDetectionEntryDraft[];
+  onSelectTypology?: (typology: string) => void;
+  onSelectMethod?: (method: string) => void;
+  onAddDetection?: () => void;
+  onRemoveEntry?: (index: number) => void;
+  onProceedMulti?: () => void;
+  isSelectingMultiEntry?: boolean;
+}) {
   const items: AccordionItem[] = typologyGroups.map((group, index) => ({
     id: index.toString(),
     title: group.category,
@@ -1009,7 +1064,9 @@ function DetectionStepTipologia({
           <CozyButton
             key={itemIndex}
             content={item}
-            onClick={() => onNextClick({ typology: item })}
+            onClick={() =>
+              isMultiFlow ? onSelectTypology?.(item) : onNextClick({ typology: item })
+            }
             arrow={true}
           />
         ))}
@@ -1018,11 +1075,92 @@ function DetectionStepTipologia({
     icon: categoryIcons[group.category],
   }));
 
+  if (isMultiFlow) {
+    const nextSelectionIndex = entries.length + 1;
+
+    return (
+      <div className="narrow-container my-5">
+        <h3 className="mb-4 pb-2 text-center">
+          <strong>Nuovo rilevamento multiplo</strong>
+        </h3>
+
+        {entries.length > 0 && (
+          <div className="mb-4">
+            {entries.map((entry, index) => (
+              <div
+                key={entry.key}
+                className="d-flex align-items-center justify-content-between py-3 border-bottom"
+              >
+                <div className="font-m-600">{buildEntryLabel(entry, index)}</div>
+                <button
+                  className="trnt_btn small secondary"
+                  onClick={() => onRemoveEntry?.(index)}
+                >
+                  &times;
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {entries.length === 0 || isSelectingMultiEntry ? (
+          <Fragment>
+            <div className="mb-3 text-center font-m-600">
+              {entries.length === 0
+                ? "Aggiungi il primo tipo di rilevamento..."
+                : "Aggiungi un altro tipo di rilevamento..."}
+            </div>
+            <div className="mb-3 text-center">
+              <strong>{`Cosa vuoi rilevare? (${nextSelectionIndex})`}</strong>
+            </div>
+            {items.length === 0 ? (
+              <div>Nessuna tipologia disponibile.</div>
+            ) : (
+              <Accordion items={items} />
+            )}
+            {selectedTypology && (
+              <div className="mt-4">
+                <div className="mb-3 text-center">
+                  <strong>{`Scegli un metodo per il rilevamento (${nextSelectionIndex})`}</strong>
+                </div>
+                {methods.length === 0 && <div>Nessun metodo disponibile.</div>}
+                {methods.map((item, index) => (
+                  <CozyButton
+                    key={index}
+                    content={item}
+                    onClick={() => onSelectMethod?.(item)}
+                    arrow={true}
+                  />
+                ))}
+              </div>
+            )}
+          </Fragment>
+        ) : (
+          <div className="d-flex flex-column gap-3">
+            <CozyButton content="+ Aggiungi rilevamento" onClick={onAddDetection} />
+            <CozyButton
+              content="Prosegui con il rilevamento"
+              onClick={() => onProceedMulti?.()}
+            />
+          </div>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className="narrow-container my-5">
       <h3 className="mb-4 pb-2 text-center">
         <strong>Seleziona la tipologia di rilevamento</strong>
       </h3>
+      {allowMultiSelection && (
+        <div className="mb-4 text-center">
+          <CozyButton
+            content={isMultiFlow ? "Rilevamento multiplo attivo" : "Nuovo Rilevamento Multiplo"}
+            onClick={onSelectMulti}
+          />
+        </div>
+      )}
       {items.length === 0 ? <div>Nessuna tipologia disponibile.</div> : <Accordion items={items} />}
     </div>
   );
@@ -1047,6 +1185,57 @@ function DetectionStepMetodo({
           arrow={true}
         />
       ))}
+    </div>
+  );
+}
+
+function DetectionStepCompose({
+  entries,
+  onAddDetection,
+  onRemoveEntry,
+  onNextClick,
+}: {
+  entries: MultiDetectionEntryDraft[];
+  onAddDetection: () => void;
+  onRemoveEntry: (index: number) => void;
+  onNextClick: (data: DetectionStepData) => Promise<void>;
+}) {
+  return (
+    <div className="narrow-container my-5">
+      <h3 className="mb-4 pb-2 text-center">
+        <strong>Nuovo rilevamento multiplo</strong>
+      </h3>
+      {entries.length === 0 ? (
+        <div className="text-center">Aggiungi il primo tipo di rilevamento.</div>
+      ) : (
+        <div className="mb-4">
+          {entries.map((entry, index) => (
+            <div
+              key={entry.key}
+              className="d-flex align-items-center justify-content-between py-3 border-bottom"
+            >
+              <div className="font-m-600">{buildEntryLabel(entry, index)}</div>
+              <button
+                className="trnt_btn small secondary"
+                onClick={() => onRemoveEntry(index)}
+              >
+                &times;
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+      <div className="d-flex flex-column gap-3">
+        <CozyButton content="+ Aggiungi rilevamento" onClick={onAddDetection} />
+        <CozyButton
+          content="Prosegui con il rilevamento"
+          onClick={() => {
+            if (entries.length > 0) {
+              onNextClick({});
+            }
+          }}
+        />
+      </div>
     </div>
   );
 }
@@ -1088,6 +1277,46 @@ function DetectionStepGuide({
       ) : (
         <div>Nessuna guida disponibile per questa tipologia e metodo.</div>
       )}
+      <div className="fixed-bottom mt-4 text-center">
+        <div className="contents">
+          <button className="trnt_btn primary" onClick={() => onNextClick({})}>
+            Avanti
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function DetectionStepGuideGeneric({
+  onNextClick,
+}: {
+  onNextClick: (data: DetectionStepData) => Promise<void>;
+}) {
+  const guideValue = 'https://www.tornatura.it/v/3-with-instructions/instructions/260429-multi-insetto?partial=1'
+  return (
+    <div className="my-5 text-center">
+      <h3 className="mb-4 pb-2">
+        <strong>Indicazioni per effettuare il rilevamento</strong>
+      </h3>
+      <Fragment>
+        <Container fluid>
+          <Row>
+            <Col>
+              <div className="my-4 mb-5">
+                <div className="very-rounded">
+                  <AutoHeightIframe src={guideValue} />
+                </div>
+                <div className="mt-2">
+                  <a href={guideValue} target="_blank" rel="noreferrer">
+                    Apri in una nuova finestra
+                  </a>
+                </div>
+              </div>
+            </Col>
+          </Row>
+        </Container>
+      </Fragment>
       <div className="fixed-bottom mt-4 text-center">
         <div className="contents">
           <button className="trnt_btn primary" onClick={() => onNextClick({})}>
@@ -1372,6 +1601,7 @@ function DetectionStepObservationPoints({
   pendingPhotos = [],
   onPhotosChange,
   onDraftChange,
+  activeEntryIndex,
 }: DetectionProps & { observationType: ObservationType }) {
   const navigate = useNavigate();
   const { companyId, fieldId } = useParams();
@@ -1400,19 +1630,26 @@ function DetectionStepObservationPoints({
   const noteValueRef = React.useRef(noteValue);
   const isMobile = useIsMobile();
   const guideValue = observationType?.locationAndScoreInstructions?.trim() ?? "";
+  const mapInstanceKey = `${formData.detectionTypeId || "draft"}-${activeEntryIndex ?? 0}`;
   const fieldAreaPoints = React.useMemo(
     () => currentField?.map?.map((pt: Point) => [pt.lng, pt.lat]) ?? [],
     [currentField],
   );
   const fieldCenter = React.useMemo(() => getFieldCenter(currentField), [currentField]);
-
   React.useEffect(() => {
-    setPoints(formData.detectionData.points ?? []);
+    const nextPoints = formData.detectionData.points ?? [];
+    setPoints((prev) => (areObservationPointsEqual(prev, nextPoints) ? prev : nextPoints));
   }, [formData.detectionData.points]);
 
   React.useEffect(() => {
-    setNoteValue(formData.detectionData.notes ?? "");
+    const nextNoteValue = formData.detectionData.notes ?? "";
+    setNoteValue((prev) => (prev === nextNoteValue ? prev : nextNoteValue));
   }, [formData.detectionData.notes]);
+
+  React.useEffect(() => {
+    setSource("current");
+    setMarkerPosition(undefined);
+  }, [activeEntryIndex, formData.detectionTypeId]);
 
   React.useEffect(() => {
     pointsRef.current = points;
@@ -1421,15 +1658,6 @@ function DetectionStepObservationPoints({
   React.useEffect(() => {
     noteValueRef.current = noteValue;
   }, [noteValue]);
-
-  React.useEffect(() => {
-    return () => {
-      onDraftChange?.({
-        points: pointsRef.current,
-        notes: noteValueRef.current,
-      });
-    };
-  }, [onDraftChange]);
 
   React.useEffect(() => {
     if (!observationType || !observationType.counters) {
@@ -1560,6 +1788,10 @@ function DetectionStepObservationPoints({
     }
     setPoints((prev) => {
       const newPoints = [...prev, point];
+      onDraftChange?.({
+        points: newPoints,
+        notes: noteValueRef.current,
+      });
       console.log(">>> points updated", newPoints);
       return newPoints;
     });
@@ -1756,6 +1988,10 @@ function DetectionStepObservationPoints({
     if (points.length === 0) return;
     const newPoints = points.slice(0, -1);
     setPoints(newPoints);
+    onDraftChange?.({
+      points: newPoints,
+      notes: noteValueRef.current,
+    });
   }
 
   return (
@@ -1783,6 +2019,10 @@ function DetectionStepObservationPoints({
                 className="trnt_btn primary"
                 onClick={() => {
                   setNoteValue(noteDraft);
+                  onDraftChange?.({
+                    points: pointsRef.current,
+                    notes: noteDraft,
+                  });
                   setNoteModalOpen(false);
                 }}
               >
@@ -1852,6 +2092,7 @@ function DetectionStepObservationPoints({
             {!isMobile && (
               <div className="half" data-note="MAP A">
                 <DetectionFormMapPosition
+                  key={`desktop-${mapInstanceKey}`}
                   sourceType={source}
                   onMarkerChange={handleMarkerChange}
                   mapPoints={mapPoints}
@@ -1994,6 +2235,7 @@ function DetectionStepObservationPoints({
                 )}
                 {isMobile && activeDataTab === "map" && (
                   <DetectionFormMapPosition
+                    key={`mobile-${mapInstanceKey}`}
                     sourceType={source}
                     onMarkerChange={handleMarkerChange}
                     mapPoints={mapPoints}
@@ -2085,7 +2327,13 @@ function DetectionStepObservationPoints({
   );
 }
 
-function DetectionStepDone({ detectionType }: { detectionType: string }) {
+function DetectionStepDone({
+  detectionType,
+  isMultiSession = false,
+}: {
+  detectionType?: string;
+  isMultiSession?: boolean;
+}) {
   const navigate = useNavigate();
   const { companyId, fieldId } = useParams();
   return (
@@ -2097,6 +2345,12 @@ function DetectionStepDone({ detectionType }: { detectionType: string }) {
       <button
         className="trnt_btn"
         onClick={() => {
+          if (isMultiSession || !detectionType) {
+            navigate(`/companies/${companyId}/fields/${fieldId}`, {
+              replace: true,
+            });
+            return;
+          }
           navigate(`/companies/${companyId}/fields/${fieldId}/type/${detectionType}`, {
             replace: true,
           });
@@ -2127,6 +2381,8 @@ export function DetectionForm() {
   const hasTypeIdPreselection = preselectedTypeId !== "";
   const hasTypologyMethodPreselection = preselectedTypology !== "" && preselectedMethod !== "";
   const hasPreselection = hasTypeIdPreselection || hasTypologyMethodPreselection;
+  const [flowMode, setFlowMode] = React.useState<"single" | "multi">("single");
+  const isMultiFlow = flowMode === "multi";
   const [stepIndex, setStepIndex] = React.useState(readDetectionStepIndex(location.state) ?? 0);
   const [formData, setFormData] = React.useState<DetectionMutationPayload>({
     detectionTime: new Date().getTime(),
@@ -2144,12 +2400,15 @@ export function DetectionForm() {
     },
   });
   const [pendingPhotos, setPendingPhotos] = React.useState<PendingDetectionPhoto[]>([]);
+  const [entryDrafts, setEntryDrafts] = React.useState<MultiDetectionEntryDraft[]>([]);
+  const [activeEntryIndex, setActiveEntryIndex] = React.useState(0);
   const [selectedTypology, setSelectedTypology] = React.useState(() =>
     hasPreselection ? preselectedTypology : "",
   );
   const [selectedMethod, setSelectedMethod] = React.useState(() =>
     hasPreselection ? preselectedMethod : "",
   );
+  const [isSelectingMultiEntry, setIsSelectingMultiEntry] = React.useState(false);
   const [useShortFlow, setUseShortFlow] = React.useState(false);
   const [stepperRecapValues, setStepperRecapValues] = React.useState<Record<string, string>>({});
   const [modalOpen, setModalOpen] = React.useState(false);
@@ -2195,6 +2454,10 @@ export function DetectionForm() {
   const observationTypes = useAppSelector((state) =>
     observationTypesSelectors.selectObservationTypes(state),
   );
+  const activeEntry = entryDrafts[activeEntryIndex];
+  const activeEntryDetectionType = detectionTypes.find(
+    (item) => item.id === activeEntry?.detectionTypeId,
+  );
 
   const [detectionType, setDetectectionType] = React.useState<DetectionType>();
 
@@ -2207,13 +2470,17 @@ export function DetectionForm() {
   }, []);
 
   React.useEffect(() => {
-    const title = selectedTypology
-      ? selectedMethod
-        ? `${selectedTypology}  ›  ${selectedMethod}`
-        : `Rilevamento ${selectedTypology}`
-      : "Nuovo Rilevamento";
+    const title = isMultiFlow
+      ? activeEntry
+        ? `Rilevamento multiplo: ${activeEntry.typology} > ${activeEntry.method}`
+        : "Nuovo Rilevamento Multiplo"
+      : selectedTypology
+        ? selectedMethod
+          ? `${selectedTypology}  ›  ${selectedMethod}`
+          : `Rilevamento ${selectedTypology}`
+        : "Nuovo Rilevamento";
     dispatch(headerbarActions.setTitle({ title: title, subtitle: "Subtitle" }));
-  }, [selectedTypology, selectedMethod]);
+  }, [activeEntry, dispatch, isMultiFlow, selectedMethod, selectedTypology]);
 
   React.useEffect(() => {
     if (companyId && fieldId) {
@@ -2224,6 +2491,10 @@ export function DetectionForm() {
   }, [companyId, fieldId, dispatch]);
 
   React.useEffect(() => {
+    if (isMultiFlow) {
+      setUseShortFlow(false);
+      return;
+    }
     if (hasTypeIdPreselection) {
       const matchingDetectionType = detectionTypes.find((item) => item.id === preselectedTypeId);
       if (matchingDetectionType) {
@@ -2269,13 +2540,16 @@ export function DetectionForm() {
     detectionTypes,
     hasTypeIdPreselection,
     hasTypologyMethodPreselection,
+    isMultiFlow,
     observationTypes,
     preselectedMethod,
     preselectedTypology,
     preselectedTypeId,
   ]);
 
-  const steps = useShortFlow
+  const steps = isMultiFlow
+    ? ["typology", "guide", "bbch", "treatment", "points", "done"]
+    : useShortFlow
     ? ["bbch", "treatment", "points", "done"]
     : hasPreselection
       ? ["bbch", "treatment", "points", "done"]
@@ -2344,6 +2618,9 @@ export function DetectionForm() {
   )[0];
 
   React.useEffect(() => {
+    if (isMultiFlow) {
+      return;
+    }
     if (observationType) {
       for (let d of detectionTypes) {
         if (d.observationTypeId == observationType.id) {
@@ -2352,9 +2629,12 @@ export function DetectionForm() {
         }
       }
     }
-  }, [detectionTypes, observationType]);
+  }, [detectionTypes, isMultiFlow, observationType]);
 
   React.useEffect(() => {
+    if (isMultiFlow) {
+      return;
+    }
     if (!detectionType) {
       if (!hasTypeIdPreselection) {
         setFormData((prev) => ({
@@ -2368,7 +2648,7 @@ export function DetectionForm() {
       ...prev,
       detectionTypeId: detectionType.id,
     }));
-  }, [detectionType, hasTypeIdPreselection]);
+  }, [detectionType, hasTypeIdPreselection, isMultiFlow]);
 
   const createDetectionAction = async (payload: DetectionMutationPayload) => {
     if (companyId && fieldId) {
@@ -2383,6 +2663,18 @@ export function DetectionForm() {
       } catch (reason) {
         console.error("Error creating detection with reason: ", reason);
       }
+    }
+  };
+
+  const createBulkDetectionsAction = async (payload: MultiDetectionMutationPayload) => {
+    if (companyId && fieldId) {
+      await dispatch(
+        detectionsActions.addBulkDetectionsAction({
+          orgId: companyId,
+          fieldId,
+          body: payload,
+        }),
+      ).then(unwrapResult);
     }
   };
 
@@ -2406,6 +2698,110 @@ export function DetectionForm() {
     }));
   };
 
+  const setEntryDraftAtIndex = React.useCallback(
+    (
+      entryIndex: number,
+      updater: (entry: MultiDetectionEntryDraft) => MultiDetectionEntryDraft,
+    ) => {
+      setEntryDrafts((prev) => {
+        const currentEntry = prev[entryIndex];
+        if (!currentEntry) {
+          return prev;
+        }
+
+        const updatedEntry = updater(currentEntry);
+        const isUnchanged =
+          updatedEntry === currentEntry ||
+          (updatedEntry.key === currentEntry.key &&
+            updatedEntry.typology === currentEntry.typology &&
+            updatedEntry.method === currentEntry.method &&
+            updatedEntry.observationTypeId === currentEntry.observationTypeId &&
+            updatedEntry.detectionTypeId === currentEntry.detectionTypeId &&
+            updatedEntry.notes === currentEntry.notes &&
+            areObservationPointsEqual(updatedEntry.points, currentEntry.points) &&
+            updatedEntry.pendingPhotos === currentEntry.pendingPhotos &&
+            updatedEntry.done === currentEntry.done);
+
+        if (isUnchanged) {
+          return prev;
+        }
+
+        const next = [...prev];
+        next[entryIndex] = updatedEntry;
+        return next;
+      });
+    },
+    [],
+  );
+
+  const setActiveEntryDraft = React.useCallback(
+    (updater: (entry: MultiDetectionEntryDraft) => MultiDetectionEntryDraft) => {
+      setEntryDraftAtIndex(activeEntryIndex, updater);
+    },
+    [activeEntryIndex, setEntryDraftAtIndex],
+  );
+
+  const ensureDetectionTypeId = React.useCallback(
+    async (entry: MultiDetectionEntryDraft) => {
+      if (entry.detectionTypeId) {
+        return entry.detectionTypeId;
+      }
+      if (!companyId || !fieldId) {
+        throw new Error("Missing field context for detection type creation");
+      }
+      const created = await dispatch(
+        detectionTypesActions.addDetectionTypeAction({
+          orgId: companyId,
+          fieldId,
+          body: {
+            observationTypeId: entry.observationTypeId,
+          },
+        }),
+      ).then(unwrapResult);
+      setEntryDrafts((prev) =>
+        prev.map((item) =>
+          item.key === entry.key ? { ...item, detectionTypeId: created.id } : item,
+        ),
+      );
+      return created.id;
+    },
+    [companyId, dispatch, fieldId],
+  );
+
+  const submitMultiDetectionSession = React.useCallback(
+    async (entriesToSubmit: MultiDetectionEntryDraft[]) => {
+      const entriesWithTypes = await Promise.all(
+        entriesToSubmit.map(async (entry) => ({
+          ...entry,
+          detectionTypeId: await ensureDetectionTypeId(entry),
+        })),
+      );
+      const uploadedEntries = await Promise.all(
+        entriesWithTypes.map(async (entry) => ({
+          detectionTypeId: entry.detectionTypeId,
+          notes: entry.notes,
+          points: entry.points,
+          photos: await uploadDetectionPhotos(entry.pendingPhotos),
+          done: entry.done,
+        })),
+      );
+      const payload: MultiDetectionMutationPayload = {
+        detectionTime: formData.detectionTime,
+        bbch: formData.detectionData.bbch,
+        treatment: formData.detectionData.treatment,
+        entries: uploadedEntries,
+      };
+      await createBulkDetectionsAction(payload);
+    },
+    [
+      createBulkDetectionsAction,
+      ensureDetectionTypeId,
+      formData.detectionData.bbch,
+      formData.detectionData.treatment,
+      formData.detectionTime,
+    ],
+  );
+
   const handleNextClick = async (data: DetectionStepData) => {
     if (currentStepKey === "typology") {
       const typologyData = data as DetectionStepTypologyData;
@@ -2424,6 +2820,37 @@ export function DetectionForm() {
       const matchingDetectionType = detectionTypes.find(
         (item) => item.observationTypeId === matchingObservationType?.id,
       );
+      if (isMultiFlow) {
+        if (!matchingObservationType) {
+          return;
+        }
+        const existingIndex = entryDrafts.findIndex(
+          (entry) => entry.observationTypeId === matchingObservationType.id,
+        );
+        if (existingIndex >= 0) {
+          setActiveEntryIndex(existingIndex);
+        } else {
+          const nextEntries = [
+            ...entryDrafts,
+            {
+              key: createEntryKey(),
+              typology: selectedTypology,
+              method: methodData.method,
+              observationTypeId: matchingObservationType.id,
+              detectionTypeId: matchingDetectionType?.id ?? "",
+              notes: "",
+              points: [],
+              pendingPhotos: [],
+              done: false,
+            },
+          ];
+          setEntryDrafts(nextEntries);
+          setActiveEntryIndex(nextEntries.length - 1);
+        }
+        updateStepperRecaps(stepIndex + 1, { typology: selectedTypology, method: methodData.method });
+        goToStep(stepIndex + 1);
+        return;
+      }
       setFormData((prev) => ({
         ...prev,
         detectionTypeId: matchingDetectionType?.id ?? "",
@@ -2432,13 +2859,19 @@ export function DetectionForm() {
       goToStep(stepIndex + 1);
       return;
     }
+    if (currentStepKey === "compose") {
+      if (entryDrafts.length === 0) {
+        return;
+      }
+      setActiveEntryIndex(0);
+      goToStep(stepIndex + 1);
+      return;
+    }
     if (currentStepKey === "guide") {
-      // updateStepperRecaps(stepIndex + 1, { typology: formData, method: formData });
       goToStep(stepIndex + 1);
       return;
     }
     if (currentStepKey === "bbch") {
-      console.log("~ BBCH data:", data); // qui non ci arriva mai.
       const bbchData = data as DetectionStepBbchData;
       setFormData((prev) => ({
         ...prev,
@@ -2466,6 +2899,33 @@ export function DetectionForm() {
     }
     if (currentStepKey === "points") {
       const pointsData = data as DetectionStepPointsData;
+      if (isMultiFlow) {
+        const updatedEntries = entryDrafts.map((entry, index) =>
+          index === activeEntryIndex
+            ? {
+                ...entry,
+                notes: pointsData.notes,
+                points: pointsData.points,
+                pendingPhotos: pointsData.photos ?? pendingPhotos,
+                done: true,
+              }
+            : entry,
+        );
+        setEntryDrafts(updatedEntries);
+        const nextPendingIndex = updatedEntries.findIndex((entry) => !entry.done);
+        if (nextPendingIndex >= 0) {
+          setActiveEntryIndex(nextPendingIndex);
+          return;
+        }
+        try {
+          await submitMultiDetectionSession(updatedEntries);
+          goToStep(stepIndex + 1);
+        } catch (error) {
+          console.error("Error creating multi detection session:", error);
+          alert("Errore durante il salvataggio del rilevamento multiplo.");
+        }
+        return;
+      }
       const notesToSave = pointsData.notes ?? formData.detectionData.notes ?? "";
       let detectionTypeId = formData.detectionTypeId;
       if (!detectionTypeId && detectionType?.id) {
@@ -2540,10 +3000,26 @@ export function DetectionForm() {
       });
       return;
     }
+    if (isMultiFlow && currentStepKey === "typology") {
+      setSelectedTypology("");
+      setSelectedMethod("");
+      if (entryDrafts.length === 0) {
+        goToStep(0);
+        return;
+      }
+    }
     goToStep(stepIndex - 1);
   };
 
-  const handlePointsDraftChange = React.useCallback((draft: Partial<DetectionStepPointsData>) => {
+  const handlePointsDraftChange = (draft: Partial<DetectionStepPointsData>) => {
+    if (isMultiFlow) {
+      setActiveEntryDraft((entry) => ({
+        ...entry,
+        points: draft.points ?? entry.points,
+        notes: draft.notes ?? entry.notes,
+      }));
+      return;
+    }
     setFormData((prev) => ({
       ...prev,
       detectionData: {
@@ -2552,10 +3028,64 @@ export function DetectionForm() {
         notes: draft.notes ?? prev.detectionData.notes,
       },
     }));
-  }, []);
+  };
 
-  // const stepperItems = ["Tipologia", "Metodo", "Guida", "BBCH", "Rilevamento"];
-  const stepperItems = useShortFlow
+  const handleSelectMultiMethod = React.useCallback(
+    (method: string) => {
+      const matchingObservationType = observationTypes.find(
+        (item) => item.typology === selectedTypology && item.method === method,
+      );
+      const matchingDetectionType = detectionTypes.find(
+        (item) => item.observationTypeId === matchingObservationType?.id,
+      );
+
+      if (!matchingObservationType) {
+        return;
+      }
+
+      const existingIndex = entryDrafts.findIndex(
+        (entry) => entry.observationTypeId === matchingObservationType.id,
+      );
+
+      if (existingIndex >= 0) {
+        setActiveEntryIndex(existingIndex);
+      } else {
+        const nextEntries = [
+          ...entryDrafts,
+          {
+            key: createEntryKey(),
+            typology: selectedTypology,
+            method,
+            observationTypeId: matchingObservationType.id,
+            detectionTypeId: matchingDetectionType?.id ?? "",
+            notes: "",
+            points: [],
+            pendingPhotos: [],
+            done: false,
+          },
+        ];
+        setEntryDrafts(nextEntries);
+        setActiveEntryIndex(nextEntries.length - 1);
+      }
+
+      setSelectedMethod("");
+      setSelectedTypology("");
+      setIsSelectingMultiEntry(false);
+    },
+    [detectionTypes, entryDrafts, observationTypes, selectedTypology],
+  );
+
+  const handleProceedFromMultiSelection = React.useCallback(() => {
+    if (entryDrafts.length === 0) {
+      return;
+    }
+    setActiveEntryIndex(0);
+    goToStep(stepIndex + 1);
+  }, [entryDrafts.length, goToStep, stepIndex]);
+
+  const stepperItems = isMultiFlow
+    ? ["Selezione", "Guida", "BBCH", "Trattamenti", "Rilevamenti"]
+    : useShortFlow
     ? ["BBCH", "Trattamenti", "Rilevamento"]
     : ["Tipologia", "Metodo", "Guida", "BBCH", "Trattamenti", "Rilevamento"];
 
@@ -2589,9 +3119,41 @@ export function DetectionForm() {
             typologyGroups={typologyGroups}
             formData={formData}
             onNextClick={handleNextClick}
+            allowMultiSelection={!hasPreselection}
+            isMultiFlow={isMultiFlow}
+            onSelectMulti={() => {
+              setFlowMode("multi");
+              setSelectedTypology("");
+              setSelectedMethod("");
+              setIsSelectingMultiEntry(true);
+            }}
+            selectedTypology={selectedTypology}
+            methods={methodOptions}
+            entries={entryDrafts}
+            isSelectingMultiEntry={isSelectingMultiEntry}
+            onSelectTypology={(typology) => {
+              setSelectedTypology(typology);
+              setSelectedMethod("");
+              setIsSelectingMultiEntry(true);
+            }}
+            onSelectMethod={handleSelectMultiMethod}
+            onAddDetection={() => {
+              setSelectedTypology("");
+              setSelectedMethod("");
+              setIsSelectingMultiEntry(true);
+            }}
+            onRemoveEntry={(index) => {
+              const nextEntries = entryDrafts.filter((_, entryIndex) => entryIndex !== index);
+              setEntryDrafts(nextEntries);
+              setActiveEntryIndex((prev) => Math.max(0, Math.min(prev, nextEntries.length - 1)));
+              if (nextEntries.length === 0) {
+                setIsSelectingMultiEntry(true);
+              }
+            }}
+            onProceedMulti={handleProceedFromMultiSelection}
           />
         )}
-        {currentStepKey === "method" && (
+        {!isMultiFlow && currentStepKey === "method" && (
           <DetectionStepMetodo
             typology={selectedTypology}
             methods={methodOptions}
@@ -2600,13 +3162,33 @@ export function DetectionForm() {
             formData={formData}
           />
         )}
-        {currentStepKey === "guide" && (
-          <DetectionStepGuide
-            formData={formData}
-            onBackClick={handleBackClick}
-            observationType={observationType}
+        {!isMultiFlow && currentStepKey === "compose" && (
+          <DetectionStepCompose
+            entries={entryDrafts}
+            onAddDetection={() => {
+              setSelectedTypology("");
+              setSelectedMethod("");
+              goToStep(0);
+            }}
+            onRemoveEntry={(index) => {
+              const nextEntries = entryDrafts.filter((_, entryIndex) => entryIndex !== index);
+              setEntryDrafts(nextEntries);
+              setActiveEntryIndex((prev) => Math.max(0, Math.min(prev, nextEntries.length - 1)));
+            }}
             onNextClick={handleNextClick}
           />
+        )}
+        {currentStepKey === "guide" && (
+          isMultiFlow ? (
+            <DetectionStepGuideGeneric onNextClick={handleNextClick} />
+          ) : (
+            <DetectionStepGuide
+              formData={formData}
+              onBackClick={handleBackClick}
+              observationType={observationType}
+              onNextClick={handleNextClick}
+            />
+          )
         )}
         {currentStepKey === "bbch" && (
           <DetectionStepBbch
@@ -2617,25 +3199,96 @@ export function DetectionForm() {
           />
         )}
         {currentStepKey === "treatment" && (
-          <DetectionStepTreatment 
-            formData={formData} 
-            onNextClick={handleNextClick} 
-            action={stepperRecapValues.treatment ? "restore" : undefined}
-            />
-        )}
-        {currentStepKey === "points" && (
-          <DetectionStepObservationPoints
+          <DetectionStepTreatment
             formData={formData}
-            onBackClick={handleBackClick}
-            observationType={observationType}
             onNextClick={handleNextClick}
-            pendingPhotos={pendingPhotos}
-            onPhotosChange={setPendingPhotos}
-            onDraftChange={handlePointsDraftChange}
+            action={stepperRecapValues.treatment ? "restore" : undefined}
           />
         )}
+        {currentStepKey === "points" && (
+          <Fragment>
+            {isMultiFlow && entryDrafts.length > 0 ? (
+              <div className="px-2 px-md-4 pb-5">
+                <Tabs
+                  id="multi-detection-points-tabs"
+                  activeKey={activeEntry?.key}
+                  onSelect={(eventKey) => {
+                    if (!eventKey) {
+                      return;
+                    }
+                    const nextIndex = entryDrafts.findIndex((entry) => entry.key === eventKey);
+                    if (nextIndex >= 0) {
+                      setActiveEntryIndex(nextIndex);
+                    }
+                  }}
+                  mountOnEnter
+                  unmountOnExit
+                >
+                  {entryDrafts.map((entry, index) => {
+                    const entryObservationType = observationTypes.find(
+                      (item) => item.id === entry.observationTypeId,
+                    ) as ObservationType;
+                    const entryFormData: DetectionMutationPayload = {
+                      ...formData,
+                      detectionTypeId: entry.detectionTypeId,
+                      detectionData: {
+                        ...formData.detectionData,
+                        notes: entry.notes,
+                        points: entry.points,
+                        photos: [],
+                      },
+                    };
+
+                    return (
+                      <Tab
+                        key={entry.key}
+                        eventKey={entry.key}
+                        title={`${buildEntryLabel(entry, index)}${entry.done ? " ✓" : ""}`}
+                      >
+                        <DetectionStepObservationPoints
+                          formData={entryFormData}
+                          onBackClick={handleBackClick}
+                          observationType={entryObservationType}
+                          onNextClick={handleNextClick}
+                          pendingPhotos={entry.pendingPhotos}
+                          onPhotosChange={(photos) => {
+                            setEntryDraftAtIndex(index, (currentEntry) => ({
+                              ...currentEntry,
+                              pendingPhotos: photos,
+                            }));
+                          }}
+                          onDraftChange={(draft) => {
+                            setEntryDraftAtIndex(index, (currentEntry) => ({
+                              ...currentEntry,
+                              points: draft.points ?? currentEntry.points,
+                              notes: draft.notes ?? currentEntry.notes,
+                            }));
+                          }}
+                          activeEntryIndex={index}
+                        />
+                      </Tab>
+                    );
+                  })}
+                </Tabs>
+              </div>
+            ) : (
+              <DetectionStepObservationPoints
+                formData={formData}
+                onBackClick={handleBackClick}
+                observationType={observationType as ObservationType}
+                onNextClick={handleNextClick}
+                pendingPhotos={pendingPhotos}
+                onPhotosChange={setPendingPhotos}
+                onDraftChange={handlePointsDraftChange}
+              />
+            )}
+          </Fragment>
+        )}
         {currentStepKey === "done" && (
-          <DetectionStepDone detectionType={formData.detectionTypeId} />
+          <DetectionStepDone
+            detectionType={isMultiFlow ? activeEntryDetectionType?.id : formData.detectionTypeId}
+            isMultiSession={isMultiFlow}
+          />
         )}
       </div>
     </Fragment>

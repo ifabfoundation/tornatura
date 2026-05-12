@@ -37,6 +37,12 @@ pex_binary(
 )
 
 pex_binary(
+    name="generate-organization-stats",
+    entry_point="scripts/generate_organization_stats.py",
+    dependencies=[":pysource", ":statics"],
+)
+
+pex_binary(
     name="migrate-detection-photos",
     entry_point="scripts/migrate_detection_photos.py",
     dependencies=[":pysource", ":statics"],

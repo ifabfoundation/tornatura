@@ -34,6 +34,12 @@ export interface Detection {
     agrifieldId: string;
 
     /**
+     * @type {string}
+     * @memberof Detection
+     */
+    sessionId?: string | null;
+
+    /**
      * @type {number}
      * @memberof Detection
      */

@@ -4,7 +4,13 @@ import {
   createEntityAdapter,
   createSelector,
 } from "@reduxjs/toolkit";
-import { Detection, DetectionMutationPayload, DetectionsApi } from "@tornatura/coreapis";
+import {
+  Detection,
+  DetectionMutationPayload,
+  DetectionsApi,
+  MultiDetectionCreateResponse,
+  MultiDetectionMutationPayload,
+} from "@tornatura/coreapis";
 import { getCoreApiConfiguration } from "../../../services/utils";
 import { AuxState } from "../../../hooks";
 import { RootState } from "../../../store";
@@ -68,6 +74,12 @@ interface IAddNewDetectionPayload {
   body: DetectionMutationPayload;
 }
 
+interface IAddBulkDetectionsPayload {
+  orgId: string;
+  fieldId: string;
+  body: MultiDetectionMutationPayload;
+}
+
 export const addNewDetection = createAsyncThunk(
   "detections/addNewDetection",
   async ({ orgId, fieldId, body }: IAddNewDetectionPayload, { rejectWithValue }) => {
@@ -75,6 +87,20 @@ export const addNewDetection = createAsyncThunk(
     const apiInstance = new DetectionsApi(apiConfig);
     try {
       const response = await apiInstance.createDetection(body, orgId, fieldId);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  },
+);
+
+export const addBulkDetections = createAsyncThunk(
+  "detections/addBulkDetections",
+  async ({ orgId, fieldId, body }: IAddBulkDetectionsPayload, { rejectWithValue }) => {
+    const apiConfig = await getCoreApiConfiguration();
+    const apiInstance = new DetectionsApi(apiConfig);
+    try {
+      const response = await apiInstance.createBulkDetections(body, orgId, fieldId);
       return response.data;
     } catch (error) {
       return rejectWithValue(error);
@@ -141,6 +167,13 @@ const detectionsSlice = createSlice({
       detectionsAdapter.upsertOne(state, action.payload as Detection);
     });
 
+    builder.addCase(addBulkDetections.fulfilled, (state, action) => {
+      detectionsAdapter.upsertMany(
+        state,
+        (action.payload as MultiDetectionCreateResponse).detections as Detection[],
+      );
+    });
+
     builder.addCase(deleteDetection.fulfilled, (state, action) => {
       detectionsAdapter.removeOne(state, action.payload as string);
     });
@@ -172,6 +205,7 @@ export const detectionsActions = {
   fetchFieldDetectionsAction: fetchFieldDetections,
   fetchDetectionsByTypeAction: fetchDetectionsByType,
   addNewDetectionAction: addNewDetection,
+  addBulkDetectionsAction: addBulkDetections,
   deleteDetectionAction: deleteDetection,
 };
 
