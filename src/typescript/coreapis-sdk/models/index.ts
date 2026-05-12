@@ -29,6 +29,7 @@ export * from './invitation-validate-response';
 export * from './observation-counter';
 export * from './observation-data';
 export * from './observation-point';
+export * from './observation-treatment-entry';
 export * from './observation-treatment';
 export * from './observation-type';
 export * from './observation-type-create-payload';

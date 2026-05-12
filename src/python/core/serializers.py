@@ -86,8 +86,13 @@ class ObservationPoint(BaseModel):
     position: Point
     data: ObservationData
 
+class ObservationTreatmentEntry(BaseModel):
+    treatmentDate: str = ""
+    treatmentProduct: str = ""
+
 class ObservationTreatment(BaseModel):
     treatment: bool = False
+    treatments: List[ObservationTreatmentEntry] = []
     treatmentDate: str = ""
     treatmentProduct: str = ""
 

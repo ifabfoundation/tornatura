@@ -6,6 +6,7 @@ import {
   DetectionMutationPayload,
   DetectionPhotoPayload,
   MultiDetectionMutationPayload,
+  ObservationTreatmentEntry,
   ObservationPoint,
   ObservationType,
   FilesApi,
@@ -140,6 +141,34 @@ function areObservationPointsEqual(a: ObservationPoint[] = [], b: ObservationPoi
     return true;
   }
   return JSON.stringify(a) === JSON.stringify(b);
+}
+
+function normalizeTreatmentEntries(
+  treatment: DetectionMutationPayload["detectionData"]["treatment"],
+): ObservationTreatmentEntry[] {
+  const entries = (treatment.treatments ?? [])
+    .map((entry) => ({
+      treatmentDate: entry.treatmentDate?.trim() ?? "",
+      treatmentProduct: entry.treatmentProduct?.trim() ?? "",
+    }))
+    .filter((entry) => entry.treatmentDate !== "" || entry.treatmentProduct !== "");
+
+  if (entries.length > 0) {
+    return entries;
+  }
+
+  const legacyDate = treatment.treatmentDate?.trim() ?? "";
+  const legacyProduct = treatment.treatmentProduct?.trim() ?? "";
+  if (legacyDate !== "" || legacyProduct !== "") {
+    return [
+      {
+        treatmentDate: legacyDate,
+        treatmentProduct: legacyProduct,
+      },
+    ];
+  }
+
+  return [];
 }
 
 function getFieldCenter(field?: AgriField): Point | undefined {
@@ -1403,35 +1432,53 @@ function DetectionStepTreatment({ formData, onNextClick, action }: DetectionProp
     detectionsSelectors.selectDetectionbyFieldId(state, fieldId ?? "default"),
   );
   const hasSavedTreatment = action === "restore";
+  const savedTreatments = React.useMemo(
+    () => normalizeTreatmentEntries(formData.detectionData.treatment),
+    [formData.detectionData.treatment],
+  );
   const [treatment, setTreatment] = React.useState<boolean | undefined>(() =>
     hasSavedTreatment ? formData.detectionData.treatment.treatment : undefined,
   );
-  const [treatmentDate, setTreatmentDate] = React.useState(() =>
-    hasSavedTreatment ? (formData.detectionData.treatment.treatmentDate ?? "") : "",
+  const [treatments, setTreatments] = React.useState<ObservationTreatmentEntry[]>(() =>
+    hasSavedTreatment ? savedTreatments : [],
   );
-  const [treatmentProduct, setTreatmentProduct] = React.useState(() =>
-    hasSavedTreatment ? (formData.detectionData.treatment.treatmentProduct ?? "") : "",
+  const [draftTreatmentDate, setDraftTreatmentDate] = React.useState("");
+  const [draftTreatmentProduct, setDraftTreatmentProduct] = React.useState("");
+  const [isAddingTreatment, setIsAddingTreatment] = React.useState(() =>
+    hasSavedTreatment ? savedTreatments.length === 0 && formData.detectionData.treatment.treatment : false,
   );
   const [error, setError] = React.useState("");
 
   React.useEffect(() => {
     if (hasSavedTreatment) {
       setTreatment(formData.detectionData.treatment.treatment);
-      setTreatmentDate(formData.detectionData.treatment.treatmentDate ?? "");
-      setTreatmentProduct(formData.detectionData.treatment.treatmentProduct ?? "");
+      setTreatments(savedTreatments);
+      setDraftTreatmentDate("");
+      setDraftTreatmentProduct("");
+      setIsAddingTreatment(
+        formData.detectionData.treatment.treatment && savedTreatments.length === 0,
+      );
       return;
     }
 
     setTreatment(undefined);
-    setTreatmentDate("");
-    setTreatmentProduct("");
-  }, [formData.detectionData.treatment, hasSavedTreatment]);
+    setTreatments([]);
+    setDraftTreatmentDate("");
+    setDraftTreatmentProduct("");
+    setIsAddingTreatment(false);
+  }, [formData.detectionData.treatment, hasSavedTreatment, savedTreatments]);
 
   const productSuggestions = React.useMemo(() => {
     return Array.from(
       new Set(
         previousDetections
-          .map((detection) => detection.detectionData.treatment?.treatmentProduct?.trim() ?? "")
+          .flatMap((detection) => {
+            const normalizedEntries = normalizeTreatmentEntries(detection.detectionData.treatment);
+            if (normalizedEntries.length > 0) {
+              return normalizedEntries.map((entry) => entry.treatmentProduct.trim());
+            }
+            return [detection.detectionData.treatment?.treatmentProduct?.trim() ?? ""];
+          })
           .filter((value) => value !== ""),
       ),
     ).sort((a, b) => a.localeCompare(b));
@@ -1457,31 +1504,56 @@ function DetectionStepTreatment({ formData, onNextClick, action }: DetectionProp
     return `${year}-${month}-${day}`;
   };
 
+  const resetDraftTreatment = () => {
+    setDraftTreatmentDate("");
+    setDraftTreatmentProduct("");
+  };
+
+  const handleAddTreatmentEntry = () => {
+    if (draftTreatmentDate.trim() === "") {
+      setError("Specifica la data del trattamento.");
+      return;
+    }
+    if (!/^\d{2}\/\d{2}\/\d{4}$/.test(draftTreatmentDate.trim())) {
+      setError("Inserisci la data nel formato gg/mm/aaaa.");
+      return;
+    }
+    if (draftTreatmentProduct.trim() === "") {
+      setError("Specifica il nome del prodotto utilizzato.");
+      return;
+    }
+
+    setTreatments((prev) => [
+      ...prev,
+      {
+        treatmentDate: draftTreatmentDate.trim(),
+        treatmentProduct: draftTreatmentProduct.trim(),
+      },
+    ]);
+    resetDraftTreatment();
+    setIsAddingTreatment(false);
+    setError("");
+  };
+
   const handleSubmit = () => {
     if (treatment === undefined) {
       setError("Scelta sul trattamento non specificata.");
       return;
     }
 
-    if (treatment && treatmentDate.trim() === "") {
-      setError("Specifica la data del trattamento.");
-      return;
-    }
-    if (treatment && !/^\d{2}\/\d{2}\/\d{4}$/.test(treatmentDate.trim())) {
-      setError("Inserisci la data nel formato gg/mm/aaaa.");
-      return;
-    }
-    if (treatment && treatmentProduct.trim() === "") {
-      setError("Specifica il nome del prodotto utilizzato.");
+    if (treatment && treatments.length === 0) {
+      setError("Aggiungi almeno un trattamento.");
       return;
     }
 
+    const latestTreatment = treatments[treatments.length - 1];
     setError("");
     onNextClick({
       treatment: {
         treatment,
-        treatmentDate: treatment ? treatmentDate : "",
-        treatmentProduct: treatment ? treatmentProduct.trim() : "",
+        treatments: treatment ? treatments : [],
+        treatmentDate: treatment ? latestTreatment?.treatmentDate ?? "" : "",
+        treatmentProduct: treatment ? latestTreatment?.treatmentProduct ?? "" : "",
       },
     });
   };
@@ -1506,6 +1578,9 @@ function DetectionStepTreatment({ formData, onNextClick, action }: DetectionProp
               additionalClasses={["mt-0", treatment === false ? "trnt_btn primary" : "trnt_btn secondary"]}
               onClick={() => {
                 setTreatment(false);
+                setTreatments([]);
+                resetDraftTreatment();
+                setIsAddingTreatment(false);
                 setError("");
               }}
             />
@@ -1514,6 +1589,7 @@ function DetectionStepTreatment({ formData, onNextClick, action }: DetectionProp
               additionalClasses={["mt-0", treatment === true ? "trnt_btn primary" : "trnt_btn secondary"]}
               onClick={() => {
                 setTreatment(true);
+                setIsAddingTreatment(false);
                 setError("");
               }}
             />
@@ -1521,63 +1597,112 @@ function DetectionStepTreatment({ formData, onNextClick, action }: DetectionProp
         </div>
         {treatment && (
           <Fragment>
-            <div className="input-row mt-4 position-relative">
-              <label className="position-relative">
-                Quando è stato eseguito?
-                {/* <input
-                  type="text"
-                  value={treatmentDate}
-                  placeholder="gg/mm/aaaa"
-                  inputMode="numeric"
-                  onChange={(event) => {
-                    setTreatmentDate(normalizeDateInput(event.target.value));
-                    setError("");
-                  }}
-                /> */}
-              </label>
-              <input
-                type="date"
-                className="pe-2"
-                style={{ width: "60%" }}
-                value={toPickerDate(treatmentDate)}
-                placeholder="Select a date... "
-                onChange={(event) => {
-                  const value = event.target.value;
-                  if (value === "") {
-                    setTreatmentDate("");
-                    return;
-                  }
-                  const [year, month, day] = value.split("-");
-                  setTreatmentDate(`${day}/${month}/${year}`);
-                  setError("");
-                }}
-              />
-              <small className="d-block mt-2 text-muted">
-                Se non ricordi il giorno esatto, inserisci una data approssimativa.
-              </small>
-            </div>
-            <div className="input-row mt-4">
-              <label>
-                Nome del prodotto (come in etichetta)
-                <input
-                  type="text"
-                  value={treatmentProduct}
-                  placeholder="es. Captan, Ditianon"
-                  list="treatment-products"
-                  onChange={(event) => {
-                    setTreatmentProduct(event.target.value);
+            {treatments.length > 0 && (
+              <div className="mt-4">
+                <div className="d-flex flex-column gap-2">
+                  {treatments.map((entry, index) => (
+                    <div
+                      key={`${entry.treatmentDate}-${entry.treatmentProduct}-${index}`}
+                      className="d-flex align-items-center py-3 px-3"
+                      style={{
+                        border: "1px solid rgba(0, 0, 0, 0.35)",
+                        borderRadius: "14px",
+                        background: "#f6f5f3",
+                      }}
+                    >
+                      <div className="font-m-600" style={{ minWidth: "44px" }}>
+                        {`(${index + 1})`}
+                      </div>
+                      <div className="flex-grow-1 text-center px-3">
+                        <span className="font-m-600">{entry.treatmentDate}</span>
+                        <span className="mx-2">{">"}</span>
+                        <span className="font-m-600">{entry.treatmentProduct}</span>
+                      </div>
+                      <button
+                        className="trnt_btn small secondary px-2"
+                        onClick={() => {
+                          setTreatments((prev) => prev.filter((_, itemIndex) => itemIndex !== index));
+                          setError("");
+                        }}
+                      >
+                        &times;
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            {isAddingTreatment ? (
+              <Fragment>
+                <div className="input-row mt-4 position-relative">
+                  <label className="position-relative">Quando è stato eseguito?</label>
+                  <input
+                    type="date"
+                    className="pe-2"
+                    style={{ width: "60%" }}
+                    value={toPickerDate(draftTreatmentDate)}
+                    placeholder="Select a date..."
+                    onChange={(event) => {
+                      const value = event.target.value;
+                      if (value === "") {
+                        setDraftTreatmentDate("");
+                        return;
+                      }
+                      const [year, month, day] = value.split("-");
+                      setDraftTreatmentDate(`${day}/${month}/${year}`);
+                      setError("");
+                    }}
+                  />
+                  <small className="d-block mt-2 text-muted">
+                    Se non ricordi il giorno esatto, inserisci una data approssimativa.
+                  </small>
+                </div>
+                <div className="input-row mt-4">
+                  <label>
+                    Nome del prodotto (come in etichetta)
+                    <input
+                      type="text"
+                      value={draftTreatmentProduct}
+                      placeholder="es. Captan, Ditianon"
+                      list="treatment-products"
+                      onChange={(event) => {
+                        setDraftTreatmentProduct(event.target.value);
+                        setError("");
+                      }}
+                    />
+                  </label>
+                  {productSuggestions.length > 0 && (
+                    <datalist id="treatment-products">
+                      {productSuggestions.map((product) => (
+                        <option key={product} value={product} />
+                      ))}
+                    </datalist>
+                  )}
+                </div>
+                <div className="d-flex gap-2 mt-3">
+                  <CozyButton content="Aggiungi" onClick={handleAddTreatmentEntry} />
+                  <CozyButton
+                    content="Annulla"
+                    additionalClasses={["trnt_btn secondary"]}
+                    onClick={() => {
+                      resetDraftTreatment();
+                      setIsAddingTreatment(false);
+                      setError("");
+                    }}
+                  />
+                </div>
+              </Fragment>
+            ) : (
+              <div className="mt-4">
+                <CozyButton
+                  content="+ Aggiungi un trattamento"
+                  onClick={() => {
+                    setIsAddingTreatment(true);
                     setError("");
                   }}
                 />
-              </label>
-              {productSuggestions.length > 0 && (
-                <datalist id="treatment-products">
-                  {productSuggestions.map((product) => (
-                    <option key={product} value={product} />
-                  ))}
-                </datalist>
-              )}
-            </div>
+              </div>
+            )}
           </Fragment>
         )}
         {error !== "" && <div className="error color-red mt-3">{error}</div>}
@@ -2392,6 +2517,7 @@ export function DetectionForm() {
       notes: "",
       treatment: {
         treatment: false,
+        treatments: [],
         treatmentDate: "",
         treatmentProduct: "",
       },

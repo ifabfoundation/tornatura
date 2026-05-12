@@ -12,37 +12,23 @@
  * Do not edit the class manually.
  */
 
-import { ObservationTreatmentEntry } from './observation-treatment-entry';
-
  /**
  *
  *
  * @export
- * @interface ObservationTreatment
+ * @interface ObservationTreatmentEntry
  */
-export interface ObservationTreatment {
-
-    /**
-     * @type {boolean}
-     * @memberof ObservationTreatment
-     */
-    treatment: boolean;
-
-    /**
-     * @type {Array<ObservationTreatmentEntry>}
-     * @memberof ObservationTreatment
-     */
-    treatments: Array<ObservationTreatmentEntry>;
+export interface ObservationTreatmentEntry {
 
     /**
      * @type {string}
-     * @memberof ObservationTreatment
+     * @memberof ObservationTreatmentEntry
      */
     treatmentDate: string;
 
     /**
      * @type {string}
-     * @memberof ObservationTreatment
+     * @memberof ObservationTreatmentEntry
      */
     treatmentProduct: string;
 }

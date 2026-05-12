@@ -2675,6 +2675,12 @@ components:
           type: boolean
           title: Treatment
           default: false
+        treatments:
+          items:
+            $ref: '#/components/schemas/ObservationTreatmentEntry'
+          type: array
+          title: Treatments
+          default: []
         treatmentDate:
           type: string
           title: Treatmentdate
@@ -2685,6 +2691,18 @@ components:
           default: ''
       type: object
       title: ObservationTreatment
+    ObservationTreatmentEntry:
+      properties:
+        treatmentDate:
+          type: string
+          title: Treatmentdate
+          default: ''
+        treatmentProduct:
+          type: string
+          title: Treatmentproduct
+          default: ''
+      type: object
+      title: ObservationTreatmentEntry
     ObservationCounter:
       properties:
         counterName:
