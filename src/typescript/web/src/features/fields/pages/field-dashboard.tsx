@@ -74,79 +74,83 @@ export function FieldDashboard() {
         <Row>
           <Col xs={12}>
             <section className="soft bg-white">
-              {currentField && <Row>
-                <Col md={6} xl={4} xxl={3}>
-                  <div className="position-relative me-md-4 mb-2 mb-md-0">
-                    <img
-                      src={`https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v12/static/geojson(${JSON.stringify(
-                        getFieldMapGeoJson(currentField),
-                      )})/auto/1024x1024?padding=160&access_token=${process.env.REACT_APP_MAPBOX_API_TOKEN}`}
-                      alt="Field Map"
-                      className="img-fluid rounded ratio-1-1 d-block"
-                    />
-                    <button
-                      className="trnt_btn slim-y narrow-x secondary type-rounded position-absolute top-0 end-0 m-3 bg-white"
-                      onClick={() => navigate(`/companies/${companyId}/fields/${fieldId}/map`)}
-                    >
-                      <Icon iconName={"fullscreen"} color={"black"} />
-                    </button>
-                  </div>
-                </Col>
-                <Col>
-                  <Row>
-                    <Col xl={12} className="mb-5">
-                      <div className="font-l-600">{currentField?.name}</div>
-                    </Col>
+              {currentField && (
+                <Row>
+                  <Col md={6} xl={4} xxl={3}>
+                    <div className="position-relative me-md-4 mb-2 mb-md-0">
+                      <img
+                        src={`https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v12/static/geojson(${JSON.stringify(
+                          getFieldMapGeoJson(currentField),
+                        )})/auto/1024x1024?padding=160&access_token=${process.env.REACT_APP_MAPBOX_API_TOKEN}`}
+                        alt="Field Map"
+                        className="img-fluid rounded ratio-1-1 d-block"
+                      />
+                      <button
+                        className="trnt_btn slim-y narrow-x secondary type-rounded position-absolute top-0 end-0 m-3 bg-white"
+                        onClick={() => navigate(`/companies/${companyId}/fields/${fieldId}/map`)}
+                      >
+                        <Icon iconName={"fullscreen"} color={"black"} />
+                      </button>
+                    </div>
+                  </Col>
+                  <Col>
+                    <Row>
+                      <Col xl={12} className="mb-5">
+                        <div className="font-l-600">{currentField?.name}</div>
+                      </Col>
 
-                    <Col className="col-6 col-lg-4 col-xl-3 iiinfo-col mt-2 mb-2">
-                      <div className="iiinfo-label font-s-label">Coltura</div>
-                      <div className="iiinfo-value font-l-600">
-                        {valOrEmpty(toTitleCase(currentField?.harvest))}
-                      </div>
-                    </Col>
-                    <Col className="col-6 col-lg-4 col-xl-3 iiinfo-col mt-2 mb-2">
-                      <div className="iiinfo-label font-s-label">Cultivar</div>
-                      <div className="iiinfo-value font-l-600">
-                        {valOrEmpty(currentField?.variety)}
-                      </div>
-                    </Col>
-                    <Col className="col-6 col-lg-4 col-xl-3 iiinfo-col mt-2 mb-2">
-                      <div className="iiinfo-label font-s-label">Dimensione</div>
-                      <div className="iiinfo-value font-l-600">
-                        {valOrEmpty(currentField?.area) + " ha"}
-                      </div>
-                    </Col>
-                    <Col className="col-6 col-lg-4 col-xl-3 iiinfo-col mt-2 mb-2">
-                      <div className="iiinfo-label font-s-label">Num. piante</div>
-                      <div className="iiinfo-value font-l-600">
-                        {valOrEmpty(currentField?.plants)}
-                      </div>
-                    </Col>
-                    <Col className="col-6 col-lg-4 col-xl-3 iiinfo-col mt-2 mb-2">
-                      <div className="iiinfo-label font-s-label">Num. rilevamenti</div>
-                      <div className="iiinfo-value font-l-600">{valOrEmpty(detections.length)}</div>
-                    </Col>
-                    <Col className="col-6 col-lg-4 col-xl-3 iiinfo-col mt-2 mb-2">
-                      <div className="iiinfo-label font-s-label">Anno di impianto</div>
-                      <div className="iiinfo-value font-l-600">
-                        {valOrEmpty(currentField?.year)}
-                      </div>
-                    </Col>
-                    <Col className="col-6 col-lg-4 col-xl-3 iiinfo-col mt-2 mb-2 d-none d-md-block">
-                      <div className="iiinfo-label font-s-label">Rotazione</div>
-                      <div className="iiinfo-value font-l-600">
-                        {valOrEmpty(toTitleCase(currentField?.rotation))}
-                      </div>
-                    </Col>
-                    <Col className="col-6 col-lg-4 col-xl-3 iiinfo-col mt-2 mb-2 d-none d-md-block">
-                      <div className="iiinfo-label font-s-label">Tessitura</div>
-                      <div className="iiinfo-value font-l-600">
-                        {valOrEmpty(toTitleCase(currentField?.weaving))}
-                      </div>
-                    </Col>
-                  </Row>
-                </Col>
-              </Row>}
+                      <Col className="col-6 col-lg-4 col-xl-3 iiinfo-col mt-2 mb-2">
+                        <div className="iiinfo-label font-s-label">Coltura</div>
+                        <div className="iiinfo-value font-l-600">
+                          {valOrEmpty(toTitleCase(currentField?.harvest))}
+                        </div>
+                      </Col>
+                      <Col className="col-6 col-lg-4 col-xl-3 iiinfo-col mt-2 mb-2">
+                        <div className="iiinfo-label font-s-label">Cultivar</div>
+                        <div className="iiinfo-value font-l-600">
+                          {valOrEmpty(currentField?.variety)}
+                        </div>
+                      </Col>
+                      <Col className="col-6 col-lg-4 col-xl-3 iiinfo-col mt-2 mb-2">
+                        <div className="iiinfo-label font-s-label">Dimensione</div>
+                        <div className="iiinfo-value font-l-600">
+                          {valOrEmpty(currentField?.area) + " ha"}
+                        </div>
+                      </Col>
+                      <Col className="col-6 col-lg-4 col-xl-3 iiinfo-col mt-2 mb-2">
+                        <div className="iiinfo-label font-s-label">Num. piante</div>
+                        <div className="iiinfo-value font-l-600">
+                          {valOrEmpty(currentField?.plants)}
+                        </div>
+                      </Col>
+                      <Col className="col-6 col-lg-4 col-xl-3 iiinfo-col mt-2 mb-2">
+                        <div className="iiinfo-label font-s-label">Num. rilevamenti</div>
+                        <div className="iiinfo-value font-l-600">
+                          {valOrEmpty(detections.length)}
+                        </div>
+                      </Col>
+                      <Col className="col-6 col-lg-4 col-xl-3 iiinfo-col mt-2 mb-2">
+                        <div className="iiinfo-label font-s-label">Anno di impianto</div>
+                        <div className="iiinfo-value font-l-600">
+                          {valOrEmpty(currentField?.year)}
+                        </div>
+                      </Col>
+                      <Col className="col-6 col-lg-4 col-xl-3 iiinfo-col mt-2 mb-2 d-none d-md-block">
+                        <div className="iiinfo-label font-s-label">Rotazione</div>
+                        <div className="iiinfo-value font-l-600">
+                          {valOrEmpty(toTitleCase(currentField?.rotation))}
+                        </div>
+                      </Col>
+                      <Col className="col-6 col-lg-4 col-xl-3 iiinfo-col mt-2 mb-2 d-none d-md-block">
+                        <div className="iiinfo-label font-s-label">Tessitura</div>
+                        <div className="iiinfo-value font-l-600">
+                          {valOrEmpty(toTitleCase(currentField?.weaving))}
+                        </div>
+                      </Col>
+                    </Row>
+                  </Col>
+                </Row>
+              )}
             </section>
           </Col>
         </Row>
@@ -155,11 +159,15 @@ export function FieldDashboard() {
       <Container fluid>
         {companyId && fieldId && (
           <Row className="mt-4">
-            {detectionTypes.map((value, index) => (
-              <Col key={index} xl={12}>
-                <DetectionTypeCard companyId={companyId} fieldId={fieldId} typeId={value.id} />
-              </Col>
-            ))}
+            {detectionTypes.map((value, index) => {
+              // TODO
+              // SORT BY LAST UPDATED
+              return (
+                <Col key={index} xl={12}>
+                  <DetectionTypeCard companyId={companyId} fieldId={fieldId} typeId={value.id} />
+                </Col>
+              );
+            })}
           </Row>
         )}
 

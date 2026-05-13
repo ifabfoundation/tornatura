@@ -92,15 +92,14 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
   });
   // .sort((a, b) => a.x.getTime() - b.x.getTime());
 
-  const lastDate = sortedDetections
-    .map((e) => e.detectionTime)
-    .sort((a, b) => b - a)
-    .reverse()[0];
+  const lastDate = sortedDetections.map((e) => e.detectionTime).sort((a, b) => b - a)[0];
+  const firstDate = sortedDetections.map((e) => e.detectionTime).sort((a, b) => a - b)[0];
   const lastDateString = new Date(lastDate).toString();
   const timeAgoString = timeAgo(lastDateString);
   console.log(`- - - - - - ${observationType.typology}  ›  ${observationType.method}`);
   console.log("sortedDetections", sortedDetections);
   console.log("lastDate", lastDate);
+  console.log("firstDate", firstDate);
   console.log("lastDateString", lastDateString);
   console.log("timeAgoString", timeAgoString);
   console.log("- - - - - -");
