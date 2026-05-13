@@ -815,7 +815,7 @@ export function DetectionTypeDetail() {
       >
         <AutoHeightIframe
           src={
-            "https://www.tornatura.it/v/3-with-instructions/instructions/260326-tutorial-dati-rilevamento?partial=1"
+            "https://www.tornatura.it/instructions/260326-tutorial-dati-rilevamento?partial=1"
           }
         />
       </Infopanel>

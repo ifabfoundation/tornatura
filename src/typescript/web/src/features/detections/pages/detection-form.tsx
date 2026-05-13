@@ -1322,7 +1322,7 @@ function DetectionStepGuideGeneric({
 }: {
   onNextClick: (data: DetectionStepData) => Promise<void>;
 }) {
-  const guideValue = 'https://www.tornatura.it/v/3-with-instructions/instructions/260429-multi-insetto?partial=1'
+  const guideValue = 'https://www.tornatura.it/instructions/260429-multi-insetto?partial=1'
   return (
     <div className="my-5 text-center">
       <h3 className="mb-4 pb-2">
