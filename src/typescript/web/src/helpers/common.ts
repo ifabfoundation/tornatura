@@ -1,6 +1,39 @@
 import { useState, useEffect } from "react";
 
 // -----------------------------------------------------------------------------
+/**
+ * USAGE
+ * var str = "Last edited: " + timeAgo("2026-05-12T18:30:00");
+ * --> "Last edited: Just now"
+ * --> "Last edited: 2 hours ago"
+ * --> "Last edited: 3 days ago"
+ *  */
+
+export function timeAgo(date: string): string {
+  const now = new Date();
+  const diff = (now.getTime() - new Date(date).getTime()) / 1000; // seconds
+
+  const units = [
+    { nameSing: "anno", namePlur: "anni", secs: 60 * 60 * 24 * 365 },
+    { nameSing: "mese", namePlur: "mesi", secs: 60 * 60 * 24 * 30 },
+    { nameSing: "settimana", namePlur: "settimane", secs: 60 * 60 * 24 * 7 },
+    { nameSing: "giorno", namePlur: "giorni", secs: 60 * 60 * 24 },
+    { nameSing: "ora", namePlur: "ore", secs: 60 * 60 },
+    { nameSing: "minuto", namePlur: "minuti", secs: 60 },
+    { nameSing: "secondo", namePlur: "secondi", secs: 1 },
+  ];
+
+  if (diff < 5) return "un attimo fa";
+
+  for (const u of units) {
+    const value = Math.floor(diff / u.secs);
+    if (value >= 1) {
+      return `${value} ${value > 1 ? u.namePlur : u.nameSing} fa`;
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
 export function useMediaQuery(query: string): boolean {
   const getMatch = (q: string): boolean => {
     if (typeof window === "undefined") return false;
@@ -84,18 +117,17 @@ export function mapValues(
 
 export function isMobileDevice() {
   return (
-    window.matchMedia('(pointer: coarse)').matches &&
-    !window.matchMedia('(pointer: fine)').matches
+    window.matchMedia("(pointer: coarse)").matches && !window.matchMedia("(pointer: fine)").matches
   );
 }
 
 export function getBrowsingOrigin() {
   // @ts-ignore
-  const isPWA = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  const isPWA =
+    window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
   if (isPWA) {
     return "PWA";
   } else {
-    return "WEB"
+    return "WEB";
   }
 }
-  

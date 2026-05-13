@@ -11,6 +11,8 @@ import {
 } from "../../../helpers/detections";
 import LineChartVisx from "../../../components/LineChartVisx";
 import Icon from "../../../components/Icon";
+import { dateToString } from "../../../services/utils";
+import { timeAgo } from "../../../helpers/common";
 
 export function getColor(min: number, max: number, value: number): string {
   const colors = ["#42C318", "#FFB290", "#FF4D4D", "#A10505"];
@@ -90,11 +92,18 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
   });
   // .sort((a, b) => a.x.getTime() - b.x.getTime());
 
-  /*const lastDate = sortedDetections
+  const lastDate = sortedDetections
     .map((e) => e.detectionTime)
     .sort((a, b) => b - a)
-    .reverse()[0];*/
-  // const lastDateString = dateToString(lastDate, false);
+    .reverse()[0];
+  const lastDateString = new Date(lastDate).toString();
+  const timeAgoString = timeAgo(lastDateString);
+  console.log(`- - - - - - ${observationType.typology}  ›  ${observationType.method}`);
+  console.log("sortedDetections", sortedDetections);
+  console.log("lastDate", lastDate);
+  console.log("lastDateString", lastDateString);
+  console.log("timeAgoString", timeAgoString);
+  console.log("- - - - - -");
 
   type NewDetectionButtonProps = {
     className?: string;
@@ -147,6 +156,11 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
               })
             }
           >{`${observationType.typology}  ›  ${observationType.method}`}</a>
+          <br />
+          {timeAgoString && (
+            <div className="font-s-label opacity-05 text-transform-none">{`Aggiornato ${timeAgoString}`}</div>
+          )}
+
           {/* <br />
           <button
             className="trnt_btn slim-y primary narrow-x px-3 mt-2 type-rounded"
@@ -175,7 +189,7 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
         <div className="label">{`${detections.length} RILEVAMENT${detections.length !== 1 ? "I" : "O"}`}</div>
         <div className="label">{`AGGIORNATO IL ${lastDateString}`}</div>
       </div>
-        */}
+      */}
 
       <div ref={containerRef} className="bg-grey_1 rounded-visible">
         <div className="p-3 font-s-600">
@@ -189,7 +203,7 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
           height={200}
           data={graphDataVisx}
           onSelectPoint={undefined}
-          ticksFormatterName={observationType?.observationType as "counters" | "range" }
+          ticksFormatterName={observationType?.observationType as "counters" | "range"}
           gradients={shouldUseGradients(observationType?.typology)}
           selectedId={undefined}
         />
