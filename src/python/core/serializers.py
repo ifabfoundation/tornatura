@@ -186,6 +186,31 @@ class Organization(BaseModel):
     creationTime: int
     lastUpdateTime: int
 
+
+class OrganizationStatsWindow(BaseModel):
+    months: int
+    start: str
+    end: str
+    startTimestampMs: int
+    endTimestampMs: int
+
+
+class OrganizationStatsAgrifield(BaseModel):
+    id: str
+    name: str
+    harvest: Optional[str] = None
+    creationTime: Optional[int] = None
+    detectionCount: int
+
+
+class OrganizationStatsResponse(BaseModel):
+    organization: dict[str, str]
+    window: OrganizationStatsWindow
+    agrifieldCount: int
+    distinctHarvestCount: int
+    distinctHarvests: List[str]
+    agrifields: List[OrganizationStatsAgrifield]
+
 class Detection(BaseModel):
     id: str
     agrifieldId: str

@@ -4,10 +4,12 @@ import { companiesSelectors } from "../state/companies-slice";
 import { headerbarActions } from "../../headerbar/state/headerbar-slice";
 import TableCozy, { TableColumn, TableOptions } from "../../../components/TableCozy";
 import { Col, Container, Row } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
 
 export function CompanyTable() {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const companies = useAppSelector(companiesSelectors.selectAllCompanies);
 
   const formatDateTime = (value?: number) => {
@@ -69,6 +71,14 @@ export function CompanyTable() {
       sortable: true,
       style: "normal",
       type: "text",
+    },
+    {
+      headerText: "Statistiche",
+      id: "stats",
+      type: "button",
+      style: "secondary",
+      buttonText: "Visualizza",
+      onButtonClick: (row) => navigate(`/admin/companies/${row.orgId}/stats`),
     },
   ];
 

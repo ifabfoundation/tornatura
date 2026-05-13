@@ -21,6 +21,7 @@ import { ErrorResponse } from '../models';
 import { Organization } from '../models';
 import { OrganizationCreatePayload } from '../models';
 import { OrganizationMember } from '../models';
+import { OrganizationStatsResponse } from '../models';
 import { OrganizationUpdatePayload } from '../models';
 import { PaginatedResponse } from '../models';
 import { StatusResponse } from '../models';
@@ -113,6 +114,56 @@ export const OrganizationsApiAxiosParamCreator = function (configuration?: Confi
                     ? await configuration.accessToken()
                     : await configuration.accessToken;
                 localVarHeaderParameter["Authorization"] = "Bearer " + accessToken;
+            }
+
+            const query = new URLSearchParams(localVarUrlObj.search);
+            for (const key in localVarQueryParameter) {
+                query.set(key, localVarQueryParameter[key]);
+            }
+            for (const key in options.params) {
+                query.set(key, options.params[key]);
+            }
+            localVarUrlObj.search = (new URLSearchParams(query)).toString();
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: localVarUrlObj.pathname + localVarUrlObj.search + localVarUrlObj.hash,
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get organization statistics
+         * @param {string} orgId Organization ID
+         * @param {number} [months] Rolling time window in months
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getOrganizationStats: async (orgId: string, months?: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            if (orgId === null || orgId === undefined) {
+                throw new RequiredError('orgId','Required parameter orgId was null or undefined when calling getOrganizationStats.');
+            }
+            const localVarPath = `/v1/organizations/{org_id}/stats`
+                .replace(`{${"org_id"}}`, encodeURIComponent(String(orgId)));
+            const localVarUrlObj = new URL(localVarPath, 'https://example.com');
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions :AxiosRequestConfig = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (configuration && configuration.accessToken) {
+                const accessToken = typeof configuration.accessToken === 'function'
+                    ? await configuration.accessToken()
+                    : await configuration.accessToken;
+                localVarHeaderParameter["Authorization"] = "Bearer " + accessToken;
+            }
+
+            if (months !== undefined) {
+                localVarQueryParameter['months'] = months;
             }
 
             const query = new URLSearchParams(localVarUrlObj.search);
@@ -380,6 +431,21 @@ export const OrganizationsApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Get organization statistics
+         * @param {string} orgId Organization ID
+         * @param {number} [months] Rolling time window in months
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getOrganizationStats(orgId: string, months?: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => Promise<AxiosResponse<OrganizationStatsResponse>>> {
+            const localVarAxiosArgs = await OrganizationsApiAxiosParamCreator(configuration).getOrganizationStats(orgId, months, options);
+            return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
+                const axiosRequestArgs :AxiosRequestConfig = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
+                return axios.request(axiosRequestArgs);
+            };
+        },
+        /**
+         * 
          * @summary List organizations
          * @param {number} [page] Page number
          * @param {number} [limit] Items per page
@@ -468,6 +534,17 @@ export const OrganizationsApiFactory = function (configuration?: Configuration, 
         },
         /**
          * 
+         * @summary Get organization statistics
+         * @param {string} orgId Organization ID
+         * @param {number} [months] Rolling time window in months
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getOrganizationStats(orgId: string, months?: number, options?: AxiosRequestConfig): Promise<AxiosResponse<OrganizationStatsResponse>> {
+            return OrganizationsApiFp(configuration).getOrganizationStats(orgId, months, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary List organizations
          * @param {number} [page] Page number
          * @param {number} [limit] Items per page
@@ -540,6 +617,18 @@ export class OrganizationsApi extends BaseAPI {
      */
     public async getOrganization(orgId: string, options?: AxiosRequestConfig) : Promise<AxiosResponse<Organization>> {
         return OrganizationsApiFp(this.configuration).getOrganization(orgId, options).then((request) => request(this.axios, this.basePath));
+    }
+    /**
+     * 
+     * @summary Get organization statistics
+     * @param {string} orgId Organization ID
+     * @param {number} [months] Rolling time window in months
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof OrganizationsApi
+     */
+    public async getOrganizationStats(orgId: string, months?: number, options?: AxiosRequestConfig) : Promise<AxiosResponse<OrganizationStatsResponse>> {
+        return OrganizationsApiFp(this.configuration).getOrganizationStats(orgId, months, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      * 

@@ -521,6 +521,64 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /v1/organizations/{org_id}/stats:
+    get:
+      tags:
+      - Organizations
+      summary: Get organization statistics
+      operationId: get_organization_stats
+      security:
+      - SecurityChecker: []
+      parameters:
+      - name: org_id
+        in: path
+        required: true
+        schema:
+          type: string
+          description: Organization ID
+          title: Org Id
+        description: Organization ID
+      - name: months
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          description: Rolling time window in months
+          default: 3
+          title: Months
+        description: Rolling time window in months
+      responses:
+        '200':
+          description: Organization statistics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationStatsResponse'
+        '401':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
     put:
       tags:
       - Organizations
@@ -3199,6 +3257,102 @@ components:
       - creationTime
       - lastUpdateTime
       title: Organization
+    OrganizationStatsAgrifield:
+      properties:
+        id:
+          type: string
+          title: Id
+        name:
+          type: string
+          title: Name
+        harvest:
+          anyOf:
+          - type: string
+          - type: 'null'
+        creationTime:
+          anyOf:
+          - type: integer
+          - type: 'null'
+        detectionCount:
+          type: integer
+          title: Detectioncount
+      type: object
+      required:
+      - id
+      - name
+      - harvest
+      - creationTime
+      - detectionCount
+      title: OrganizationStatsAgrifield
+    OrganizationStatsOrganization:
+      properties:
+        orgId:
+          type: string
+          title: Orgid
+        name:
+          type: string
+          title: Name
+      type: object
+      required:
+      - orgId
+      - name
+      title: OrganizationStatsOrganization
+    OrganizationStatsResponse:
+      properties:
+        organization:
+          $ref: '#/components/schemas/OrganizationStatsOrganization'
+        window:
+          $ref: '#/components/schemas/OrganizationStatsWindow'
+        agrifieldCount:
+          type: integer
+          title: Agrifieldcount
+        distinctHarvestCount:
+          type: integer
+          title: Distinctharvestcount
+        distinctHarvests:
+          items:
+            type: string
+          type: array
+          title: Distinctharvests
+        agrifields:
+          items:
+            $ref: '#/components/schemas/OrganizationStatsAgrifield'
+          type: array
+          title: Agrifields
+      type: object
+      required:
+      - organization
+      - window
+      - agrifieldCount
+      - distinctHarvestCount
+      - distinctHarvests
+      - agrifields
+      title: OrganizationStatsResponse
+    OrganizationStatsWindow:
+      properties:
+        months:
+          type: integer
+          title: Months
+        start:
+          type: string
+          title: Start
+        end:
+          type: string
+          title: End
+        startTimestampMs:
+          type: integer
+          title: Starttimestampms
+        endTimestampMs:
+          type: integer
+          title: Endtimestampms
+      type: object
+      required:
+      - months
+      - start
+      - end
+      - startTimestampMs
+      - endTimestampMs
+      title: OrganizationStatsWindow
     OrganizationMember:
       properties:
         user:
