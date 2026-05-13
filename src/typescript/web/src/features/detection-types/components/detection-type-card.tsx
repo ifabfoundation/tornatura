@@ -11,7 +11,6 @@ import {
 } from "../../../helpers/detections";
 import LineChartVisx from "../../../components/LineChartVisx";
 import Icon from "../../../components/Icon";
-import { dateToString } from "../../../services/utils";
 import { timeAgo } from "../../../helpers/common";
 
 export function getColor(min: number, max: number, value: number): string {
