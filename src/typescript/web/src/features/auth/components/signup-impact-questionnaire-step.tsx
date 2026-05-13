@@ -1,4 +1,5 @@
 import { useFormik } from "formik";
+import React from "react";
 import * as Yup from "yup";
 
 const defenseActionOptions = [
@@ -129,11 +130,11 @@ export default function SignupImpactQuestionnaireStep({
         .max(100, "Valore massimo 100")
         .required("Campo obbligatorio"),
       defenseActions: Yup.array().of(Yup.string().required()).min(1, "Seleziona almeno un'opzione"),
-      annualSpendAgrochemicals: Yup.string(),
-      annualSpendAgronomists: Yup.string(),
-      annualSpendOperators: Yup.string(),
-      annualSpendPreventiveTools: Yup.string(),
-      annualSpendOther: Yup.string(),
+      annualSpendAgrochemicals: Yup.string().required('Campo obbligatorio'),
+      annualSpendAgronomists: Yup.string().required('Campo obbligatorio'),
+      annualSpendOperators: Yup.string().required('Campo obbligatorio'),
+      annualSpendPreventiveTools: Yup.string().required('Campo obbligatorio'),
+      annualSpendOther: Yup.string().required('Campo obbligatorio'),
       annualSpendNone: Yup.boolean(),
       satisfactionEffectiveness: Yup.number()
         .typeError("Inserisci un numero")
@@ -159,6 +160,44 @@ export default function SignupImpactQuestionnaireStep({
       setSubmitting(false);
     },
   });
+
+  React.useEffect(() => {
+    if (formik.values.annualSpendNone) {
+      let annualSpendAgrochemicals = formik.values.annualSpendAgrochemicals;
+      let annualSpendAgronomists = formik.values.annualSpendAgronomists;;
+      let annualSpendOperators = formik.values.annualSpendOperators;
+      let annualSpendPreventiveTools = formik.values.annualSpendPreventiveTools;
+      let annualSpendOther = formik.values.annualSpendOther;
+      let needUpdate = false;
+      if (!formik.values.annualSpendAgrochemicals){
+        annualSpendAgrochemicals = '0';
+        needUpdate = true;
+      }
+      if (!formik.values.annualSpendAgronomists){
+        annualSpendAgronomists = '0';
+        needUpdate = true;
+      }
+      if (!formik.values.annualSpendOperators){
+        annualSpendOperators = '0';
+        needUpdate = true;
+      }
+      if (!formik.values.annualSpendPreventiveTools){
+        annualSpendPreventiveTools = '0';
+        needUpdate = true;
+      }
+      if (!formik.values.annualSpendOther){
+        annualSpendOther = '0';
+        needUpdate = true;
+      }
+
+      if (needUpdate) {
+        formik.setValues({...formik.values, 
+          annualSpendAgrochemicals, annualSpendAgronomists, annualSpendOperators,
+           annualSpendOther, annualSpendPreventiveTools })
+      }
+      
+    }
+  }, [formik.values])
 
   return (
     <form onSubmit={formik.handleSubmit} autoComplete="off">

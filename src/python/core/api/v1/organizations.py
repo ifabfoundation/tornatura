@@ -2,9 +2,10 @@ from typing import Annotated, List
 from fastapi import APIRouter, Depends, HTTPException, Path, Query, status
 from core.permissions import CanManageOrganization, CanManageOrganizationMembers, CanViewOrganization, CanViewOrganizationMembers, IsAdmin, IsAgronomist, IsAuthenticated
 from core.security import SecurityChecker
-from core.serializers import AccountTypeEnum, ErrorResponse, Organization, OrganizationCreatePayload, OrganizationUpdatePayload, PaginatedResponse, OrganizationMember, StatusResponse
+from core.serializers import AccountTypeEnum, ErrorResponse, Organization, OrganizationCreatePayload, OrganizationUpdatePayload, PaginatedResponse, OrganizationMember, OrganizationStatsResponse, StatusResponse
 
 from core.services.organizations_services import OrganizationCustomRole, OrganizationDefaultRole, OrganizationServices
+from core.services.organization_stats_services import OrganizationStatsServices
 from core.services.users_services import UserServices
 from core.utils import paginate
 
@@ -71,6 +72,27 @@ async def get_organization(
     checker.check_object_permission(token_info, organization)
     
     return organization
+
+
+@router.get(
+    "/{org_id}/stats",
+    operation_id="get_organization_stats",
+    summary="Get organization statistics",
+    response_description="Organization statistics",
+)
+async def get_organization_stats(
+    token_info: Annotated[dict, Depends(SecurityChecker(IsAuthenticated))],
+    org_id: str = Path(..., description="Organization ID"),
+    months: int = Query(3, ge=1, description="Rolling time window in months"),
+    ) -> OrganizationStatsResponse:
+    organization_services = OrganizationServices()
+    organization = organization_services.get(org_id)
+
+    checker = SecurityChecker(CanViewOrganization)
+    checker.check_object_permission(token_info, organization)
+
+    stats_services = OrganizationStatsServices()
+    return OrganizationStatsResponse(**stats_services.get_organization_stats(org_id, months))
 
 
 @router.put(

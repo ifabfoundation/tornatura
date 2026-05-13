@@ -228,8 +228,8 @@ export default function SideBar() {
         <div className="hamburger-col"></div>
         <div className="level-1">
           <div>
-            {params?.companyId && <CompanySelector />}
-            {params?.fieldId && <FieldSelector />}
+            {location.pathname.startsWith('/companies') && params?.companyId && <CompanySelector />}
+            {location.pathname.startsWith('/companies') && params?.fieldId && <FieldSelector />}
             <ul className="menu-items">
               {menuEntries.map((item, i) => {
                 const state = currentEntry === item.id ? "selected" : "normal";

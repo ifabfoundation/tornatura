@@ -14,6 +14,7 @@ import { FieldDetail } from "./features/fields/pages/field-detail";
 import { FieldDashboard } from "./features/fields/pages/field-dashboard";
 import { CompanyDetections } from "./features/companies/pages/company-detections";
 import { CompanyMembers } from "./features/companies/pages/company-members";
+import { CompanyStats } from "./features/companies/pages/company-stats";
 import { FieldMap } from "./features/fields/pages/field-map";
 import { DetectionForm } from "./features/detections/pages/detection-form";
 import { FieldSettings } from "./features/fields/pages/field-settings";
@@ -42,6 +43,10 @@ const routesInitials: RouteObject[] = [
       {
         path: "/admin/companies",
         element: <CompanyTable />
+      },
+      {
+        path: "/admin/companies/:companyId/stats",
+        element: <CompanyStats />
       },
       {
         path: "/admin/users",
@@ -94,6 +99,10 @@ const routesInitials: RouteObject[] = [
           {
             path: "members",
             element: <CompanyMembers />
+          },
+          {
+            path: "stats",
+            element: <CompanyStats />
           },
           {
             path: "invitations",

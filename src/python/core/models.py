@@ -28,8 +28,17 @@ class ObservationPoint(EmbeddedDocument):
     data = EmbeddedDocumentField(ObservationData, required=True)
 
 
+class ObservationTreatmentEntry(EmbeddedDocument):
+    treatmentDate = StringField(default="")
+    treatmentProduct = StringField(default="")
+
+
 class ObservationTreatment(EmbeddedDocument):
     treatment = BooleanField(default=False, required=True)
+    treatments = ListField(
+        EmbeddedDocumentField(ObservationTreatmentEntry),
+        default=[],
+    )
     treatmentDate = StringField(default="")
     treatmentProduct = StringField(default="")
 

@@ -10,6 +10,7 @@ from core.models import (
     ObservationCounter,
     ObservationData,
     ObservationPoint,
+    ObservationTreatmentEntry,
     ObservationTreatment,
     Point,
     detectionPhoto,
@@ -22,6 +23,61 @@ from core.services.files_services import FileServices
 class DetectionServices:
     model = DetectionModel
     serializer = Detection
+
+    def _normalize_treatment_data(self, treatment_data: dict | None) -> dict:
+        treatment_data = treatment_data or {}
+        treatment_flag = bool(treatment_data.get("treatment", False))
+        raw_entries = treatment_data.get("treatments") or []
+        normalized_entries = []
+
+        for entry in raw_entries:
+            treatment_date = (entry.get("treatmentDate", "") or "").strip()
+            treatment_product = (entry.get("treatmentProduct", "") or "").strip()
+            if treatment_date == "" and treatment_product == "":
+                continue
+            normalized_entries.append(
+                {
+                    "treatmentDate": treatment_date,
+                    "treatmentProduct": treatment_product,
+                }
+            )
+
+        if not normalized_entries:
+            legacy_date = (treatment_data.get("treatmentDate", "") or "").strip()
+            legacy_product = (treatment_data.get("treatmentProduct", "") or "").strip()
+            if legacy_date != "" or legacy_product != "":
+                normalized_entries.append(
+                    {
+                        "treatmentDate": legacy_date,
+                        "treatmentProduct": legacy_product,
+                    }
+                )
+
+        if treatment_flag and not normalized_entries:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="At least one treatment entry is required when treatment is true",
+            )
+
+        for entry in normalized_entries:
+            if entry["treatmentDate"] == "":
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Each treatment entry must include a treatmentDate",
+                )
+            if entry["treatmentProduct"] == "":
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Each treatment entry must include a treatmentProduct",
+                )
+
+        latest_entry = normalized_entries[-1] if normalized_entries else None
+        return {
+            "treatment": treatment_flag,
+            "treatments": normalized_entries if treatment_flag else [],
+            "treatmentDate": latest_entry["treatmentDate"] if latest_entry and treatment_flag else "",
+            "treatmentProduct": latest_entry["treatmentProduct"] if latest_entry and treatment_flag else "",
+        }
     
     def _serialize(self, obj, many=False):
         """Serialize object(s) to serializer instances
@@ -39,6 +95,20 @@ class DetectionServices:
         def _create_instance(item) -> Detection:
             agrifield = agrifield_services.get(item.agrifieldId)
             treatment = item.detectionData.treatment or ObservationTreatment()
+            serialized_treatment = self._normalize_treatment_data(
+                {
+                    "treatment": treatment.treatment,
+                    "treatments": [
+                        {
+                            "treatmentDate": entry.treatmentDate,
+                            "treatmentProduct": entry.treatmentProduct,
+                        }
+                        for entry in getattr(treatment, "treatments", [])
+                    ],
+                    "treatmentDate": treatment.treatmentDate,
+                    "treatmentProduct": treatment.treatmentProduct,
+                }
+            )
             points = []
             for point in item.detectionData.points:
                 points.append(
@@ -69,11 +139,7 @@ class DetectionServices:
                 detectionData={
                     "bbch": item.detectionData.bbch,
                     "notes": item.detectionData.notes,
-                    "treatment": {
-                        "treatment": treatment.treatment,
-                        "treatmentDate": treatment.treatmentDate,
-                        "treatmentProduct": treatment.treatmentProduct,
-                    },
+                    "treatment": serialized_treatment,
                     "photos": [
                         {
                             "caption": photo.caption,
@@ -100,7 +166,7 @@ class DetectionServices:
         return _create_instance(obj)
 
     def _build_detection_data(self, detection_data: dict) -> DetectionData:
-        treatment_data = detection_data.get("treatment", {})
+        treatment_data = self._normalize_treatment_data(detection_data.get("treatment", {}))
         points = []
         for point in detection_data.get("points", []):
             observation = point.get("data", {})
@@ -133,7 +199,15 @@ class DetectionServices:
         return DetectionData(
             bbch=detection_data.get("bbch", ""),
             notes=detection_data.get("notes", ""),
-            treatment=ObservationTreatment(**treatment_data),
+            treatment=ObservationTreatment(
+                treatment=treatment_data["treatment"],
+                treatments=[
+                    ObservationTreatmentEntry(**entry)
+                    for entry in treatment_data["treatments"]
+                ],
+                treatmentDate=treatment_data["treatmentDate"],
+                treatmentProduct=treatment_data["treatmentProduct"],
+            ),
             photos=photos,
             points=points,
         )
