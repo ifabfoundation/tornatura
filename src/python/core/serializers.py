@@ -86,8 +86,13 @@ class ObservationPoint(BaseModel):
     position: Point
     data: ObservationData
 
+class ObservationTreatmentEntry(BaseModel):
+    treatmentDate: str = ""
+    treatmentProduct: str = ""
+
 class ObservationTreatment(BaseModel):
     treatment: bool = False
+    treatments: List[ObservationTreatmentEntry] = []
     treatmentDate: str = ""
     treatmentProduct: str = ""
 
@@ -180,6 +185,31 @@ class Organization(BaseModel):
     contacts: Contacts
     creationTime: int
     lastUpdateTime: int
+
+
+class OrganizationStatsWindow(BaseModel):
+    months: int
+    start: str
+    end: str
+    startTimestampMs: int
+    endTimestampMs: int
+
+
+class OrganizationStatsAgrifield(BaseModel):
+    id: str
+    name: str
+    harvest: Optional[str] = None
+    creationTime: Optional[int] = None
+    detectionCount: int
+
+
+class OrganizationStatsResponse(BaseModel):
+    organization: dict[str, str]
+    window: OrganizationStatsWindow
+    agrifieldCount: int
+    distinctHarvestCount: int
+    distinctHarvests: List[str]
+    agrifields: List[OrganizationStatsAgrifield]
 
 class Detection(BaseModel):
     id: str

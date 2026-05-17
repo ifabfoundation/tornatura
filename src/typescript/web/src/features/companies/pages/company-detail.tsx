@@ -38,6 +38,14 @@ export function CompanyDetail() {
           familyItems: []
         },
         {
+          id: "stats",
+          icon: "dashboard",
+          text: "Statistiche",
+          path: `/companies/${companyId}/stats`,
+          type: 'single',
+          familyItems: []
+        },
+        {
           id: "invitations",
           icon: "baloon",
           text: "Gestione inviti azienda",

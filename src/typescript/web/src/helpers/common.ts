@@ -31,6 +31,8 @@ export function timeAgo(date: string): string {
       return `${value} ${value > 1 ? u.namePlur : u.nameSing} fa`;
     }
   }
+
+  return "";
 }
 
 // -----------------------------------------------------------------------------
@@ -123,8 +125,7 @@ export function isMobileDevice() {
 
 export function getBrowsingOrigin() {
   // @ts-ignore
-  const isPWA =
-    window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+  const isPWA = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
   if (isPWA) {
     return "PWA";
   } else {

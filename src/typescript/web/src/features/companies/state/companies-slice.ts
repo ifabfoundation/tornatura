@@ -26,7 +26,7 @@ export const fetchCompanies = createAsyncThunk(
   async () => {
     const apiConfig = await getCoreApiConfiguration();
     const organizationsApi = new OrganizationsApi(apiConfig);
-    const companies = organizationsApi.listOrganization().then((response) => {
+    const companies = organizationsApi.listOrganization(1, 250).then((response) => {
       return response.data;
     });
     return companies;

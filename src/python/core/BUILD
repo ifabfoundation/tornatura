@@ -60,6 +60,12 @@ pex_binary(
     dependencies=[":pysource", ":statics"],
 )
 
+pex_binary(
+    name="update-observation-type-instruction-links",
+    entry_point="scripts/update_observation_type_instruction_links.py",
+    dependencies=[":pysource", ":statics"],
+)
+
 resources(
     name="statics",
     sources=["media/**", ".env", "templates/**"],

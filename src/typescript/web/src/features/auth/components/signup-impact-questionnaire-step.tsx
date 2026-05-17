@@ -1,4 +1,5 @@
 import { useFormik } from "formik";
+import React from "react";
 import * as Yup from "yup";
 
 const defenseActionOptions = [
@@ -129,11 +130,11 @@ export default function SignupImpactQuestionnaireStep({
         .max(100, "Valore massimo 100")
         .required("Campo obbligatorio"),
       defenseActions: Yup.array().of(Yup.string().required()).min(1, "Seleziona almeno un'opzione"),
-      annualSpendAgrochemicals: Yup.string(),
-      annualSpendAgronomists: Yup.string(),
-      annualSpendOperators: Yup.string(),
-      annualSpendPreventiveTools: Yup.string(),
-      annualSpendOther: Yup.string(),
+      annualSpendAgrochemicals: Yup.string().required('Campo obbligatorio'),
+      annualSpendAgronomists: Yup.string().required('Campo obbligatorio'),
+      annualSpendOperators: Yup.string().required('Campo obbligatorio'),
+      annualSpendPreventiveTools: Yup.string().required('Campo obbligatorio'),
+      annualSpendOther: Yup.string().required('Campo obbligatorio'),
       annualSpendNone: Yup.boolean(),
       satisfactionEffectiveness: Yup.number()
         .typeError("Inserisci un numero")
@@ -159,6 +160,44 @@ export default function SignupImpactQuestionnaireStep({
       setSubmitting(false);
     },
   });
+
+  React.useEffect(() => {
+    if (formik.values.annualSpendNone) {
+      let annualSpendAgrochemicals = formik.values.annualSpendAgrochemicals;
+      let annualSpendAgronomists = formik.values.annualSpendAgronomists;;
+      let annualSpendOperators = formik.values.annualSpendOperators;
+      let annualSpendPreventiveTools = formik.values.annualSpendPreventiveTools;
+      let annualSpendOther = formik.values.annualSpendOther;
+      let needUpdate = false;
+      if (!formik.values.annualSpendAgrochemicals){
+        annualSpendAgrochemicals = '0';
+        needUpdate = true;
+      }
+      if (!formik.values.annualSpendAgronomists){
+        annualSpendAgronomists = '0';
+        needUpdate = true;
+      }
+      if (!formik.values.annualSpendOperators){
+        annualSpendOperators = '0';
+        needUpdate = true;
+      }
+      if (!formik.values.annualSpendPreventiveTools){
+        annualSpendPreventiveTools = '0';
+        needUpdate = true;
+      }
+      if (!formik.values.annualSpendOther){
+        annualSpendOther = '0';
+        needUpdate = true;
+      }
+
+      if (needUpdate) {
+        formik.setValues({...formik.values, 
+          annualSpendAgrochemicals, annualSpendAgronomists, annualSpendOperators,
+           annualSpendOther, annualSpendPreventiveTools })
+      }
+      
+    }
+  }, [formik.values])
 
   return (
     <form onSubmit={formik.handleSubmit} autoComplete="off">
@@ -205,7 +244,7 @@ export default function SignupImpactQuestionnaireStep({
                 </select>
               </label>
               <p className="font-s">
-                Fatturato per vendita di beni e servizi della Vostra impresa nell'anno 2024?
+                Fatturato per vendita di beni e servizi della Vostra impresa nell'anno 2025?
                 Includere i ricavi derivanti da: vendita di beni e/o servizi dell'impresa,
                 lavorazioni eseguite per conto di terzi, vendita di prodotti rivenduti senza
                 trasformazione da parte dell'impresa, prestazioni di servizi industriali
@@ -291,6 +330,9 @@ export default function SignupImpactQuestionnaireStep({
                 />
                 <span className="ms-2">Acquisto di agrofarmaci</span>
               </div>
+              {formik.touched.annualSpendAgrochemicals && formik.errors.annualSpendAgrochemicals ? (
+                <div className="error">{formik.errors.annualSpendAgrochemicals}</div>
+              ) : null}
               <div>
                 <input
                   className="d-inline-block"
@@ -305,6 +347,9 @@ export default function SignupImpactQuestionnaireStep({
                 />
                 <span className="ms-2">Consulenze di agronomi</span>
               </div>
+              {formik.touched.annualSpendAgronomists && formik.errors.annualSpendAgronomists ? (
+                <div className="error">{formik.errors.annualSpendAgronomists}</div>
+              ) : null}
               <div>
                 <input
                   className="d-inline-block"
@@ -319,6 +364,9 @@ export default function SignupImpactQuestionnaireStep({
                 />
                 <span className="ms-2">Lavoro operatori per sopralluoghi e trattamenti</span>
               </div>
+              {formik.touched.annualSpendOperators && formik.errors.annualSpendOperators ? (
+                <div className="error">{formik.errors.annualSpendOperators}</div>
+              ) : null}
               <div>
                 <input
                   className="d-inline-block"
@@ -333,6 +381,9 @@ export default function SignupImpactQuestionnaireStep({
                 />
                 <span className="ms-2">Strumenti preventivi</span>
               </div>
+              {formik.touched.annualSpendPreventiveTools && formik.errors.annualSpendPreventiveTools ? (
+                <div className="error">{formik.errors.annualSpendPreventiveTools}</div>
+              ) : null}
               <div>
                 <input
                   className="d-inline-block"
@@ -347,6 +398,9 @@ export default function SignupImpactQuestionnaireStep({
                 />
                 <span className="ms-2">Altro</span>
               </div>
+              {formik.touched.annualSpendOther && formik.errors.annualSpendOther ? (
+                <div className="error">{formik.errors.annualSpendOther}</div>
+              ) : null}
               <div className="d-flex align-items-center">
                 <input
                   id="annualSpendNone"
