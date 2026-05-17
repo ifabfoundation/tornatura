@@ -144,8 +144,14 @@ $ms-sidebar-transition: 100ms;
   height: #{$space * 8};
 }
 
+.bg-transp {
+  background-color: transparent;
+}
 .bg-yelo {
   background-color: $c-yelo;
+}
+.bg-white {
+  background-color: white !important;
 }
 .bg-grey_1 {
   background-color: $c-grey_1;
@@ -646,6 +652,12 @@ small {
     // text-transform: uppercase;
   }
 
+  .border-black {
+    border: 1px solid black;
+  }
+  .border-black-2 {
+    border: 1.5px solid black;
+  }
   .border-block {
     padding: $space/2;
     border-radius: 10px;

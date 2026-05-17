@@ -13093,8 +13093,16 @@ strong {
   height: 240px;
 }
 
+.bg-transp {
+  background-color: transparent;
+}
+
 .bg-yelo {
   background-color: #eaff00;
+}
+
+.bg-white {
+  background-color: white !important;
 }
 
 .bg-grey_1 {
@@ -13947,6 +13955,14 @@ small, .small {
   #app .label {
     font-size: 11px;
   }
+}
+
+#app .border-black {
+  border: 1px solid black;
+}
+
+#app .border-black-2 {
+  border: 1.5px solid black;
 }
 
 #app .border-block {

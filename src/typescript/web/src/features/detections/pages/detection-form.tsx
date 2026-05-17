@@ -126,7 +126,7 @@ type MultiDetectionEntryDraft = {
   pendingPhotos: PendingDetectionPhoto[];
   done: boolean;
 };
-  
+
 function createEntryKey() {
   return `entry-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 }
@@ -1084,28 +1084,48 @@ function DetectionStepTipologia({
           <strong>Nuovo rilevamento multiplo</strong>
         </h3>
 
+        {/* v2 */}
         {entries.length > 0 && (
-          <div className="mb-4">
+          <section className="soft p-3">
             {entries.map((entry, index) => (
-              <div
-                key={entry.key}
-                className="d-flex align-items-center justify-content-between py-3 border-bottom"
-              >
-                <div className="font-m-600">{buildEntryLabel(entry, index)}</div>
-                <button
-                  className="trnt_btn small secondary"
-                  onClick={() => onRemoveEntry?.(index)}
-                >
-                  &times;
-                </button>
+              <div key={entry.key} className="py-1">
+                <div className="d-flex align-items-center justify-content-between less-rounded bg-white py-1 ps-3 pe-2">
+                  <div className="font-m-600">{buildEntryLabel(entry, index)}</div>
+                  <button
+                    className="trnt_btn small type-round white"
+                    onClick={() => onRemoveEntry?.(index)}
+                  >
+                    &times;
+                  </button>
+                </div>
+              </div>
+            ))}
+          </section>
+        )}
+
+        {/* v1 
+        {entries.length > 0 && (
+          <div className="mb-1">
+            {entries.map((entry, index) => (
+              <div key={entry.key} className="py-1">
+                <div className="d-flex align-items-center justify-content-between less-rounded border-black-2 py-1 ps-3 pe-2">
+                  <div className="font-m-600">{buildEntryLabel(entry, index)}</div>
+                  <button
+                    className="trnt_btn small type-round secondary"
+                    onClick={() => onRemoveEntry?.(index)}
+                  >
+                    &times;
+                  </button>
+                </div>
               </div>
             ))}
           </div>
         )}
+          */}
 
         {entries.length === 0 || isSelectingMultiEntry ? (
           <Fragment>
-            <div className="mb-3 text-center font-m-600">
+            <div className="my-5 text-center font-m-600">
               {entries.length === 0
                 ? "Aggiungi il primo tipo di rilevamento..."
                 : "Aggiungi un altro tipo di rilevamento..."}
@@ -1137,11 +1157,16 @@ function DetectionStepTipologia({
           </Fragment>
         ) : (
           <div className="d-flex flex-column gap-3">
-            <CozyButton content="+ Aggiungi rilevamento" onClick={onAddDetection} />
-            <CozyButton
-              content="Prosegui con il rilevamento"
-              onClick={() => onProceedMulti?.()}
-            />
+            <div className="mt-3 text-center">
+              <button className="trnt_btn dashed bg-transp p-4 m-0 w-100" onClick={onAddDetection}>
+                + Aggiungi rilevamento
+              </button>
+            </div>
+            <div className="mt-3 text-center">
+              <button className="trnt_btn accent" onClick={() => onProceedMulti?.()}>
+                Prosegui con il rilevamento
+              </button>
+            </div>
           </div>
         )}
       </div>
@@ -1203,7 +1228,7 @@ function DetectionStepCompose({
   return (
     <div className="narrow-container my-5">
       <h3 className="mb-4 pb-2 text-center">
-        <strong>Nuovo rilevamento multiplo</strong>
+        <strong>Nuovo rilevamento multiploz</strong>
       </h3>
       {entries.length === 0 ? (
         <div className="text-center">Aggiungi il primo tipo di rilevamento.</div>
@@ -1215,10 +1240,7 @@ function DetectionStepCompose({
               className="d-flex align-items-center justify-content-between py-3 border-bottom"
             >
               <div className="font-m-600">{buildEntryLabel(entry, index)}</div>
-              <button
-                className="trnt_btn small secondary"
-                onClick={() => onRemoveEntry(index)}
-              >
+              <button className="trnt_btn small secondary" onClick={() => onRemoveEntry(index)}>
                 &times;
               </button>
             </div>
@@ -1293,7 +1315,8 @@ function DetectionStepGuideGeneric({
 }: {
   onNextClick: (data: DetectionStepData) => Promise<void>;
 }) {
-  const guideValue = 'https://www.tornatura.it/v/3-with-instructions/instructions/260429-multi-insetto?partial=1'
+  const guideValue =
+    "https://www.tornatura.it/v/3-with-instructions/instructions/260429-multi-insetto?partial=1";
   return (
     <div className="my-5 text-center">
       <h3 className="mb-4 pb-2">
@@ -1503,7 +1526,10 @@ function DetectionStepTreatment({ formData, onNextClick, action }: DetectionProp
           <div className="d-flex gap-2">
             <CozyButton
               content="No"
-              additionalClasses={["mt-0", treatment === false ? "trnt_btn primary" : "trnt_btn secondary"]}
+              additionalClasses={[
+                "mt-0",
+                treatment === false ? "trnt_btn primary" : "trnt_btn secondary",
+              ]}
               onClick={() => {
                 setTreatment(false);
                 setError("");
@@ -1511,7 +1537,10 @@ function DetectionStepTreatment({ formData, onNextClick, action }: DetectionProp
             />
             <CozyButton
               content="Sì"
-              additionalClasses={["mt-0", treatment === true ? "trnt_btn primary" : "trnt_btn secondary"]}
+              additionalClasses={[
+                "mt-0",
+                treatment === true ? "trnt_btn primary" : "trnt_btn secondary",
+              ]}
               onClick={() => {
                 setTreatment(true);
                 setError("");
@@ -2413,25 +2442,23 @@ export function DetectionForm() {
   const [stepperRecapValues, setStepperRecapValues] = React.useState<Record<string, string>>({});
   const [modalOpen, setModalOpen] = React.useState(false);
   const [modal, setModal] = React.useState<any>({});
-  const openAbandonModal = React.useCallback(
-    (onConfirm: () => void) => {
-      setModal({
-        component: ModalConfirm,
-        componentProps: {
-          title: "Abbandona rilevamento",
-          content: "Se torni indietro perderai i dati inseriti finora. Sei sicuro di voler continuare?",
-          action: "Abbandona",
-          handleCancel: () => setModalOpen(false),
-          handleConfirm: () => {
-            setModalOpen(false);
-            onConfirm();
-          },
+  const openAbandonModal = React.useCallback((onConfirm: () => void) => {
+    setModal({
+      component: ModalConfirm,
+      componentProps: {
+        title: "Abbandona rilevamento",
+        content:
+          "Se torni indietro perderai i dati inseriti finora. Sei sicuro di voler continuare?",
+        action: "Abbandona",
+        handleCancel: () => setModalOpen(false),
+        handleConfirm: () => {
+          setModalOpen(false);
+          onConfirm();
         },
-      });
-      setModalOpen(true);
-    },
-    [],
-  );
+      },
+    });
+    setModalOpen(true);
+  }, []);
   const goToStep = React.useCallback(
     (nextStep: number, replace = false) => {
       setStepIndex(nextStep);
@@ -2550,10 +2577,10 @@ export function DetectionForm() {
   const steps = isMultiFlow
     ? ["typology", "guide", "bbch", "treatment", "points", "done"]
     : useShortFlow
-    ? ["bbch", "treatment", "points", "done"]
-    : hasPreselection
       ? ["bbch", "treatment", "points", "done"]
-      : ["typology", "method", "guide", "bbch", "treatment", "points", "done"];
+      : hasPreselection
+        ? ["bbch", "treatment", "points", "done"]
+        : ["typology", "method", "guide", "bbch", "treatment", "points", "done"];
 
   const currentStepKey = steps[stepIndex];
 
@@ -2847,7 +2874,10 @@ export function DetectionForm() {
           setEntryDrafts(nextEntries);
           setActiveEntryIndex(nextEntries.length - 1);
         }
-        updateStepperRecaps(stepIndex + 1, { typology: selectedTypology, method: methodData.method });
+        updateStepperRecaps(stepIndex + 1, {
+          typology: selectedTypology,
+          method: methodData.method,
+        });
         goToStep(stepIndex + 1);
         return;
       }
@@ -3086,8 +3116,8 @@ export function DetectionForm() {
   const stepperItems = isMultiFlow
     ? ["Selezione", "Guida", "BBCH", "Trattamenti", "Rilevamenti"]
     : useShortFlow
-    ? ["BBCH", "Trattamenti", "Rilevamento"]
-    : ["Tipologia", "Metodo", "Guida", "BBCH", "Trattamenti", "Rilevamento"];
+      ? ["BBCH", "Trattamenti", "Rilevamento"]
+      : ["Tipologia", "Metodo", "Guida", "BBCH", "Trattamenti", "Rilevamento"];
 
   const stepperRecaps = steps.slice(0, stepIndex).map((key) => {
     let recapString = "✓";
@@ -3178,8 +3208,8 @@ export function DetectionForm() {
             onNextClick={handleNextClick}
           />
         )}
-        {currentStepKey === "guide" && (
-          isMultiFlow ? (
+        {currentStepKey === "guide" &&
+          (isMultiFlow ? (
             <DetectionStepGuideGeneric onNextClick={handleNextClick} />
           ) : (
             <DetectionStepGuide
@@ -3188,8 +3218,7 @@ export function DetectionForm() {
               observationType={observationType}
               onNextClick={handleNextClick}
             />
-          )
-        )}
+          ))}
         {currentStepKey === "bbch" && (
           <DetectionStepBbch
             formData={formData}
