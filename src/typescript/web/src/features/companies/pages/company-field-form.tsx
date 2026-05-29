@@ -661,7 +661,7 @@ export function CompanyFieldForm() {
         await dispatch(
           fieldsActions.addNewFieldAction({ orgId: currentCompany.orgId, body: payload }),
         );
-        navigate(`/companies/${companyId}/fields`, { replace: true });
+        navigate(`/m/companies/${companyId}/fields`, { replace: true });
       } catch (reason) {
         console.error("Error creating field with reason: ", reason);
       }

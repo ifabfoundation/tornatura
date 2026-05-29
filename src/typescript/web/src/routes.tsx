@@ -1,8 +1,9 @@
-import { Navigate, RouteObject, useRoutes } from "react-router-dom";
-import App, { RouteApp } from "./App";
+import { Navigate, RouteObject, useLocation, useRoutes } from "react-router-dom";
+import App, { AdminApp, MainDash, RouteApp } from "./App";
 import { CompanyTable } from "./features/companies/pages/companies-table";
 import { UserTable } from "./features/users/pages/users-table";
 import { FeedbackTable } from "./features/feedbacks/pages/feedbacks-table";
+import { CompanyForm } from "./features/companies/pages/company-form";
 import { CompaniesList } from "./features/companies/pages/companies-list";
 import { Welcome } from "./pages/welcome";
 import { Signup } from "./pages/auth";
@@ -24,11 +25,22 @@ import { InvitationsList } from "./features/invitations/pages/invitations-list";
 import { SendInvitation } from "./features/invitations/pages/send-invitation";
 import { InvitationAccept } from "./features/invitations/pages/invitation-accept";
 import { MyInvitations } from "./features/invitations/pages/my-invitations";
-import { InviteCompanyOwner } from "./features/invitations/pages/invite-company-owner";
 import { DetectionTypeDetail } from "./features/detection-types/pages/detection-type-detail";
 import { FieldModelPeronospora } from "./features/fields/pages/field-model-peronospora";
 import { FieldModelBollettini } from "./features/fields/pages/field-model-bollettini";
 
+
+
+function PrefixedRedirect({ from, to }: { from: string; to: string }) {
+  const location = useLocation();
+  const suffix = location.pathname.startsWith(from) ? location.pathname.slice(from.length) : "";
+  return <Navigate to={`${to}${suffix}${location.search}${location.hash}`} replace />;
+}
+
+function RedirectPreservingLocation({ to }: { to: string }) {
+  const location = useLocation();
+  return <Navigate to={`${to}${location.search}${location.hash}`} replace />;
+}
 
 
 const routesInitials: RouteObject[] = [
@@ -41,43 +53,67 @@ const routesInitials: RouteObject[] = [
         element: <RouteApp />
       },
       {
-        path: "/admin/companies",
-        element: <CompanyTable />
+        path: "/admin",
+        element: <AdminApp />,
+        children: [
+          {
+            index: true,
+            element: <Navigate to="companies" />
+          },
+          {
+            path: "companies",
+            element: <CompanyTable />
+          },
+          {
+            path: "companies/:companyId/stats",
+            element: <CompanyStats />
+          },
+          {
+            path: "users",
+            element: <UserTable />
+          },
+          {
+            path: "feedbacks",
+            element: <FeedbackTable />
+          },
+          {
+            path: "profile",
+            element: <UserProfile />
+          },
+        ]
       },
       {
-        path: "/admin/companies/:companyId/stats",
-        element: <CompanyStats />
+        path: "/m",
+        element: <MainDash />,
+        children: [
+          {
+            index: true,
+            element: <Navigate to="companies" />
+          },
+          {
+            path: "new-feedback",
+            element: <FeedbackForm />
+          },
+          {
+            path: "profile",
+            element: <UserProfile />
+          },
+          {
+            path: "invitations/me",
+            element: <MyInvitations />
+          },
+          {
+            path: "companies",
+            element: <CompaniesList />
+          },
+          {
+            path: "companies/new",
+            element: <CompanyForm />
+          }
+        ]
       },
       {
-        path: "/admin/users",
-        element: <UserTable />
-      },
-      {
-        path: "/admin/feedbacks",
-        element: <FeedbackTable />
-      },
-      {
-        path: "/new-feedback",
-        element: <FeedbackForm />
-      },
-      {
-        path: "/profile",
-        element: <UserProfile />
-      },
-      {
-        path: "/invitations/me",
-        element: <MyInvitations />
-      },
-      {
-        path: "/invitations/invite-company-owner",
-        element: <InviteCompanyOwner />
-      },
-      {
-        path: "/companies",
-        element: <CompaniesList />
-      },
-      {
-        path: "/companies/:companyId",
+        path: "/m/companies/:companyId",
         element: <CompanyDetail />,
         children: [
           {
@@ -119,77 +155,98 @@ const routesInitials: RouteObject[] = [
           {
             path: "new-feedback",
             element: <FeedbackForm />
+          }
+        ]
+      },
+      {
+        path: "/m/companies/:companyId/fields/:fieldId",
+        element: <FieldDetail />,
+        children: [
+          {
+            index : true,
+            element: <FieldDashboard />
           },
           {
-            path: "invitations/me",
-            element: <MyInvitations />
+            path: "map",
+            element: <FieldMap />
+          },
+          {
+            path: "new-detection",
+            element: <DetectionForm />
+          },
+          {
+            path: "settings",
+            element: <FieldSettings />
+          },
+          {
+            path: "new-feedback",
+            element: <FeedbackForm />
           },
           {
             path: "profile",
             element: <UserProfile />
           },
           {
-            path: "/companies/:companyId/fields/:fieldId",
-            element: <FieldDetail />,
-            children: [
-              {
-                index : true,
-                element: <FieldDashboard />
-              },
-              {
-                path: "map",
-                element: <FieldMap />
-              },
-              {
-                path: "new-detection",
-                element: <DetectionForm />
-              },
-              {
-                path: "settings",
-                element: <FieldSettings />
-              },
-              {
-                path: "new-feedback",
-                element: <FeedbackForm />
-              },
-              {
-                path: "profile",
-                element: <UserProfile />
-              },
-              {
-                path: "invitations/me",
-                element: <MyInvitations />
-              },
-              {
-                path: "type/:typeId",
-                element: <DetectionTypeDetail />
-              },
-              {
-                path: "models/peronospora",
-                element: <FieldModelPeronospora />
-              },
-              {
-                path: "bulletins/:culture",
-                element: <FieldModelBollettini />
-              },
-            ]
-          }
+            path: "invitations/me",
+            element: <MyInvitations />
+          },
+          {
+            path: "type/:typeId",
+            element: <DetectionTypeDetail />
+          },
+          {
+            path: "models/peronospora",
+            element: <FieldModelPeronospora />
+          },
+          {
+            path: "bulletins/:culture",
+            element: <FieldModelBollettini />
+          },
         ]
-      },
+      }
     ]
   },
   {
-    path: "/welcome",
+    path: "/pub/welcome",
     element: <Welcome />,
   },
   {
-    path: "/signup",
+    path: "/pub/signup",
     element: <Signup />
   },
   {
-    path: "/invitations/accept",
+    path: "/pub/invitations/accept",
     element: <InvitationAccept />
   },
+  {
+    path: "/welcome",
+    element: <RedirectPreservingLocation to="/pub/welcome" />,
+  },
+  {
+    path: "/signup",
+    element: <RedirectPreservingLocation to="/pub/signup" />,
+  },
+  {
+    path: "/invitations/accept",
+    element: <RedirectPreservingLocation to="/pub/invitations/accept" />,
+  },
+  {
+    path: "/companies/*",
+    element: <PrefixedRedirect from="/companies" to="/m/companies" />,
+  },
+  {
+    path: "/new-feedback",
+    element: <RedirectPreservingLocation to="/m/new-feedback" />,
+  },
+  {
+    path: "/profile",
+    element: <RedirectPreservingLocation to="/m/profile" />,
+  },
+  {
+    path: "/invitations/me",
+    element: <RedirectPreservingLocation to="/m/invitations/me" />,
+  },
+
 ]
 
 

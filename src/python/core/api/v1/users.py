@@ -81,6 +81,16 @@ async def user_registration(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="User with the same email already exists",
         )
+
+    if (
+        payload.accountType == AccountTypeEnum.standard
+        and payload.organization is not None
+        and payload.organization.questionnaire is None
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Questionnaire is required when creating an organization",
+        )
     
     if (payload.accountType == AccountTypeEnum.standard 
         and payload.organization is not None 
@@ -105,7 +115,7 @@ async def user_registration(
             user=user,
             organization_name=organization.name,
             organization_piva=organization.piva,
-            questionnaire=payload.questionnaire,
+            questionnaire=payload.organization.questionnaire,
         )
     
     

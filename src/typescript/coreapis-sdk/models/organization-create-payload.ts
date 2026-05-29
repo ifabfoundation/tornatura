@@ -38,4 +38,10 @@ export interface OrganizationCreatePayload {
      * @memberof OrganizationCreatePayload
      */
     contacts: Contacts;
+
+    /**
+     * @type {{ [key: string]: any; }}
+     * @memberof OrganizationCreatePayload
+     */
+    questionnaire: { [key: string]: any; };
 }

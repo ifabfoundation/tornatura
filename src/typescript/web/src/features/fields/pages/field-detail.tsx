@@ -62,7 +62,7 @@ export function FieldDetail() {
         if (detectionType.observationTypeId === observationType.id) {
           detectionTypeFamilyItems.push({
             text: `${observationType.typology}  ›  ${observationType.method}`,
-            path: `/companies/${companyId}/fields/${fieldId}/type/${detectionType.id}`,
+            path: `/m/companies/${companyId}/fields/${fieldId}/type/${detectionType.id}`,
           });
         }
       }
@@ -73,7 +73,7 @@ export function FieldDetail() {
         id: "fields",
         icon: "grid",
         text: "Dashboard campo",
-        path: `/companies/${companyId}/fields/${fieldId}`,
+        path: `/m/companies/${companyId}/fields/${fieldId}`,
         type: "single",
         familyItems: [],
       },
@@ -81,7 +81,7 @@ export function FieldDetail() {
         id: "new-detection",
         icon: "add",
         text: "Nuovo tipo rilevamento",
-        path: `/companies/${companyId}/fields/${fieldId}/new-detection`,
+        path: `/m/companies/${companyId}/fields/${fieldId}/new-detection`,
         type: "single",
         familyItems: [],
       },
@@ -89,7 +89,7 @@ export function FieldDetail() {
         id: "field-detections",
         icon: "checklist" as IconName,
         text: "Rilevamenti",
-        path: `/companies/${companyId}/fields/${fieldId}/type`,
+        path: `/m/companies/${companyId}/fields/${fieldId}/type`,
         type: "family",
         familyItems: detectionTypeFamilyItems,
       },
@@ -97,12 +97,12 @@ export function FieldDetail() {
         id: "field-models",
         icon: "spark" as IconName,
         text: "Modelli previsionali",
-        path: `/companies/${companyId}/fields/${fieldId}/models`,
+        path: `/m/companies/${companyId}/fields/${fieldId}/models`,
         type: "family",
         familyItems: [
           {
             text: "Peronospora",
-            path: `/companies/${companyId}/fields/${fieldId}/models/peronospora`,
+            path: `/m/companies/${companyId}/fields/${fieldId}/models/peronospora`,
           },
         ],
       },
@@ -110,12 +110,12 @@ export function FieldDetail() {
         id: "field-bulletins",
         icon: "bulletin" as IconName,
         text: "Bollettini fitosanitari",
-        path: `/companies/${companyId}/fields/${fieldId}/bulletins`,
+        path: `/m/companies/${companyId}/fields/${fieldId}/bulletins`,
         type: "family",
         familyItems: [
           {
             text: formatHarvestName(currentField.harvest),
-            path: `/companies/${companyId}/fields/${fieldId}/bulletins/${currentField.harvest}`,
+            path: `/m/companies/${companyId}/fields/${fieldId}/bulletins/${currentField.harvest}`,
           },
         ],
       },
@@ -125,7 +125,7 @@ export function FieldDetail() {
         id: "impostazioni",
         icon: "cog",
         text: "Impostazioni campo",
-        path: `/companies/${companyId}/fields/${fieldId}/settings`,
+        path: `/m/companies/${companyId}/fields/${fieldId}/settings`,
         type: "single",
         familyItems: [],
       },
@@ -133,7 +133,7 @@ export function FieldDetail() {
         id: "feedback",
         icon: "baloon",
         text: "Invia Feedback",
-        path: `/companies/${companyId}/fields/${fieldId}/new-feedback`,
+        path: `/m/companies/${companyId}/fields/${fieldId}/new-feedback`,
         type: "single",
         familyItems: [],
       },

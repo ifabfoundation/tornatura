@@ -26,70 +26,104 @@ export function RouteApp() {
   const currentUser = useAppSelector(userSelectors.selectCurrentUser);
   if (currentUser.accountType === AccountTypeEnum.Admin) {
     return <Navigate to="/admin/companies" />;
-  } else if (currentUser.accountType === AccountTypeEnum.Agronomist) {
-    return <Navigate to="/companies" />;
   } else {
-    // @ts-ignore
-    // const url = `/companies/${currentUser.organizations[0].id}`;
-    // return <Navigate to={url} />;
-    return <Navigate to="/companies" />;
+    return <Navigate to="/m/companies" />;
   }
 }
 
-function MainApp() {
-  const userMenuOpen = useAppSelector(userMenuSelectors.selectIsOpen);
+export function AdminApp() {
   const dispatch = useAppDispatch();
-  const currentUser = useAppSelector(userSelectors.selectCurrentUser);
-  const contentRef = useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
-    if (currentUser) {
-      let menuEntries: MenuItemEntry[] = [];
-      let menuBottomEntries: MenuItemEntry[] = [];
+    let menuEntries: MenuItemEntry[] = [];
+    let menuBottomEntries: MenuItemEntry[] = [];
 
-      if (currentUser.accountType === AccountTypeEnum.Admin) {
-        menuEntries = [
-          {
-            id: "companies",
-            icon: "barn",
-            text: "Aziende",
-            path: "/admin/companies",
-            type: 'single',
-            familyItems: []
-          },
-          {
-            id: "users",
-            icon: "users",
-            text: "Utenti",
-            path: "/admin/users",
-            type: 'single',
-            familyItems: []
-          },
-          {
-            id: "feedbacks",
-            icon: "baloon",
-            text: "Feedbacks",
-            path: "/admin/feedbacks",
-            type: 'single',
-            familyItems: []
-          },
-        ];
+    menuEntries = [
+      {
+        id: "companies",
+        icon: "barn",
+        text: "Aziende",
+        path: "/admin/companies",
+        type: 'single',
+        familyItems: []
+      },
+      {
+        id: "users",
+        icon: "users",
+        text: "Utenti",
+        path: "/admin/users",
+        type: 'single',
+        familyItems: []
+      },
+      {
+        id: "feedbacks",
+        icon: "baloon",
+        text: "Feedbacks",
+        path: "/admin/feedbacks",
+        type: 'single',
+        familyItems: []
+      },
+    ];
 
-        menuBottomEntries = [
-          {
-            id: "user",
-            icon: "users",
-            text: "Profilo Utente",
-            path: "/profile",
-            type: 'single',
-            familyItems: []
-          },
-        ];
-        dispatch(SidebarActions.setMenuEntriesAction(menuEntries));
-        dispatch(SidebarActions.setMenuBottomEntriesAction(menuBottomEntries));
+    menuBottomEntries = [
+      {
+        id: "user",
+        icon: "users",
+        text: "Profilo Utente",
+        path: "/admin/profile",
+        type: 'single',
+        familyItems: []
+      },
+    ];
+
+    dispatch(SidebarActions.setMenuEntriesAction(menuEntries));
+    dispatch(SidebarActions.setMenuBottomEntriesAction(menuBottomEntries));
+
+  }, []);
+
+  return <Outlet />;
+}
+
+export function MainDash() {
+  const dispatch = useAppDispatch();
+
+  React.useEffect(() => {
+    let menuEntries: MenuItemEntry[] = [];
+    let menuBottomEntries: MenuItemEntry[] = [];
+
+    menuEntries = [
+      {
+        id: "companies",
+        icon: "barn",
+        text: "Aziende gestite",
+        path: "/m/companies",
+        type: "single",
+        familyItems: [],
+      },
+    ];
+
+    menuBottomEntries = [
+      {
+        id: "feedback",
+        icon: "baloon",
+        text: "Invia Feedback",
+        path: "/m/new-feedback",
+        type: "single",
+        familyItems: [],
       }
-    }
-  }, [currentUser]);
+    ];
+
+    dispatch(SidebarActions.setMenuEntriesAction(menuEntries));
+    dispatch(SidebarActions.setMenuBottomEntriesAction(menuBottomEntries));
+
+  }, []);
+
+  return <Outlet />;
+}
+
+function RootApp() {
+  const userMenuOpen = useAppSelector(userMenuSelectors.selectIsOpen);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     contentRef.current?.scrollTo({ top: 0, left: 0, behavior: "smooth" });
@@ -137,7 +171,7 @@ function App() {
 
       if (invitationToken) {
         // const redirectUri = `${window.location.origin}/invitations/accept?token=${invitationToken}`;
-        navigate(`/invitations/accept?token=${invitationToken}`);
+        navigate(`/pub/invitations/accept?token=${invitationToken}`);
       }
 
       if (profile.accountType === AccountTypeEnum.Admin) {
@@ -171,16 +205,14 @@ function App() {
     }
   }, [authenticated, initialized]);
 
-  // return <Loading />;
-
   if (!initialized) {
     return <Loading />;
   } else if (!authenticated) {
-    return <Navigate to="/welcome" />;
+    return <Navigate to="/pub/welcome" />;
   } else if (!loaded) {
     return <Loading />;
   } else {
-    return <MainApp />;
+    return <RootApp />;
   }
 }
 

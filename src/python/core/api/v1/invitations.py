@@ -30,26 +30,21 @@ async def create_invitation(
     """
     Create a new invitation
 
-    Two scenarios:
-    1. Standard invitation: orgId provided in payload, invitee joins that org
-    2. Agronomist → New Company Owner: orgId is null in payload, company owner creates org later
-
     Permissions:
     - Company Owner can invite managers/standard/agronomists
-    - Agronomist can invite company owners
+    - Agronomist can invite users into an existing managed organization
     - Company Manager can invite standard users
     """
     invitation_services = InvitationServices()
 
-    if payload.orgId:
-        organization_services = OrganizationServices()
-        organization = organization_services.get(payload.orgId)
+    organization_services = OrganizationServices()
+    organization = organization_services.get(payload.orgId)
 
-        # Check object-level permissions
-        checker = SecurityChecker(CanManageOrganizationInvitations)
-        checker.check_object_permission(token_info, organization)
+    # Check object-level permissions
+    checker = SecurityChecker(CanManageOrganizationInvitations)
+    checker.check_object_permission(token_info, organization)
 
-    return invitation_services.create(payload.orgId, payload, token_info)
+    return invitation_services.create(payload, token_info)
 
 
 @router.get(
@@ -82,14 +77,10 @@ async def accept_invitation(
     """
     Accept an invitation (user must be authenticated)
     Adds user to organization and assigns role
-
-    Special case: When a company owner accepts an invitation from an agronomist,
-    they may need to provide orgId if they already have an organization.
-    If they don't have an organization yet, they need to create one first.
     """
     invitation_services = InvitationServices()
     user_id = token_info["sub"]
-    return invitation_services.accept(payload.token, user_id, token_info, payload.orgId)
+    return invitation_services.accept(payload.token, user_id, token_info)
 
 
 @router.post(

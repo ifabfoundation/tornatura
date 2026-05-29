@@ -90,7 +90,7 @@ export function FieldDetailForm({ field }: FieldDetailProps) {
         fieldsActions.updateFieldAction({ orgId: field.orgId, fieldId: field.id, body: payload }),
       );
       setSubmitting(false);
-      navigate(`/companies/${field.orgId}/fields/${field.id}`);
+      navigate(`/m/companies/${field.orgId}/fields/${field.id}`);
     },
   });
 
@@ -154,7 +154,7 @@ export function FieldDetailForm({ field }: FieldDetailProps) {
         handleConfirm: () => {
           dispatch(fieldsActions.deleteFieldAction({ orgId: field.orgId, fieldId: field.id }));
           setModalOpen(false);
-          navigate(`/companies/${field.orgId}`, { replace: true });
+          navigate(`/m/companies/${field.orgId}`, { replace: true });
         },
       },
     });

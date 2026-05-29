@@ -37,7 +37,7 @@ export interface Invitation {
      * @type {string}
      * @memberof Invitation
      */
-    orgId?: string | null;
+    orgId: string;
 
     /**
      * @type {Organization}

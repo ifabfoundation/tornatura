@@ -6,6 +6,7 @@ import {
   Configuration,
   InvitationPublic,
   InvitationValidateResponse,
+  OrganizationCreatePayload,
   UserCreatePayload,
   UsersApi,
 } from "@tornatura/coreapis";
@@ -41,8 +42,13 @@ function readSignupStep(state: unknown): number | undefined {
   return rawStep;
 }
 
+type SignupFormData = Omit<UserCreatePayload, "organization"> & {
+  organization?: Omit<OrganizationCreatePayload, "questionnaire"> &
+    Partial<Pick<OrganizationCreatePayload, "questionnaire">>;
+};
+
 interface SignupProps {
-  formData: UserCreatePayload;
+  formData: SignupFormData;
   action: string;
   isCompanyOwnerInStandardFlow?: boolean;
   onBackClick?: () => Promise<void>;
@@ -617,7 +623,7 @@ export function Signup() {
       workerPromotionCriteria: "",
       lowProductivityWorkerReassignmentTiming: "",
     });
-  const [formData, setFormData] = React.useState<UserCreatePayload>({
+  const [formData, setFormData] = React.useState<SignupFormData>({
     firstName: "",
     lastName: "",
     email: "",
@@ -700,10 +706,7 @@ export function Signup() {
 
   React.useEffect(() => {
     if (invitation) {
-      if (
-        invitation.role === "company-standard-access" ||
-        invitation.role === "company-manager-access"
-      ) {
+      if (invitation.role !== "agronomist-access") {
         setFlow("Simple");
       }
     }
@@ -835,14 +838,20 @@ export function Signup() {
         if (standardQuestionnaireStep !== undefined) {
           goToStep(standardQuestionnaireStep);
         } else {
-          await createAccountAction(formData);
+          await createAccountAction(formData as UserCreatePayload);
         }
       } else if (step === standardQuestionnaireStep) {
         setImpactQuestionnaireData(data);
+        const organization = formData.organization
+          ? {
+              ...formData.organization,
+              questionnaire: data,
+            }
+          : undefined;
         await createAccountAction({
           ...formData,
-          questionnaire: data,
-        } as any);
+          organization,
+        } as UserCreatePayload);
       }
     } else {
       if (step === 1) {
@@ -861,7 +870,7 @@ export function Signup() {
           goToStep(nextStep);
         }
       } else if (step === 2) {
-        await createAccountAction(formData);
+        await createAccountAction(formData as UserCreatePayload);
       }
     }
   };
@@ -869,7 +878,7 @@ export function Signup() {
   const handleLoginClick = async () => {
     // If there's an invitation token, redirect to accept page after login
     if (invitationToken) {
-      const redirectUri = `${window.location.origin}/invitations/accept?token=${invitationToken}`;
+      const redirectUri = `${window.location.origin}/pub/invitations/accept?token=${invitationToken}`;
       await keycloakInstance.login({ redirectUri: redirectUri });
     } else {
       await keycloakInstance.login({ redirectUri: window.location.origin });

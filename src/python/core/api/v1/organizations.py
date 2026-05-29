@@ -39,7 +39,7 @@ async def list_organizations(
     response_description="Organization Info",
 )
 async def create_organization(
-    token_info: Annotated[dict, Depends(SecurityChecker(IsAdmin, mutually_exclusive=True))],
+    token_info: Annotated[dict, Depends(SecurityChecker(IsAdmin, IsAgronomist, mutually_exclusive=True))],
     payload: OrganizationCreatePayload, 
     ) -> Organization:
     organization_services = OrganizationServices()
@@ -51,6 +51,23 @@ async def create_organization(
         )
     
     organization = organization_services.create(payload)
+    if IsAgronomist.has_permission(token_info) and not IsAdmin.has_permission(token_info):
+        organization_services.add_member(user_id=token_info["sub"], org_id=organization.orgId)
+        organization_services.assign_role(user_id=token_info["sub"], org_id=organization.orgId, role=OrganizationDefaultRole.ViewMembers)
+        organization_services.assign_role(user_id=token_info["sub"], org_id=organization.orgId, role=OrganizationDefaultRole.ManageMembers)
+        organization_services.assign_role(user_id=token_info["sub"], org_id=organization.orgId, role=OrganizationDefaultRole.ViewOrganization)
+        organization_services.assign_role(user_id=token_info["sub"], org_id=organization.orgId, role=OrganizationCustomRole.ViewAgrifields)
+        organization_services.assign_role(user_id=token_info["sub"], org_id=organization.orgId, role=OrganizationCustomRole.ManageAgrifields)
+        organization_services.assign_role(user_id=token_info["sub"], org_id=organization.orgId, role=OrganizationCustomRole.ManageDataFiles)
+        organization_services.assign_role(user_id=token_info["sub"], org_id=organization.orgId, role=OrganizationDefaultRole.ManageInvitations)
+
+    user_services = UserServices()
+    user_services.send_notification_to_staff(
+        user=user_services.get_by_id(token_info["sub"]),
+        organization_name=organization.name,
+        organization_piva=organization.piva,
+        questionnaire=payload.questionnaire,
+    )
     return organization
 
 

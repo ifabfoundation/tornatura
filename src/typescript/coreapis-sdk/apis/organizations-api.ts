@@ -31,7 +31,7 @@ import { StatusResponse } from '../models';
 export const OrganizationsApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
-         * 
+         * Admins can create organizations. Agronomists can create managed organizations and are automatically added with agronomist permissions.
          * @summary Create Organization
          * @param {OrganizationCreatePayload} body 
          * @param {*} [options] Override http request option.
@@ -596,7 +596,7 @@ export const OrganizationsApiFactory = function (configuration?: Configuration, 
  */
 export class OrganizationsApi extends BaseAPI {
     /**
-     * 
+     * Admins can create organizations. Agronomists can create managed organizations and are automatically added with agronomist permissions.
      * @summary Create Organization
      * @param {OrganizationCreatePayload} body 
      * @param {*} [options] Override http request option.

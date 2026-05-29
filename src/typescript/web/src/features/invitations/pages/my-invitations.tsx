@@ -51,7 +51,7 @@ export function MyInvitations() {
   }, []);
 
   const handleViewInvitation = (token: string) => {
-    navigate(`/invitations/accept?token=${token}`);
+    navigate(`/pub/invitations/accept?token=${token}`);
   };
 
   if (status === "pending") {
@@ -93,9 +93,7 @@ export function MyInvitations() {
                     <div>
                       <p className="font-s-label mb-1">Invito da</p>
                       <p className="font-m-600 mb-3">
-                        {`${invitation.orgId ? invitation.organization?.name : invitation.email} (${
-                          invitation.orgId ? "Organizzazione" : "Agronomo"
-                        })`}
+                        {`${invitation.organization?.name ?? invitation.email} (Organizzazione)`}
                       </p>
 
                       <hr />
@@ -103,7 +101,7 @@ export function MyInvitations() {
                       <p className="font-s-label mb-1">Invito al ruolo di</p>
                       <p className="font-m-600 mb-3">{translateRole(invitation.role)}</p>
 
-                      {invitation.orgId && invitation.organization && (
+                      {invitation.organization && (
                         <Fragment>
                           <p className="font-s-label mb-1">Organizzazione</p>
                           <p className="font-m-600 mb-3">{invitation.organization.name}</p>

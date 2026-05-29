@@ -263,6 +263,7 @@ class OrganizationCreatePayload(BaseModel):
     name: str
     piva: str
     contacts: Contacts
+    questionnaire: dict[str, Any]
 
 class OrganizationUpdatePayload(BaseModel):
     name: Optional[str] = None
@@ -315,7 +316,6 @@ class UserCreatePayload(BaseModel):
     phone: str
     piva: Optional[str] = None
     organization: Optional[OrganizationCreatePayload] = None
-    questionnaire: Optional[dict[str, Any]] = None
 
 class UserUpdatePayload(BaseModel):
     firstName: Optional[str] = None
@@ -332,14 +332,14 @@ class InvitationCreatePayload(BaseModel):
     """Payload for creating an invitation"""
     email: EmailStr
     role: str
-    orgId: Optional[str] = None  # Optional - null when agronomist invites non-existent company owner
+    orgId: str
 
 class Invitation(BaseModel):
     """Complete invitation model with all fields"""
     id: str
     email: str
-    orgId: Optional[str] = None  # Optional - null when agronomist invites non-existent company owner
-    organization: Optional[Organization] = None  # Optional - null when agronomist invites non-existent company owner
+    orgId: str
+    organization: Optional[Organization] = None
     inviterId: str
     role: str
     token: str
@@ -360,7 +360,7 @@ class InvitationPublic(BaseModel):
     email: str
     role: str
     status: str
-    organization: Optional[Organization] = None  # Optional - null when agronomist invites non-existent company owner
+    organization: Organization
     inviter: User
     expiresAt: int
     creationTime: int
@@ -368,7 +368,6 @@ class InvitationPublic(BaseModel):
 class InvitationAcceptPayload(BaseModel):
     """Payload for accepting invitation"""
     token: str
-    orgId: Optional[str] = None  # Required when company owner accepts invitation from agronomist
 
 class InvitationValidateResponse(BaseModel):
     """Response for token validation"""

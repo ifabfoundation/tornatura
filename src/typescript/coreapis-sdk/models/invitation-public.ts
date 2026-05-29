@@ -50,7 +50,7 @@ export interface InvitationPublic {
      * @type {Organization}
      * @memberof InvitationPublic
      */
-    organization?: Organization;
+    organization: Organization;
 
     /**
      * @type {User}

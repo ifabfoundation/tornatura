@@ -63,10 +63,4 @@ export interface UserCreatePayload {
      * @memberof UserCreatePayload
      */
     organization?: OrganizationCreatePayload;
-
-    /**
-     * @type {{ [key: string]: any; }}
-     * @memberof UserCreatePayload
-     */
-    questionnaire?: { [key: string]: any; } | null;
 }

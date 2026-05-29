@@ -4,11 +4,12 @@ import { useAppDispatch, useAppSelector } from "../hooks";
 import keycloakInstance from "../providers/keycloak";
 import { userSelectors } from "../features/users/state/user-slice";
 import { fallbacks } from "../assets/images/fallback";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   invitationsActions,
   invitationsSelectors,
 } from "../features/invitations/state/invitations-slice";
+import { AccountTypeEnum } from "@tornatura/coreapis";
 
 interface UserMenuProps {
   open: boolean;
@@ -17,7 +18,6 @@ interface UserMenuProps {
 export default function UserMenu({ open }: UserMenuProps) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { fieldId, companyId } = useParams();
   const currentUser = useAppSelector(userSelectors.selectCurrentUser);
   const invitations = useAppSelector(invitationsSelectors.selectMyInvitations);
 
@@ -33,24 +33,12 @@ export default function UserMenu({ open }: UserMenuProps) {
 
   const handleProfile = () => {
     dispatch(userMenuActions.toggle());
-    if (fieldId && companyId) {
-      navigate(`/companies/${companyId}/fields/${fieldId}/profile`);
-    } else if (companyId) {
-      navigate(`/companies/${companyId}/profile`);
-    } else {
-      navigate("/profile");
-    }
+    navigate(currentUser?.accountType === AccountTypeEnum.Admin ? "/admin/profile" : "/m/profile");
   };
 
   const handleInvitiRicevuti = () => {
     dispatch(userMenuActions.toggle());
-    if (fieldId && companyId) {
-      navigate(`/companies/${companyId}/fields/${fieldId}/invitations/me`);
-    } else if (companyId) {
-      navigate(`/companies/${companyId}/invitations/me`);
-    } else {
-      navigate("/invitations/me");
-    }
+    navigate("/m/invitations/me");
   };
 
   const accountTypeString = (accountType: string | undefined) => {

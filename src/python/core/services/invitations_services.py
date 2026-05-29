@@ -8,7 +8,7 @@ from fastapi import HTTPException
 from jinja2 import Environment, FileSystemLoader
 from core import config
 from core.models import InvitationModel
-from core.serializers import AccountTypeEnum, Invitation, InvitationCreatePayload, InvitationPublic, StatusResponse
+from core.serializers import Invitation, InvitationCreatePayload, StatusResponse
 from core.decorators import catch_api_exception
 from core.services.organizations_services import OrganizationServices
 from core.services.users_services import ClientRole, UserServices
@@ -75,16 +75,12 @@ class InvitationServices:
         return f"{value.day} {months[value.month - 1]} {value.year}"
 
     @catch_api_exception
-    def create(self, org_id: Optional[str], payload: InvitationCreatePayload, token_info: dict):
+    def create(self, payload: InvitationCreatePayload, token_info: dict):
         """
         Create a new invitation
 
-        Special cases:
-        1. Standard: org_id provided, invitee joins that org
-        2. Agronomist → New Company Owner: org_id is null, company owner will create org later
-
         Steps:
-        1. Validate organization exists (if org_id provided)
+        1. Validate organization exists
         2. Check for duplicate pending invitation
         3. Generate token
         4. Save invitation
@@ -103,65 +99,33 @@ class InvitationServices:
                 detail="You cannot invite yourself"
             )
 
-        # Use orgId from payload (can be null for company owner invitations)
         actual_org_id = payload.orgId
 
-        # Special case: Agronomist inviting company owner who doesn't exist yet
-        # In this case, orgId can be null
-        if payload.role == ClientRole.CompanyOwner.value and payload.orgId is None and inviter.accountType == AccountTypeEnum.agronomist:
-            # Agronomist inviting a new company owner - orgId can be null
-            org_name = None
-            if actual_org_id:
-                # If org_id provided, validate it exists
-                try:
-                    org = organization_services.get(actual_org_id)
-                    org_name = org.name
-                except DoesNotExist:
-                    raise HTTPException(status_code=404, detail="Organization not found")
-            else:
-                # No org_id - this is fine for company owner invitations
-                # Use inviter's name as context
-                inviter = user_services.get(token_info)
-                org_name = f"{inviter.firstName}'s network"
-                actual_org_id = None  # Keep it null
-        else:
-            # Standard invitation - org_id is required
-            if not actual_org_id:
+        if not actual_org_id:
+            raise HTTPException(
+                status_code=400,
+                detail="Organization ID is required for invitations"
+            )
+
+        try:
+            org = organization_services.get(actual_org_id)
+            org_name = org.name
+        except DoesNotExist:
+            raise HTTPException(status_code=404, detail="Organization not found")
+
+        members = organization_services.list_members(actual_org_id)
+        for member in members:
+            if member.user.email.lower() == target_email:
                 raise HTTPException(
                     status_code=400,
-                    detail="Organization ID is required for this invitation"
+                    detail="User is already a member of this organization"
                 )
-            try:
-                org = organization_services.get(actual_org_id)
-                org_name = org.name
-            except DoesNotExist:
-                raise HTTPException(status_code=404, detail="Organization not found")
-
-        # Check for duplicate pending invitation
-        # For company owner invitations without org, only check email + inviter
-        if actual_org_id:
-            members = organization_services.list_members(actual_org_id)
-            for member in members:
-                if member.user.email.lower() == target_email:
-                    raise HTTPException(
-                        status_code=400,
-                        detail="User is already a member of this organization"
-                    )
-            existing = self.model.objects(
-                email=target_email,
-                orgId=actual_org_id,
-                status="pending",
-                deleted=False
-            ).first()
-        else:
-            existing = self.model.objects(
-                email=target_email,
-                inviterId=inviter_id,
-                role=ClientRole.CompanyOwner.value,
-                orgId__exists=False,  # Check for null orgId
-                status="pending",
-                deleted=False
-            ).first()
+        existing = self.model.objects(
+            email=target_email,
+            orgId=actual_org_id,
+            status="pending",
+            deleted=False
+        ).first()
 
         if existing:
             raise HTTPException(
@@ -173,7 +137,7 @@ class InvitationServices:
         current_time = self._get_current_timestamp()
         invitation = self.model(
             email=target_email,
-            orgId=actual_org_id,  # Can be null for company owner invitations
+            orgId=actual_org_id,
             inviterId=inviter_id,
             role=payload.role,
             token=self._generate_token(),
@@ -239,10 +203,13 @@ class InvitationServices:
             organization_services = OrganizationServices()
             user_services = UserServices()
 
-            # Handle null orgId for company owner invitations
-            org = None
-            if invitation.orgId:
-                org = organization_services.get(invitation.orgId)
+            if not invitation.orgId:
+                return InvitationValidateResponse(
+                    valid=False,
+                    error="Invitation is not linked to an organization"
+                )
+
+            org = organization_services.get(invitation.orgId)
 
             inviter = user_services.get_by_id(invitation.inviterId)
 
@@ -269,13 +236,9 @@ class InvitationServices:
             )
 
     @catch_api_exception
-    def accept(self, token: str, user_id: str, token_info: dict, org_id: Optional[str] = None):
+    def accept(self, token: str, user_id: str, token_info: dict):
         """
         Accept an invitation - add user to organization
-
-        Special case: If invitee is a company owner being invited by an agronomist,
-        and they don't have an organization yet, they need to create one first.
-        The org_id parameter should be provided after organization creation.
         """
 
         invitation = self.model.objects(
@@ -301,77 +264,47 @@ class InvitationServices:
 
         organization_services = OrganizationServices()
         user_services = UserServices()
-        
-        # Special case: Company owner invited by agronomist
-        if invitation.role == ClientRole.CompanyOwner.value and invitation.orgId is None:
-            # Check if user has an organization
-            user = user_services.get_by_id(user_id)
-            user_orgs = user.organizations
 
-            # If no org_id provided and user has no organizations, they need to create one
-            if not org_id and len(user_orgs) == 0:
-                raise HTTPException(
-                    status_code=400,
-                    detail="Company owner must create an organization before accepting invitation. Please provide org_id parameter after creating your organization."
-                )
+        if not invitation.orgId:
+            raise HTTPException(
+                status_code=400,
+                detail="Invitation is not linked to an organization"
+            )
 
-            # Use provided org_id or user's first organization
-            target_org_id = org_id if org_id else user_orgs[0].id
+        try:
+            organization_services.add_member(invitation.orgId, user_id)
+            organization_services.assign_role(invitation.orgId, user_id, OrganizationDefaultRole.ViewMembers)
+            if invitation.role == ClientRole.Agronomist.value:
+                organization_services.assign_role(invitation.orgId, user_id, OrganizationDefaultRole.ManageMembers)
+                organization_services.assign_role(invitation.orgId, user_id, OrganizationDefaultRole.ViewOrganization)
+                organization_services.assign_role(invitation.orgId, user_id, OrganizationCustomRole.ViewAgrifields)
+                organization_services.assign_role(invitation.orgId, user_id, OrganizationCustomRole.ManageAgrifields)
+                organization_services.assign_role(invitation.orgId, user_id, OrganizationCustomRole.ManageDataFiles)
+                organization_services.assign_role(invitation.orgId, user_id, OrganizationDefaultRole.ManageInvitations)
+            elif invitation.role == ClientRole.CompanyOwner.value:
+                user_services.assign_role(user_id, ClientRole.CompanyOwner)
+                organization_services.assign_role(user_id=user_id, org_id=invitation.orgId, role=OrganizationDefaultRole.ManageOrganization)
+                organization_services.assign_role(user_id=user_id, org_id=invitation.orgId, role=OrganizationDefaultRole.ManageMembers)
+                organization_services.assign_role(user_id=user_id, org_id=invitation.orgId, role=OrganizationCustomRole.ManageAgrifields)
+                organization_services.assign_role(user_id=user_id, org_id=invitation.orgId, role=OrganizationCustomRole.ManageDataFiles)
+                organization_services.assign_role(user_id=user_id, org_id=invitation.orgId, role=OrganizationDefaultRole.ManageInvitations)
+            elif invitation.role == ClientRole.CompanyManager.value:
+                user_services.assign_role(user_id, ClientRole.CompanyManager)
+                organization_services.assign_role(user_id=user_id, org_id=invitation.orgId, role=OrganizationDefaultRole.ViewOrganization)
+                organization_services.assign_role(user_id=user_id, org_id=invitation.orgId, role=OrganizationDefaultRole.ManageMembers)
+                organization_services.assign_role(user_id=user_id, org_id=invitation.orgId, role=OrganizationCustomRole.ManageAgrifields)
+                organization_services.assign_role(user_id=user_id, org_id=invitation.orgId, role=OrganizationCustomRole.ManageDataFiles)
+                organization_services.assign_role(user_id=user_id, org_id=invitation.orgId, role=OrganizationDefaultRole.ManageInvitations)
+            elif invitation.role == ClientRole.CompanyStandard.value:
+                organization_services.assign_role(invitation.orgId, user_id, OrganizationDefaultRole.ViewOrganization)
+                organization_services.assign_role(invitation.orgId, user_id, OrganizationCustomRole.ViewAgrifields)
+                organization_services.assign_role(invitation.orgId, user_id, OrganizationCustomRole.ManageDetections)
+                organization_services.assign_role(invitation.orgId, user_id, role=OrganizationCustomRole.ManageDataFiles)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Failed to add member: {str(e)}")
 
-            # Update invitation with the target org_id (for null orgId invitations)
-            if not invitation.orgId:
-                invitation.orgId = target_org_id
-
-            # Add the inviter (agronomist) to the company owner's organization
-            try:
-                organization_services.add_member(target_org_id, invitation.inviterId)
-                # Give agronomist appropriate permissions
-                organization_services.assign_role(target_org_id, invitation.inviterId, OrganizationDefaultRole.ViewMembers)
-                organization_services.assign_role(target_org_id, invitation.inviterId, OrganizationDefaultRole.ViewOrganization)
-                organization_services.assign_role(target_org_id, invitation.inviterId, OrganizationCustomRole.ViewAgrifields)
-                organization_services.assign_role(target_org_id, invitation.inviterId, OrganizationCustomRole.ManageAgrifields)
-                organization_services.assign_role(target_org_id, invitation.inviterId, role=OrganizationCustomRole.ManageDataFiles)
-                organization_services.assign_role(target_org_id, invitation.inviterId, role=OrganizationDefaultRole.ManageInvitations)
-            except Exception as e:
-                raise HTTPException(status_code=500, detail=f"Failed to add agronomist to organization: {str(e)}")
-
-            org = organization_services.get(target_org_id)
-            org_name = org.name
-        else:
-            # Standard case: Add invitee to inviter's organization
-            try:
-                organization_services.add_member(invitation.orgId, user_id)
-                organization_services.assign_role(invitation.orgId, user_id, OrganizationDefaultRole.ViewMembers)
-                if invitation.role == ClientRole.Agronomist.value:
-                    organization_services.assign_role(invitation.orgId, user_id, OrganizationDefaultRole.ViewOrganization)
-                    organization_services.assign_role(invitation.orgId, user_id, OrganizationCustomRole.ViewAgrifields)
-                    organization_services.assign_role(invitation.orgId, user_id, OrganizationCustomRole.ManageAgrifields)
-                    organization_services.assign_role(invitation.orgId, user_id, OrganizationCustomRole.ManageDataFiles)
-                    organization_services.assign_role(invitation.orgId, user_id, OrganizationDefaultRole.ManageInvitations)
-                elif invitation.role == ClientRole.CompanyOwner.value:
-                    user_services.assign_role(user_id, ClientRole.CompanyOwner)
-                    organization_services.assign_role(user_id=user_id, org_id=invitation.orgId, role=OrganizationDefaultRole.ManageOrganization)
-                    organization_services.assign_role(user_id=user_id, org_id=invitation.orgId, role=OrganizationDefaultRole.ManageMembers)
-                    organization_services.assign_role(user_id=user_id, org_id=invitation.orgId, role=OrganizationCustomRole.ManageAgrifields)
-                    organization_services.assign_role(user_id=user_id, org_id=invitation.orgId, role=OrganizationCustomRole.ManageDataFiles)
-                    organization_services.assign_role(user_id=user_id, org_id=invitation.orgId, role=OrganizationDefaultRole.ManageInvitations)
-                elif invitation.role == ClientRole.CompanyManager.value:
-                    user_services.assign_role(user_id, ClientRole.CompanyManager)
-                    organization_services.assign_role(user_id=user_id, org_id=invitation.orgId, role=OrganizationDefaultRole.ViewOrganization)
-                    organization_services.assign_role(user_id=user_id, org_id=invitation.orgId, role=OrganizationDefaultRole.ManageMembers)
-                    organization_services.assign_role(user_id=user_id, org_id=invitation.orgId, role=OrganizationCustomRole.ManageAgrifields)
-                    organization_services.assign_role(user_id=user_id, org_id=invitation.orgId, role=OrganizationCustomRole.ManageDataFiles)
-                    organization_services.assign_role(user_id=user_id, org_id=invitation.orgId, role=OrganizationDefaultRole.ManageInvitations)
-                elif invitation.role == ClientRole.CompanyStandard.value:
-                    organization_services.assign_role(invitation.orgId, user_id, OrganizationDefaultRole.ViewOrganization)
-                    organization_services.assign_role(invitation.orgId, user_id, OrganizationCustomRole.ViewAgrifields)
-                    organization_services.assign_role(invitation.orgId, user_id, OrganizationCustomRole.ManageDetections)
-                    organization_services.assign_role(invitation.orgId, user_id, role=OrganizationCustomRole.ManageDataFiles)
-            except Exception as e:
-                raise HTTPException(status_code=500, detail=f"Failed to add member: {str(e)}")
-
-            org = organization_services.get(invitation.orgId)
-            org_name = org.name
+        org = organization_services.get(invitation.orgId)
+        org_name = org.name
 
         # Update invitation status
         current_time = self._get_current_timestamp()
@@ -433,6 +366,7 @@ class InvitationServices:
         """List pending invitations for a user email"""
         invitations = self.model.objects(
             email=email,
+            orgId__ne=None,
             status="pending",
             deleted=False
         ).order_by('-creationTime')
@@ -480,12 +414,14 @@ class InvitationServices:
         inviter = user_services.get_by_id(invitation.inviterId)
         inviter_name = f"{inviter.firstName} {inviter.lastName}"
 
-        # Handle null orgId for company owner invitations
-        if invitation.orgId:
-            org = organization_services.get(invitation.orgId)
-            org_name = org.name
-        else:
-            org_name = f"{inviter.firstName}'s network"
+        if not invitation.orgId:
+            raise HTTPException(
+                status_code=400,
+                detail="Invitation is not linked to an organization"
+            )
+
+        org = organization_services.get(invitation.orgId)
+        org_name = org.name
 
         self._send_invitation_email(invitation, inviter_name, org_name)
 
@@ -522,7 +458,6 @@ class InvitationServices:
         """Notify inviter that invitation was accepted"""
         template = env.get_template('email_invitation_accepted.html')
 
-        # Handle null orgId (should be updated by accept() method before this is called)
         org_link = f"{config.APIConfig.FRONTEND_URL}/companies/{invitation.orgId}" if invitation.orgId else config.APIConfig.FRONTEND_URL
 
         email_body = template.render(

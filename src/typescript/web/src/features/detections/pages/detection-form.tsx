@@ -1863,14 +1863,14 @@ function DetectionStepObservationPoints({
           handleCancel: () => setModalOpen(false),
           handleConfirm: () => {
             setModalOpen(false);
-            navigate(`/companies/${companyId}/fields/${fieldId}`, { replace: true });
+            navigate(`/m/companies/${companyId}/fields/${fieldId}`, { replace: true });
           },
         },
       });
       setModalOpen(true);
       return;
     }
-    navigate(`/companies/${companyId}/fields/${fieldId}`, { replace: true });
+    navigate(`/m/companies/${companyId}/fields/${fieldId}`, { replace: true });
   }
 
   const handleMarkerChange = async (point: Point) => {
@@ -2518,12 +2518,12 @@ function DetectionStepDone({
         className="trnt_btn"
         onClick={() => {
           if (isMultiSession || !detectionType) {
-            navigate(`/companies/${companyId}/fields/${fieldId}`, {
+            navigate(`/m/companies/${companyId}/fields/${fieldId}`, {
               replace: true,
             });
             return;
           }
-          navigate(`/companies/${companyId}/fields/${fieldId}/type/${detectionType}`, {
+          navigate(`/m/companies/${companyId}/fields/${fieldId}/type/${detectionType}`, {
             replace: true,
           });
         }}
@@ -3173,7 +3173,7 @@ export function DetectionForm() {
   const handleBackClick = async () => {
     if (stepIndex === 0) {
       openAbandonModal(() => {
-        navigate(`/companies/${companyId}/fields/${fieldId}`, { replace: true });
+        navigate(`/m/companies/${companyId}/fields/${fieldId}`, { replace: true });
       });
       return;
     }
@@ -3284,7 +3284,7 @@ export function DetectionForm() {
           handleBackClick={handleBackClick}
           handleStepClick={(idx) => goToStep(idx)}
           handleExitClick={() => {
-            navigate(`/companies/${companyId}/fields/${fieldId}`, { replace: true });
+            navigate(`/m/companies/${companyId}/fields/${fieldId}`, { replace: true });
           }}
           itemRecaps={stepperRecaps}
         />

@@ -29,7 +29,7 @@ export function Welcome() {
                     </Button>
                     <div className="spacer my-5"></div>
                     <p className="my-3">Crea un nuovo account</p>
-                    <Link className="button wide secondary" to="/signup">
+                    <Link className="button wide secondary" to="/pub/signup">
                       Registrati
                     </Link>
                   </div>

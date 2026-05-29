@@ -246,7 +246,7 @@ export function FieldMap() {
           className="trnt_btn primary me-3 position-absolute top-0 start-0 m-3"
           data-type="round"
           onClick={() => {
-            navigate(`/companies/${companyId}/fields/${fieldId}`, { replace: true });
+            navigate(`/m/companies/${companyId}/fields/${fieldId}`, { replace: true });
           }}
         >
           &larr;

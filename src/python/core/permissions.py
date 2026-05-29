@@ -164,7 +164,13 @@ class CanManageOrganizationMembers(BasePermission):
                 return False
 
             roles = token_info["organizations"][org_id]["roles"]
-            return OrganizationDefaultRole.ManageMembers.value in roles
+            return (
+                OrganizationDefaultRole.ManageMembers.value in roles
+                or (
+                    IsAgronomist.has_permission(token_info)
+                    and OrganizationDefaultRole.ManageInvitations.value in roles
+                )
+            )
 
         except Exception as ex:
             logger.logger.error(f"Error checking manage organization members permission: {ex}")

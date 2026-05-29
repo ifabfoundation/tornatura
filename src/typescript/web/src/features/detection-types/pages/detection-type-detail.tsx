@@ -319,12 +319,12 @@ export function DetectionTypeDetail() {
   // .sort((a, b) => b.x.getTime() - a.x.getTime());
 
   const modelPaths = {
-    Peronospora: `/companies/${companyId}/fields/${fieldId}/models/peronospora`,
-    Flavescenza: `/companies/${companyId}/fields/${fieldId}/models/bollettini`,
-    Cimice: `/companies/${companyId}/fields/${fieldId}/models/bollettini`,
-    // Lisso: `/companies/${companyId}/fields/${fieldId}/models/lisso`,
-    // Scafoideo: `/companies/${companyId}/fields/${fieldId}/models/scafoideo`,
-    // Diabrotica: `/companies/${companyId}/fields/${fieldId}/models/diabrotica`,
+    Peronospora: `/m/companies/${companyId}/fields/${fieldId}/models/peronospora`,
+    Flavescenza: `/m/companies/${companyId}/fields/${fieldId}/models/bollettini`,
+    Cimice: `/m/companies/${companyId}/fields/${fieldId}/models/bollettini`,
+    // Lisso: `/m/companies/${companyId}/fields/${fieldId}/models/lisso`,
+    // Scafoideo: `/m/companies/${companyId}/fields/${fieldId}/models/scafoideo`,
+    // Diabrotica: `/m/companies/${companyId}/fields/${fieldId}/models/diabrotica`,
   };
   // @ts-ignore
   let modelPath;
@@ -457,7 +457,7 @@ export function DetectionTypeDetail() {
   const ButtonDashboard = (
     <button
       className="trnt_btn primary type-rounded"
-      onClick={() => navigate(`/companies/${companyId}/fields/${fieldId}`)}
+      onClick={() => navigate(`/m/companies/${companyId}/fields/${fieldId}`)}
     >
       {"← Dashboard"}
     </button>
@@ -468,7 +468,7 @@ export function DetectionTypeDetail() {
       className="trnt_btn accent type-rounded"
       data-type="rounded"
       onClick={() =>
-        navigate(`/companies/${companyId}/fields/${fieldId}/new-detection`, {
+        navigate(`/m/companies/${companyId}/fields/${fieldId}/new-detection`, {
           state: { typeId: typeId },
         })
       }

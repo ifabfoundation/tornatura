@@ -25,10 +25,4 @@ export interface InvitationAcceptPayload {
      * @memberof InvitationAcceptPayload
      */
     token: string;
-
-    /**
-     * @type {string}
-     * @memberof InvitationAcceptPayload
-     */
-    orgId?: string | null;
 }

@@ -208,7 +208,7 @@ class FeedbackModel(Document):
 class InvitationModel(Document):
     """The object Invitation stored in the Database"""
     email = StringField(required=True)
-    orgId = StringField()  # Optional - null when agronomist invites non-existent company owner
+    orgId = StringField()
     inviterId = StringField(required=True)
     role = StringField(required=True)
     token = StringField(required=True, unique=True)

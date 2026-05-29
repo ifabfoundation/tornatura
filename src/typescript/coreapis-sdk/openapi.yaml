@@ -433,6 +433,8 @@ paths:
       tags:
       - Organizations
       summary: Create Organization
+      description: Admins can create organizations. Agronomists can create managed
+        organizations and are automatically added with agronomist permissions.
       operationId: create_organization
       security:
       - SecurityChecker: []
@@ -1941,21 +1943,15 @@ paths:
       tags:
       - Invitations
       summary: Create Invitation
-      description: 'Create a new invitation
-
-
-        Two scenarios:
-
-        1. Standard invitation: orgId provided in payload, invitee joins that org
-
-        2. Agronomist → New Company Owner: orgId is null in payload, company owner creates org later
+      description: 'Create a new invitation. The payload must include orgId and
+        the invitee joins that existing organization.
 
 
         Permissions:
 
         - Company Owner can invite managers/standard/agronomists
 
-        - Agronomist can invite company owners
+        - Agronomist can invite users into an existing managed organization
 
         - Company Manager can invite standard users'
       operationId: create_invitation
@@ -2054,14 +2050,7 @@ paths:
       summary: Accept Invitation
       description: 'Accept an invitation (user must be authenticated)
 
-        Adds user to organization and assigns role
-
-
-        Special case: When a company owner accepts an invitation from an agronomist,
-
-        they may need to provide orgId if they already have an organization.
-
-        If they don''t have an organization yet, they need to create one first.'
+        Adds user to organization and assigns role'
       operationId: accept_invitation
       requestBody:
         content:
@@ -3076,7 +3065,6 @@ components:
         orgId:
           title: Orgid
           type: string
-          nullable: true
         organization:
           $ref: '#/components/schemas/Organization'
           nullable: true
@@ -3112,6 +3100,7 @@ components:
       required:
       - id
       - email
+      - orgId
       - inviterId
       - role
       - token
@@ -3127,10 +3116,6 @@ components:
         token:
           type: string
           title: Token
-        orgId:
-          title: Orgid
-          type: string
-          nullable: true
       type: object
       required:
       - token
@@ -3148,11 +3133,11 @@ components:
         orgId:
           title: Orgid
           type: string
-          nullable: true
       type: object
       required:
       - email
       - role
+      - orgId
       title: InvitationCreatePayload
       description: Payload for creating an invitation
     InvitationPublic:
@@ -3171,7 +3156,6 @@ components:
           title: Status
         organization:
           $ref: '#/components/schemas/Organization'
-          nullable: true
         inviter:
           $ref: '#/components/schemas/User'
         expiresAt:
@@ -3186,6 +3170,7 @@ components:
       - email
       - role
       - status
+      - organization
       - inviter
       - expiresAt
       - creationTime
@@ -3375,11 +3360,16 @@ components:
           title: Piva
         contacts:
           $ref: '#/components/schemas/Contacts'
+        questionnaire:
+          type: object
+          additionalProperties: true
+          title: Questionnaire
       type: object
       required:
       - name
       - piva
       - contacts
+      - questionnaire
       title: OrganizationCreatePayload
     OrganizationUpdatePayload:
       properties:
@@ -3526,11 +3516,6 @@ components:
           nullable: true
         organization:
           $ref: '#/components/schemas/OrganizationCreatePayload'
-          nullable: true
-        questionnaire:
-          additionalProperties: true
-          type: object
-          title: Questionnaire
           nullable: true
       type: object
       required:

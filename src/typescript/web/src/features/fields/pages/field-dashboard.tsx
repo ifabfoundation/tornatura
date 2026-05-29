@@ -87,7 +87,7 @@ export function FieldDashboard() {
                       />
                       <button
                         className="trnt_btn slim-y narrow-x secondary type-rounded position-absolute top-0 end-0 m-3 bg-white"
-                        onClick={() => navigate(`/companies/${companyId}/fields/${fieldId}/map`)}
+                        onClick={() => navigate(`/m/companies/${companyId}/fields/${fieldId}/map`)}
                       >
                         <Icon iconName={"fullscreen"} color={"black"} />
                       </button>
@@ -177,7 +177,7 @@ export function FieldDashboard() {
               // className="cardlet-button"
               className="button dashed fat-y type-rounded px-4"
               data-type="rounded"
-              onClick={() => navigate(`/companies/${companyId}/fields/${fieldId}/new-detection`)}
+              onClick={() => navigate(`/m/companies/${companyId}/fields/${fieldId}/new-detection`)}
             >
               {"⊕  Nuovo tipo di rilevamento"}
             </a>
@@ -192,7 +192,7 @@ export function FieldDashboard() {
                 <span className="title">Mappa del campo</span>
                 <button
                   className="trnt_btn slim-y narrow-x primary"
-                  onClick={() => navigate(`/companies/${companyId}/fields/${fieldId}/map`)}
+                  onClick={() => navigate(`/m/companies/${companyId}/fields/${fieldId}/map`)}
                 >
                   Espandi&nbsp;<span className="d-none d-sm-inline"> la mappa</span>
                 </button>
@@ -211,7 +211,7 @@ export function FieldDashboard() {
                 <span className="title">Rilevamenti</span>
                 <button
                   className="trnt_btn slim-y narrow-x primary"
-                  onClick={() => navigate(`/companies/${companyId}/fields/${fieldId}/detections`)}
+                  onClick={() => navigate(`/m/companies/${companyId}/fields/${fieldId}/detections`)}
                 >
                   <span className="d-sm-none">Espandi</span>
                   <span className="d-none d-sm-inline">Tutti i rilevamenti</span>

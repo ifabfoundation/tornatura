@@ -280,6 +280,7 @@ class OrganizationServices:
         :rtype: Organization
         """
         data = payload.model_dump()
+        data.pop("questionnaire", None)
         current_time = int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp() * 1000)
         org_id = self._create_keycloak_organization(payload.name)
 

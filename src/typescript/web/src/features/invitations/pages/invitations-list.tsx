@@ -101,7 +101,7 @@ export function InvitationsList() {
   }, [dispatch, companyId]);
 
   const handleSendInvitation = () => {
-    navigate(`/companies/${companyId}/send-invitation`);
+    navigate(`/m/companies/${companyId}/send-invitation`);
   };
 
   const handleCancelClick = (invitation: Invitation) => {

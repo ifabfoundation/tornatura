@@ -65,7 +65,7 @@ export const fetchMyInvitations = createAsyncThunk(
 
 /**
  * Create a new invitation
- * The orgId is taken from the payload - can be omitted/null for agronomist inviting non-existent company owner
+ * The orgId is required and must point to an existing organization.
  */
 export const sendInvitation = createAsyncThunk(
   "invitations/sendInvitation",
@@ -73,13 +73,7 @@ export const sendInvitation = createAsyncThunk(
     const apiConfig = await getCoreApiConfiguration();
     const invitationsApi = new InvitationsApi(apiConfig);
     try {
-      // Clean payload: remove undefined values to ensure proper JSON serialization
-      const cleanPayload = {
-        email: body.email,
-        role: body.role,
-        ...(body.orgId !== undefined && { orgId: body.orgId })
-      };
-      const response = await invitationsApi.createInvitation(cleanPayload as InvitationCreatePayload);
+      const response = await invitationsApi.createInvitation(body);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || error.message);

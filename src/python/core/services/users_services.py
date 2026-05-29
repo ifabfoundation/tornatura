@@ -27,6 +27,9 @@ class ClientRole(Enum):
     CompanyStandard = "company-standard-access"
 
 
+ACCOUNT_CLIENT_ROLES = {role.value for role in ClientRole}
+
+
 def get_keycloak_admin():
     keycloak_admin = KeycloakAdmin(
         server_url=config.APIConfig.KEYCLOAK_ENDPOINT,
@@ -89,8 +92,9 @@ class UserServices:
     @classmethod
     def _get_user_account_type(cls, user_id: str) -> str:
         keycloak_admin = get_keycloak_admin()
-        roles = keycloak_admin.get_all_roles_of_user(user_id)
-        rolenames = [role["name"] for role in roles['clientMappings'][config.APIConfig.KEYCLOAK_CLIENT_ID]["mappings"]]
+        client = cls._get_client()
+        client_roles = cls._get_user_client_roles(keycloak_admin, user_id, client["id"])
+        rolenames = [role["name"] for role in client_roles]
 
         if ClientRole.Admin.value in rolenames:
             return AccountTypeEnum.admin
@@ -145,10 +149,36 @@ class UserServices:
             return []
         
     @classmethod
+    def _get_user_client_roles(cls, keycloak_admin: KeycloakAdmin, user_id: str, client_id: str) -> list[dict]:
+        roles = keycloak_admin.get_all_roles_of_user(user_id)
+        return roles.get("clientMappings", {}).get(
+            config.APIConfig.KEYCLOAK_CLIENT_ID,
+            {},
+        ).get("mappings", [])
+
+    @classmethod
     def assign_role(cls, user_id: str, rolename: ClientRole) -> str:
         keycloak_admin = get_keycloak_admin()
         client = cls._get_client()
         client_id = client["id"]
+        assigned_roles = cls._get_user_client_roles(keycloak_admin, user_id, client_id)
+        roles_to_remove = [
+            role
+            for role in assigned_roles
+            if role["name"] in ACCOUNT_CLIENT_ROLES and role["name"] != rolename.value
+        ]
+
+        if roles_to_remove:
+            keycloak_admin.delete_client_roles_of_user(
+                user_id=user_id,
+                client_id=client_id,
+                roles=roles_to_remove,
+            )
+
+        if any(role["name"] == rolename.value for role in assigned_roles):
+            print(f"Role {rolename.value} already assigned to user {user_id}")
+            return
+
         role = keycloak_admin.get_client_role(client_id, rolename.value)
         response = keycloak_admin.assign_client_role(
             user_id=user_id,
@@ -224,7 +254,6 @@ class UserServices:
         data.pop("accountType")
         data.pop("phone")
         data.pop("organization")
-        data.pop("questionnaire")
         piva = data.pop("piva")
         piva = piva if piva is not None else ""
         data.update({

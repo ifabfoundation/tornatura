@@ -4,11 +4,9 @@ import { companiesSelectors } from "../state/companies-slice";
 import React from "react";
 import { headerbarActions } from "../../headerbar/state/headerbar-slice";
 import { useNavigate } from "react-router-dom";
-import { MenuItemEntry } from "../../../components/Sidebar";
-import { SidebarActions } from "../../sidebar/state/sidebar-slice";
+import Icon from "../../../components/Icon";
 import { userSelectors } from "../../users/state/user-slice";
 import { AccountTypeEnum } from "@tornatura/coreapis";
-import Icon from "../../../components/Icon";
 
 export function CompaniesList() {
   const dispatch = useAppDispatch();
@@ -20,51 +18,8 @@ export function CompaniesList() {
     dispatch(headerbarActions.setTitle({ title: "Aziende gestite", subtitle: "Subtitle" }));
   }, []);
 
-  React.useEffect(() => {
-    let menuEntries: MenuItemEntry[] = [];
-    let menuBottomEntries: MenuItemEntry[] = [];
-
-    menuEntries = [
-      {
-        id: "companies",
-        // icon: "grid",
-        icon: "barn",
-        text: "Aziende gestite",
-        path: "/companies",
-        type: "single",
-        familyItems: [],
-      },
-    ];
-
-    menuBottomEntries = [
-      {
-        id: "feedback",
-        icon: "baloon",
-        text: "Invia Feedback",
-        path: "/new-feedback",
-        type: "single",
-        familyItems: [],
-      },
-      // {
-      //   id: "my-invitations",
-      //   icon: "grid",
-      //   text: "I miei inviti",
-      //   path: "/invitations/me",
-      // },
-      // {
-      //   id: "user",
-      //   icon: "users",
-      //   text: "Profilo Utente fcl",
-      //   path: "/profile",
-      // },
-    ];
-
-    dispatch(SidebarActions.setMenuEntriesAction(menuEntries));
-    dispatch(SidebarActions.setMenuBottomEntriesAction(menuBottomEntries));
-  }, []);
-
   const handleCompanyClick = (companyId: string) => {
-    navigate(`/companies/${companyId}/fields`);
+    navigate(`/m/companies/${companyId}/fields`);
   };
 
   return (
@@ -104,8 +59,8 @@ export function CompaniesList() {
           <Col xs={6} md={4} xxl={3}>
             <Card
               className="add-item with-hover-effect"
-              data-text="Invita un'azienda"
-              onClick={() => navigate("/invitations/invite-company-owner")}
+              data-text="Crea azienda"
+              onClick={() => navigate("/m/companies/new")}
             ></Card>
           </Col>
         )}

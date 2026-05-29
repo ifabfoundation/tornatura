@@ -10,6 +10,7 @@ import { getCoreApiConfiguration } from "../../../services/utils";
 import { userSelectors } from "../../users/state/user-slice";
 
 const MANAGE_MEMBERS_ROLE = "manage-members";
+const MANAGE_INVITATIONS_ROLE = "manage-invitations";
 const MANAGE_ORGANIZATION_ROLE = "manage-organization";
 const COMPANY_OWNER_ROLE = "company-owner";
 const COMPANY_MANAGER_ROLE = "company-manager";
@@ -48,7 +49,10 @@ export function CompanyMembers() {
     currentUser.accountType === AccountTypeEnum.Admin ||
     (currentUser.organizations ?? []).some(
       (organization) =>
-        organization.id === companyId && organization.roles.includes(MANAGE_MEMBERS_ROLE),
+        organization.id === companyId &&
+        (organization.roles.includes(MANAGE_MEMBERS_ROLE) ||
+          (currentUser.accountType === AccountTypeEnum.Agronomist &&
+            organization.roles.includes(MANAGE_INVITATIONS_ROLE))),
     );
 
   const loadMembers = React.useCallback(async () => {

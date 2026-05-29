@@ -36,11 +36,11 @@ function CompanySelector() {
 
   const handleCompanyChange = async (id: string) => {
     setOpen(false);
-    navigate(`/companies/${id}/fields`, { replace: true });
+    navigate(`/m/companies/${id}/fields`, { replace: true });
   };
 
   const handeleBackClick = async () => {
-    navigate(`/companies`, { replace: true });
+    navigate(`/m/companies`, { replace: true });
   };
 
   React.useEffect(() => {
@@ -108,11 +108,11 @@ function FieldSelector() {
 
   const handleFieldChange = async (id: string) => {
     setOpen(false);
-    navigate(`/companies/${companyId}/fields/${id}`, { replace: true });
+    navigate(`/m/companies/${companyId}/fields/${id}`, { replace: true });
   };
 
   const handeleBackClick = async () => {
-    navigate(`/companies/${companyId}/fields`, { replace: true });
+    navigate(`/m/companies/${companyId}/fields`, { replace: true });
   };
 
   React.useEffect(() => {
@@ -228,8 +228,8 @@ export default function SideBar() {
         <div className="hamburger-col"></div>
         <div className="level-1">
           <div>
-            {location.pathname.startsWith('/companies') && params?.companyId && <CompanySelector />}
-            {location.pathname.startsWith('/companies') && params?.fieldId && <FieldSelector />}
+            {location.pathname.startsWith('/m/companies') && params?.companyId && <CompanySelector />}
+            {location.pathname.startsWith('/m/companies') && params?.fieldId && <FieldSelector />}
             <ul className="menu-items">
               {menuEntries.map((item, i) => {
                 const state = currentEntry === item.id ? "selected" : "normal";

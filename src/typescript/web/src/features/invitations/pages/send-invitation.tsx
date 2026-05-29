@@ -4,11 +4,10 @@ import * as Yup from "yup";
 import { useNavigate, useParams } from "react-router-dom";
 import { Alert, Container, Row, Col } from "react-bootstrap";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { useAppDispatch, useAppSelector } from "../../../hooks";
+import { useAppDispatch } from "../../../hooks";
 import { invitationsActions } from "../state/invitations-slice";
-import { AccountTypeEnum, InvitationCreatePayload } from "@tornatura/coreapis";
+import { InvitationCreatePayload } from "@tornatura/coreapis";
 import { headerbarActions } from "../../headerbar/state/headerbar-slice";
-import { userSelectors } from "../../users/state/user-slice";
 
 // Email validation regex
 const EmailRegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -32,23 +31,9 @@ const ROLE_OPTIONS = [
   },
 ];
 
-const AGRONOMIST_ROLE_OPTIONS = [
-  {
-    value: "company-standard-access",
-    label: "Collaboratore",
-    description: "Visualizzazione e modifica limitata",
-  },
-  {
-    value: "agronomist-access",
-    label: "Agronomo",
-    description: "Accesso per agronomo consulente",
-  },
-];
-
 export function SendInvitation() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const currentUser = useAppSelector(userSelectors.selectCurrentUser);
   const { companyId } = useParams<{ companyId: string }>();
   const [message, setMessage] = React.useState<string>();
   const [hasError, setHasError] = React.useState<boolean>(false);
@@ -90,7 +75,7 @@ export function SendInvitation() {
           setSubmitting(false);
           // Navigate back to invitations list after 2 seconds
           setTimeout(() => {
-            navigate(`/companies/${companyId}/invitations`);
+            navigate(`/m/companies/${companyId}/invitations`);
           }, 2000);
         })
         .catch((error) => {
@@ -106,11 +91,8 @@ export function SendInvitation() {
   }, []);
 
   const handleCancel = () => {
-    navigate(`/companies/${companyId}/invitations`);
+    navigate(`/m/companies/${companyId}/invitations`);
   };
-
-  const roles =
-    currentUser.accountType === AccountTypeEnum.Agronomist ? AGRONOMIST_ROLE_OPTIONS : ROLE_OPTIONS;
 
   return (
     <Fragment>
@@ -173,7 +155,7 @@ export function SendInvitation() {
                       value={formik.values.role}
                     >
                       <option value="">Seleziona un ruolo</option>
-                      {roles.map((role) => (
+                      {ROLE_OPTIONS.map((role) => (
                         <option key={role.value} value={role.value}>
                           {role.label} - {role.description}
                         </option>

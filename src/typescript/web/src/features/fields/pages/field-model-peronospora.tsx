@@ -294,7 +294,7 @@ export function FieldModelPeronospora() {
                       />
                       {/* <button
                         className="trnt_btn slim-y narrow-x secondary type-rounded position-absolute top-0 end-0 m-3 bg-white"
-                        onClick={() => navigate(`/companies/${companyId}/fields/${fieldId}/map`)}
+                        onClick={() => navigate(`/m/companies/${companyId}/fields/${fieldId}/map`)}
                       >
                         <Icon iconName={"fullscreen"} color={"black"} />
                       </button> */}

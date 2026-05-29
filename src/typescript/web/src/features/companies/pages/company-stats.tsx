@@ -148,7 +148,7 @@ export function CompanyStats() {
       type: "button",
       style: "secondary",
       buttonText: "Apri campo",
-      onButtonClick: (row) => navigate(`/companies/${companyId}/fields/${row.id}`),
+      onButtonClick: (row) => navigate(`/m/companies/${companyId}/fields/${row.id}`),
     },
   ];
 

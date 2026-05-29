@@ -19,21 +19,15 @@ export function CompanyDetail() {
           id: "fields",
           icon: "sprout",
           text: "Campi",
-          path: `/companies/${companyId}/fields`,
+          path: `/m/companies/${companyId}/fields`,
           type: 'single',
         familyItems: []
         },
-        // {
-        //   id: "detections",
-        //   icon: "checklist",
-        //   text: "Lista dei rilevamenti",
-        //   path: `/companies/${companyId}/detections`,
-        // },
         {
           id: "members",
           icon: "user",
           text: "Membri",
-          path: `/companies/${companyId}/members`,
+          path: `/m/companies/${companyId}/members`,
           type: 'single',
           familyItems: []
         },
@@ -41,7 +35,7 @@ export function CompanyDetail() {
           id: "stats",
           icon: "dashboard",
           text: "Statistiche",
-          path: `/companies/${companyId}/stats`,
+          path: `/m/companies/${companyId}/stats`,
           type: 'single',
           familyItems: []
         },
@@ -49,7 +43,7 @@ export function CompanyDetail() {
           id: "invitations",
           icon: "baloon",
           text: "Gestione inviti azienda",
-          path: `/companies/${companyId}/invitations`,
+          path: `/m/companies/${companyId}/invitations`,
           type: 'single',
           familyItems: []
         },
@@ -59,7 +53,7 @@ export function CompanyDetail() {
           id: "settings",
           icon: "cog",
           text: "Impostazioni Azienda",
-          path: `/companies/${companyId}/settings`,
+          path: `/m/companies/${companyId}/settings`,
           type: 'single',
           familyItems: []
         },
@@ -67,22 +61,10 @@ export function CompanyDetail() {
           id: "feedback",
           icon: "baloon",
           text: "Invia Feedback",
-          path: `/companies/${companyId}/new-feedback`,
+          path: `/m/companies/${companyId}/new-feedback`,
           type: 'single',
           familyItems: []
-        },
-        // {
-        //   id: "my-invitations",
-        //   icon: "grid",
-        //   text: "I miei inviti",
-        //   path: `/companies/${companyId}/invitations/me`,
-        // },
-        // {
-        //   id: "user",
-        //   icon: "users",
-        //   text: "Profilo Utente fcj",
-        //   path: `/companies/${companyId}/profile`,
-        // },
+        }
       ];
       dispatch(SidebarActions.setMenuEntriesAction(menuEntries));
       dispatch(SidebarActions.setMenuBottomEntriesAction(menuBottomEntries));

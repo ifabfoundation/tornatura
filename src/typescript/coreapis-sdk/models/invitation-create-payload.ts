@@ -36,5 +36,5 @@ export interface InvitationCreatePayload {
      * @type {string}
      * @memberof InvitationCreatePayload
      */
-    orgId?: string | null;
+    orgId: string;
 }

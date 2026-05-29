@@ -4,7 +4,6 @@ import { Alert, Container } from "react-bootstrap";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { invitationsActions, invitationsSelectors } from "../state/invitations-slice";
-import { userSelectors } from "../../users/state/user-slice";
 import keycloakInstance from "../../../providers/keycloak";
 import TopHeader from "../../../components/TopHeader";
 import { authStore } from "../../../providers/auth-providers";
@@ -45,7 +44,6 @@ export function InvitationAccept() {
 
   const validationStatus = useAppSelector(invitationsSelectors.selectValidationStatus);
   const validatedInvitation = useAppSelector(invitationsSelectors.selectValidatedInvitation);
-  const currentUser = useAppSelector(userSelectors.selectCurrentUser);
 
   const [message, setMessage] = React.useState<string>();
   const [hasError, setHasError] = React.useState<boolean>(false);
@@ -82,7 +80,7 @@ export function InvitationAccept() {
       pending_invitation_token: token,
     };
     sessionStorage.setItem("pending_invitation_token", JSON.stringify(session));
-    navigate("/signup");
+    navigate("/pub/signup");
   };
 
   const handleAccept = async () => {
@@ -95,21 +93,9 @@ export function InvitationAccept() {
     setIsProcessing(true);
     setIsConfirmationStep(true);
 
-    // Check if this is a company owner invitation and user needs to select org
-    const isCompanyOwnerInvitation =
-      validatedInvitation?.invitation?.role === "company-owner-access";
-    const userOrganizations = currentUser?.organizations || [];
-
-    // Prepare payload
-    const orgId =
-      isCompanyOwnerInvitation && userOrganizations.length > 0
-        ? userOrganizations[0].id
-        : validatedInvitation?.invitation?.organization?.orgId;
-
     dispatch(
       invitationsActions.acceptInvitationAction({
         token,
-        orgId,
       }),
     )
       .then(unwrapResult)
@@ -230,9 +216,7 @@ export function InvitationAccept() {
                         a far parte dell'organizzazione{" "}
                         <strong>{invitation.organization.name}</strong>
                       </span>
-                    ) : (
-                      <span>creare un account su Tornatura</span>
-                    )}{" "}
+                    ) : null}{" "}
                     come <strong>{translateRole(invitation?.role || "")}</strong>.
                   </p>
 

@@ -111,7 +111,7 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
       <button
         className={"trnt_btn accent type-rounded" + (className ? " " + className : "")}
         onClick={() =>
-          navigate(`/companies/${companyId}/fields/${fieldId}/new-detection`, {
+          navigate(`/m/companies/${companyId}/fields/${fieldId}/new-detection`, {
             state: { typeId: typeId },
           })
         }
@@ -128,7 +128,7 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
       <button
         className={"trnt_btn primary ps-lg-4 type-rounded" + (className ? " " + className : "")}
         onClick={() =>
-          navigate(`/companies/${companyId}/fields/${fieldId}/type/${detectionType.id}`, {
+          navigate(`/m/companies/${companyId}/fields/${fieldId}/type/${detectionType.id}`, {
             state: { typeId: typeId },
           })
         }
@@ -148,8 +148,8 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
           <a
             className="font-l-600 color-black no-u pointer d-inline-block me-4 mb-2"
             onClick={() =>
-              navigate(`/companies/${companyId}/fields/${fieldId}/type/${detectionType.id}`, {
-                // navigate(`/companies/${companyId}/fields/${fieldId}/new-detection`, {
+              navigate(`/m/companies/${companyId}/fields/${fieldId}/type/${detectionType.id}`, {
+                // navigate(`/m/companies/${companyId}/fields/${fieldId}/new-detection`, {
                 state: { typeId: typeId },
               })
             }
@@ -165,8 +165,8 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
             style={{ marginLeft: "-5px" }}
             // data-type="rounded"
             onClick={() =>
-              navigate(`/companies/${companyId}/fields/${fieldId}/type/${detectionType.id}`, {
-                // navigate(`/companies/${companyId}/fields/${fieldId}/new-detection`, {
+              navigate(`/m/companies/${companyId}/fields/${fieldId}/type/${detectionType.id}`, {
+                // navigate(`/m/companies/${companyId}/fields/${fieldId}/new-detection`, {
                 state: { typeId: typeId },
               })
             }

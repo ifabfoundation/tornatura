@@ -29,7 +29,7 @@ import { StatusResponse } from '../models';
 export const InvitationsApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
-         * Accept an invitation (user must be authenticated) Adds user to organization and assigns role  Special case: When a company owner accepts an invitation from an agronomist, they may need to provide orgId if they already have an organization. If they don't have an organization yet, they need to create one first.
+         * Accept an invitation (user must be authenticated) Adds user to organization and assigns role
          * @summary Accept Invitation
          * @param {InvitationAcceptPayload} body 
          * @param {*} [options] Override http request option.
@@ -81,7 +81,7 @@ export const InvitationsApiAxiosParamCreator = function (configuration?: Configu
             };
         },
         /**
-         * Create a new invitation  Two scenarios: 1. Standard invitation: orgId provided in payload, invitee joins that org 2. Agronomist → New Company Owner: orgId is null in payload, company owner creates org later  Permissions: - Company Owner can invite managers/standard/agronomists - Agronomist can invite company owners - Company Manager can invite standard users
+         * Create a new invitation. The payload must include orgId and the invitee joins that existing organization.  Permissions: - Company Owner can invite managers/standard/agronomists - Agronomist can invite users into an existing managed organization - Company Manager can invite standard users
          * @summary Create Invitation
          * @param {InvitationCreatePayload} body 
          * @param {*} [options] Override http request option.
@@ -426,7 +426,7 @@ export const InvitationsApiAxiosParamCreator = function (configuration?: Configu
 export const InvitationsApiFp = function(configuration?: Configuration) {
     return {
         /**
-         * Accept an invitation (user must be authenticated) Adds user to organization and assigns role  Special case: When a company owner accepts an invitation from an agronomist, they may need to provide orgId if they already have an organization. If they don't have an organization yet, they need to create one first.
+         * Accept an invitation (user must be authenticated) Adds user to organization and assigns role
          * @summary Accept Invitation
          * @param {InvitationAcceptPayload} body 
          * @param {*} [options] Override http request option.
@@ -440,7 +440,7 @@ export const InvitationsApiFp = function(configuration?: Configuration) {
             };
         },
         /**
-         * Create a new invitation  Two scenarios: 1. Standard invitation: orgId provided in payload, invitee joins that org 2. Agronomist → New Company Owner: orgId is null in payload, company owner creates org later  Permissions: - Company Owner can invite managers/standard/agronomists - Agronomist can invite company owners - Company Manager can invite standard users
+         * Create a new invitation. The payload must include orgId and the invitee joins that existing organization.  Permissions: - Company Owner can invite managers/standard/agronomists - Agronomist can invite users into an existing managed organization - Company Manager can invite standard users
          * @summary Create Invitation
          * @param {InvitationCreatePayload} body 
          * @param {*} [options] Override http request option.
@@ -547,7 +547,7 @@ export const InvitationsApiFp = function(configuration?: Configuration) {
 export const InvitationsApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
     return {
         /**
-         * Accept an invitation (user must be authenticated) Adds user to organization and assigns role  Special case: When a company owner accepts an invitation from an agronomist, they may need to provide orgId if they already have an organization. If they don't have an organization yet, they need to create one first.
+         * Accept an invitation (user must be authenticated) Adds user to organization and assigns role
          * @summary Accept Invitation
          * @param {InvitationAcceptPayload} body 
          * @param {*} [options] Override http request option.
@@ -557,7 +557,7 @@ export const InvitationsApiFactory = function (configuration?: Configuration, ba
             return InvitationsApiFp(configuration).acceptInvitation(body, options).then((request) => request(axios, basePath));
         },
         /**
-         * Create a new invitation  Two scenarios: 1. Standard invitation: orgId provided in payload, invitee joins that org 2. Agronomist → New Company Owner: orgId is null in payload, company owner creates org later  Permissions: - Company Owner can invite managers/standard/agronomists - Agronomist can invite company owners - Company Manager can invite standard users
+         * Create a new invitation. The payload must include orgId and the invitee joins that existing organization.  Permissions: - Company Owner can invite managers/standard/agronomists - Agronomist can invite users into an existing managed organization - Company Manager can invite standard users
          * @summary Create Invitation
          * @param {InvitationCreatePayload} body 
          * @param {*} [options] Override http request option.
@@ -637,7 +637,7 @@ export const InvitationsApiFactory = function (configuration?: Configuration, ba
  */
 export class InvitationsApi extends BaseAPI {
     /**
-     * Accept an invitation (user must be authenticated) Adds user to organization and assigns role  Special case: When a company owner accepts an invitation from an agronomist, they may need to provide orgId if they already have an organization. If they don't have an organization yet, they need to create one first.
+     * Accept an invitation (user must be authenticated) Adds user to organization and assigns role
      * @summary Accept Invitation
      * @param {InvitationAcceptPayload} body 
      * @param {*} [options] Override http request option.
@@ -648,7 +648,7 @@ export class InvitationsApi extends BaseAPI {
         return InvitationsApiFp(this.configuration).acceptInvitation(body, options).then((request) => request(this.axios, this.basePath));
     }
     /**
-     * Create a new invitation  Two scenarios: 1. Standard invitation: orgId provided in payload, invitee joins that org 2. Agronomist → New Company Owner: orgId is null in payload, company owner creates org later  Permissions: - Company Owner can invite managers/standard/agronomists - Agronomist can invite company owners - Company Manager can invite standard users
+     * Create a new invitation. The payload must include orgId and the invitee joins that existing organization.  Permissions: - Company Owner can invite managers/standard/agronomists - Agronomist can invite users into an existing managed organization - Company Manager can invite standard users
      * @summary Create Invitation
      * @param {InvitationCreatePayload} body 
      * @param {*} [options] Override http request option.
