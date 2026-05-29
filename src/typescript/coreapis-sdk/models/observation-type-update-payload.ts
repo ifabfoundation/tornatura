@@ -79,4 +79,10 @@ export interface ObservationTypeUpdatePayload {
      * @memberof ObservationTypeUpdatePayload
      */
     counters?: Array<string> | null;
+
+    /**
+     * @type {Array<string>}
+     * @memberof ObservationTypeUpdatePayload
+     */
+    supportedHarvestCodes?: Array<string> | null;
 }

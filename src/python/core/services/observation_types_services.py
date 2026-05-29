@@ -3,6 +3,10 @@ from fastapi import HTTPException, status
 
 from core.decorators import catch_api_exception
 from core.models import ObservationType
+from core.services.harvest_types_services import (
+    get_harvest_type_or_400,
+    validate_supported_harvest_codes,
+)
 from core.serializers import ObservationType as ObservationTypeSerializer
 from core.serializers import ObservationTypeCreatePayload, ObservationTypeUpdatePayload
 
@@ -26,6 +30,7 @@ class ObservationTypeServices:
                 rangeMax=item.rangeMax,
                 rangeLabels=item.rangeLabels,
                 counters=item.counters,
+                supportedHarvestCodes=item.supportedHarvestCodes,
                 creationTime=item.creationTime,
             )
 
@@ -34,9 +39,13 @@ class ObservationTypeServices:
         return _create_instance(obj)
 
     @catch_api_exception
-    def list(self):
+    def list(self, harvest: str | None = None):
         """List observation types."""
-        types = self.model.objects()
+        query = {}
+        if harvest is not None:
+            harvest_type = get_harvest_type_or_400(harvest)
+            query["supportedHarvestCodes"] = harvest_type.code
+        types = self.model.objects(**query)
         return self._serialize(types, many=True)
 
     @catch_api_exception
@@ -58,6 +67,9 @@ class ObservationTypeServices:
         data.update({
             "creationTime": current_time,
         })
+        data["supportedHarvestCodes"] = validate_supported_harvest_codes(
+            data.get("supportedHarvestCodes", [])
+        )
         observation_type = self.model(**data).save()
         return self._serialize(observation_type)
 
@@ -91,6 +103,10 @@ class ObservationTypeServices:
             observation_type.rangeLabels = payload.rangeLabels
         if payload.counters is not None:
             observation_type.counters = payload.counters
+        if payload.supportedHarvestCodes is not None:
+            observation_type.supportedHarvestCodes = validate_supported_harvest_codes(
+                payload.supportedHarvestCodes
+            )
 
         observation_type.save()
         return self._serialize(observation_type)

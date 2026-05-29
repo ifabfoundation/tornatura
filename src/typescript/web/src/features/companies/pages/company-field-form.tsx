@@ -9,6 +9,7 @@ import { AgriFieldMutationPayload, Point } from "@tornatura/coreapis";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { companiesSelectors } from "../state/companies-slice";
+import { harvestTypesSelectors } from "../../harvest-types/state/harvest-types-slice";
 import { headerbarActions } from "../../headerbar/state/headerbar-slice";
 import { fieldsActions } from "../../fields/state/fields-slice";
 import * as turf from "@turf/turf";
@@ -32,6 +33,7 @@ const calcArea = (points: Point[]) => {
 };
 
 export function FieldFormInfo({ formData, action, onNextClick, onBackClick }: FieldProps) {
+  const harvestTypes = useAppSelector(harvestTypesSelectors.selectActiveHarvestTypes);
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -94,13 +96,6 @@ export function FieldFormInfo({ formData, action, onNextClick, onBackClick }: Fi
     });
   }, [formData]);
 
-  const form_options_coltura = {
-    vite: "Vite",
-    pero: "Pero",
-    pesco: "Pesco",
-    mais: "Mais",
-    barbabietola: "Barbabietola",
-  };
   const form_options_rotazione = {
     si: "Sì",
     no: "No",
@@ -173,9 +168,9 @@ export function FieldFormInfo({ formData, action, onNextClick, onBackClick }: Fi
                   <option value="" disabled>
                     Scegli la coltura
                   </option>
-                  {Object.entries(form_options_coltura).map(([key, label]) => (
-                    <option key={key} value={key}>
-                      {label}
+                  {harvestTypes.map((item) => (
+                    <option key={item.id} value={item.code}>
+                      {item.label}
                     </option>
                   ))}
                 </select>

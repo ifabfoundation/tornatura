@@ -87,6 +87,12 @@ export interface ObservationType {
     counters?: Array<string>;
 
     /**
+     * @type {Array<string>}
+     * @memberof ObservationType
+     */
+    supportedHarvestCodes?: Array<string>;
+
+    /**
      * @type {number}
      * @memberof ObservationType
      */

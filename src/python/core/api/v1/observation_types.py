@@ -27,9 +27,10 @@ async def list_observation_types(
     token_info: Annotated[dict, Depends(SecurityChecker(IsAuthenticated))],
     page: int = Query(1, ge=1, description="Page number"),
     limit: int = Query(25, ge=1, le=1000, description="Items per page"),
+    harvest: str | None = Query(None, description="Filter by harvest code"),
 ) -> PaginatedResponse:
     observation_type_services = ObservationTypeServices()
-    data = observation_type_services.list()
+    data = observation_type_services.list(harvest=harvest)
     total_count = len(data)
     data = paginate(data, page, limit)
     return PaginatedResponse(data=data, total=total_count, page=page, limit=limit)

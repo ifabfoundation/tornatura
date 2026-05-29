@@ -79,4 +79,10 @@ export interface ObservationTypeCreatePayload {
      * @memberof ObservationTypeCreatePayload
      */
     counters?: Array<string>;
+
+    /**
+     * @type {Array<string>}
+     * @memberof ObservationTypeCreatePayload
+     */
+    supportedHarvestCodes?: Array<string>;
 }

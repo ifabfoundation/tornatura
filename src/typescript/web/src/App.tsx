@@ -17,6 +17,7 @@ import { feedbacksActions } from "./features/feedbacks/state/feedbacks-slice";
 import { SidebarActions } from "./features/sidebar/state/sidebar-slice";
 import Loading from "./components/Loading";
 import { invitationsActions } from "./features/invitations/state/invitations-slice";
+import { harvestTypesActions } from "./features/harvest-types/state/harvest-types-slice";
 import { observationTypesActions } from "./features/observation-types/state/observation-types-slice";
 import ReactGA from "react-ga4";
 import { getBrowsingOrigin } from "./helpers/common";
@@ -119,9 +120,10 @@ function App() {
   const dispatch = useAppDispatch();
 
   const loadData = async () => {
-    const profile = await getUserInfo();
+      const profile = await getUserInfo();
     if (profile) {
       await dispatch(userActions.setCurrentUserAction(profile));
+      await dispatch(harvestTypesActions.fetchHarvestTypesAction({ includeInactive: true }));
       await dispatch(observationTypesActions.fetchObservationTypesAction({page: 1, limit: 1000}));
       const session = sessionStorage.getItem("pending_invitation_token");
       let invitationToken = undefined;
@@ -147,6 +149,7 @@ function App() {
         profile.accountType === AccountTypeEnum.Standard
       ) {
         await dispatch(invitationsActions.fetchMyInvitationsAction());
+        await dispatch(harvestTypesActions.fetchHarvestTypesAction({ includeInactive: true }));
         await dispatch(observationTypesActions.fetchObservationTypesAction({}))
         if (profile.organizations) {
           for (let org of profile.organizations) {

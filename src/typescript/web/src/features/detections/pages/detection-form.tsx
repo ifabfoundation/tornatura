@@ -48,8 +48,8 @@ import Stepper from "../../../components/Stepper";
 import { useIsMobile } from "../../../helpers/common";
 // import { getRangePointColor } from "../../../helpers/detections";
 import { enrichedMapPoints } from "../../../helpers/detections";
-import keycloakInstance from "../../../providers/keycloak";
 import { Infopanel } from "../../../components/Infopanel";
+import keycloakInstance from "../../../providers/keycloak";
 
 const markerOptions = { color: "#EAFF00" };
 
@@ -1384,9 +1384,24 @@ function DetectionStepBbch({ field, onNextClick }: DetectionProps & { field: Agr
     await onNextClick({ bbch: value });
   };
 
+  const harvestBbch = bbchs[field.harvest];
+  if (!harvestBbch) {
+    return (
+      <div className="narrow-container my-5">
+        <h3 className="mb-4 pb-2 text-center">
+          <strong>Coltura non ancora supportata</strong>
+        </h3>
+        <div className="form-section">
+          Il campo usa la coltura legacy `{field.harvest}`. I nuovi flussi BBCH non sono ancora
+          disponibili per questa coltura.
+        </div>
+      </div>
+    );
+  }
+
   let items: AccordionItem[] = [];
-  const options = bbchs[field.harvest].data;
-  const thumbnailBaseUrl = bbchs[field.harvest].baseUrl;
+  const options = harvestBbch.data;
+  const thumbnailBaseUrl = harvestBbch.baseUrl;
 
   // console.log("XXXX options", options);
   // console.log("XXXX thumbnailBaseUrl", thumbnailBaseUrl);
@@ -2608,7 +2623,10 @@ export function DetectionForm() {
     detectionTypesSelectors.selectDetectionTypesByField(state, fieldId ?? "default"),
   );
   const observationTypes = useAppSelector((state) =>
-    observationTypesSelectors.selectObservationTypes(state),
+    observationTypesSelectors.selectObservationTypesForHarvest(
+      state,
+      currentField?.harvest,
+    ),
   );
   const activeEntry = entryDrafts[activeEntryIndex];
   const activeEntryDetectionType = detectionTypes.find(
@@ -2765,13 +2783,13 @@ export function DetectionForm() {
     return Array.from(new Set(values));
   }, [observationTypes, selectedTypology]);
 
-  const observationType = useAppSelector((state) =>
-    observationTypesSelectors.selectObservationTypesByTypologyAndMethod(
-      state,
-      selectedTypology,
-      selectedMethod,
-    ),
-  )[0];
+  const observationType = React.useMemo(
+    () =>
+      observationTypes.find(
+        (item) => item.typology === selectedTypology && item.method === selectedMethod,
+      ),
+    [observationTypes, selectedMethod, selectedTypology],
+  );
 
   React.useEffect(() => {
     if (isMultiFlow) {

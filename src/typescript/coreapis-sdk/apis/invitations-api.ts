@@ -17,7 +17,6 @@ import { Configuration } from '../configuration';
 // Some imports not used depending on template conditions
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS, RequestArgs, BaseAPI, RequiredError } from '../base';
-import { ErrorResponse } from '../models';
 import { Invitation } from '../models';
 import { InvitationAcceptPayload } from '../models';
 import { InvitationCreatePayload } from '../models';

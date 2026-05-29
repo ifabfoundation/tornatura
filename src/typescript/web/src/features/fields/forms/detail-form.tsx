@@ -3,8 +3,9 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { AgriField, AgriFieldMutationPayload, Point } from "@tornatura/coreapis";
 import { useNavigate } from "react-router-dom";
-import { useAppDispatch } from "../../../hooks";
+import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { fieldsActions } from "../../fields/state/fields-slice";
+import { harvestTypesSelectors } from "../../harvest-types/state/harvest-types-slice";
 import * as turf from "@turf/turf";
 import { ModalConfirm } from "../../../components/ModalConfirm";
 
@@ -24,6 +25,7 @@ interface FieldDetailProps {
 export function FieldDetailForm({ field }: FieldDetailProps) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const harvestTypes = useAppSelector(harvestTypesSelectors.selectHarvestTypes);
 
   const [modalOpen, setModalOpen] = React.useState(false);
   const [modal, setModal] = React.useState<any>({});
@@ -109,13 +111,9 @@ export function FieldDetailForm({ field }: FieldDetailProps) {
     });
   }, [field]);
 
-  const form_options_coltura = {
-    vite: "Vite",
-    pero: "Pero",
-    pesco: "Pesco",
-    mais: "Mais",
-    barbabietola: "Barbabietola",
-  };
+  const harvestOptions = harvestTypes.filter(
+    (item) => item.active !== false || item.code === field.harvest,
+  );
   const form_options_rotazione = {
     si: "Sì",
     no: "No",
@@ -210,9 +208,9 @@ export function FieldDetailForm({ field }: FieldDetailProps) {
                     <option value="" disabled>
                       Scegli la coltura
                     </option>
-                    {Object.entries(form_options_coltura).map(([key, label]) => (
-                      <option key={key} value={key}>
-                        {label}
+                    {harvestOptions.map((item) => (
+                      <option key={item.id} value={item.code}>
+                        {item.label} {item.active === false ? "(legacy)" : ""}
                       </option>
                     ))}
                   </select>

@@ -201,13 +201,16 @@ export function InvitationsList() {
   ];
 
   const tableData = invitations.map((invitation) => ({
+    id: invitation.id,
     email: invitation.email,
+    roleRaw: invitation.role,
+    statusRaw: invitation.status,
+    creationTimeRaw: invitation.creationTime,
+    expiresAtRaw: invitation.expiresAt,
     role: translateRole(invitation.role),
     status: translateStatus(invitation.status),
     sentDate: formatDate(invitation.creationTime),
     expirationDate: formatDate(invitation.expiresAt),
-    // action1:
-    // action2:
   }));
   // -----------------------------------------------------------
 

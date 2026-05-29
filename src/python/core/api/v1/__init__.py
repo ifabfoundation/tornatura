@@ -7,6 +7,7 @@ from core.api.v1.detection_types import router as detection_types_router
 from core.api.v1.files import router as files_router
 from core.api.v1.feedback import router as feedbacks_router
 from core.api.v1.invitations import router as invitations_router
+from core.api.v1.harvest_types import router as harvest_types_router
 from core.api.v1.observation_types import router as observation_types_router
 from core.api.v1.forms import router as forms_router
 
@@ -42,6 +43,12 @@ router.include_router(
     detection_types_router,
     prefix="/organizations/{org_id}/agrifields/{agrifield_id}/detection-types",
     tags=["DetectionTypes"]
+)
+
+router.include_router(
+    harvest_types_router,
+    prefix="/harvest-types",
+    tags=["HarvestTypes"]
 )
 
 router.include_router(

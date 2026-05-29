@@ -19,7 +19,6 @@ import { Configuration } from '../configuration';
 import { BASE_PATH, COLLECTION_FORMATS, RequestArgs, BaseAPI, RequiredError } from '../base';
 import { AgriField } from '../models';
 import { AgriFieldMutationPayload } from '../models';
-import { ErrorResponse } from '../models';
 import { PaginatedResponse } from '../models';
 import { StatusResponse } from '../models';
 /**

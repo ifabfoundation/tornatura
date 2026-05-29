@@ -23,6 +23,23 @@ class ObservationData(EmbeddedDocument):
     counters = ListField(EmbeddedDocumentField(ObservationCounter), default=[])
 
 
+class HarvestType(Document):
+    """The object Harvest Type stored in the Database"""
+    code = StringField(required=True, unique=True)
+    label = StringField(required=True)
+    active = BooleanField(default=True)
+    sortOrder = IntField(default=0)
+    creationTime = IntField()
+    lastUpdateTime = IntField()
+
+    meta = {
+        'ordering': ['sortOrder', 'label']
+    }
+
+    def __str__(self):
+        return str(self.id)
+
+
 class ObservationPoint(EmbeddedDocument):
     position = EmbeddedDocumentField(Point, required=True)
     data = EmbeddedDocumentField(ObservationData, required=True)
@@ -126,6 +143,7 @@ class ObservationType(Document):
     rangeMax = FloatField(null=True)
     rangeLabels = ListField(StringField(), default=[])
     counters = ListField(StringField(), default=[])
+    supportedHarvestCodes = ListField(StringField(), default=[])
     creationTime = IntField()
 
     meta = {

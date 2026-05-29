@@ -15,17 +15,18 @@ import { AuxState } from "../../../hooks";
 import { RootState } from "../../../store";
 
 
-const observationTypesAdapter = createEntityAdapter<ObservationType, string>({
-  selectId: (observationType: ObservationType) => observationType.id,
-});
-
 type ObservationTypeWithLegacy = ObservationType & {
   bchInstructions?: string;
   observationHint?: string;
   rangeLabels?: string[];
+  supportedHarvestCodes?: string[];
 };
 
-const normalizeObservationType = (item: ObservationType): ObservationType => {
+const observationTypesAdapter = createEntityAdapter<ObservationTypeWithLegacy, string>({
+  selectId: (observationType: ObservationTypeWithLegacy) => observationType.id,
+});
+
+const normalizeObservationType = (item: ObservationType): ObservationTypeWithLegacy => {
   const normalized = { ...item } as ObservationTypeWithLegacy;
   if (!normalized.observationHint) {
     normalized.observationHint = normalized.bchInstructions ?? "";
@@ -33,7 +34,10 @@ const normalizeObservationType = (item: ObservationType): ObservationType => {
   if (!Array.isArray(normalized.rangeLabels)) {
     normalized.rangeLabels = [];
   }
-  return normalized as ObservationType;
+  if (!Array.isArray(normalized.supportedHarvestCodes)) {
+    normalized.supportedHarvestCodes = [];
+  }
+  return normalized;
 };
 
 const initialState = observationTypesAdapter.getInitialState<AuxState>({
@@ -46,11 +50,12 @@ const initialState = observationTypesAdapter.getInitialState<AuxState>({
 interface IFetchObservationTypes {
   page?: number;
   limit?: number;
+  harvest?: string;
 }
 
 export const fetchObservationTypes = createAsyncThunk(
   "observationTypes/fetchObservationTypes",
-  async ({ page = 1, limit = 1000 }: IFetchObservationTypes) => {
+  async ({ page = 1, limit = 1000 }: IFetchObservationTypes = {}) => {
     const apiConfig = await getCoreApiConfiguration();
     const observationTypesApi = new ObservationTypesApi(apiConfig);
     const data = observationTypesApi
@@ -155,6 +160,18 @@ const selectors = observationTypesAdapter.getSelectors<RootState>(
 export const observationTypesSelectors = {
   selectObservationTypes: selectors.selectAll,
   selectObservationTypeById: selectors.selectById,
+  selectObservationTypesForHarvest: createSelector(
+    [
+      selectors.selectAll,
+      (_: RootState, harvest: string | undefined) => harvest,
+    ],
+    (types, harvest) => {
+      if (!harvest) {
+        return types;
+      }
+      return types.filter((item) => (item.supportedHarvestCodes ?? []).includes(harvest));
+    }
+  ),
   selectObservationTypesByTypologyAndMethod: createSelector(
     [
       selectors.selectAll,

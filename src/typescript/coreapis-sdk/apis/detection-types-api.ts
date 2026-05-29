@@ -20,7 +20,6 @@ import { BASE_PATH, COLLECTION_FORMATS, RequestArgs, BaseAPI, RequiredError } fr
 import { DetectionType } from '../models';
 import { DetectionTypeCreatePayload } from '../models';
 import { DetectionTypeUpdatePayload } from '../models';
-import { ErrorResponse } from '../models';
 import { PaginatedResponse } from '../models';
 import { StatusResponse } from '../models';
 /**

@@ -17,7 +17,6 @@ import { Configuration } from '../configuration';
 // Some imports not used depending on template conditions
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS, RequestArgs, BaseAPI, RequiredError } from '../base';
-import { ErrorResponse } from '../models';
 import { ObservationType } from '../models';
 import { ObservationTypeCreatePayload } from '../models';
 import { ObservationTypeUpdatePayload } from '../models';
@@ -187,7 +186,7 @@ export const ObservationTypesApiAxiosParamCreator = function (configuration?: Co
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        listObservationTypes: async (page?: number, limit?: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        listObservationTypes: async (page?: number, limit?: number, harvest?: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/v1/observation-types`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, 'https://example.com');
@@ -214,6 +213,10 @@ export const ObservationTypesApiAxiosParamCreator = function (configuration?: Co
 
             if (limit !== undefined) {
                 localVarQueryParameter['limit'] = limit;
+            }
+
+            if (harvest !== undefined) {
+                localVarQueryParameter['harvest'] = harvest;
             }
 
             const query = new URLSearchParams(localVarUrlObj.search);
@@ -349,8 +352,8 @@ export const ObservationTypesApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async listObservationTypes(page?: number, limit?: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => Promise<AxiosResponse<PaginatedResponse>>> {
-            const localVarAxiosArgs = await ObservationTypesApiAxiosParamCreator(configuration).listObservationTypes(page, limit, options);
+        async listObservationTypes(page?: number, limit?: number, harvest?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => Promise<AxiosResponse<PaginatedResponse>>> {
+            const localVarAxiosArgs = await ObservationTypesApiAxiosParamCreator(configuration).listObservationTypes(page, limit, harvest, options);
             return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
                 const axiosRequestArgs :AxiosRequestConfig = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
                 return axios.request(axiosRequestArgs);
@@ -418,8 +421,8 @@ export const ObservationTypesApiFactory = function (configuration?: Configuratio
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async listObservationTypes(page?: number, limit?: number, options?: AxiosRequestConfig): Promise<AxiosResponse<PaginatedResponse>> {
-            return ObservationTypesApiFp(configuration).listObservationTypes(page, limit, options).then((request) => request(axios, basePath));
+        async listObservationTypes(page?: number, limit?: number, harvest?: string, options?: AxiosRequestConfig): Promise<AxiosResponse<PaginatedResponse>> {
+            return ObservationTypesApiFp(configuration).listObservationTypes(page, limit, harvest, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -484,8 +487,8 @@ export class ObservationTypesApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof ObservationTypesApi
      */
-    public async listObservationTypes(page?: number, limit?: number, options?: AxiosRequestConfig) : Promise<AxiosResponse<PaginatedResponse>> {
-        return ObservationTypesApiFp(this.configuration).listObservationTypes(page, limit, options).then((request) => request(this.axios, this.basePath));
+    public async listObservationTypes(page?: number, limit?: number, harvest?: string, options?: AxiosRequestConfig) : Promise<AxiosResponse<PaginatedResponse>> {
+        return ObservationTypesApiFp(this.configuration).listObservationTypes(page, limit, harvest, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      * 

@@ -4,6 +4,7 @@ import datetime
 from fastapi import HTTPException, status
 from core.decorators import catch_api_exception
 from core.models import AgriFieldModel, Point
+from core.services.harvest_types_services import get_harvest_type_or_400
 from core.serializers import AgriField, AgriFieldMutationPayload
 
 
@@ -53,6 +54,34 @@ class AgriFieldServices:
         """
         agrifields = self.model.objects(deleted=False, orgId=org_id)
         return self._serialize(agrifields, many=True)
+
+    def _validate_harvest_for_create(self, harvest: str) -> str:
+        harvest_type = get_harvest_type_or_400(harvest)
+        if not harvest_type.active:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail={
+                    "code": "inactive_harvest_on_create",
+                    "message": "Inactive harvest types cannot be used for new agrifields",
+                    "harvest": harvest_type.code,
+                },
+            )
+        return harvest_type.code
+
+    def _validate_harvest_for_update(self, existing_harvest: str, requested_harvest: str) -> str:
+        harvest_type = get_harvest_type_or_400(requested_harvest)
+        if harvest_type.active:
+            return harvest_type.code
+        if harvest_type.code == existing_harvest:
+            return harvest_type.code
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={
+                "code": "inactive_harvest_change_forbidden",
+                "message": "Inactive harvest types can only be kept unchanged on existing agrifields",
+                "harvest": harvest_type.code,
+            },
+        )
     
 
     @catch_api_exception
@@ -64,6 +93,7 @@ class AgriFieldServices:
         current_time = int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp() * 1000)
 
         data["map"] = [Point(lng=point.lng, lat=point.lat) for point in payload.map]
+        data["harvest"] = self._validate_harvest_for_create(payload.harvest)
         data.update({
             "orgId": org_id,
             "createdBy": user_id,
@@ -130,7 +160,7 @@ class AgriFieldServices:
         
         agrifield.name = payload.name
         agrifield.description = payload.description
-        agrifield.harvest = payload.harvest
+        agrifield.harvest = self._validate_harvest_for_update(agrifield.harvest, payload.harvest)
         agrifield.area = payload.area
         agrifield.plants = payload.plants
         agrifield.variety = payload.variety

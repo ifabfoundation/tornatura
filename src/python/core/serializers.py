@@ -60,6 +60,15 @@ class DetectionType(BaseModel):
     observationTypeId: str
     creationTime: int
 
+class HarvestType(BaseModel):
+    id: str
+    code: str
+    label: str
+    active: bool = True
+    sortOrder: int = 0
+    creationTime: int
+    lastUpdateTime: int
+
 class ObservationCounter(BaseModel):
     counterName: str
     counterValue: float
@@ -76,6 +85,7 @@ class ObservationType(BaseModel):
     rangeMax: Optional[float] = None
     rangeLabels: List[str] = []
     counters: List[str] = []
+    supportedHarvestCodes: List[str] = []
     creationTime: int
 
 class ObservationData(BaseModel):
@@ -137,6 +147,7 @@ class ObservationTypeCreatePayload(BaseModel):
     rangeMax: Optional[float] = None
     rangeLabels: List[str] = []
     counters: List[str] = []
+    supportedHarvestCodes: List[str] = []
 
 class ObservationTypeUpdatePayload(BaseModel):
     typology: Optional[str] = None
@@ -149,6 +160,19 @@ class ObservationTypeUpdatePayload(BaseModel):
     rangeMax: Optional[float] = None
     rangeLabels: Optional[List[str]] = None
     counters: Optional[List[str]] = None
+    supportedHarvestCodes: Optional[List[str]] = None
+
+class HarvestTypeCreatePayload(BaseModel):
+    code: str
+    label: str
+    active: bool = True
+    sortOrder: int = 0
+
+class HarvestTypeUpdatePayload(BaseModel):
+    code: Optional[str] = None
+    label: Optional[str] = None
+    active: Optional[bool] = None
+    sortOrder: Optional[int] = None
 
 class AgriField(BaseModel):
     id: str

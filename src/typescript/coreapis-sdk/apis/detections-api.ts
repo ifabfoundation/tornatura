@@ -19,7 +19,6 @@ import { Configuration } from '../configuration';
 import { BASE_PATH, COLLECTION_FORMATS, RequestArgs, BaseAPI, RequiredError } from '../base';
 import { Detection } from '../models';
 import { DetectionMutationPayload } from '../models';
-import { ErrorResponse } from '../models';
 import { MultiDetectionCreateResponse } from '../models';
 import { MultiDetectionMutationPayload } from '../models';
 import { PaginatedResponse } from '../models';

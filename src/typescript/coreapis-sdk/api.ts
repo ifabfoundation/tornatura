@@ -16,8 +16,8 @@ export * from './apis/detection-types-api';
 export * from './apis/detections-api';
 export * from './apis/feedbacks-api';
 export * from './apis/files-api';
+export * from './apis/harvest-types-api';
 export * from './apis/invitations-api';
 export * from './apis/observation-types-api';
 export * from './apis/organizations-api';
 export * from './apis/users-api';
-

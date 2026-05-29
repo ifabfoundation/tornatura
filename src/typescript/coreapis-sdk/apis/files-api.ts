@@ -17,7 +17,6 @@ import { Configuration } from '../configuration';
 // Some imports not used depending on template conditions
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS, RequestArgs, BaseAPI, RequiredError } from '../base';
-import { ErrorResponse } from '../models';
 import { FileInfo } from '../models';
 /**
  * FilesApi - axios parameter creator

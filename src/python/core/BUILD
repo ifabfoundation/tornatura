@@ -55,6 +55,18 @@ pex_binary(
 )
 
 pex_binary(
+    name="migrate-observation-type-supported-harvests",
+    entry_point="scripts/migrate_observation_type_supported_harvests.py",
+    dependencies=[":pysource", ":statics"],
+)
+
+pex_binary(
+    name="seed-harvest-types",
+    entry_point="scripts/seed_harvest_types.py",
+    dependencies=[":pysource", ":statics"],
+)
+
+pex_binary(
     name="sync-deleted-organizations-from-keycloak",
     entry_point="scripts/sync_deleted_organizations_from_keycloak.py",
     dependencies=[":pysource", ":statics"],
