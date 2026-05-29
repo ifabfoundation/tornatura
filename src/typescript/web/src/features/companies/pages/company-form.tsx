@@ -214,11 +214,9 @@ function CompanyConsentsStep({
 
   const formik = useFormik({
     initialValues: {
-      privacy2: false,
       privacy4: false,
     },
     validationSchema: Yup.object({
-      privacy2: Yup.boolean().oneOf([true], "È necessaria l'accettazione"),
       privacy4: Yup.boolean().oneOf([true], "È necessaria l'accettazione"),
     }),
     onSubmit: async (_values, { setSubmitting }) => {
@@ -300,33 +298,7 @@ function CompanyConsentsStep({
               ) : null}
             </div>
           </div>
-
-          <div className="row input-row">
-            <div className="col">
-              <label className="d-flex align-items-start">
-                <input
-                  id="company-privacy2"
-                  name="privacy2"
-                  type="checkbox"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  checked={formik.values.privacy2}
-                  className="d-inline"
-                />
-                <span className="my-2">
-                  Le informazioni e i dati conferiti nell'ambito del progetto tornatura, tramite
-                  l'utilizzo dell'applicazione, devono essere veritieri, accurati e nella piena
-                  disponibilità di chi li fornisce. tali dati sanno utilizzati per contribuire al
-                  progetto e saranno comunicati anche per scopi rendicontativi all'ente
-                  finanziatore. pertanto, il dichiarante si assume la piena responsabilità della
-                  veridicità, accuratezza e piena disponibilità di ogni informazione inserita.
-                </span>
-              </label>
-              {formik.touched.privacy2 && formik.errors.privacy2 ? (
-                <div className="error">{formik.errors.privacy2}</div>
-              ) : null}
-            </div>
-          </div>
+          
         </div>
       </div>
       <div className="buttons-wrapper mt-4 text-center">

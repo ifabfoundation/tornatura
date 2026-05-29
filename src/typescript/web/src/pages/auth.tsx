@@ -67,13 +67,11 @@ function SignupStep4({
   const formik = useFormik({
     initialValues: {
       privacy: false,
-      privacy2: false,
       privacy3: false,
       privacy4: false,
     },
     validationSchema: Yup.object({
       privacy: Yup.boolean().oneOf([true], "È necessaria l'accettazione"),
-      privacy2: Yup.boolean().oneOf([true], "È necessaria l'accettazione"),
       privacy4: Yup.boolean().test(
         "privacy4-required",
         "È necessaria l'accettazione",
@@ -147,13 +145,21 @@ function SignupStep4({
                   className="d-inline"
                 />
                 <span className="my-2">
-                  Ho preso visione della&nbsp;
+                  Ho letto e accetto i &nbsp;
                   <a
-                    href={`${OBJECT_STORAGE_ENDPOINT}/public/media/18-03-2026-informativa-privacy-app-tornatura.pdf`}
+                    href={`${OBJECT_STORAGE_ENDPOINT}/public/media/termini-di-servizio.pdf`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    privacy policy
+                    Termini di servizio
+                  </a>
+                  &nbsp; e la &nbsp;
+                  <a
+                    href={`${OBJECT_STORAGE_ENDPOINT}/public/media/informativa-privacy.pdf`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Privacy policy
                   </a>
                 </span>
               </label>
@@ -203,7 +209,7 @@ function SignupStep4({
                   className="d-inline"
                 />
                 <span className="my-2">
-                  Ho preso visione della&nbsp;
+                  Ho preso visione della &nbsp;
                   <a
                     href={`${OBJECT_STORAGE_ENDPOINT}/public/media/policy-newsletter-tornatura.pdf`}
                     target="_blank"
@@ -215,27 +221,6 @@ function SignupStep4({
               </label>
               {formik.touched.privacy3 && formik.errors.privacy3 ? (
                 <div className="error">{formik.errors.privacy3}</div>
-              ) : null}
-            </div>
-          </div>
-          <div className="row input-row">
-            <div className="col">
-              <label className="d-flex align-items-start">
-                <input
-                  id="privacy2"
-                  name="privacy2"
-                  type="checkbox"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  checked={formik.values.privacy2}
-                  className="d-inline"
-                />
-                <span className="my-2">
-                  Le informazioni e i dati conferiti nell'ambito del progetto tornatura, tramite l'utilizzo dell'applicazione, devono essere veritieri, accurati e nella piena disponibilità di chi li fornisce. tali dati sanno utilizzati per contribuire al progetto e saranno comunicati anche per scopi rendicontativi all'ente finanziatore. pertanto, il dichiarante si assume la piena responsabilità  della veridicità, accuratezza e piena disponibilità di ogni informazione inserita.
-                </span>
-              </label>
-              {formik.touched.privacy2 && formik.errors.privacy2 ? (
-                <div className="error">{formik.errors.privacy2}</div>
               ) : null}
             </div>
           </div>
