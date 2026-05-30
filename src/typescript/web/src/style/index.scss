@@ -121,6 +121,9 @@ $ms-sidebar-transition: 100ms;
 .pointer {
   cursor: pointer;
 }
+.pointer-events-none {
+  pointer-events: none !important;
+}
 
 .space-05 {
   height: #{$space * 0.5};
@@ -1837,6 +1840,17 @@ small {
     width: 100%;
     height: 100%;
   }
+
+  // ---------------------------------------------------------------------------
+
+  #multi-detection-points-tabs {
+    margin-bottom: 0;
+    height: 60px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;
+  }
+
   // ---------------------------------------------------------------------------
 
   .field-maplet {

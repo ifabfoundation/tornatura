@@ -133,7 +133,7 @@ function createEntryKey() {
 }
 
 function buildEntryLabel(entry: { typology: string; method: string }, index: number) {
-  return `${index + 1}. ${entry.typology} > ${entry.method}`;
+  return `#${index + 1}. ${entry.typology} > ${entry.method}`;
 }
 
 function areObservationPointsEqual(a: ObservationPoint[] = [], b: ObservationPoint[] = []) {
@@ -1160,7 +1160,7 @@ function DetectionStepTipologia({
                 : "Aggiungi un altro tipo di rilevamento..."}
             </div>
             <div className="mb-3 text-center">
-              <strong>{`Cosa vuoi rilevare? (${nextSelectionIndex})`}</strong>
+              <strong>{`Ril. #${nextSelectionIndex} — Cosa vuoi rilevare?`}</strong>
             </div>
             {items.length === 0 ? (
               <div>Nessuna tipologia disponibile.</div>
@@ -1170,17 +1170,27 @@ function DetectionStepTipologia({
             {selectedTypology && (
               <div className="mt-4">
                 <div className="mb-3 text-center">
-                  <strong>{`Scegli un metodo per il rilevamento (${nextSelectionIndex})`}</strong>
+                  <strong>{`Ril. #${nextSelectionIndex} — Scegli un metodo`}</strong>
                 </div>
                 {methods.length === 0 && <div>Nessun metodo disponibile.</div>}
-                {methods.map((item, index) => (
-                  <CozyButton
-                    key={index}
-                    content={item}
-                    onClick={() => onSelectMethod?.(item)}
-                    arrow={true}
-                  />
-                ))}
+                {methods.map((item, index) => {
+                  const isAlreadySelected = entries.some((e) => {
+                    let alreadySelected = e.method === item && e.typology === selectedTypology;
+                    console.log("alreadySelected", alreadySelected);
+                    return alreadySelected;
+                  });
+                  return (
+                    <CozyButton
+                      key={index}
+                      content={item}
+                      onClick={() => onSelectMethod?.(item)}
+                      additionalClasses={
+                        isAlreadySelected ? ["opacity-50", "pointer-events-none"] : []
+                      }
+                      arrow={!isAlreadySelected}
+                    />
+                  );
+                })}
               </div>
             )}
           </Fragment>
@@ -1209,10 +1219,11 @@ function DetectionStepTipologia({
       </h3>
       {items.length === 0 ? <div>Nessuna tipologia disponibile.</div> : <Accordion items={items} />}
       {allowMultiSelection && (
-        <div className="mb-4 text-center">
+        <div className="mb-4 mt-5 text-center">
           <CozyButton
             content={isMultiFlow ? "Rilevamento multiplo attivo" : "Nuovo Rilevamento Multiplo"}
             onClick={onSelectMulti}
+            arrow={true}
           />
         </div>
       )}
@@ -1257,7 +1268,7 @@ function DetectionStepCompose({
   return (
     <div className="narrow-container my-5">
       <h3 className="mb-4 pb-2 text-center">
-        <strong>Nuovo rilevamento multiploz</strong>
+        <strong>Nuovo rilevamento multiploo</strong>
       </h3>
       {entries.length === 0 ? (
         <div className="text-center">Aggiungi il primo tipo di rilevamento.</div>
@@ -2208,7 +2219,7 @@ function DetectionStepObservationPoints({
         resolvedPosition={resolvedPhotoPosition.position}
         onCapture={(photo) => onPhotosChange?.([...pendingPhotos, photo])}
       />
-      <div className="remove-content-padding-x remove-content-padding-y">
+      <div>
         <div className="detection-observation-ui-container">
           <div className="dfpart_header">
             <div className="d-flex align-items-center">
@@ -3270,6 +3281,10 @@ export function DetectionForm() {
   });
 
   return (
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // 1. Output principale del form di rilevamento
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     <Fragment>
       {modalOpen && <modal.component {...modal.componentProps} />}
       {!["points", "done"].includes(currentStepKey) && (
@@ -3378,8 +3393,8 @@ export function DetectionForm() {
         )}
         {currentStepKey === "points" && (
           <Fragment>
-            {isMultiFlow && entryDrafts.length > 0 ? (
-              <div className="">
+            <div className="remove-content-padding-x remove-content-padding-y">
+              {isMultiFlow && entryDrafts.length > 0 ? (
                 <Tabs
                   id="multi-detection-points-tabs"
                   activeKey={activeEntry?.key}
@@ -3441,18 +3456,18 @@ export function DetectionForm() {
                     );
                   })}
                 </Tabs>
-              </div>
-            ) : (
-              <DetectionStepObservationPoints
-                formData={formData}
-                onBackClick={handleBackClick}
-                observationType={observationType as ObservationType}
-                onNextClick={handleNextClick}
-                pendingPhotos={pendingPhotos}
-                onPhotosChange={setPendingPhotos}
-                onDraftChange={handlePointsDraftChange}
-              />
-            )}
+              ) : (
+                <DetectionStepObservationPoints
+                  formData={formData}
+                  onBackClick={handleBackClick}
+                  observationType={observationType as ObservationType}
+                  onNextClick={handleNextClick}
+                  pendingPhotos={pendingPhotos}
+                  onPhotosChange={setPendingPhotos}
+                  onDraftChange={handlePointsDraftChange}
+                />
+              )}
+            </div>
           </Fragment>
         )}
         {currentStepKey === "done" && (

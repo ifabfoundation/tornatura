@@ -13065,6 +13065,10 @@ strong {
   cursor: pointer;
 }
 
+.pointer-events-none {
+  pointer-events: none !important;
+}
+
 .space-05 {
   height: 15px;
 }
@@ -15611,6 +15615,14 @@ small, .small {
 #app #map-observations-form {
   width: 100%;
   height: 100%;
+}
+
+#app #multi-detection-points-tabs {
+  margin-bottom: 0;
+  height: 60px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
 }
 
 #app .field-maplet {
