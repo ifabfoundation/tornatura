@@ -1207,6 +1207,7 @@ function DetectionStepTipologia({
       <h3 className="mb-4 pb-2 text-center">
         <strong>Seleziona la tipologia di rilevamento</strong>
       </h3>
+      {items.length === 0 ? <div>Nessuna tipologia disponibile.</div> : <Accordion items={items} />}
       {allowMultiSelection && (
         <div className="mb-4 text-center">
           <CozyButton
@@ -1215,7 +1216,6 @@ function DetectionStepTipologia({
           />
         </div>
       )}
-      {items.length === 0 ? <div>Nessuna tipologia disponibile.</div> : <Accordion items={items} />}
     </div>
   );
 }
@@ -1640,45 +1640,40 @@ function DetectionStepTreatment({ formData, onNextClick, action }: DetectionProp
             />
           </div>
         </div>
+
         {treatment && (
           <Fragment>
             {treatments.length > 0 && (
               <div className="mt-4">
-                <div className="d-flex flex-column gap-2">
+                <section className="soft p-3">
                   {treatments.map((entry, index) => (
                     <div
                       key={`${entry.treatmentDate}-${entry.treatmentProduct}-${index}`}
-                      className="d-flex align-items-center py-3 px-3"
-                      style={{
-                        border: "1px solid rgba(0, 0, 0, 0.35)",
-                        borderRadius: "14px",
-                        background: "#f6f5f3",
-                      }}
+                      className="py-1"
                     >
-                      <div className="font-m-600" style={{ minWidth: "44px" }}>
-                        {`(${index + 1})`}
+                      <div className="d-flex align-items-center align-items-center justify-content-between less-rounded bg-white py-1 ps-3 pe-2">
+                        <div className="font-m-600">
+                          {`${index + 1}. ${entry.treatmentDate} › ${entry.treatmentProduct}`}
+                        </div>
+
+                        <button
+                          className="trnt_btn small type-round white"
+                          onClick={() => {
+                            setTreatments((prev) =>
+                              prev.filter((_, itemIndex) => itemIndex !== index),
+                            );
+                            setError("");
+                          }}
+                        >
+                          &times;
+                        </button>
                       </div>
-                      <div className="flex-grow-1 text-center px-3">
-                        <span className="font-m-600">{entry.treatmentDate}</span>
-                        <span className="mx-2">{">"}</span>
-                        <span className="font-m-600">{entry.treatmentProduct}</span>
-                      </div>
-                      <button
-                        className="trnt_btn small secondary px-2"
-                        onClick={() => {
-                          setTreatments((prev) =>
-                            prev.filter((_, itemIndex) => itemIndex !== index),
-                          );
-                          setError("");
-                        }}
-                      >
-                        &times;
-                      </button>
                     </div>
                   ))}
-                </div>
+                </section>
               </div>
             )}
+
             {isAddingTreatment ? (
               <Fragment>
                 <div className="input-row mt-4 position-relative">
@@ -1727,16 +1722,19 @@ function DetectionStepTreatment({ formData, onNextClick, action }: DetectionProp
                   )}
                 </div>
                 <div className="d-flex gap-2 mt-3">
-                  <CozyButton content="Aggiungi" onClick={handleAddTreatmentEntry} />
-                  <CozyButton
-                    content="Annulla"
-                    additionalClasses={["trnt_btn secondary"]}
+                  <button className="trnt_btn primary" onClick={handleAddTreatmentEntry}>
+                    Aggiungi
+                  </button>
+                  <button
+                    className="trnt_btn secondary"
                     onClick={() => {
                       resetDraftTreatment();
                       setIsAddingTreatment(false);
                       setError("");
                     }}
-                  />
+                  >
+                    Annulla
+                  </button>
                 </div>
               </Fragment>
             ) : (
@@ -2623,10 +2621,7 @@ export function DetectionForm() {
     detectionTypesSelectors.selectDetectionTypesByField(state, fieldId ?? "default"),
   );
   const observationTypes = useAppSelector((state) =>
-    observationTypesSelectors.selectObservationTypesForHarvest(
-      state,
-      currentField?.harvest,
-    ),
+    observationTypesSelectors.selectObservationTypesForHarvest(state, currentField?.harvest),
   );
   const activeEntry = entryDrafts[activeEntryIndex];
   const activeEntryDetectionType = detectionTypes.find(
@@ -3384,7 +3379,7 @@ export function DetectionForm() {
         {currentStepKey === "points" && (
           <Fragment>
             {isMultiFlow && entryDrafts.length > 0 ? (
-              <div className="px-2 px-md-4 pb-5">
+              <div className="">
                 <Tabs
                   id="multi-detection-points-tabs"
                   activeKey={activeEntry?.key}
