@@ -1249,6 +1249,510 @@ const bbchsBarbabietola = {
   },
 };
 
+const bbchsOlivo = {
+  bbch_0: {
+    icon: false,
+    name: "0: Sviluppo delle gemme",
+    items: {
+      bbch_00: {
+        name: "00 Gemme fogliari all’apice dei germogli dell’anno precedente completamente chiuse",
+        value: "00",
+        thumbnail: "olivo_placeholder.png",
+        icon: false,
+      },
+      bbch_01: {
+        name: "01 Le gemme fogliari iniziano a rigonfiarsi e ad aprirsi, mostrando i nuovi primordi fogliari",
+        value: "01",
+        thumbnail: "olivo_placeholder.png",
+        icon: false,
+      },
+      bbch_03: {
+        name: "03 Le gemme fogliari si allungano e si separano dalla base",
+        value: "03",
+        thumbnail: "olivo_placeholder.png",
+        icon: false,
+      },
+      bbch_07: {
+        name: "07 Piccole foglie esterne aperte, non completamente separate, ancora unite agli apici",
+        value: "07",
+        thumbnail: "olivo_placeholder.png",
+        icon: false,
+      },
+      bbch_09: {
+        name: "09 Piccole foglie esterne ulteriormente aperte con apici che si incrociano",
+        value: "09",
+        thumbnail: "olivo_placeholder.png",
+        icon: false,
+      },
+    },
+  },
+  bbch_1: {
+    icon: false,
+    name: "1: Sviluppo delle foglie",
+    items: {
+      bbch_11: {
+        name: "11 Prime foglie completamente separate, di colore grigio-verde",
+        value: "11",
+        thumbnail: "olivo_placeholder.png",
+        icon: false,
+      },
+      bbch_15: {
+        name: "15 Le foglie sono più separate senza aver raggiunto la dimensione finale; le prime foglie diventano verdi sulla pagina superiore",
+        value: "15",
+        thumbnail: "olivo_placeholder.png",
+        icon: false,
+      },
+      bbch_19: {
+        name: "19 Le foglie raggiungono dimensione e forma tipiche della varietà",
+        value: "19",
+        thumbnail: "olivo_placeholder.png",
+        icon: false,
+      },
+    },
+  },
+  bbch_3: {
+    icon: false,
+    name: "3: Sviluppo dei germogli",
+    items: {
+      bbch_31: {
+        name: "31 I germogli raggiungono circa il 10% della lunghezza finale",
+        value: "31",
+        thumbnail: "olivo_placeholder.png",
+        icon: false,
+      },
+      bbch_33: {
+        name: "33 I germogli raggiungono circa il 30% della lunghezza finale",
+        value: "33",
+        thumbnail: "olivo_placeholder.png",
+        icon: false,
+      },
+      bbch_37: {
+        name: "37 I germogli raggiungono circa il 70% della lunghezza finale",
+        value: "37",
+        thumbnail: "olivo_placeholder.png",
+        icon: false,
+      },
+    },
+  },
+  bbch_5: {
+    icon: false,
+    name: "5: Comparsa dell’infiorescenza",
+    items: {
+      bbch_50: {
+        name: "50 Le gemme dell’infiorescenza nelle ascelle fogliari sono completamente chiuse, appuntite, prive di peduncolo e di colore ocra",
+        value: "50",
+        thumbnail: "olivo_placeholder.png",
+        icon: false,
+      },
+      bbch_51: {
+        name: "51 Le gemme dell’infiorescenza iniziano a rigonfiarsi sul peduncolo",
+        value: "51",
+        thumbnail: "olivo_placeholder.png",
+        icon: false,
+      },
+      bbch_52: {
+        name: "52 Le gemme dell’infiorescenza si aprono; inizio dello sviluppo del grappolo fiorale",
+        value: "52",
+        thumbnail: "olivo_placeholder.png",
+        icon: false,
+      },
+      bbch_54: {
+        name: "54 Il grappolo fiorale cresce",
+        value: "54",
+        thumbnail: "olivo_placeholder.png",
+        icon: false,
+      },
+      bbch_55: {
+        name: "55 Il grappolo fiorale è completamente espanso; i bottoni fiorali iniziano ad aprirsi",
+        value: "55",
+        thumbnail: "olivo_placeholder.png",
+        icon: false,
+      },
+      bbch_57: {
+        name: "57 La corolla, di colore verde, è più lunga del calice",
+        value: "57",
+        thumbnail: "olivo_placeholder.png",
+        icon: false,
+      },
+      bbch_59: {
+        name: "59 La corolla cambia colore da verde a bianco",
+        value: "59",
+        thumbnail: "olivo_placeholder.png",
+        icon: false,
+      },
+    },
+  },
+  bbch_6: {
+    icon: false,
+    name: "6: Fioritura",
+    items: {
+      bbch_60: {
+        name: "60 Primi fiori aperti",
+        value: "60",
+        thumbnail: "olivo_placeholder.png",
+        icon: false,
+      },
+      bbch_61: {
+        name: "61 Inizio della fioritura: circa il 10% dei fiori aperti",
+        value: "61",
+        thumbnail: "olivo_placeholder.png",
+        icon: false,
+      },
+      bbch_65: {
+        name: "65 Piena fioritura: almeno il 50% dei fiori aperti",
+        value: "65",
+        thumbnail: "olivo_placeholder.png",
+        icon: false,
+      },
+      bbch_67: {
+        name: "67 Caduta dei primi petali",
+        value: "67",
+        thumbnail: "olivo_placeholder.png",
+        icon: false,
+      },
+      bbch_68: {
+        name: "68 Maggior parte dei petali caduti o appassiti",
+        value: "68",
+        thumbnail: "olivo_placeholder.png",
+        icon: false,
+      },
+      bbch_69: {
+        name: "69 Fine della fioritura, allegagione, caduta degli ovari non fecondati",
+        value: "69",
+        thumbnail: "olivo_placeholder.png",
+        icon: false,
+      },
+    },
+  },
+  bbch_7: {
+    icon: false,
+    name: "7: Sviluppo del frutto",
+    items: {
+      bbch_71: {
+        name: "71 Frutto circa al 10% della dimensione finale",
+        value: "71",
+        thumbnail: "olivo_placeholder.png",
+        icon: false,
+      },
+      bbch_75: {
+        name: "75 Frutto circa al 50% della dimensione finale; il nocciolo inizia a lignificare (resiste al taglio)",
+        value: "75",
+        thumbnail: "olivo_placeholder.png",
+        icon: false,
+      },
+      bbch_79: {
+        name: "79 Frutto circa al 90% della dimensione finale; adatto alla raccolta come oliva verde",
+        value: "79",
+        thumbnail: "olivo_placeholder.png",
+        icon: false,
+      },
+    },
+  },
+  bbch_8: {
+    icon: false,
+    name: "8: Maturazione del frutto",
+    items: {
+      bbch_80: {
+        name: "80 Il colore verde intenso del frutto diventa verde chiaro-giallastro",
+        value: "80",
+        thumbnail: "olivo_placeholder.png",
+        icon: false,
+      },
+      bbch_81: {
+        name: "81 Inizio della colorazione del frutto",
+        value: "81",
+        thumbnail: "olivo_placeholder.png",
+        icon: false,
+      },
+      bbch_85: {
+        name: "85 Aumento della colorazione tipica della varietà",
+        value: "85",
+        thumbnail: "olivo_placeholder.png",
+        icon: false,
+      },
+      bbch_89: {
+        name: "89 Maturazione per la raccolta: i frutti raggiungono il colore tipico della varietà, restano turgidi e sono adatti all’estrazione dell’olio",
+        value: "89",
+        thumbnail: "olivo_placeholder.png",
+        icon: false,
+      },
+    },
+  },
+  bbch_9: {
+    icon: false,
+    name: "9: Senescenza",
+    items: {
+      bbch_92: {
+        name: "92 Frutti sovramaturi: perdita di turgore e inizio della caduta",
+        value: "92",
+        thumbnail: "olivo_placeholder.png",
+        icon: false,
+      },
+    },
+  },
+};
+
+const bbchsAgrumi = {
+  bbch_0: {
+    icon: false,
+    name: "0: Germogliamento / sviluppo delle gemme",
+    items: {
+      bbch_00: {
+        name: "00 Dormienza: gemme fogliari e infiorescenze indifferenziate, chiuse e ricoperte da squame verdi",
+        value: "00",
+        thumbnail: "agrumi_0_gemme.jpg",
+        icon: false,
+      },
+      bbch_01: {
+        name: "01 Inizio del rigonfiamento delle gemme",
+        value: "01",
+        thumbnail: "agrumi_0_gemme.jpg",
+        icon: false,
+      },
+      bbch_03: {
+        name: "03 Fine del rigonfiamento delle gemme: squame verdi leggermente separate",
+        value: "03",
+        thumbnail: "agrumi_0_gemme.jpg",
+        icon: false,
+      },
+      bbch_07: {
+        name: "07 Inizio della rottura delle gemme",
+        value: "07",
+        thumbnail: "agrumi_0_gemme.jpg",
+        icon: false,
+      },
+      bbch_09: {
+        name: "09 Punte verdi delle foglie visibili",
+        value: "09",
+        thumbnail: "agrumi_0_gemme.jpg",
+        icon: false,
+      },
+    },
+  },
+  bbch_1: {
+    icon: false,
+    name: "1: Sviluppo delle foglie",
+    items: {
+      bbch_10: {
+        name: "10 Prime foglie separate: squame verdi leggermente aperte, foglie emergenti",
+        value: "10",
+        thumbnail: "agrumi_1_foglie.jpg",
+        icon: false,
+      },
+      bbch_11: {
+        name: "11 Prime foglie visibili",
+        value: "11",
+        thumbnail: "agrumi_1_foglie.jpg",
+        icon: false,
+      },
+      bbch_15: {
+        name: "15 Più foglie visibili, non ancora a dimensione finale",
+        value: "15",
+        thumbnail: "agrumi_1_foglie.jpg",
+        icon: false,
+      },
+      bbch_19: {
+        name: "19 Prime foglie completamente espanse",
+        value: "19",
+        thumbnail: "agrumi_1_foglie.jpg",
+        icon: false,
+      },
+    },
+  },
+  bbch_3: {
+    icon: false,
+    name: "3: Sviluppo dei germogli",
+    items: {
+      bbch_31: {
+        name: "31 Inizio della crescita dei germogli: assi dei germogli in sviluppo visibili",
+        value: "31",
+        thumbnail: "agrumi_3_germogli.jpg",
+        icon: false,
+      },
+      bbch_32: {
+        name: "32 Germogli lunghi circa il 20% della lunghezza finale",
+        value: "32",
+        thumbnail: "agrumi_3_germogli.jpg",
+        icon: false,
+      },
+      bbch_39: {
+        name: "39 Germogli lunghi circa il 90% della lunghezza finale",
+        value: "39",
+        thumbnail: "agrumi_3_germogli.jpg",
+        icon: false,
+      },
+    },
+  },
+  bbch_5: {
+    icon: false,
+    name: "5: Comparsa dell’infiorescenza",
+    items: {
+      bbch_51: {
+        name: "51 Gemme dell’infiorescenza rigonfie: gemme chiuse, squame verde chiaro visibili",
+        value: "51",
+        thumbnail: "agrumi_5_infiorescenza.jpg",
+        icon: false,
+      },
+      bbch_53: {
+        name: "53 Gemme dell’infiorescenza aperte",
+        value: "53",
+        thumbnail: "agrumi_5_infiorescenza.jpg",
+        icon: false,
+      },
+      bbch_55: {
+        name: "55 Fiori visibili, ma ancora chiusi",
+        value: "55",
+        thumbnail: "agrumi_5_infiorescenza.jpg",
+        icon: false,
+      },
+      bbch_56: {
+        name: "56 Bottoni fiorali allungati",
+        value: "56",
+        thumbnail: "agrumi_5_infiorescenza.jpg",
+        icon: false,
+      },
+      bbch_57: {
+        name: "57 Apertura dei sepali, petali visibili",
+        value: "57",
+        thumbnail: "agrumi_5_infiorescenza.jpg",
+        icon: false,
+      },
+      bbch_59: {
+        name: "59 La maggior parte dei fiori con petali visibili",
+        value: "59",
+        thumbnail: "agrumi_5_infiorescenza.jpg",
+        icon: false,
+      },
+    },
+  },
+  bbch_6: {
+    icon: false,
+    name: "6: Fioritura",
+    items: {
+      bbch_60: {
+        name: "60 Primi fiori aperti",
+        value: "60",
+        thumbnail: "agrumi_6_fioritura.jpg",
+        icon: false,
+      },
+      bbch_61: {
+        name: "61 Inizio della fioritura: circa il 10% dei fiori aperti",
+        value: "61",
+        thumbnail: "agrumi_6_fioritura.jpg",
+        icon: false,
+      },
+      bbch_65: {
+        name: "65 Piena fioritura: circa il 50% dei fiori aperti",
+        value: "65",
+        thumbnail: "agrumi_6_fioritura.jpg",
+        icon: false,
+      },
+      bbch_67: {
+        name: "67 Fioritura in diminuzione: la maggior parte dei petali caduti",
+        value: "67",
+        thumbnail: "agrumi_6_fioritura.jpg",
+        icon: false,
+      },
+      bbch_69: {
+        name: "69 Fine della fioritura: tutti i petali caduti",
+        value: "69",
+        thumbnail: "agrumi_6_fioritura.jpg",
+        icon: false,
+      },
+    },
+  },
+  bbch_7: {
+    icon: false,
+    name: "7: Sviluppo del frutto",
+    items: {
+      bbch_71: {
+        name: "71 Allegagione; inizio della crescita dell’ovario; inizio della cascola dei frutticini",
+        value: "71",
+        thumbnail: "agrumi_7_frutto.jpg",
+        icon: false,
+      },
+      bbch_72: {
+        name: "72 Frutto verde circondato dal calice",
+        value: "72",
+        thumbnail: "agrumi_7_frutto.jpg",
+        icon: false,
+      },
+      bbch_73: {
+        name: "73 Alcuni frutti leggermente gialli: inizio della cascola fisiologica",
+        value: "73",
+        thumbnail: "agrumi_7_frutto.jpg",
+        icon: false,
+      },
+      bbch_74: {
+        name: "74 Frutti circa al 40% della dimensione finale; frutti verde scuro: fine della cascola fisiologica",
+        value: "74",
+        thumbnail: "agrumi_7_frutto.jpg",
+        icon: false,
+      },
+      bbch_79: {
+        name: "79 Frutti circa al 90% della dimensione finale",
+        value: "79",
+        thumbnail: "agrumi_7_frutto.jpg",
+        icon: false,
+      },
+    },
+  },
+  bbch_8: {
+    icon: false,
+    name: "8: Maturazione del frutto",
+    items: {
+      bbch_81: {
+        name: "81 Inizio della colorazione del frutto (invaiatura)",
+        value: "81",
+        thumbnail: "agrumi_8_maturazione.jpg",
+        icon: false,
+      },
+      bbch_83: {
+        name: "83 Frutto maturo per la raccolta; il frutto non ha ancora sviluppato il colore tipico della varietà",
+        value: "83",
+        thumbnail: "agrumi_8_maturazione.jpg",
+        icon: false,
+      },
+      bbch_85: {
+        name: "85 Maturazione avanzata; aumento dell’intensità del colore tipico della varietà",
+        value: "85",
+        thumbnail: "agrumi_8_maturazione.jpg",
+        icon: false,
+      },
+      bbch_89: {
+        name: "89 Frutto maturo per il consumo; sapore e consistenza tipici; inizio della senescenza e della caduta dei frutti",
+        value: "89",
+        thumbnail: "agrumi_8_maturazione.jpg",
+        icon: false,
+      },
+    },
+  },
+  bbch_9: {
+    icon: false,
+    name: "9: Senescenza / inizio della dormienza",
+    items: {
+      bbch_91: {
+        name: "91 Crescita dei germogli completata; fogliame completamente verde",
+        value: "91",
+        thumbnail: "agrumi_9_senescenza.jpg",
+        icon: false,
+      },
+      bbch_93: {
+        name: "93 Inizio della senescenza e caduta delle foglie vecchie",
+        value: "93",
+        thumbnail: "agrumi_9_senescenza.jpg",
+        icon: false,
+      },
+      bbch_97: {
+        name: "97 Periodo di dormienza invernale",
+        value: "97",
+        thumbnail: "agrumi_9_senescenza.jpg",
+        icon: false,
+      },
+    },
+  },
+};
+
 const baseUrl = `${process.env.REACT_APP_OBJECT_STORAGE_ENDPOINT}/public/bbchs/`
 
 export const bbchs: any = {
@@ -1272,5 +1776,12 @@ export const bbchs: any = {
     baseUrl: baseUrl,
     data: bbchsBarbabietola,
   },
+  agrumi: {
+    baseUrl: baseUrl,
+    data: bbchsAgrumi,
+  },
+  olivo: {
+    baseUrl: baseUrl,
+    data: bbchsOlivo,
+  },
 };
-

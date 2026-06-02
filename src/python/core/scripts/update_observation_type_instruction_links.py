@@ -22,16 +22,25 @@ from core.models import ObservationType
 
 
 INSTRUCTION_URLS = {
+    "autographa_gamma": "https://www.tornatura.it/instructions/260520-autographa-gamma?partial=1",
     "cimice_asiatica": "https://www.tornatura.it/instructions/260310-cimice-asiatica?partial=1",
     "diabrotica": "https://www.tornatura.it/instructions/260310-diabrotica?partial=1",
     "giallumi": "https://www.tornatura.it/instructions/260310-giallumi?partial=1",
     "lisso": "https://www.tornatura.it/instructions/260310-lisso?partial=1",
+    "mamestre_brassica": "https://www.tornatura.it/instructions/260520-mamestre-brassica?partial=1",
+    "mosca_della_frutta": "https://www.tornatura.it/instructions/260527-mosca-della-frutta?partial=1",
+    "mosca_dell_olivo": "https://www.tornatura.it/instructions/260527-mosca-dell-olivo?partial=1",
     "peronospora": "https://www.tornatura.it/instructions/260310-peronospora?partial=1",
     "scafoideo": "https://www.tornatura.it/instructions/260310-scafoideo?partial=1",
+    "spodoptera_exigua": "https://www.tornatura.it/instructions/260520-spodoptera-exigua?partial=1",
     "cleono": "https://www.tornatura.it/instructions/260513-cleono?partial=1",
+    "tignola_dell_olivo": "https://www.tornatura.it/instructions/260527-tignola-dell-olivo?partial=1",
 }
 
 TYPOLOGY_ALIASES = {
+    "autographa_gamma": {
+        "autographa gamma",
+    },
     "cimice_asiatica": {
         "cimice",
         "cimice asiatica",
@@ -48,6 +57,19 @@ TYPOLOGY_ALIASES = {
     },
     "lisso": {
         "lisso",
+    },
+    "mamestre_brassica": {
+        "mamestre brassica",
+        "mamestra brassicae",
+    },
+    "mosca_della_frutta": {
+        "mosca della frutta",
+        "ceratitis capitata",
+    },
+    "mosca_dell_olivo": {
+        "mosca dell olivo",
+        "mosca dell'olivo",
+        "bactrocera oleae",
     },
     "peronospora": {
         "peronospora",
@@ -68,6 +90,14 @@ TYPOLOGY_ALIASES = {
         "multi insetto",
         "multiinsetto",
         "rilevamento multiplo",
+    },
+    "spodoptera_exigua": {
+        "spodoptera exigua",
+    },
+    "tignola_dell_olivo": {
+        "tignola dell olivo",
+        "tignola dell'olivo",
+        "prays oleae",
     },
     "cleono": {
         "cleono",
@@ -123,14 +153,28 @@ def resolve_typology(typology: str) -> str | None:
         return "diabrotica"
     if "giallumi" in tokens or "flavescenza" in tokens or "fitoplasmi" in tokens:
         return "giallumi"
+    if "autographa" in tokens and "gamma" in tokens:
+        return "autographa_gamma"
     if "lisso" in tokens:
         return "lisso"
+    if ("mamestre" in tokens or "mamestra" in tokens) and (
+        "brassica" in tokens or "brassicae" in tokens
+    ):
+        return "mamestre_brassica"
+    if {"mosca", "frutta"}.issubset(tokens) or {"ceratitis", "capitata"}.issubset(tokens):
+        return "mosca_della_frutta"
+    if {"mosca", "olivo"}.issubset(tokens) or {"bactrocera", "oleae"}.issubset(tokens):
+        return "mosca_dell_olivo"
     if "peronospora" in tokens:
         return "peronospora"
     if "scafoideo" in tokens or "scaphoideus" in tokens or "scaphoideo" in tokens:
         return "scafoideo"
+    if "spodoptera" in tokens and "exigua" in tokens:
+        return "spodoptera_exigua"
     if "tutorial" in tokens and "rilevamento" in tokens:
         return "tutorial_dati_rilevamento"
+    if {"tignola", "olivo"}.issubset(tokens) or {"prays", "oleae"}.issubset(tokens):
+        return "tignola_dell_olivo"
     if "multi" in tokens and "insetto" in tokens:
         return "multi_insetto"
     if "cleono" in tokens:

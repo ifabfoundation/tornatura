@@ -1047,6 +1047,8 @@ const categoryIcons: any = {
   "Fungo e peronospora": "spots",
   Batterio: "bacteria",
   Insetto: "bug",
+  "Insetto e Acaro": "bug",
+  "Acaro": "bug"
 };
 
 type TypologyGroup = {
@@ -1131,26 +1133,6 @@ function DetectionStepTipologia({
             ))}
           </section>
         )}
-
-        {/* v1 
-        {entries.length > 0 && (
-          <div className="mb-1">
-            {entries.map((entry, index) => (
-              <div key={entry.key} className="py-1">
-                <div className="d-flex align-items-center justify-content-between less-rounded border-black-2 py-1 ps-3 pe-2">
-                  <div className="font-m-600">{buildEntryLabel(entry, index)}</div>
-                  <button
-                    className="trnt_btn small type-round secondary"
-                    onClick={() => onRemoveEntry?.(index)}
-                  >
-                    &times;
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-          */}
 
         {entries.length === 0 || isSelectingMultiEntry ? (
           <Fragment>
@@ -1534,17 +1516,6 @@ function DetectionStepTreatment({ formData, onNextClick, action }: DetectionProp
     ).sort((a, b) => a.localeCompare(b));
   }, [previousDetections]);
 
-  /*const normalizeDateInput = (value: string) => {
-    const digits = value.replace(/\D/g, "").slice(0, 8);
-    if (digits.length <= 2) {
-      return digits;
-    }
-    if (digits.length <= 4) {
-      return `${digits.slice(0, 2)}/${digits.slice(2)}`;
-    }
-    return `${digits.slice(0, 2)}/${digits.slice(2, 4)}/${digits.slice(4)}`;
-  };*/
-
   const toPickerDate = (value: string) => {
     const match = value.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
     if (!match) {
@@ -1619,9 +1590,6 @@ function DetectionStepTreatment({ formData, onNextClick, action }: DetectionProp
           o&nbsp;dall&apos;inizio della stagione, se è il primo.
         </p>
         <div className="input-row">
-          {/* <label className="mb-2">
-            È stato eseguito un trattamento prima di questo rilevamento?
-          </label> */}
           <div className="d-flex gap-2">
             <CozyButton
               content="No"

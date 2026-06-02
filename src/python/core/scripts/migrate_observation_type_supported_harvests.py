@@ -25,10 +25,14 @@ INITIAL_MAPPING = {
     "pero": [
         {"typology": "Cimice", "method": "Pianta", "category": "Insetto"},
         {"typology": "Cimice", "method": "Trappola", "category": "Insetto"},
+        {"typology": "Mosca della frutta", "method": "Pianta", "category": "Insetto e Acaro"},
+        {"typology": "Mosca della frutta", "method": "Trappola", "category": "Insetto e Acaro"},
     ],
     "pesco": [
         {"typology": "Cimice", "method": "Pianta", "category": "Insetto"},
         {"typology": "Cimice", "method": "Trappola", "category": "Insetto"},
+        {"typology": "Mosca della frutta", "method": "Pianta", "category": "Insetto e Acaro"},
+        {"typology": "Mosca della frutta", "method": "Trappola", "category": "Insetto e Acaro"},
     ],
     "mais": [
         {"typology": "Diabrotica", "method": "Pianta", "category": "Insetto"},
@@ -45,6 +49,46 @@ INITIAL_MAPPING = {
         {"typology": "Nottua  Spodoptera exigua", "method": "Trappola", "category": "Insetto"},
         {"typology": "Cleono", "method": "Pianta", "category": "Insetto"},
         {"typology": "Cleono", "method": "Trappola", "category": "Insetto"},
+    ],
+    "olivo": [
+        {"typology": "Mosca dell'olivo", "method": "Pianta", "category": "Insetto"},
+        {"typology": "Mosca dell'olivo", "method": "Trappola", "category": "Insetto"},
+        {"typology": "Tignola dell'olivo", "method": "Pianta", "category": "Insetto"},
+        {"typology": "Tignola dell'olivo", "method": "Trappola", "category": "Insetto"},
+    ],
+    "agrumi": [
+        {"typology": "Mosca della frutta", "method": "Pianta", "category": "Insetto e Acaro"},
+        {"typology": "Mosca della frutta", "method": "Trappola", "category": "Insetto e Acaro"},
+        {
+            "typology": "Cocciniglia rossa forte",
+            "method": "Pianta",
+            "category": "Insetto e Acaro",
+        },
+        {
+            "typology": "Cocciniglia rossa forte",
+            "method": "Trappola",
+            "category": "Insetto e Acaro",
+        },
+         {
+            "typology": "Panonycus citri",
+            "method": "Pianta",
+            "category": "Insetto e Acaro",
+        },
+        {
+            "typology": "Panonycus citri",
+            "method": "Trappola",
+            "category": "Insetto e Acaro",
+        },
+         {
+            "typology": "Tetranycus urticae",
+            "method": "Pianta",
+            "category": "Insetto e Acaro",
+        },
+        {
+            "typology": "Tetranycus urticae",
+            "method": "Trappola",
+            "category": "Insetto e Acaro",
+        },
     ],
 }
 

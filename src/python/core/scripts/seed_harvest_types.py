@@ -16,6 +16,8 @@ ACTIVE_HARVEST_TYPES = [
     {"code": "pesco", "label": "Pesco", "active": True, "sortOrder": 30},
     {"code": "mais", "label": "Mais", "active": True, "sortOrder": 40},
     {"code": "barbabietola", "label": "Barbabietola", "active": True, "sortOrder": 50},
+    {"code": "olivo", "label": "Olivo", "active": True, "sortOrder": 60},
+    {"code": "agrumi", "label": "Agrumi", "active": True, "sortOrder": 70},
 ]
 
 INACTIVE_LEGACY_HARVEST_TYPES = [
