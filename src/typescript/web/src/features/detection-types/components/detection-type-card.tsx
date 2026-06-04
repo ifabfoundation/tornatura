@@ -126,7 +126,7 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
   function OpenDetailButton({ className }: OpenDetailButtonProps) {
     return (
       <button
-        className={"trnt_btn primary ps-lg-4 type-rounded" + (className ? " " + className : "")}
+        className={"trnt_btn primary ps-lg-4 type-rounded" + (className ? ` ${className}` : "")}
         onClick={() =>
           navigate(`/m/companies/${companyId}/fields/${fieldId}/type/${detectionType.id}`, {
             state: { typeId: typeId },
@@ -142,7 +142,7 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
   }
   return (
     <div className="detection-card">
-      <header className="d-flex align-items-start justify-content-between flex-wrap">
+      <header className="d-flex align-items-start justify-content-between flex-wrap mb-3">
         <div>
           {/* <div className="label py-1">Rilevamenti di</div> */}
           <a
@@ -156,7 +156,7 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
           >{`${observationType.typology}  ›  ${observationType.method}`}</a>
           <br />
           {timeAgoString && (
-            <div className="font-s-label opacity-05 text-transform-none">{`Aggiornato ${timeAgoString}`}</div>
+            <div className="font-s-label opacity-05 text-transform-none mb-2">{`Aggiornato ${timeAgoString}`}</div>
           )}
 
           {/* <br />
@@ -180,7 +180,7 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
         </div>
       </header>
 
-      <div className="spacer py-2"></div>
+      {/* <div className="spacer py-2"></div> */}
 
       {/*  
       <div className="small-texts d-flex justify-content-between align-items-center mt-4 mb-2">
@@ -207,9 +207,13 @@ export function DetectionTypeCard({ companyId, fieldId, typeId }: DetectionTypeC
         />
       </div>
 
-      <div className="d-md-none mt-3 pt-1 d-flex align-items-center justify-content-stretch">
+      <div className="d-none d-sm-flex d-md-none mt-3 pt-1 align-items-center justify-content-stretch">
         <OpenDetailButton className="w-50 px-0" />
         <NewDetectionButton className="w-50" />
+      </div>
+      <div className="d-sm-none mt-3 pt-1">
+        <OpenDetailButton className="w-100 px-0" />
+        <NewDetectionButton className="w-100" />
       </div>
     </div>
   );

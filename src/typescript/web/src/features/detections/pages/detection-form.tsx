@@ -133,7 +133,7 @@ function createEntryKey() {
 }
 
 function buildEntryLabel(entry: { typology: string; method: string }, index: number) {
-  return `#${index + 1}. ${entry.typology} > ${entry.method}`;
+  return `${index + 1}. ${entry.typology}  ›  ${entry.method}`;
 }
 
 function areObservationPointsEqual(a: ObservationPoint[] = [], b: ObservationPoint[] = []) {
@@ -1048,7 +1048,7 @@ const categoryIcons: any = {
   Batterio: "bacteria",
   Insetto: "bug",
   "Insetto e Acaro": "bug",
-  "Acaro": "bug"
+  Acaro: "bug",
 };
 
 type TypologyGroup = {
@@ -1131,6 +1131,11 @@ function DetectionStepTipologia({
                 </div>
               </div>
             ))}
+            <div className="py-1">
+              <button className="trnt_btn dashed bg-transp p-4 m-0 w-100" onClick={onAddDetection}>
+                + Aggiungi rilevamento
+              </button>
+            </div>
           </section>
         )}
 
@@ -1141,18 +1146,23 @@ function DetectionStepTipologia({
                 ? "Aggiungi il primo tipo di rilevamento..."
                 : "Aggiungi un altro tipo di rilevamento..."}
             </div>
-            <div className="mb-3 text-center">
-              <strong>{`Ril. #${nextSelectionIndex} — Cosa vuoi rilevare?`}</strong>
-            </div>
-            {items.length === 0 ? (
-              <div>Nessuna tipologia disponibile.</div>
-            ) : (
-              <Accordion items={items} />
+            {!selectedTypology && (
+              <Fragment>
+                <div className="mb-3 text-center">
+                  <strong>{`Rilevamento ${nextSelectionIndex}. Scegli la tipologia`}</strong>
+                </div>
+
+                {items.length === 0 ? (
+                  <div>Nessuna tipologia disponibile.</div>
+                ) : (
+                  <Accordion items={items} />
+                )}
+              </Fragment>
             )}
             {selectedTypology && (
               <div className="mt-4">
                 <div className="mb-3 text-center">
-                  <strong>{`Ril. #${nextSelectionIndex} — Scegli un metodo`}</strong>
+                  <strong>{`Rilevamento ${nextSelectionIndex}. Scegli il metodo`}</strong>
                 </div>
                 {methods.length === 0 && <div>Nessun metodo disponibile.</div>}
                 {methods.map((item, index) => {
@@ -1179,9 +1189,11 @@ function DetectionStepTipologia({
         ) : (
           <div className="d-flex flex-column gap-3">
             <div className="mt-3 text-center">
+              {/*  
               <button className="trnt_btn dashed bg-transp p-4 m-0 w-100" onClick={onAddDetection}>
                 + Aggiungi rilevamento
               </button>
+              */}
             </div>
             <div className="mt-3 text-center">
               <button className="trnt_btn accent" onClick={() => onProceedMulti?.()}>
@@ -2294,7 +2306,7 @@ function DetectionStepObservationPoints({
                                         className={`score-entry ${hide ? "d-none" : ""}`}
                                       >
                                         <span className="txt new-score-entry">
-                                          <span>#{index + 1}</span> —{" "}
+                                          <span>{index + 1}</span> —{" "}
                                           <span>{entry.data.rangeValue}</span>
                                         </span>
                                       </div>
@@ -2342,7 +2354,7 @@ function DetectionStepObservationPoints({
                                   {points.map((entry: any, index: number) => (
                                     <div key={index} className="score-entry">
                                       <span className="txt new-score-entry">
-                                        <span>#{index + 1}</span> —{" "}
+                                        <span>{index + 1}</span> —{" "}
                                         {entry.data.counters.map(
                                           (counter: any, keyIndex: number) => (
                                             <span className="ms-2" key={keyIndex}>
@@ -2620,11 +2632,11 @@ export function DetectionForm() {
   React.useEffect(() => {
     const title = isMultiFlow
       ? activeEntry
-        ? `Rilevamento multiplo: ${activeEntry.typology} > ${activeEntry.method}`
+        ? `Rilevamento multiplo: ${activeEntry.typology} › ${activeEntry.method}`
         : "Nuovo Rilevamento Multiplo"
       : selectedTypology
         ? selectedMethod
-          ? `${selectedTypology}  ›  ${selectedMethod}`
+          ? `${selectedTypology}  ›  ${selectedMethod}`
           : `Rilevamento ${selectedTypology}`
         : "Nuovo Rilevamento";
     dispatch(headerbarActions.setTitle({ title: title, subtitle: "Subtitle" }));

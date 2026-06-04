@@ -67,10 +67,44 @@ export function FieldDashboard() {
     dispatch(observationTypesActions.fetchObservationTypesAction({}));
   }, [companyId, fieldId]);
 
+  const ButtonCompany = (
+    <button
+      className="trnt_btn primary type-rounded"
+      onClick={() => navigate(`/m/companies/${companyId}`)}
+    >
+      {"← Azienda"}
+    </button>
+  );
+
+  const ButtonNewDetection = (
+    <button
+      className="trnt_btn dashed type-rounded bg-transp px-2"
+      onClick={() => navigate(`/m/companies/${companyId}/fields/${fieldId}/new-detection`)}
+    >
+      {"⊕  Nuovo rilevamento"}
+    </button>
+
+    // <button
+    //   className="trnt_btn primary type-rounded"
+    //   onClick={() => navigate(`/m/companies/${companyId}`)}
+    // >
+    //   {"← Azienda"}
+    // </button>
+  );
+
   return (
     <Fragment>
       {/* TABLE TEST 2 */}
       <Container fluid>
+        <Row>
+          <Col xs={5}>{ButtonCompany}</Col>
+          <Col xs={7} className="text-end">
+            {ButtonNewDetection}
+          </Col>
+          <Col xs={6} className="text-end">
+            <div className="space-05"></div>
+          </Col>
+        </Row>
         <Row>
           <Col xs={12}>
             <section className="soft bg-white">

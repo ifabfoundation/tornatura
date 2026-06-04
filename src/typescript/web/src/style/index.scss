@@ -476,10 +476,10 @@ small {
       }
     }
     &.dashed {
-      border: 2px dashed $c-grey_4;
+      border: 2px dashed $c-grey_3;
       color: black;
       &:hover {
-        border: 2px dashed $c-grey_6;
+        border: 2px dashed $c-grey_4;
       }
       &:active,
       .active {
@@ -1785,18 +1785,48 @@ small {
       }
     }
   }
-  .detection-observation-ui-container {
-    $sm: map-get($grid-breakpoints, sm);
-    $xs-max: map-get($grid-breakpoints, sm) - 0.02px;
 
-    @media (max-width: $xs-max) and (max-height: 700px) {
+  // $brkpnt-sm: map-get($grid-breakpoints, sm);
+  $prkpnt-xs-max: map-get($grid-breakpoints, sm) - 0.02px;
+  @media (max-width: $prkpnt-xs-max) and (max-height: 700px) {
+    // Here the headerbar disappears to make more vertical space
+
+    .detection-observation-ui-container {
+      // background: rgb(169, 231, 169) !important; /* DEBUG DET-UI */
       z-index: 200;
       margin-top: -60px;
       position: fixed;
       background: $c-bg;
-      // background: rgb(169, 231, 169) !important; /* DEBUG DET-UI */
       height: 100dvh;
       overflow: auto;
+    }
+
+    @at-root body[data-page="detection-multiple"] {
+      // @at-root body {
+      .detection-observation-ui-container {
+        margin-top: 0px !important;
+        .half.split .quarter:first-of-type {
+          // .half.split .quarter {
+          // border: 2px solid green !important; /* DEBUG DET-UI */
+          height: 40% !important;
+        }
+      }
+      #multi-detection-points-tabs {
+        z-index: 201;
+        // background-color: green !important; /* DEBUG DET-UI */
+        position: relative;
+        top: 0;
+      }
+      .content-area {
+        z-index: 20;
+        overflow: visible;
+        // border: 2px solid green !important; /* DEBUG DET-UI */
+        padding-top: 0px !important;
+      }
+      .headerbar,
+      .mobile-headerbar {
+        display: none !important;
+      }
     }
   }
 
@@ -1821,6 +1851,10 @@ small {
     // background-color: lighten($c-grey_6, 4%);
     @include media-breakpoint-down(sm) {
       padding: 10px;
+    }
+    @include media-breakpoint-only(xs) {
+      transform-origin: top;
+      transform: scale(0.8);
     }
   }
   .dfpart_detection-scores {
@@ -1847,8 +1881,18 @@ small {
     margin-bottom: 0;
     height: 60px;
     display: flex;
+    flex-wrap: nowrap;
     align-items: flex-end;
     justify-content: flex-start;
+    background-color: grey;
+    overflow-x: auto;
+    li.nav-item button {
+      margin-bottom: 0;
+      height: 50px;
+      min-width: 120px;
+      padding-left: 10px;
+      padding-right: 10px;
+    }
   }
 
   // ---------------------------------------------------------------------------

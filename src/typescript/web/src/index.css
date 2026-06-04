@@ -13601,14 +13601,14 @@ small, .small {
 #app a.button.dashed,
 #app input[type="submit"].dashed,
 #app button.trnt_btn.dashed {
-  border: 2px dashed #8b8b8b;
+  border: 2px dashed #bbbbbb;
   color: black;
 }
 
 #app a.button.dashed:hover,
 #app input[type="submit"].dashed:hover,
 #app button.trnt_btn.dashed:hover {
-  border: 2px dashed #1f1f1f;
+  border: 2px dashed #8b8b8b;
 }
 
 #app a.button.dashed:active,
@@ -15566,6 +15566,26 @@ small, .small {
     height: 100dvh;
     overflow: auto;
   }
+  body[data-page="detection-multiple"] .detection-observation-ui-container {
+    margin-top: 0px !important;
+  }
+  body[data-page="detection-multiple"] .detection-observation-ui-container .half.split .quarter:first-of-type {
+    height: 40% !important;
+  }
+  body[data-page="detection-multiple"] #multi-detection-points-tabs {
+    z-index: 201;
+    position: relative;
+    top: 0;
+  }
+  body[data-page="detection-multiple"] .content-area {
+    z-index: 20;
+    overflow: visible;
+    padding-top: 0px !important;
+  }
+  body[data-page="detection-multiple"] .headerbar,
+  body[data-page="detection-multiple"] .mobile-headerbar {
+    display: none !important;
+  }
 }
 
 #app .dfpart_header {
@@ -15590,6 +15610,13 @@ small, .small {
 @media (max-width: 575.98px) {
   #app .dfpart_detection-inputs {
     padding: 10px;
+  }
+}
+
+@media (max-width: 575.98px) {
+  #app .dfpart_detection-inputs {
+    transform-origin: top;
+    transform: scale(0.8);
   }
 }
 
@@ -15621,8 +15648,19 @@ small, .small {
   margin-bottom: 0;
   height: 60px;
   display: flex;
+  flex-wrap: nowrap;
   align-items: flex-end;
   justify-content: flex-start;
+  background-color: grey;
+  overflow-x: auto;
+}
+
+#app #multi-detection-points-tabs li.nav-item button {
+  margin-bottom: 0;
+  height: 50px;
+  min-width: 120px;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 #app .field-maplet {
