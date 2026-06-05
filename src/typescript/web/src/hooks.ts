@@ -27,3 +27,24 @@ export function usePageTracking() {
     });
   }, [location]);
 }
+
+export function useBodyDataPage(value?: string) {
+  React.useEffect(() => {
+    const { body } = document;
+    const previousValue = body.getAttribute("data-page");
+
+    if (value) {
+      body.setAttribute("data-page", value);
+    } else {
+      body.removeAttribute("data-page");
+    }
+
+    return () => {
+      if (previousValue) {
+        body.setAttribute("data-page", previousValue);
+      } else {
+        body.removeAttribute("data-page");
+      }
+    };
+  }, [value]);
+}

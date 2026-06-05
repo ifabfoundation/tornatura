@@ -13,82 +13,39 @@ from core.models import HarvestType, ObservationType
 
 INITIAL_MAPPING = {
     "vite": [
-        {"typology": "Giallumi", "method": "Foglia", "category": "Batterio"},
-        {"typology": "Giallumi", "method": "Frutto", "category": "Batterio"},
-        {"typology": "Giallumi", "method": "Tutta la pianta", "category": "Batterio"},
-        {"typology": "Peronospora", "method": "Foglia", "category": "Fungo e peronospora"},
-        {"typology": "Peronospora", "method": "Frutto", "category": "Fungo e peronospora"},
-        {"typology": "Peronospora", "method": "Tutta la pianta", "category": "Fungo e peronospora"},
-        {"typology": "Scafoideo", "method": "Pianta", "category": "Insetto"},
-        {"typology": "Scafoideo", "method": "Trappola", "category": "Insetto"},
+        "Giallumi",
+        "Peronospora",
+        "Scafoideo",
     ],
     "pero": [
-        {"typology": "Cimice", "method": "Pianta", "category": "Insetto"},
-        {"typology": "Cimice", "method": "Trappola", "category": "Insetto"},
-        {"typology": "Mosca della frutta", "method": "Pianta", "category": "Insetto e Acaro"},
-        {"typology": "Mosca della frutta", "method": "Trappola", "category": "Insetto e Acaro"},
+        "Cimice",
+        "Mosca della frutta",
     ],
     "pesco": [
-        {"typology": "Cimice", "method": "Pianta", "category": "Insetto"},
-        {"typology": "Cimice", "method": "Trappola", "category": "Insetto"},
-        {"typology": "Mosca della frutta", "method": "Pianta", "category": "Insetto e Acaro"},
-        {"typology": "Mosca della frutta", "method": "Trappola", "category": "Insetto e Acaro"},
+        "Cimice",
+        "Mosca della frutta",
+        "Tignola del pesco",
+        "Tignola orientale del pesco",
     ],
     "mais": [
-        {"typology": "Diabrotica", "method": "Pianta", "category": "Insetto"},
-        {"typology": "Diabrotica", "method": "Trappola", "category": "Insetto"},
+        "Diabrotica",
     ],
     "barbabietola": [
-        {"typology": "Lisso", "method": "Pianta", "category": "Insetto"},
-        {"typology": "Lisso", "method": "Trappola", "category": "Insetto"},
-        {"typology": "Nottua  Autographa gamma", "method": "Pianta", "category": "Insetto"},
-        {"typology": "Nottua  Autographa gamma", "method": "Trappola", "category": "Insetto"},
-        {"typology": "Nottua  Mamestra brassicae", "method": "Pianta", "category": "Insetto"},
-        {"typology": "Nottua  Mamestra brassicae", "method": "Trappola", "category": "Insetto"},
-        {"typology": "Nottua  Spodoptera exigua", "method": "Pianta", "category": "Insetto"},
-        {"typology": "Nottua  Spodoptera exigua", "method": "Trappola", "category": "Insetto"},
-        {"typology": "Cleono", "method": "Pianta", "category": "Insetto"},
-        {"typology": "Cleono", "method": "Trappola", "category": "Insetto"},
+        "Lisso",
+        "Nottua  Autographa gamma",
+        "Nottua  Mamestra brassicae",
+        "Nottua  Spodoptera exigua",
+        "Cleono",
     ],
     "olivo": [
-        {"typology": "Mosca dell'olivo", "method": "Pianta", "category": "Insetto"},
-        {"typology": "Mosca dell'olivo", "method": "Trappola", "category": "Insetto"},
-        {"typology": "Tignola dell'olivo", "method": "Pianta", "category": "Insetto"},
-        {"typology": "Tignola dell'olivo", "method": "Trappola", "category": "Insetto"},
+        "Mosca dell'olivo",
+        "Tignola dell'olivo",
     ],
     "agrumi": [
-        {"typology": "Mosca della frutta", "method": "Pianta", "category": "Insetto e Acaro"},
-        {"typology": "Mosca della frutta", "method": "Trappola", "category": "Insetto e Acaro"},
-        {
-            "typology": "Cocciniglia rossa forte",
-            "method": "Pianta",
-            "category": "Insetto e Acaro",
-        },
-        {
-            "typology": "Cocciniglia rossa forte",
-            "method": "Trappola",
-            "category": "Insetto e Acaro",
-        },
-         {
-            "typology": "Panonycus citri",
-            "method": "Pianta",
-            "category": "Insetto e Acaro",
-        },
-        {
-            "typology": "Panonycus citri",
-            "method": "Trappola",
-            "category": "Insetto e Acaro",
-        },
-         {
-            "typology": "Tetranycus urticae",
-            "method": "Pianta",
-            "category": "Insetto e Acaro",
-        },
-        {
-            "typology": "Tetranycus urticae",
-            "method": "Trappola",
-            "category": "Insetto e Acaro",
-        },
+        "Mosca della frutta",
+        "Cocciniglia rossa forte",
+        "Panonycus citri",
+        "Tetranycus urticae",
     ],
 }
 
@@ -143,6 +100,30 @@ def build_observation_index() -> dict[tuple[str, str, str], list[ObservationType
     return index
 
 
+def build_runtime_mapping() -> dict[str, list[dict[str, str]]]:
+    mapping: dict[str, list[dict[str, str]]] = {}
+
+    for harvest_code, typologies in INITIAL_MAPPING.items():
+        entries: list[dict[str, str]] = []
+        seen_keys: set[tuple[str, str, str]] = set()
+
+        for observation_type in ObservationType.objects(typology__in=list(typologies)):
+            candidate = {
+                "typology": observation_type.typology,
+                "method": observation_type.method,
+                "category": observation_type.category,
+            }
+            candidate_key = matcher_key(candidate)
+            if candidate_key in seen_keys:
+                continue
+            entries.append(candidate)
+            seen_keys.add(candidate_key)
+
+        mapping[harvest_code] = entries
+
+    return mapping
+
+
 def ensure_seed_harvest_types(seed_missing_inactive_harvest_types: bool, dry_run: bool) -> tuple[list[str], int]:
     missing_codes: list[str] = []
     created = 0
@@ -185,6 +166,7 @@ def migrate_supported_harvests(
         print(f"Missing active HarvestType codes required by mapping: {missing_harvest_types}")
         return 1
 
+    runtime_mapping = build_runtime_mapping()
     index = build_observation_index()
     counts = {
         "matched": 0,
@@ -195,7 +177,7 @@ def migrate_supported_harvests(
     }
     blocked: list[str] = []
 
-    for harvest_code, matchers in INITIAL_MAPPING.items():
+    for harvest_code, matchers in runtime_mapping.items():
         for matcher in matchers:
             key = matcher_key(matcher)
             matches = index.get(key, [])
@@ -243,7 +225,7 @@ def migrate_supported_harvests(
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Backfill ObservationType.supportedHarvestCodes from the approved initial mapping."
+        description="Backfill ObservationType.supportedHarvestCodes from the approved initial mapping in DB."
     )
     parser.add_argument("--dry-run", action="store_true", help="Do not write changes.")
     parser.add_argument("--apply", action="store_true", help="Write changes.")

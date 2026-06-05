@@ -34,7 +34,9 @@ INSTRUCTION_URLS = {
     "scafoideo": "https://www.tornatura.it/instructions/260310-scafoideo?partial=1",
     "spodoptera_exigua": "https://www.tornatura.it/instructions/260520-spodoptera-exigua?partial=1",
     "cleono": "https://www.tornatura.it/instructions/260513-cleono?partial=1",
+    "tignola_del_pesco": "https://www.tornatura.it/instructions/260604-tignola-del-pesco?partial=1",
     "tignola_dell_olivo": "https://www.tornatura.it/instructions/260527-tignola-dell-olivo?partial=1",
+    "tignola_orientale_del_pesco": "https://www.tornatura.it/instructions/260604-tignola-orientale-del-pesco?partial=1",
 }
 
 TYPOLOGY_ALIASES = {
@@ -94,10 +96,16 @@ TYPOLOGY_ALIASES = {
     "spodoptera_exigua": {
         "spodoptera exigua",
     },
+    "tignola_del_pesco": {
+        "tignola del pesco",
+    },
     "tignola_dell_olivo": {
         "tignola dell olivo",
         "tignola dell'olivo",
         "prays oleae",
+    },
+    "tignola_orientale_del_pesco": {
+        "tignola orientale del pesco",
     },
     "cleono": {
         "cleono",
@@ -173,8 +181,12 @@ def resolve_typology(typology: str) -> str | None:
         return "spodoptera_exigua"
     if "tutorial" in tokens and "rilevamento" in tokens:
         return "tutorial_dati_rilevamento"
+    if {"tignola", "pesco"}.issubset(tokens) and "orientale" not in tokens:
+        return "tignola_del_pesco"
     if {"tignola", "olivo"}.issubset(tokens) or {"prays", "oleae"}.issubset(tokens):
         return "tignola_dell_olivo"
+    if {"tignola", "orientale", "pesco"}.issubset(tokens):
+        return "tignola_orientale_del_pesco"
     if "multi" in tokens and "insetto" in tokens:
         return "multi_insetto"
     if "cleono" in tokens:
@@ -276,7 +288,7 @@ def main() -> int:
 
     unresolved = [item for item in report if not item["instruction_url"]]
     if unresolved:
-        print("Some typologies could not be resolved automatically.")
+        print("Some typologies could not be resolved automatically in this script.")
 
     if not args.apply:
         print("Dry run only. Re-run with --apply to persist changes.")

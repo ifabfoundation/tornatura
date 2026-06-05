@@ -110,7 +110,7 @@ def seed_harvest_types(include_inactive_legacy: bool, dry_run: bool) -> int:
 def main() -> int:
     parser = argparse.ArgumentParser(description="Seed active and optional inactive legacy HarvestType records.")
     parser.add_argument("--dry-run", action="store_true", help="Do not write changes.")
-    parser.add_argument("--apply", action="store_true", help="Write changes.")
+    parser.add_argument("--apply", action="store_true", help="Write changes in DB.")
     parser.add_argument(
         "--include-inactive-legacy",
         action="store_true",

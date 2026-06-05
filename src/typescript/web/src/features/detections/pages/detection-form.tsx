@@ -15,7 +15,7 @@ import {
   Detection,
 } from "@tornatura/coreapis";
 import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../../hooks";
+import { useAppDispatch, useAppSelector, useBodyDataPage } from "../../../hooks";
 import { headerbarActions } from "../../headerbar/state/headerbar-slice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { detectionsActions, detectionsSelectors } from "../state/detections-slice";
@@ -1045,10 +1045,10 @@ function DetectionFormMapPosition({
 
 const categoryIcons: any = {
   "Fungo e peronospora": "spots",
-  Batterio: "bacteria",
-  Insetto: "bug",
-  "Insetto e Acaro": "bug",
-  Acaro: "bug",
+  "Batterio": "bacteria",
+  "Insetto": "bug",
+  "Insetto e acaro": "bug",
+  "Acaro": "bug",
 };
 
 type TypologyGroup = {
@@ -2544,6 +2544,7 @@ export function DetectionForm() {
   const hasPreselection = hasTypeIdPreselection || hasTypologyMethodPreselection;
   const [flowMode, setFlowMode] = React.useState<"single" | "multi">("single");
   const isMultiFlow = flowMode === "multi";
+  useBodyDataPage(isMultiFlow ? "detection-multiple" : undefined);
   const [stepIndex, setStepIndex] = React.useState(readDetectionStepIndex(location.state) ?? 0);
   const [formData, setFormData] = React.useState<DetectionMutationPayload>({
     detectionTime: new Date().getTime(),
