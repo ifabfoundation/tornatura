@@ -47,6 +47,12 @@ INITIAL_MAPPING = {
         "Panonycus citri",
         "Tetranycus urticae",
     ],
+    "albicocca": [
+        "Cimice",
+        "Mosca della frutta",
+        "Tignola dell'albicocca",
+        "Tignola orientale dell'albicocca",
+    ],
 }
 
 INACTIVE_LEGACY_HARVEST_TYPES = [
@@ -68,7 +74,6 @@ INACTIVE_LEGACY_HARVEST_TYPES = [
     {"code": "d", "label": "d"},
     {"code": "ss", "label": "ss"},
 ]
-
 
 def connect_db() -> None:
     connect(

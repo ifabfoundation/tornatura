@@ -35,8 +35,10 @@ INSTRUCTION_URLS = {
     "spodoptera_exigua": "https://www.tornatura.it/instructions/260520-spodoptera-exigua?partial=1",
     "cleono": "https://www.tornatura.it/instructions/260513-cleono?partial=1",
     "tignola_del_pesco": "https://www.tornatura.it/instructions/260604-tignola-del-pesco?partial=1",
+    "tignola_dell_albicocca": "https://www.tornatura.it/instructions/260604-tignola-del-pesco?partial=1",
     "tignola_dell_olivo": "https://www.tornatura.it/instructions/260527-tignola-dell-olivo?partial=1",
     "tignola_orientale_del_pesco": "https://www.tornatura.it/instructions/260604-tignola-orientale-del-pesco?partial=1",
+    "tignola_orientale_dell_albicocca": "https://www.tornatura.it/instructions/260604-tignola-orientale-del-pesco?partial=1",
 }
 
 TYPOLOGY_ALIASES = {
@@ -99,6 +101,10 @@ TYPOLOGY_ALIASES = {
     "tignola_del_pesco": {
         "tignola del pesco",
     },
+    "tignola_dell_albicocca": {
+        "tignola dell albicocca",
+        "tignola dell'albicocca",
+    },
     "tignola_dell_olivo": {
         "tignola dell olivo",
         "tignola dell'olivo",
@@ -107,11 +113,14 @@ TYPOLOGY_ALIASES = {
     "tignola_orientale_del_pesco": {
         "tignola orientale del pesco",
     },
+    "tignola_orientale_dell_albicocca": {
+        "tignola orientale dell albicocca",
+        "tignola orientale dell'albicocca",
+    },
     "cleono": {
         "cleono",
     },
 }
-
 
 def connect_db() -> None:
     connect(
@@ -183,10 +192,14 @@ def resolve_typology(typology: str) -> str | None:
         return "tutorial_dati_rilevamento"
     if {"tignola", "pesco"}.issubset(tokens) and "orientale" not in tokens:
         return "tignola_del_pesco"
+    if {"tignola", "albicocca"}.issubset(tokens) and "orientale" not in tokens:
+        return "tignola_dell_albicocca"
     if {"tignola", "olivo"}.issubset(tokens) or {"prays", "oleae"}.issubset(tokens):
         return "tignola_dell_olivo"
     if {"tignola", "orientale", "pesco"}.issubset(tokens):
         return "tignola_orientale_del_pesco"
+    if {"tignola", "orientale", "albicocca"}.issubset(tokens):
+        return "tignola_orientale_dell_albicocca"
     if "multi" in tokens and "insetto" in tokens:
         return "multi_insetto"
     if "cleono" in tokens:

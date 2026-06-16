@@ -95,10 +95,11 @@ export function FieldDetailForm({ field }: FieldDetailProps) {
   });
 
   React.useEffect(() => {
+    const harvest = harvestTypes.find((item) => item.code === field.harvest);
     formik.setValues({
       name: field.name,
       description: field.description,
-      harvest: field.harvest,
+      harvest: harvest ? harvest.code : "",
       area: field.area,
       areafrom: "map",
       plants: field.plants || 0,
@@ -109,7 +110,7 @@ export function FieldDetailForm({ field }: FieldDetailProps) {
       grassing: field.grassing,
       year: field.year || "",
     });
-  }, [field]);
+  }, [field, harvestTypes]);
 
   const harvestOptions = harvestTypes.filter(
     (item) => item.active !== false || item.code === field.harvest,

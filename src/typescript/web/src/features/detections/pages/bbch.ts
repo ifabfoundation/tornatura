@@ -949,6 +949,345 @@ const bbchsPesco = {
   },
 };
 
+const bbchsAlbicocca = { 
+  bbch_0: {
+    icon: false,
+    name: "0. Gemme",
+    items: {
+      bbch_00: {
+        name: "00 Gemme dormienti",
+        value: "00",
+        thumbnail: "pomacee_00_gemme.png",
+        icon: false,
+      },
+      bbch_01: {
+        name: "01 Gemme in rigonfiamento",
+        value: "01",
+        thumbnail: "pomacee_00_gemme.png",
+        icon: false,
+      },
+      bbch_03: {
+        name: "03 Gemme rigonfie",
+        value: "03",
+        thumbnail: "pomacee_00_gemme.png",
+        icon: false,
+      },
+      bbch_07: {
+        name: "07 Punte verdi visibili",
+        value: "07",
+        thumbnail: "pomacee_00_gemme.png",
+        icon: false,
+      },
+      bbch_09: {
+        name: "09 Punte verdi 5 mm",
+        value: "09",
+        thumbnail: "pomacee_00_gemme.png",
+        icon: false,
+      },
+    },
+  },
+  bbch_1: {
+    icon: false,
+    name: "1. Foglie",
+    items: {
+      bbch_10: {
+        name: "10 Orecchio di topo",
+        value: "10",
+        thumbnail: "pomacee_1_foglie.png",
+        icon: false,
+      },
+      bbch_11: {
+        name: "11 Prime foglie aperte",
+        value: "11",
+        thumbnail: "pomacee_1_foglie.png",
+        icon: false,
+      },
+      bbch_15: {
+        name: "15 Foglie in crescita",
+        value: "15",
+        thumbnail: "pomacee_1_foglie.png",
+        icon: false,
+      },
+      bbch_19: {
+        name: "19 Foglie complete",
+        value: "19",
+        thumbnail: "pomacee_1_foglie.png",
+        icon: false,
+      },
+    },
+  },
+  bbch_3: {
+    icon: false,
+    name: "3. Germogli",
+    items: {
+      bbch_31: {
+        name: "31 Inizio crescita",
+        value: "31",
+        thumbnail: "pomacee_3_germogli.png",
+        icon: false,
+      },
+      bbch_32: {
+        name: "32 Germogli 20%",
+        value: "32",
+        thumbnail: "pomacee_3_germogli.png",
+        icon: false,
+      },
+      bbch_33: {
+        name: "33 Germogli 30%",
+        value: "33",
+        thumbnail: "pomacee_3_germogli.png",
+        icon: false,
+      },
+      bbch_39: {
+        name: "39 Germogli 90%",
+        value: "39",
+        thumbnail: "pomacee_3_germogli.png",
+        icon: false,
+      },
+    },
+  },
+  bbch_5: {
+    icon: false,
+    name: "5. Infiorescenza",
+    items: {
+      bbch_51: {
+        name: "51 Gemme fiorali",
+        value: "51",
+        thumbnail: "pomacee_5_infiorescenza.png",
+        icon: false,
+      },
+      bbch_52: {
+        name: "52 Gemme fiorali aperte",
+        value: "52",
+        thumbnail: "pomacee_5_infiorescenza.png",
+        icon: false,
+      },
+      bbch_53: {
+        name: "53 Fiori visibili",
+        value: "53",
+        thumbnail: "pomacee_5_infiorescenza.png",
+        icon: false,
+      },
+      bbch_54: {
+        name: "54 Orecchio di topo + fiori",
+        value: "54",
+        thumbnail: "pomacee_5_infiorescenza.png",
+        icon: false,
+      },
+      bbch_55: {
+        name: "55 Boccioli visibili",
+        value: "55",
+        thumbnail: "pomacee_5_infiorescenza.png",
+        icon: false,
+      },
+      bbch_56: {
+        name: "56 Bottone verde",
+        value: "56",
+        thumbnail: "pomacee_5_infiorescenza.png",
+        icon: false,
+      },
+      bbch_57: {
+        name: "57 Bottone rosa",
+        value: "57",
+        thumbnail: "pomacee_5_infiorescenza.png",
+        icon: false,
+      },
+      bbch_59: {
+        name: "59 Boccioli quasi aperti",
+        value: "59",
+        thumbnail: "pomacee_5_infiorescenza.png",
+        icon: false,
+      },
+    },
+  },
+  bbch_6: {
+    icon: false,
+    name: "6. Fioritura",
+    items: {
+      bbch_60: {
+        name: "60 Inizio fioritura",
+        value: "60",
+        thumbnail: "pomacee_6_fioritura.png",
+        icon: false,
+      },
+      bbch_61: {
+        name: "61 Fioritura 10%",
+        value: "61",
+        thumbnail: "pomacee_6_fioritura.png",
+        icon: false,
+      },
+      bbch_62: {
+        name: "62 Fioritura 20%",
+        value: "62",
+        thumbnail: "pomacee_6_fioritura.png",
+        icon: false,
+      },
+      bbch_63: {
+        name: "63 Fioritura 30%",
+        value: "63",
+        thumbnail: "pomacee_6_fioritura.png",
+        icon: false,
+      },
+      bbch_64: {
+        name: "64 Fioritura 40%",
+        value: "64",
+        thumbnail: "pomacee_6_fioritura.png",
+        icon: false,
+      },
+      bbch_65: {
+        name: "65 Piena fioritura",
+        value: "65",
+        thumbnail: "pomacee_6_fioritura.png",
+        icon: false,
+      },
+      bbch_67: {
+        name: "67 Caduta petali",
+        value: "67",
+        thumbnail: "pomacee_6_fioritura.png",
+        icon: false,
+      },
+      bbch_69: {
+        name: "69 Fine fioritura",
+        value: "69",
+        thumbnail: "pomacee_6_fioritura.png",
+        icon: false,
+      },
+    },
+  },
+  bbch_7: {
+    icon: false,
+    name: "7. Frutto",
+    items: {
+      bbch_71: {
+        name: "71 Allegagione",
+        value: "71",
+        thumbnail: "pomacee_7_frutto.png",
+        icon: false,
+      },
+      bbch_72: {
+        name: "72 Frutti 20 mm",
+        value: "72",
+        thumbnail: "pomacee_7_frutto.png",
+        icon: false,
+      },
+      bbch_73: {
+        name: "73 Seconda cascola",
+        value: "73",
+        thumbnail: "pomacee_7_frutto.png",
+        icon: false,
+      },
+      bbch_74: {
+        name: "74 Frutti 40 mm",
+        value: "74",
+        thumbnail: "pomacee_7_frutto.png",
+        icon: false,
+      },
+      bbch_75: {
+        name: "75 Frutto 50%",
+        value: "75",
+        thumbnail: "pomacee_7_frutto.png",
+        icon: false,
+      },
+      bbch_76: {
+        name: "76 Frutto 60%",
+        value: "76",
+        thumbnail: "pomacee_7_frutto.png",
+        icon: false,
+      },
+      bbch_77: {
+        name: "77 Frutto 70%",
+        value: "77",
+        thumbnail: "pomacee_7_frutto.png",
+        icon: false,
+      },
+      bbch_78: {
+        name: "78 Frutto 80%",
+        value: "78",
+        thumbnail: "pomacee_7_frutto.png",
+        icon: false,
+      },
+      bbch_79: {
+        name: "79 Frutto 90%",
+        value: "79",
+        thumbnail: "pomacee_7_frutto.png",
+        icon: false,
+      },
+    },
+  },
+  bbch_8: {
+    icon: false,
+    name: "8. Maturazione",
+    items: {
+      bbch_81: {
+        name: "81 Inizio invaiatura",
+        value: "81",
+        thumbnail: "pomacee_8_maturazione.png",
+        icon: false,
+      },
+      bbch_85: {
+        name: "85 Maturazione avanzata",
+        value: "85",
+        thumbnail: "pomacee_8_maturazione.png",
+        icon: false,
+      },
+      bbch_87: {
+        name: "87 Pronto raccolta",
+        value: "87",
+        thumbnail: "pomacee_8_maturazione.png",
+        icon: false,
+      },
+      bbch_89: {
+        name: "89 Pronto consumo",
+        value: "89",
+        thumbnail: "pomacee_8_maturazione.png",
+        icon: false,
+      },
+    },
+  },
+  bbch_9: {
+    icon: false,
+    name: "9. Senescenza",
+    items: {
+      bbch_91: {
+        name: "91 Fine crescita",
+        value: "91",
+        thumbnail: "pomacee_9_senescenza.png",
+        icon: false,
+      },
+      bbch_92: {
+        name: "92 Foglie ingiallenti",
+        value: "92",
+        thumbnail: "pomacee_9_senescenza.png",
+        icon: false,
+      },
+      bbch_93: {
+        name: "93 Inizio caduta",
+        value: "93",
+        thumbnail: "pomacee_9_senescenza.png",
+        icon: false,
+      },
+      bbch_95: {
+        name: "95 50% foglie cadute",
+        value: "95",
+        thumbnail: "pomacee_9_senescenza.png",
+        icon: false,
+      },
+      bbch_97: {
+        name: "97 Caduta completa",
+        value: "97",
+        thumbnail: "pomacee_9_senescenza.png",
+        icon: false,
+      },
+      bbch_99: {
+        name: "99 Raccolto",
+        value: "99",
+        thumbnail: "pomacee_9_senescenza.png",
+        icon: false,
+      },
+    },
+  },
+};
+
 const bbchsMais = {
   "bbch_0": {
     "icon": false,
@@ -1783,5 +2122,9 @@ export const bbchs: any = {
   olivo: {
     baseUrl: baseUrl,
     data: bbchsOlivo,
+  },
+  albicocca: {
+    baseUrl: baseUrl,
+    data: bbchsAlbicocca,
   },
 };
