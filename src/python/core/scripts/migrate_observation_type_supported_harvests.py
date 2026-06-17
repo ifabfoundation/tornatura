@@ -47,16 +47,17 @@ INITIAL_MAPPING = {
         "Panonycus citri",
         "Tetranycus urticae",
     ],
-    "albicocca": [
+    "albicocco": [
         "Cimice",
         "Mosca della frutta",
-        "Tignola dell'albicocca",
-        "Tignola orientale dell'albicocca",
+        "Tignola del pesco",
+        "Tignola orientale del pesco",
     ],
 }
 
 INACTIVE_LEGACY_HARVEST_TYPES = [
     {"code": "1", "label": "1"},
+    {"code": "albicocca", "label": "Albicocca (legacy)"},
     {"code": "Albicocche", "label": "Albicocche"},
     {"code": "Avvocado", "label": "Avvocado"},
     {"code": "Banane", "label": "Banane"},

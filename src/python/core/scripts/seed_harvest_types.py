@@ -18,12 +18,13 @@ ACTIVE_HARVEST_TYPES = [
     {"code": "barbabietola", "label": "Barbabietola", "active": True, "sortOrder": 50},
     {"code": "olivo", "label": "Olivo", "active": True, "sortOrder": 60},
     {"code": "agrumi", "label": "Agrumi", "active": True, "sortOrder": 70},
-    {"code": "albicocca", "label": "Albicocca", "active": True, "sortOrder": 80},
+    {"code": "albicocco", "label": "Albicocco", "active": True, "sortOrder": 80},
 ]
 
 
 INACTIVE_LEGACY_HARVEST_TYPES = [
     {"code": "1", "label": "1", "active": False, "sortOrder": 1000},
+    {"code": "albicocca", "label": "Albicocca (legacy)", "active": False, "sortOrder": 1005},
     {"code": "Albicocche", "label": "Albicocche", "active": False, "sortOrder": 1010},
     {"code": "Avvocado", "label": "Avvocado", "active": False, "sortOrder": 1020},
     {"code": "Banane", "label": "Banane", "active": False, "sortOrder": 1030},
