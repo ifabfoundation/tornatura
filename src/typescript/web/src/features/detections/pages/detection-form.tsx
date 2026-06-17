@@ -1045,10 +1045,10 @@ function DetectionFormMapPosition({
 
 const categoryIcons: any = {
   "Fungo e peronospora": "spots",
-  "Batterio": "bacteria",
-  "Insetto": "bug",
+  Batterio: "bacteria",
+  Insetto: "bug",
   "Insetto e acaro": "bug",
-  "Acaro": "bug",
+  Acaro: "bug",
 };
 
 type TypologyGroup = {
@@ -2379,7 +2379,11 @@ function DetectionStepObservationPoints({
                               </div>
                             </Col>
                             <Col className="h-100">
-                              <header className="font-s-label">Piante colpite</header>
+                              <header className="font-s-label">
+                                {observationType.method === "Trappola"
+                                  ? "Trappole con catture"
+                                  : "Piante colpite"}
+                              </header>
                               <div className="font-xl mt-1 mb-3">
                                 {getCountersStat("pianteColpite")}
                               </div>
