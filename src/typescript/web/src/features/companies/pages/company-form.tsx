@@ -103,7 +103,7 @@ function CompanyStep({ initialCompany, action, onBackClick, onNextClick }: Compa
           <Row>
             <Col className="mb-4">
               <h4>
-                <strong>Crea azienda</strong>
+                <strong>Registra azienda</strong>
               </h4>
               <p>Inserisci i dati dell'azienda da gestire in Tornatura.</p>
             </Col>
@@ -271,7 +271,6 @@ function CompanyConsentsStep({
     <form onSubmit={formik.handleSubmit} autoComplete="off">
       <div className="form-section">
         <div className="container px-0">
-
           <div className="row input-row">
             <div className="col">
               <label className="d-flex align-items-start">
@@ -298,7 +297,6 @@ function CompanyConsentsStep({
               ) : null}
             </div>
           </div>
-          
         </div>
       </div>
       <div className="buttons-wrapper mt-4 text-center">
@@ -431,7 +429,7 @@ export function CompanyForm() {
 
         {step === "questionnaire" && (
           <SignupImpactQuestionnaireStep
-            action="Crea azienda"
+            action="Registra azienda"
             initialValues={questionnaireValues}
             onBackClick={async () => setStep("consents")}
             onNextClick={createOrganization}
