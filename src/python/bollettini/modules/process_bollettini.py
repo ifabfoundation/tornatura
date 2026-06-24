@@ -26,7 +26,7 @@ import json
 import logging
 import warnings
 import os
-from typing import Dict, List
+from typing import Dict, List, Tuple, Optional
 from datetime import datetime
 
 # Suppress noisy loggers and warnings before imports
@@ -38,41 +38,18 @@ logging.getLogger("docling.pipeline").setLevel(logging.ERROR)
 logging.getLogger("rapidocr").setLevel(logging.ERROR)
 logging.getLogger("RapidOCR").setLevel(logging.ERROR)
 logging.getLogger("onnxruntime").setLevel(logging.ERROR)
-logging.getLogger("chromadb").setLevel(logging.ERROR)
-logging.getLogger("sentence_transformers").setLevel(logging.ERROR)
 logging.getLogger("httpx").setLevel(logging.ERROR)
 warnings.filterwarnings("ignore")
 
 from docling.document_converter import DocumentConverter, PdfFormatOption
-from sentence_transformers import SentenceTransformer
-import chromadb
 
 from bollettini import paths
+from bollettini.modules.chunk_store import ChunkStore
 
 # ============= CONFIGURAZIONE =============
-BASE_DIR = Path(__file__).parent.parent
-INPUT_DIR = paths.DATA_DIR  / "input_bollettini" / "emilia_romagna" / "bollettini"
-CHROMADB_DIR = paths.DATA_DIR  / "chromadb"
+INPUT_DIR = paths.DATA_DIR / "input_bollettini" / "emilia_romagna" / "bollettini"
+CHUNKSTORE_DB = paths.DATA_DIR / "chunks.db"
 CACHE_FILE = paths.DATA_DIR / "cache" / "processing_cache.json"
-
-# ============= CONFIGURAZIONE MALATTIE =============
-# Ogni malattia ha la sua collezione ChromaDB
-# - shared_sources: tipi di documento che vanno in TUTTE le collezioni
-# - exclusive_docs: documenti che vanno SOLO in questa collezione
-DISEASE_CONFIG = {
-    "cimice_asiatica": {
-        "collection_name": "cimice_asiatica",
-        "description": "Cimice Asiatica (Halyomorpha halys)",
-        "shared_sources": ["bollettino"],  # I bollettini vanno in tutte le collezioni
-        "exclusive_docs": []  # Nessun documento esclusivo per ora
-    },
-    "flavescenza_dorata": {
-        "collection_name": "flavescenza_dorata",
-        "description": "Flavescenza Dorata della vite",
-        "shared_sources": ["bollettino"],
-        "exclusive_docs": ["testo_lotta_flavescenza"]  # Va SOLO qui
-    }
-}
 
 # Parametri chunking
 MIN_CHUNK_WORDS = 50           # Minimo parole per chunk valido
@@ -112,8 +89,112 @@ PROTECTED_SECTIONS = {
     'D E T E R M I N A'
 }
 
-# Modello embedding
-MODEL_NAME = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+# ============= GROUP DIVIDERS (ER) =============
+# Nei bollettini ER le colture sono raggruppate in: ARBOREE -> ERBACEE -> ORTICOLE
+# (sempre in quest'ordine). Questi divisori chiudono comunque la coltura corrente
+# anche se non c'e' una nuova coltura subito dopo.
+GROUP_DIVIDERS = {
+    'COLTURE ARBOREE',
+    'COLTURE ERBACEE',
+    'COLTURE ORTICOLE',
+    'DISERBO ARBOREE',
+    'DISERBO ERBACEE',
+    'DIFESA ARBOREE',
+}
+
+# Marker che chiude la parte di Produzione Integrata (per ER).
+# Tutto cio' che segue (Produzione Biologica) viene scartato per ora.
+PI_END_MARKER = re.compile(
+    r'^#{1,3}\s+BOLLETTINO\s+DI\s+PRODUZIONE\s+BIOLOGICA',
+    re.M | re.I,
+)
+# ==========================================
+
+
+# ============= PARENT COLTURA TRACKING =============
+# Mappa header sezione -> coltura ID (canonical).
+# Header NON in questa mappa NON cambiano la coltura corrente: le sotto-sezioni
+# (Difesa, Diserbo, Tecniche agronomiche, Vincoli, ecc.) ereditano cosi'
+# automaticamente la coltura padre vista a monte.
+#
+# Coltura ID prefissato con '_' = coltura ER non configurata (frumento, mais,
+# colza...) - serve solo a "consumare" il flusso, le sezioni con questi parent
+# non verranno mai recuperate dal retrieval (che matcha solo ID configurati).
+COLTURA_HEADER_TO_ID = {
+    # === Configurate (ER + Campania) ===
+    'VITE': 'VITE',
+    'PERO': 'PERO',
+    'PESCO': 'PESCO',
+    'PESCO E NETTARINE': 'PESCO',
+    'MAIS': 'MAIS',
+    'GRANOTURCO': 'MAIS',
+    'BARBABIETOLA': 'BARBABIETOLA',
+    'BARBABIETOLA DA ZUCCHERO': 'BARBABIETOLA',
+    'BIETOLA': 'BARBABIETOLA',
+    'OLIVO': 'OLIVO',
+    'AGRUMI': 'AGRUMI',
+    'ACTINIDIA': 'ACTINIDIA',
+    'NOCCIOLO': 'NOCCIOLO',
+    'NOCE': 'NOCE',
+    'CIPOLLA': 'CIPOLLA',
+    'POMODORO': 'POMODORO',
+    'POMODORO DA INDUSTRIA': 'POMODORO',
+    'FRAGOLA': 'FRAGOLA',
+    'CASTAGNO': 'CASTAGNO',
+    'CILIEGIO': 'CILIEGIO',
+    'MELO': 'MELO',
+    'PATATA': 'PATATA',
+    'SUSINO': 'SUSINO',
+    'SUSINO CINO-GIAPPONESE ED EUROPEO': 'SUSINO',
+    'ALBICOCCO': 'ALBICOCCO',
+    # === ER non configurate (consumano il flusso) ===
+    'KAKI': '_KAKI',
+    'COLZA': '_COLZA',
+    'ERBA MEDICA': '_ERBA_MEDICA',
+    'FRUMENTO': '_FRUMENTO',
+    'GIRASOLE': '_GIRASOLE',
+    'RISO': '_RISO',
+    'SOIA': '_SOIA',
+    'SORGO': '_SORGO',
+    'AGLIO': '_AGLIO',
+    'ANGURIA': '_ANGURIA',
+    'ANGURIA (COLTURA SEMI FORZATA)': '_ANGURIA',
+    'ANGURIA (COLTURA SEMIFORZATA)': '_ANGURIA',
+    'ASPARAGO': '_ASPARAGO',
+    'CAROTA': '_CAROTA',
+    'MELONE': '_MELONE',
+    'MELONE (COLTURA SEMI FORZATA)': '_MELONE',
+    'PISELLO': '_PISELLO',
+    'ORZO': '_ORZO',
+}
+# ==========================================
+
+
+# ============= SEZIONI TRASVERSALI (modello a due assi) =============
+# Sezioni che NON sono blocchi-coltura ma contengono informazioni operative valide
+# per piu' colture (lotta obbligatoria, deroghe, revoche, rame, diserbo, ecc.).
+# Lo slice-by-coltura le scartava: qui le catturiamo e le attacchiamo alle colture
+# pertinenti via il campo metadata `applies_to`.
+#
+# Match per PREFISSO sul titolo header normalizzato (uppercase, senza ':' finale).
+# Valore: lista di coltura_id ER configurate, oppure la stringa "ALL" (tutte).
+# Mappatura curata sull'analisi di 8 bollettini (2 province x 4 stagioni).
+#
+# Valori di applies_to:
+#   - "PER_VOCE": sezione-LISTA dove ogni voce nomina la propria coltura (es. DEROGHE).
+#                 A query-time viene FILTRATA per-voce: a ogni coltura arrivano solo le
+#                 voci che la nominano (filtro deterministico, vedi colture.py). Cosi' niente
+#                 mis-attribuzione e niente voci perse.
+#   - "" (vuota): sezione riconosciuta solo come CONFINE (per non farla inghiottire da/in
+#                 altri chunk), ma NON attaccata ad alcuna coltura.
+#
+# Le altre trasversali "per categoria" o "regola generale senza coltura" (RAME, FIORITURA,
+# DISERBO ARBOREE/ERBACEE, CIMICE, GELATE, AFLATOSSINE, CAVALLETTE) sono volutamente ESCLUSE
+# dai report-coltura: andranno esposte come "Avvisi generali" UNA volta per bollettino (TODO).
+CROSS_CUTTING_SECTIONS = {
+    'DEROGHE AI DISCIPLINARI DI PRODUZIONE INTEGRATA': 'PER_VOCE',
+    'REVOCA PRODOTTI FITOSANITARI': '',
+}
 # ==========================================
 
 
@@ -178,66 +259,39 @@ def mark_processed(cache: Dict, pdf_name: str):
 
 # ============= PDF TO MARKDOWN ============
 
-# Converter con OCR ottimizzato (lazy init, riusato tra conversioni)
-_converter_default = None
-_converter_ocr_enhanced = None
+# Converter Docling con OCR DISATTIVATO (lazy init, riusato tra conversioni).
+#
+# OCR rimosso dopo verifica empirica (8 bollettini ER + Campania, giugno 2026):
+# do_ocr=True vs do_ocr=False producono output IDENTICO (>=99.9%) su questi PDF, che
+# sono digitali (testo nativo); l'OCR aggiungeva solo latenza (+40-65% di tempo).
+# Le immagini presenti sono solo loghi decorativi, ignorati come <!-- image -->.
+# Se in futuro dovesse arrivare un bollettino SCANSIONATO (senza testo nativo),
+# riabilitare l'OCR rimettendo do_ocr=True qui sotto.
+_converter = None
 
 
-def _get_converter(enhanced_ocr: bool = False) -> DocumentConverter:
-    """
-    Ritorna un DocumentConverter, creandolo solo al primo uso.
-
-    Args:
-        enhanced_ocr: Se True, usa OCR ottimizzato per PDF con immagini/tabelle
-                      (force_full_page_ocr + images_scale 2x).
-                      Usato per bollettini Campania e futuri bollettini con tabelle-immagine.
-    """
-    global _converter_default, _converter_ocr_enhanced
-
-    if not enhanced_ocr:
-        if _converter_default is None:
-            _converter_default = DocumentConverter()
-        return _converter_default
-
-    if _converter_ocr_enhanced is None:
-        from docling.datamodel.pipeline_options import PdfPipelineOptions, RapidOcrOptions
+def _get_converter() -> DocumentConverter:
+    """Ritorna il DocumentConverter (OCR off), creandolo solo al primo uso."""
+    global _converter
+    if _converter is None:
+        from docling.datamodel.pipeline_options import PdfPipelineOptions
         from docling.datamodel.base_models import InputFormat
 
-        pipeline_options = PdfPipelineOptions(
-            do_ocr=True,
-            ocr_options=RapidOcrOptions(
-                force_full_page_ocr=True,
-                lang=['it', 'en'],
-            ),
-            images_scale=2.0,
-        )
-
-        _converter_ocr_enhanced = DocumentConverter(
+        pipeline_options = PdfPipelineOptions(do_ocr=False)
+        _converter = DocumentConverter(
             format_options={
-                InputFormat.PDF: PdfFormatOption(
-                    pipeline_options=pipeline_options
-                )
+                InputFormat.PDF: PdfFormatOption(pipeline_options=pipeline_options)
             }
         )
-    return _converter_ocr_enhanced
+    return _converter
 
 
-def convert_pdf_to_markdown(pdf_path: Path, enhanced_ocr: bool = False) -> str | None:
-    """
-    Converte un PDF in Markdown usando Docling (in memoria).
-
-    Args:
-        pdf_path: Path al file PDF
-        enhanced_ocr: Se True, usa OCR ottimizzato (force_full_page_ocr + scale 2x).
-                      Consigliato per PDF con tabelle-immagine (es. bollettini Campania).
-    """
+def convert_pdf_to_markdown(pdf_path: Path) -> str | None:
+    """Converte un PDF in Markdown usando Docling (in memoria, OCR off)."""
     try:
-        mode = "enhanced OCR" if enhanced_ocr else "standard"
-        logger.info(f"  Conversione PDF -> Markdown ({mode})...")
-        converter = _get_converter(enhanced_ocr=enhanced_ocr)
-        result = converter.convert(str(pdf_path))
-        doc = result.document
-        return doc.export_to_markdown()
+        logger.info("  Conversione PDF -> Markdown...")
+        result = _get_converter().convert(str(pdf_path))
+        return result.document.export_to_markdown()
     except Exception as e:
         logger.error(f"  ✗ Errore conversione: {e}")
         return None
@@ -373,17 +427,22 @@ def preprocess_campania_markdown(md_text: str) -> str:
     """
     lines = md_text.splitlines()
 
-    # Nomi colture conosciute
+    # Nomi colture conosciute (uppercase). Aggiungi qui se nuove colture appaiono.
     CROP_NAMES = {
         'PESCO', 'OLIVO', 'VITE', 'NOCCIOLO', 'ACTINIDIA', 'MELO',
         'CASTAGNO', 'CILIEGIO', 'SUSINO', 'AGRUMI', 'POMODORO',
         'PERO', 'ALBICOCCO', 'KAKI', 'NOCE',
+        'CIPOLLA', 'FRAGOLA', 'PATATA',
     }
 
     # Varieta' note -> coltura (per identificazione da tabella dati)
     VARIETA_TO_CROP = {
         'hayward': 'ACTINIDIA', 'soreli': 'ACTINIDIA',
         'annurca': 'MELO', 'golden': 'MELO', 'fuji': 'MELO', 'gala': 'MELO',
+        'red delicious': 'MELO',
+        # NOTA: 'Lady Alice' rimossa - ambigua (mela rossa O patata).
+        # Nel bollettino NA e' patata: lasciamo che il riconoscimento via
+        # patogeno univoco (Tignola della patata, Alternaria Solani) attribuisca.
         'aglianico': 'VITE', 'falanghina': 'VITE', 'fiano': 'VITE',
         'greco': 'VITE', 'piedirosso': 'VITE', 'coda di volpe': 'VITE',
         'tonda di giffoni': 'NOCCIOLO', 'san giovanni': 'NOCCIOLO',
@@ -394,7 +453,117 @@ def preprocess_campania_markdown(md_text: str) -> str:
         'frantoio': 'OLIVO', 'leccino': 'OLIVO', 'olivella': 'OLIVO',
         'tonda': 'OLIVO',  # Tonda senza "di Giffoni" = Olivo in contesto olivicolo
         'olivicola': 'OLIVO',
+        # Fragola: Redsayra e' la fragola tipica di Giugliano (NA)
+        'redsayra': 'FRAGOLA',
+        'sabrosa': 'FRAGOLA', 'albion': 'FRAGOLA', 'monterey': 'FRAGOLA',
+        'candonga': 'FRAGOLA',
     }
+
+    # Patogeni / fitofagi univoci -> coltura. Usati come ultimo fallback per
+    # identificare colture senza header esplicito e senza varieta' nota
+    # (es. PATATA in bollettino NA: solo "Tignola della patata", "Phytophthora
+    # infestans", "Alternaria Solani" identificano la coltura).
+    # SOLO marker UNIVOCI (non condivisi tra colture).
+    PATOGENO_TO_CROP = {
+        'tignola della patata': 'PATATA',
+        'phthorimacea operculella': 'PATATA',
+        'alternaria solani': 'PATATA',
+        'rizottoniosi della patata': 'PATATA',
+        'rhizoctonia solani': 'PATATA',
+        # Pomodoro
+        'tuta absoluta': 'POMODORO',
+        # Cipolla
+        'mosca dei bulbi': 'CIPOLLA',
+        'tripidi della cipolla': 'CIPOLLA',
+        'thrips tabaci': 'CIPOLLA',
+        # Fragola
+        'antracnosi della fragola': 'FRAGOLA',
+        'oidio della fragola': 'FRAGOLA',
+        'phytoseiulus persimilis': 'FRAGOLA',  # predatore tipico fragola
+        'orius laevigatus': 'FRAGOLA',  # predatore tripidi in fragola
+        # Olivo
+        'mosca dell\'olivo': 'OLIVO',
+        'bactrocera oleae': 'OLIVO',
+        'occhio di pavone': 'OLIVO',
+        # Castagno
+        'cinipide galligeno': 'CASTAGNO',
+        'dryocosmus kuriphilus': 'CASTAGNO',
+        # Nocciolo
+        'eriofide del nocciolo': 'NOCCIOLO',
+        'phytocoptella avellanae': 'NOCCIOLO',
+        # Vite
+        'flavescenza dorata': 'VITE',
+        'scaphoideus titanus': 'VITE',
+        'tignoletta della vite': 'VITE',
+        # Pesco
+        'bolla del pesco': 'PESCO',
+        'taphrina deformans': 'PESCO',
+        'cydia molesta': 'PESCO',
+        'anarsia lineatella': 'PESCO',
+        # Melo
+        'ticchiolatura del melo': 'MELO',
+        'venturia inaequalis': 'MELO',
+        # Pero
+        'psilla del pero': 'PERO',
+        'cacopsylla pyri': 'PERO',
+        # Noce (univoci: separano la sezione noce dall'albicocco che la precede in CE)
+        'juglandis': 'NOCE',
+        'mosca delle noci': 'NOCE',
+        'rhagoletis completa': 'NOCE',
+        'gnomonia leptostyla': 'NOCE',
+    }
+
+    def _leading_crop(text_upper: str):
+        """Nome-coltura INIZIALE in una stringa uppercase (es. 'AGRUMI (ARANCIO E
+        MANDARINO)' -> 'AGRUMI'), o None. Gestisce i suffissi descrittivi tra parentesi
+        che il match esatto perderebbe."""
+        for _name in CROP_NAMES:
+            if (text_upper == _name
+                    or text_upper.startswith(_name + ' ')
+                    or text_upper.startswith(_name + '(')):
+                return _name
+        return None
+
+    # === PRE-PASS A: "## COLTURA" standalone + nome coltura su riga successiva ===
+    # Es. (CE 22/04/2026):
+    #   ## COLTURA
+    #   <vuoto>
+    #   PESCO
+    # Rimpiazziamo con "## COLTURA PESCO" su un'unica riga affinche' i
+    # marker successivi lo riconoscano. Il nome puo' avere un suffisso descrittivo
+    # (es. "AGRUMI (Arancio e mandarino)"): in tal caso teniamo solo il nome-coltura.
+    _new_lines = []
+    _i = 0
+    while _i < len(lines):
+        line = lines[_i]
+        if line.strip().upper() == '## COLTURA':
+            # Guarda le prossime 5 righe non vuote per un nome coltura
+            for _j in range(_i + 1, min(_i + 6, len(lines))):
+                _candidate = lines[_j].strip().upper().rstrip(':').strip()
+                if not _candidate:
+                    continue
+                # Considera valido se è una coltura conosciuta o forma
+                # "COLTURA <NAME>" / "<NAME>" plain (anche con suffisso tra parentesi)
+                _candidate = re.sub(r'^COLTURA[\s:]*', '', _candidate).strip()
+                _crop = _leading_crop(_candidate)
+                if _crop:
+                    # Sostituisci la riga "## COLTURA" con "## COLTURA <NAME>"
+                    _new_lines.append(f"## COLTURA {_crop.title()}")
+                    # Salta righe vuote e la riga contenente il nome
+                    _i = _j + 1
+                    break
+                # Se non e' una coltura ma e' un nome lungo, smetti di cercare
+                if len(_candidate) > 0 and not _candidate.isspace():
+                    _new_lines.append(line)
+                    _i += 1
+                    break
+            else:
+                _new_lines.append(line)
+                _i += 1
+        else:
+            _new_lines.append(line)
+            _i += 1
+    lines = _new_lines
 
     def _is_monitoring_table_header(line: str) -> bool:
         """Riga header di tabella con 'Stadio' = inizio sezione monitoraggio."""
@@ -484,11 +653,67 @@ def preprocess_campania_markdown(md_text: str) -> str:
             boundaries.append((i, m.group(1).upper()))
             continue
 
-        # "## COLTURA NOCCIOLO"
+        # "## COLTURA NOCCIOLO" (con spazio dopo COLTURA)
         m = re.match(r'^#+\s+COLTURA\s+(\w+)', stripped, re.IGNORECASE)
         if m and m.group(1).upper() in CROP_NAMES:
             boundaries.append((i, m.group(1).upper()))
             continue
+
+        # "## COLTURAOlivo" (no-spazio, OCR sporco). Test ogni nome coltura.
+        m = re.match(r'^#+\s+COLTURA(\w+)', stripped, re.IGNORECASE)
+        if m:
+            candidate = m.group(1).upper()
+            if candidate in CROP_NAMES:
+                boundaries.append((i, candidate))
+                continue
+            # Fuzzy: "OlivO" o suffisso parziale
+            for name in CROP_NAMES:
+                if candidate.startswith(name) or candidate == name:
+                    boundaries.append((i, name))
+                    break
+            else:
+                continue
+            continue
+
+        # "## NOMECOLTURA" da solo (es. "## SUSINO", "## CASTAGNO")
+        if stripped.startswith('##'):
+            content = stripped.lstrip('#').strip().upper()
+            if content in CROP_NAMES:
+                boundaries.append((i, content))
+                continue
+
+    # === PASSATA 1b: Identifica colture da patogeni univoci nelle aree orfane ===
+    # Cerca tabelle di monitoraggio NON attribuite in PASSATA 1 e prova a inferire
+    # la coltura dai patogeni citati nei ~80 righe successivi.
+    # Es. PATATA in NA: header e varietà sconosciute, ma "Tignola della patata",
+    # "Alternaria Solani", "Phytophthora infestans" identificano univocamente PATATA.
+    attributed_lines = {idx for idx, _ in boundaries}
+
+    for i, line in enumerate(lines):
+        if not _is_monitoring_table_header(line.strip()):
+            continue
+        if i in attributed_lines:
+            continue
+        # Tabella orfana: scansiona contenuto seguente per patogeni univoci
+        scan_end = min(i + 80, len(lines))
+        next_boundary = next(
+            (b_i for b_i, _ in boundaries if b_i > i),
+            scan_end,
+        )
+        scan_end = min(scan_end, next_boundary)
+        scan_text = '\n'.join(lines[i:scan_end]).lower()
+
+        # Conta hits per coltura
+        hits_by_crop = {}
+        for patogeno, crop in PATOGENO_TO_CROP.items():
+            if patogeno in scan_text:
+                hits_by_crop[crop] = hits_by_crop.get(crop, 0) + 1
+
+        if hits_by_crop:
+            # Prendi la coltura con piu' hits
+            best_crop = max(hits_by_crop.items(), key=lambda x: x[1])[0]
+            boundaries.append((i, best_crop))
+            attributed_lines.add(i)
 
     # === PASSATA 2: Ricostruisci il markdown con header normalizzati ===
     # Strategia: per ogni boundary, inseriamo un header "## NOMECOLTURA" e
@@ -531,56 +756,31 @@ def preprocess_campania_markdown(md_text: str) -> str:
 
         insert_points[insert_at] = crop_name
 
-    # Ordina i boundaries per indice riga per determinare le zone coltura
-    sorted_boundaries = sorted(insert_points.items(), key=lambda x: x[0])
-
-    # Per ogni boundary, calcola l'intervallo fino al prossimo boundary
-    crop_zones = []  # lista di (start, end, crop_name)
-    for idx, (start, crop_name) in enumerate(sorted_boundaries):
-        if idx + 1 < len(sorted_boundaries):
-            end = sorted_boundaries[idx + 1][0]
-        else:
-            end = len(lines)
-        crop_zones.append((start, end, crop_name))
-
-    # Set di righe che sono DENTRO una zona coltura (per declassare ## -> ###)
-    in_crop_zone = {}
-    for start, end, crop_name in crop_zones:
-        for j in range(start, end):
-            in_crop_zone[j] = crop_name
-
-    # Ricostruisci l'output
+    # Ricostruisci l'output: inseriamo gli header coltura normalizzati e
+    # rimuoviamo le righe COLTURA ridondanti. NON declassiamo gli ## interni
+    # alle zone coltura: slice_markdown_by_coltura usa COLTURA_HEADER_TO_ID
+    # per filtrare i boundaries, quindi gli ## sub-sezione (Difesa, Diserbo,
+    # Consigli, ecc.) non aprono nuovi chunks anche se rimangono "##".
     result = []
     for i, line in enumerate(lines):
-        # Inserisci header coltura normalizzato
         if i in insert_points:
             result.append(f"\n## {insert_points[i]}\n")
-
-        # Salta righe COLTURA ridondanti
         if i in lines_to_remove:
             continue
-
-        # Dentro una zona coltura: declassa ## -> #### per mantenere
-        # le sotto-sezioni (malattie, insetti) attaccate alla coltura.
-        # Uso #### (non ###) perche' SECTION_PATTERN matcha #{1,3}
-        if i in in_crop_zone and line.strip().startswith('## '):
-            clean_header = line.strip().lstrip('#').strip()
-            # Non declassare se e' il nome della coltura stessa
-            if clean_header.upper() not in CROP_NAMES:
-                result.append(f"#### {clean_header}")
-                continue
-
         result.append(line)
 
     return "\n".join(result)
 
 
-def extract_sections_from_markdown(md_text: str) -> Dict[str, str]:
+def extract_sections_from_markdown(md_text: str) -> List[Tuple[str, str]]:
     """
     Estrae sezioni dal markdown basandosi sui titoli.
-    Gestisce sezioni duplicate unendo il contenuto.
+
+    Ritorna una lista ordinata di tuple (title, content). Sezioni con titolo
+    duplicato (es. piu' "## Difesa") vengono mantenute separate, preservando
+    l'ordine di apparizione.
     """
-    sections = {}
+    sections: List[Tuple[str, str]] = []
     current_section = "Introduzione"
     buffer = []
 
@@ -590,11 +790,7 @@ def extract_sections_from_markdown(md_text: str) -> Dict[str, str]:
         if SECTION_PATTERN.match(line.strip()):
             if buffer:
                 content = "\n".join(buffer).strip()
-                # Se la sezione esiste già, unisci il contenuto
-                if current_section in sections:
-                    sections[current_section] += "\n\n" + content
-                else:
-                    sections[current_section] = content
+                sections.append((current_section, content))
                 buffer = []
             current_section = line.strip().lstrip('#').strip()
         else:
@@ -602,12 +798,47 @@ def extract_sections_from_markdown(md_text: str) -> Dict[str, str]:
 
     if buffer:
         content = "\n".join(buffer).strip()
-        if current_section in sections:
-            sections[current_section] += "\n\n" + content
-        else:
-            sections[current_section] = content
+        sections.append((current_section, content))
 
     return sections
+
+
+def _normalize_header(title: str) -> str:
+    """Normalizza un titolo header per match contro COLTURA_HEADER_TO_ID."""
+    t = title.upper().strip()
+    # Rimuovi colon finali e spazi
+    t = t.rstrip(':').strip()
+    # Collassa spazi multipli
+    t = re.sub(r'\s+', ' ', t)
+    return t
+
+
+def assign_parent_coltura(
+    sections: List[Tuple[str, str]],
+) -> List[Tuple[str, str, Optional[str]]]:
+    """
+    Walk delle sezioni in ordine, assegna parent_coltura a ognuna.
+
+    Regola:
+    - Se il titolo matcha un coltura header (COLTURA_HEADER_TO_ID) ->
+      parent corrente = coltura ID, anche per la sezione stessa.
+    - Altrimenti la sezione eredita il parent corrente.
+
+    Le sotto-sezioni con titolo generico (## Difesa, ## Diserbo, ## Tecniche
+    agronomiche, ## Vincoli, ## Post-emergenza, ## Fase fenologica: ...) che
+    seguono un header coltura vengono cosi' attribuite alla coltura giusta.
+
+    Le sezioni prima del primo coltura header hanno parent=None.
+    """
+    result = []
+    current = None
+    for title, content in sections:
+        norm = _normalize_header(title)
+        new_parent = COLTURA_HEADER_TO_ID.get(norm)
+        if new_parent is not None:
+            current = new_parent
+        result.append((title, content, current))
+    return result
 
 
 def is_protected_section(title: str) -> bool:
@@ -619,18 +850,23 @@ def is_protected_section(title: str) -> bool:
     return False
 
 
-def merge_small_sections(sections: Dict[str, str]) -> List[Dict]:
+def merge_small_sections(
+    sections: List[Tuple[str, str, Optional[str]]],
+) -> List[Dict]:
     """
     Unisce sezioni consecutive piccole in chunks più grandi.
     Sezioni sotto MERGE_THRESHOLD vengono unite alla successiva.
     Le sezioni PROTETTE (colture, cimice, deroghe) NON vengono mai unite.
+
+    Mantiene parent_coltura del chunk principale (la prima sezione del merge).
+    Non unisce mai sezioni con parent_coltura diverso (no cross-contamination).
     """
-    section_list = list(sections.items())
+    section_list = sections
     merged = []
 
     i = 0
     while i < len(section_list):
-        title, content = section_list[i]
+        title, content, parent = section_list[i]
         word_count = len(content.split()) if content else 0
 
         # Se è una sezione protetta, NON unirla mai
@@ -638,7 +874,8 @@ def merge_small_sections(sections: Dict[str, str]) -> List[Dict]:
             merged.append({
                 "title": title,
                 "content": content,
-                "original_titles": [title]
+                "original_titles": [title],
+                "parent_coltura": parent,
             })
             i += 1
             continue
@@ -651,10 +888,14 @@ def merge_small_sections(sections: Dict[str, str]) -> List[Dict]:
             # Continua a unire finché il totale è sotto MERGE_THRESHOLD
             j = i + 1
             while j < len(section_list):
-                next_title, next_content = section_list[j]
+                next_title, next_content, next_parent = section_list[j]
 
                 # NON unire con sezioni protette
                 if is_protected_section(next_title):
+                    break
+
+                # NON unire sezioni con parent_coltura diverso (anti-contaminazione)
+                if next_parent != parent:
                     break
 
                 next_words = len(next_content.split()) if next_content else 0
@@ -681,7 +922,8 @@ def merge_small_sections(sections: Dict[str, str]) -> List[Dict]:
             merged.append({
                 "title": combined_title,
                 "content": "\n\n".join(merged_content),
-                "original_titles": merged_titles
+                "original_titles": merged_titles,
+                "parent_coltura": parent,
             })
             i = j
         else:
@@ -689,46 +931,270 @@ def merge_small_sections(sections: Dict[str, str]) -> List[Dict]:
             merged.append({
                 "title": title,
                 "content": content,
-                "original_titles": [title]
+                "original_titles": [title],
+                "parent_coltura": parent,
             })
             i += 1
 
     return merged
 
 
+def trim_pi_section(md_text: str) -> str:
+    """
+    Per i bollettini ER: ritorna solo la parte 'Produzione Integrata',
+    troncando al primo header che inizia con 'BOLLETTINO DI PRODUZIONE BIOLOGICA'.
+
+    Se il marker non e' presente, ritorna il testo invariato.
+    """
+    match = PI_END_MARKER.search(md_text)
+    if match:
+        return md_text[:match.start()].rstrip()
+    return md_text
+
+
+def _merge_consecutive_same_coltura(chunks: List[Dict]) -> List[Dict]:
+    """
+    Unisce chunks consecutivi con lo stesso coltura_id in un unico chunk.
+
+    Necessario per Campania dove preprocess_campania_markdown puo' inserire
+    header duplicati ravvicinati (es. 2x ## NOCCIOLO per le 2 righe header
+    della tabella di monitoraggio). Anche per ER risolve casi tipo "VITE iniziale
+    + VITE reale" che diventano un unico chunk piu' pulito.
+
+    Mantiene il primo title (di solito il piu' rappresentativo).
+    """
+    if not chunks:
+        return chunks
+
+    merged = [chunks[0]]
+    for ch in chunks[1:]:
+        last = merged[-1]
+        if ch['coltura_id'] and ch['coltura_id'] == last['coltura_id']:
+            last['content'] = last['content'].rstrip() + '\n\n' + ch['content'].lstrip()
+        else:
+            merged.append(ch)
+    return merged
+
+
+def slice_markdown_by_coltura(md_text: str) -> List[Dict]:
+    """
+    Strategia di chunking per ER: una coltura = un chunk.
+
+    Algoritmo:
+    1. Identifica tutti gli header `## ` che sono:
+       - Coltura header (in COLTURA_HEADER_TO_ID) -> avvia un chunk
+       - Group divider (COLTURE ARBOREE/ERBACEE/ORTICOLE/DISERBO ARBOREE/...) ->
+         chiude la coltura corrente ma non avvia un nuovo chunk
+    2. Per ogni coltura header, raccoglie tutto il contenuto (incluse sotto-sezioni
+       come ## Difesa, ## Diserbo, ## Tecniche agronomiche) fino al prossimo
+       confine (altra coltura, divisore, fine documento).
+    3. Ritorna list di dict {title, content, coltura_id}.
+
+    Le sezioni di preambolo (prima della prima coltura) e quelle non riconducibili
+    a una coltura specifica vengono ignorate per ora.
+    """
+    lines = md_text.splitlines()
+
+    # Trova tutti i confini (## headers che sono coltura o divider)
+    boundaries = []  # (line_idx, kind, coltura_id_or_none)
+    for i, line in enumerate(lines):
+        s = line.strip()
+        if not s.startswith('## ') or s.startswith('###'):
+            continue
+        title = s.lstrip('#').strip()
+        norm = _normalize_header(title)
+
+        if norm in COLTURA_HEADER_TO_ID:
+            boundaries.append((i, 'coltura', COLTURA_HEADER_TO_ID[norm]))
+        elif norm in GROUP_DIVIDERS:
+            boundaries.append((i, 'divider', None))
+
+    # Aggiungi sentinella di fine documento
+    boundaries.append((len(lines), 'end', None))
+
+    # Genera un chunk per ogni coltura, contenuto da line_idx a prossimo confine
+    chunks = []
+    for idx, (line_idx, kind, cid) in enumerate(boundaries):
+        if kind != 'coltura':
+            continue
+        end_idx = boundaries[idx + 1][0]
+        # Titolo originale dell'header (prima riga)
+        title = lines[line_idx].strip().lstrip('#').strip()
+        content = '\n'.join(lines[line_idx:end_idx]).strip()
+        chunks.append({
+            'title': title,
+            'content': content,
+            'coltura_id': cid,
+        })
+
+    return chunks
+
+
+def slice_cross_cutting_sections(md_text: str) -> List[Dict]:
+    """
+    Estrae le sezioni TRASVERSALI (non blocchi-coltura) che valgono per piu' colture
+    (lotta obbligatoria, deroghe, revoche, rame, diserbo, cimice, ecc.).
+
+    Una sezione trasversale va dal suo header al prossimo CONFINE (header coltura,
+    divisore di gruppo, altra sezione trasversale, o "PARTE SPECIFICA"): cosi' le sue
+    eventuali sotto-sezioni (## Tempistica, ## Vigneto, ...) vengono assorbite e non la
+    troncano. Ritorna lista di dict {title, content, applies_to}.
+    """
+    lines = md_text.splitlines()
+
+    def _cc_key(title: str):
+        t = _normalize_header(title)
+        for key in CROSS_CUTTING_SECTIONS:
+            if t == key or t.startswith(key):
+                return key
+        return None
+
+    boundaries = []  # (line_idx, cc_key_or_None, title)
+    for i, line in enumerate(lines):
+        s = line.strip()
+        if not s.startswith('## ') or s.startswith('###'):
+            continue
+        title = s.lstrip('#').strip()
+        norm = _normalize_header(title)
+        cc = _cc_key(title)
+        is_boundary = (
+            norm in COLTURA_HEADER_TO_ID
+            or norm in GROUP_DIVIDERS
+            or cc is not None
+            or norm.startswith('PARTE SPECIFICA')
+        )
+        if is_boundary:
+            boundaries.append((i, cc, title))
+
+    boundaries.append((len(lines), None, None))
+
+    sections = []
+    for idx in range(len(boundaries) - 1):
+        line_idx, cc, title = boundaries[idx]
+        if cc is None:
+            continue
+        end_idx = boundaries[idx + 1][0]
+        content = '\n'.join(lines[line_idx:end_idx]).strip()
+        if len(content.split()) < 8:  # scarta header senza contenuto reale
+            continue
+        sections.append({
+            'title': title,
+            'content': content,
+            'applies_to': CROSS_CUTTING_SECTIONS[cc],
+        })
+    return sections
+
+
 def create_chunks_from_markdown(md_text: str, doc_name: str) -> List[Dict]:
-    """Crea chunks dal testo markdown con merging intelligente"""
+    """
+    Crea chunks dal testo markdown.
+
+    Strategia per regione:
+    - Emilia-Romagna: slice-by-coltura (un chunk per coltura, include tutte le
+      sotto-sezioni, niente filtri). Trim della parte BIO.
+    - Campania: chunking sezione-based con merge (logica originale).
+    - Documenti normativi: preprocessing dedicato + chunking standard.
+    """
     file_metadata = extract_metadata_from_filename(doc_name)
+    regione = file_metadata.get("regione") or "emilia_romagna"
 
     # Pre-processa documenti normativi per estrarre sezioni importanti
     if file_metadata["tipo_documento"] == "normativa":
         md_text = preprocess_normativa_markdown(md_text)
 
-    # Pre-processa documenti Campania per normalizzare intestazioni colture
-    if file_metadata.get("regione") == "campania":
+    # === STRATEGIA ER: slice-by-coltura ===
+    if regione == "emilia_romagna":
+        # Trim della parte di Produzione Biologica (per ora ignorata)
+        md_text = trim_pi_section(md_text)
+
+        coltura_chunks = slice_markdown_by_coltura(md_text)
+        coltura_chunks = _merge_consecutive_same_coltura(coltura_chunks)
+
+        chunks = []
+        for idx, ch in enumerate(coltura_chunks):
+            chunks.append({
+                "chunk_id": f"{doc_name}_chunk_{idx}",
+                "content": ch["content"],
+                "metadata": {
+                    "doc_name": doc_name,
+                    "section_title": ch["title"],
+                    "numero_bollettino": file_metadata["numero_bollettino"],
+                    "data": file_metadata["data"],
+                    "province": ",".join(file_metadata["province"]) if file_metadata["province"] else "",
+                    "tipo_documento": file_metadata["tipo_documento"],
+                    "regione": regione,
+                    "parent_coltura": ch["coltura_id"] or "",
+                },
+            })
+
+        # Sezioni trasversali (modello a due assi): attaccate alle colture pertinenti
+        # via `applies_to` (lista coltura_id o "ALL"). Vedi docs/redesign_er.md.
+        for j, cc in enumerate(slice_cross_cutting_sections(md_text)):
+            applies = cc["applies_to"]
+            applies_str = ",".join(applies) if isinstance(applies, list) else applies
+            chunks.append({
+                "chunk_id": f"{doc_name}_cc_{j}",
+                "content": cc["content"],
+                "metadata": {
+                    "doc_name": doc_name,
+                    "section_title": cc["title"],
+                    "numero_bollettino": file_metadata["numero_bollettino"],
+                    "data": file_metadata["data"],
+                    "province": ",".join(file_metadata["province"]) if file_metadata["province"] else "",
+                    "tipo_documento": file_metadata["tipo_documento"],
+                    "regione": regione,
+                    "parent_coltura": "",
+                    "applies_to": applies_str,
+                },
+            })
+        return chunks
+
+    # === STRATEGIA CAMPANIA: stesso slice-by-coltura di ER, ma con preprocess
+    # che normalizza gli header inconsistenti del bollettino provinciale
+    # ("COLTURA X", "## COLTURA: X", tabelle senza header esplicito, varieta'
+    # come marker, ecc.). Post-merge per collassare header duplicati.
+    if regione == "campania":
         md_text = preprocess_campania_markdown(md_text)
 
-    sections = extract_sections_from_markdown(md_text)
+        coltura_chunks = slice_markdown_by_coltura(md_text)
+        coltura_chunks = _merge_consecutive_same_coltura(coltura_chunks)
 
-    # Unisci sezioni piccole
-    merged_sections = merge_small_sections(sections)
+        chunks = []
+        for idx, ch in enumerate(coltura_chunks):
+            chunks.append({
+                "chunk_id": f"{doc_name}_chunk_{idx}",
+                "content": ch["content"],
+                "metadata": {
+                    "doc_name": doc_name,
+                    "section_title": ch["title"],
+                    "numero_bollettino": file_metadata["numero_bollettino"],
+                    "data": file_metadata["data"],
+                    "province": ",".join(file_metadata["province"]) if file_metadata["province"] else "",
+                    "tipo_documento": file_metadata["tipo_documento"],
+                    "regione": regione,
+                    "parent_coltura": ch["coltura_id"] or "",
+                },
+            })
+        return chunks
+
+    # === FALLBACK: chunking sezione-based con merge (documenti normativi o altro) ===
+    sections = extract_sections_from_markdown(md_text)
+    sections_with_parent = assign_parent_coltura(sections)
+    merged_sections = merge_small_sections(sections_with_parent)
 
     chunks = []
     chunk_index = 0
 
     for section in merged_sections:
         content = section["content"]
-        # Sezioni protette vengono mantenute anche se piccole (es. SANZIONI)
         is_protected = is_protected_section(section["title"])
         if not content:
             continue
         if len(content.split()) < MIN_CHUNK_WORDS and not is_protected:
             continue
 
-        chunk_id = f"{doc_name}_chunk_{chunk_index}"
-
-        chunk = {
-            "chunk_id": chunk_id,
+        chunks.append({
+            "chunk_id": f"{doc_name}_chunk_{chunk_index}",
             "content": content,
             "metadata": {
                 "doc_name": doc_name,
@@ -737,110 +1203,25 @@ def create_chunks_from_markdown(md_text: str, doc_name: str) -> List[Dict]:
                 "data": file_metadata["data"],
                 "province": ",".join(file_metadata["province"]) if file_metadata["province"] else "",
                 "tipo_documento": file_metadata["tipo_documento"],
-                "regione": file_metadata.get("regione", "emilia_romagna") or "emilia_romagna",
-            }
-        }
-
-        chunks.append(chunk)
+                "regione": regione,
+                "parent_coltura": section.get("parent_coltura") or "",
+            },
+        })
         chunk_index += 1
 
     return chunks
 # ==========================================
 
 
-# ============= EMBEDDINGS & CHROMADB ======
-def generate_embeddings(chunks: List[Dict], model: SentenceTransformer) -> List[Dict]:
-    """Genera embeddings per i chunks (batch per efficienza)"""
-    contents = [chunk["content"] for chunk in chunks]
-    vectors = model.encode(contents, show_progress_bar=False, batch_size=32)
-    for chunk, vector in zip(chunks, vectors):
-        chunk["vector"] = vector.tolist()
-    return chunks
-
-
-def get_or_create_collection(client: chromadb.PersistentClient, collection_name: str, description: str = ""):
-    """Ottiene o crea una collection ChromaDB"""
-    try:
-        return client.get_collection(collection_name)
-    except Exception:
-        return client.create_collection(
-            name=collection_name,
-            metadata={"description": description or f"Collection {collection_name}"}
-        )
-
-
-def get_target_collections(doc_name: str, tipo_documento: str) -> List[str]:
-    """
-    Determina in quali collezioni deve andare un documento.
-
-    Regole:
-    1. Se il documento è in 'exclusive_docs' di una malattia → solo quella collezione
-    2. Se il tipo_documento è in 'shared_sources' → tutte le collezioni che lo includono
-    """
-    target_collections = []
-
-    # Prima controlla se è un documento esclusivo
-    for disease_id, config in DISEASE_CONFIG.items():
-        for exclusive_doc in config.get('exclusive_docs', []):
-            if exclusive_doc.lower() in doc_name.lower():
-                # Documento esclusivo: va SOLO in questa collezione
-                return [config['collection_name']]
-
-    # Altrimenti, routing basato su tipo_documento
-    for disease_id, config in DISEASE_CONFIG.items():
-        if tipo_documento in config.get('shared_sources', []):
-            target_collections.append(config['collection_name'])
-
-    return target_collections
-
-
-def upload_chunks_to_chromadb(chunks: List[Dict], collection):
-    """Carica chunks su ChromaDB"""
-    ids = []
-    embeddings = []
-    metadatas = []
-    documents = []
-
-    for chunk in chunks:
-        ids.append(chunk["chunk_id"])
-        embeddings.append(chunk["vector"])
-
-        clean_meta = {}
-        for key, value in chunk["metadata"].items():
-            if value is None:
-                clean_meta[key] = ""
-            elif isinstance(value, (int, float, bool)):
-                clean_meta[key] = value
-            else:
-                clean_meta[key] = str(value)
-
-        metadatas.append(clean_meta)
-        documents.append(chunk["content"])
-
-    collection.add(
-        ids=ids,
-        embeddings=embeddings,
-        metadatas=metadatas,
-        documents=documents
-    )
-
-
-# ==========================================
-
-
 # ============= MAIN PROCESSING ============
-def process_single_pdf(pdf_path: Path, model: SentenceTransformer, collections: Dict[str, any]) -> bool:
+def process_single_pdf(pdf_path: Path, store) -> bool:
     """
-    Processa un singolo PDF: conversione, chunking, embedding, upload a collezioni appropriate.
-
-    Args:
-        collections: Dict con nome_collezione -> oggetto collection ChromaDB
+    Processa un singolo PDF: conversione, chunking, scrittura nel ChunkStore.
+    (Niente embedding/vettori: il retrieval e' per match esatto su metadati.)
     """
     try:
-        # Step 1: PDF -> Markdown (in memoria)
-        # Usa OCR enhanced per bollettini con tabelle-immagine (es. Campania)
-        needs_enhanced_ocr = pdf_path.name.startswith("Campania_")
-        md_text = convert_pdf_to_markdown(pdf_path, enhanced_ocr=needs_enhanced_ocr)
+        # Step 1: PDF -> Markdown (in memoria, OCR off - vedi nota su _get_converter)
+        md_text = convert_pdf_to_markdown(pdf_path)
         if not md_text:
             return False
 
@@ -852,23 +1233,10 @@ def process_single_pdf(pdf_path: Path, model: SentenceTransformer, collections: 
             logger.warning(f"  Nessun chunk creato")
             return False
 
-        # Step 3: Embeddings (una volta sola, riutilizzati per tutte le collezioni)
-        chunks_with_embeddings = generate_embeddings(chunks, model)
-
-        # Step 4: Determina collezioni target
-        tipo_documento = chunks[0]['metadata'].get('tipo_documento', 'bollettino')
-        target_collection_names = get_target_collections(doc_name, tipo_documento)
-
-        if not target_collection_names:
-            logger.warning(f"  Nessuna collezione target per {doc_name}")
-            return False
-
-        # Step 5: Upload a tutte le collezioni target
-        for coll_name in target_collection_names:
-            if coll_name in collections:
-                upload_chunks_to_chromadb(chunks_with_embeddings, collections[coll_name])
-
-        logger.info(f"  ✓ {len(chunks)} chunks -> {', '.join(target_collection_names)}")
+        # Step 3: Scrittura nel ChunkStore (sovrascrive eventuali chunk dello stesso doc).
+        store.delete_doc(doc_name)
+        store.upsert_chunks(chunks)
+        logger.info(f"  ✓ {len(chunks)} chunks -> ChunkStore")
 
         return True
 
@@ -890,29 +1258,14 @@ class BollettiniProcessor:
                        Se None, usa INPUT_DIR di default (Emilia-Romagna).
         """
         self.input_dir = input_dir or INPUT_DIR
-        self.model = None  # Lazy loading
-        self.client = None
-        self.collections = None
+        self.store = None  # Lazy loading (ChunkStore SQLite)
         self.cache = load_cache()
-    
+
     def _init_models(self):
-        """Inizializza modelli e connessioni (lazy)."""
-        if self.model is None:
-            logger.info("Caricamento modello embedding...")
-            self.model = SentenceTransformer(MODEL_NAME)
-        
-        if self.client is None:
-            CHROMADB_DIR.mkdir(parents=True, exist_ok=True)
-            logger.info("Inizializzazione ChromaDB...")
-            self.client = chromadb.PersistentClient(path=str(CHROMADB_DIR))
-            
-            self.collections = {}
-            for disease_id, config in DISEASE_CONFIG.items():
-                coll_name = config['collection_name']
-                self.collections[coll_name] = get_or_create_collection(
-                    self.client, coll_name, config.get('description', '')
-                )
-                logger.info(f"  ✓ Collezione: {coll_name}")
+        """Inizializza lo store (lazy)."""
+        if self.store is None:
+            logger.info(f"Apertura ChunkStore: {CHUNKSTORE_DB}")
+            self.store = ChunkStore(CHUNKSTORE_DB)
     
     def process_files(self, pdf_paths: List[Path], skip_cache: bool = False) -> tuple[int, int]:
         """
@@ -939,7 +1292,7 @@ class BollettiniProcessor:
         for i, pdf_path in enumerate(pdf_paths, 1):
             logger.info(f"[{i}/{len(pdf_paths)}] {pdf_path.name}")
             
-            if process_single_pdf(pdf_path, self.model, self.collections):
+            if process_single_pdf(pdf_path, self.store):
                 mark_processed(self.cache, pdf_path.name)
                 success_count += 1
         
@@ -960,11 +1313,9 @@ class BollettiniProcessor:
         logger.info("PROCESSING BOLLETTINI")
         logger.info("=" * 60)
         
-        # Mostra configurazione
-        logger.info(f"Collezioni configurate: {len(DISEASE_CONFIG)}")
-        for disease_id, config in DISEASE_CONFIG.items():
-            logger.info(f"  - {config['collection_name']}: {config['description']}")
-        
+        self._init_models()
+        logger.info(f"Store: {CHUNKSTORE_DB}")
+
         # Trova tutti i PDF (supporta anche sottodirectory per anno)
         pdf_files = list(self.input_dir.glob("*.pdf"))
         pdf_files.extend(self.input_dir.glob("*/*.pdf"))
@@ -1000,39 +1351,31 @@ class BollettiniProcessor:
         logger.info(f"COMPLETATO in {duration:.1f}s | Processati: {success_count}/{total}")
         logger.info(f"Totale in cache: {len(self.cache.get('processed_files', []))}")
         
-        collection_stats = {}
-        if self.collections:
-            for coll_name, coll in self.collections.items():
-                count = coll.count()
-                collection_stats[coll_name] = count
-                logger.info(f"  {coll_name}: {count} chunks")
-        
+        store_count = self.store.count() if self.store else 0
+        logger.info(f"  ChunkStore: {store_count} chunks totali")
         logger.info("=" * 60)
-        
+
         return success_count > 0, {
             'processed': success_count,
             'total': total,
             'cached': cached_count,
             'duration_seconds': duration,
-            'collections': collection_stats
+            'store_chunks': store_count,
         }
     
     def _filter_latest_per_province(self, pdf_paths: List[Path]) -> List[Path]:
-        """Filtra mantenendo solo l'ultimo bollettino per ogni provincia."""
+        """Filtra mantenendo solo l'ultimo bollettino per ogni provincia.
+        I documenti 'normativa' (es. testo lotta flavescenza) sono sempre inclusi."""
         bollettini = []
-        exclusive_docs = []
-        
-        all_exclusive = []
-        for config in DISEASE_CONFIG.values():
-            all_exclusive.extend(config.get('exclusive_docs', []))
-        
+        exclusive_docs = []  # documenti normativa: sempre inclusi
+
         for pdf_path in pdf_paths:
-            is_exclusive = any(exc.lower() in pdf_path.stem.lower() for exc in all_exclusive)
-            if is_exclusive:
+            meta = extract_metadata_from_filename(pdf_path.name)
+            if meta.get('tipo_documento') == 'normativa':
                 exclusive_docs.append(pdf_path)
             else:
                 bollettini.append(pdf_path)
-        
+
         if bollettini:
             province_latest: Dict[str, tuple[Path, str]] = {}
             
