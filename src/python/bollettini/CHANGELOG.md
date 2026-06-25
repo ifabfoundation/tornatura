@@ -39,6 +39,9 @@ Campania. **L'integrazione di produzione resta intatta** (api/scheduler/run_pipe
   `src/python/bollettini/requirements.txt` e dalla dep-list di `src/python/bollettini/BUILD`.
 - **DA FARE prima del merge:** rigenerare il lockfile → `pants generate-lockfiles --resolve=bollettini`
   (gira su Linux/CI, non su Windows). `docling`/`torch` restano (necessari a Docling).
+- **Dichiarare `beautifulsoup4`**: è importata da `modules/download_campania.py` (scraping HTML) ma
+  NON era elencata in `bollettini-requirements.txt` (lo standalone la dichiara). Aggiungerla alla
+  rigenerazione del lockfile, altrimenti il download Campania fallisce ("beautifulsoup4 richiesto").
 - `.gitignore`: ora ignora `data/chunks.db`.
 
 ### Invariato (integrazione di produzione)
