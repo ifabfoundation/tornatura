@@ -2,6 +2,7 @@ python_sources(
     name="pysource",
     dependencies=[
         "3rdparty/python:bollettini#APScheduler",
+        "3rdparty/python:bollettini#beautifulsoup4",
         "3rdparty/python:bollettini#docling",
         "3rdparty/python:bollettini#fastapi",
         "3rdparty/python:bollettini#geopandas",
