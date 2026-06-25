@@ -36,5 +36,5 @@ data/output_bollettini/{regione}/{coltura}/{province}_{DD-MM-YYYY}.md (+ .html)
 
 ## Documentazione
 - **`CLAUDE.md`** — doc operativa (architettura, struttura, comandi).
-- **`report.md`** — doc tecnica completa (pipeline, prompt, validazione, integrazione, costi).
+- **`REPORT.md`** — doc tecnica completa (pipeline, prompt, validazione, integrazione, costi).
 - **`CHANGELOG.md`** — storico modifiche (vedi la voce **2026-06** per la migrazione a SQLite + due prompt).

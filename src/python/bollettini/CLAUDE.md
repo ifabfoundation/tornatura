@@ -5,7 +5,7 @@ dai bollettini fitosanitari e genera report (Markdown + HTML).
 Regioni: **Emilia-Romagna** (API REST Plone) e **Campania** (scraping HTML).
 
 Principio guida: **estrazione fedele** — riportare TUTTO il crop-specifico della fonte, senza perdere
-dati e senza inventarne. Dettaglio tecnico completo: `report.md`. Storico modifiche: `CHANGELOG.md`.
+dati e senza inventarne. Dettaglio tecnico completo: `REPORT.md`. Storico modifiche: `CHANGELOG.md`.
 
 ## Architettura (aggiornata 2026-06)
 - **Storage: SQLite** (`modules/chunk_store.py`, `ChunkStore`, file `data/chunks.db`). **Niente
@@ -78,9 +78,9 @@ Dichiarate in `3rdparty/python/bollettini-requirements.txt` (resolve `bollettini
 `bollettini.lock`). Principali: `docling`, `openai`, `markdown`, `requests`, `fastapi`, `uvicorn`,
 `geopandas`, `shapely`, `APScheduler`, `python-dotenv`. **Rimossi** `chromadb` e `sentence-transformers`.
 Dopo modifiche alle dipendenze: `pants generate-lockfiles --resolve=bollettini` (Linux/CI).
-> Nota: `download_campania.py` usa `beautifulsoup4` — assicurarsi che sia dichiarata (vedi CHANGELOG).
+> Nota: `download_campania.py` usa `beautifulsoup4`, dichiarata in `3rdparty/python/bollettini-requirements.txt` e nel `BUILD` (vedi CHANGELOG).
 
 ## Note operative
 1. Solo l'**ultimo bollettino per provincia** viene rigenerato; i precedenti vanno in `history/`.
 2. Le colture fuori stagione producono report statici "Nessuna informazione…" (nessuna chiamata LLM).
-3. Per prompt completi, validazione, integrazione e costi: `report.md`. Modifiche recenti: `CHANGELOG.md`.
+3. Per prompt completi, validazione, integrazione e costi: `REPORT.md`. Modifiche recenti: `CHANGELOG.md`.
