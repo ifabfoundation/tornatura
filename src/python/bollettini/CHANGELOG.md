@@ -4,6 +4,61 @@ Registro delle modifiche per il team backend.
 
 ---
 
+## [2026-06-24] - Migrazione a SQLite + due prompt dedicati + Campania completa
+
+### Overview per il team
+Allineamento del package `bollettini` alla versione avanzata e **validata** dello standalone
+RAG_colture. Cambia il motore di retrieval/generazione (niente più ChromaDB) e si amplia la
+Campania. **L'integrazione di produzione resta intatta** (api/scheduler/run_pipeline/geopandas/Docker).
+
+### Cosa cambia
+1. **Storage: da ChromaDB a SQLite.** Rimossi ChromaDB ed embeddings (`sentence-transformers`): il
+   retrieval è per **match esatto sui metadati** (una coltura = un chunk), un vettoriale non serviva.
+   Nuovo `modules/chunk_store.py` (`ChunkStore`, solo `sqlite3` stdlib, file `data/chunks.db`); ritorna
+   la stessa forma di `ChromaDB.get()` per compatibilità coi consumatori.
+2. **Due system prompt per regione** (`SYSTEM_PROMPT` ER quantitativo/regolatorio,
+   `SYSTEM_PROMPT_CAMPANIA` qualitativo). Il prompt unico era stato testato e scartato (su Campania
+   induceva l'invenzione di numeri). **Non vanno ri-unificati.**
+3. **Pass di verifica/revisione** indipendente dopo la generazione (`VERIFY_PROMPT`/`REVISE_PROMPT`):
+   recupera i fatti mancanti e rimuove le affermazioni inventate (anti-perdita + anti-allucinazione).
+4. **Campania:** tabella di monitoraggio **iniettata deterministicamente** dal codice
+   (`extract_campania_monitoring`/`inject_monitoring`), non scritta dall'LLM; coda istituzionale
+   rimossa (`strip_campania_appendix`); fix del chunking (`preprocess_campania_markdown`).
+5. **ER:** deroghe filtrate **per-voce** (`filter_deroghe_per_voce`, deterministico).
+6. **Colture Campania: da 11 a 17** (`config.py`): aggiunte NOCE, CIPOLLA, FRAGOLA, PATATA, ALBICOCCO,
+   PERO. Modifica **additiva**: `api.py` itera su `COLTURE` in modo generico, non si rompe.
+7. **OCR disattivato** (`do_ocr=False`) in Docling: su questi PDF (testo nativo) l'output è identico
+   ed è più veloce.
+8. **`api.py` — report Campania servibili per posizione.** `_shapefile_candidates` ora preferisce
+   `province_italia.shp` (tutta Italia, 107 province) invece di `province_emilia_romagna.shp` (solo 9
+   province ER): un lat/lng in Campania prima dava **404**. Verificato: Napoli/Salerno/Avellino →
+   `region_id=campania`, Bologna/Parma → `emilia_romagna`. **Una sola riga** cambiata in `api.py`.
+
+### Dipendenze (Pants)
+- Rimossi `chromadb` e `sentence-transformers` da `3rdparty/python/bollettini-requirements.txt`, da
+  `src/python/bollettini/requirements.txt` e dalla dep-list di `src/python/bollettini/BUILD`.
+- **DA FARE prima del merge:** rigenerare il lockfile → `pants generate-lockfiles --resolve=bollettini`
+  (gira su Linux/CI, non su Windows). `docling`/`torch` restano (necessari a Docling).
+- `.gitignore`: ora ignora `data/chunks.db`.
+
+### Invariato (integrazione di produzione)
+`scheduler.py`, `run_pipeline.py`, la logica di `api.py` (a parte l'ordine degli shapefile), geopandas
+e gli shapefile, il `Dockerfile` (solo più leggero senza ChromaDB). I path passano sempre da `paths.py`
+(`chunks.db` vive in `paths.DATA_DIR`, quindi nel volume runtime).
+
+### Validazione
+- Run completo dello standalone su bollettini freschi (giugno): 115 report, **0 errori gravi**.
+- Package portato: test di cablaggio + campione end-to-end sotto il layout tornatura OK.
+- Geo-lookup verificato per Campania ed Emilia-Romagna.
+
+### Note ambiente (solo Windows, non bug)
+- Emoji nei messaggi di log → errore di logging su console cp1252: impostare `PYTHONUTF8=1` nei run
+  Windows (su Linux/AWS non accade).
+- Docling `std::bad_alloc` sulle pagine alte di PDF molto lunghi (memoria): dimensionare bene il
+  container; il contenuto-coltura non è impattato (pagine della Produzione Biologica, comunque scartate).
+
+---
+
 ## [2026-03-10] - Transfer Package v2.0 - Riepilogo Completo Aggiornamenti
 
 ### Overview per il Backend Developer
