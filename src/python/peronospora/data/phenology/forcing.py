@@ -1,5 +1,5 @@
 import math
-from peronospora.data.phenology.data_structures import InputDaily, Parameters, Output
+from peronospora.data.phenology.data_structures import InputDaily, Parameters, Output, BBCHParameter
 
 
 class Forcing:
@@ -59,81 +59,71 @@ class Forcing:
         Forcing.phenological_susceptibility(parameters, output)
     
     @staticmethod
+    def generate_detailed_phenology_parameters(parameters: Parameters) -> None:
+        """Espande le soglie BBCH GREZZE (sparse) in soglie DETTAGLIATE per ogni
+        intero BBCH 10..98. Replica fedele del C# octoPus
+        octoPusRunner.generateDetailedPhenologyParameters (chiamata una volta, prima
+        del loop fenologico). Senza questo passaggio il BBCH risultava molto in ritardo.
+        Idempotente: se i parametri sono già dettagliati non rifà nulla.
+        """
+        raw = {code: bp.cycle_completion for code, bp in parameters.bbch_parameters.items()}
+        if len(raw) > 30:   # già espansi (chiavi intere consecutive)
+            return
+        if 99 not in raw:
+            raw[99] = 100.0
+        keys = sorted(raw.keys())
+        flowering_fraction = raw[65] / 100.0
+
+        def _li(x1, y1, x2, y2, x):
+            if (x2 - x1) == 0:
+                return (y2 + y1) / 2.0
+            return y1 + (x - x1) * (y2 - y1) / (x2 - x1)
+
+        detailed = {}
+        for i in range(len(keys)):
+            cur = keys[i]
+            if cur < 99:
+                nxt = keys[i + 1]
+                for j in range(nxt - cur):
+                    this = cur + j
+                    if nxt < 65:
+                        val = _li(cur, raw[cur], nxt, raw[nxt], this) * flowering_fraction
+                    elif nxt == 65:
+                        val = _li(cur, raw[cur], nxt, 100, this) * flowering_fraction
+                    elif nxt < 99:
+                        target = flowering_fraction * 100 + raw[nxt] / 100.0 * (100 - raw[cur])
+                        val = _li(cur, raw[cur], nxt, target, this)
+                    else:
+                        start = flowering_fraction * 100 + raw[cur] * (1 - flowering_fraction)
+                        val = _li(cur, start, nxt, 100, this)
+                    detailed[this] = val
+        parameters.bbch_parameters = {
+            b: BBCHParameter(bbch_code=b, cycle_completion=v) for b, v in detailed.items()
+        }
+
+    @staticmethod
     def compute_bbch(parameters: Parameters, output: Output) -> None:
-        """Compute BBCH code based on forcing state."""
+        """Calcola il codice BBCH dal forcing_state.
+
+        Replica fedele del C# octoPus Forcing.cs computeBBCH(): itera le soglie BBCH
+        DETTAGLIATE (chiavi intere consecutive prodotte da
+        generate_detailed_phenology_parameters), con accumulo per-coppia e NESSUN
+        break (vince l'ultimo match, come nel C#). Validato esatto vs C# in
+        fix_fenologia/octopus_core.py (r=1.0000 su bbch_code).
+        """
         forcing_state = output.outputs_phenology.forcing_state
         cycle_length = parameters.phenology_parameters.cycle_length
-        
-        # Get all BBCH keys sorted
-        bbch_keys = sorted(parameters.bbch_parameters.keys())
-        
-        if forcing_state <= 0 or len(bbch_keys) == 0:
-            output.outputs_phenology.bbch_phenophase_code = 0.0
-            return
-        
-        # Debug info (disabled for production)
-        # if forcing_state > 100:  # Only log when forcing starts being significant
-        #     print(f"DEBUG: forcing_state={forcing_state:.1f}, cycle_length={cycle_length}, bbch_keys={bbch_keys}")
-        
-        # Loop through consecutive BBCH pairs
-        for i in range(len(bbch_keys) - 1):
-            current_bbch = bbch_keys[i]
-            next_bbch = bbch_keys[i + 1]
-            
-            # Current threshold
-            current_threshold = (
-                parameters.bbch_parameters[current_bbch].cycle_completion / 100.0 *
-                cycle_length
-            )
-            
-            # Next threshold
-            next_threshold = (
-                parameters.bbch_parameters[next_bbch].cycle_completion / 100.0 *
-                cycle_length
-            )
-            
-            # Debug thresholds (disabled for production)
-            # if forcing_state > 100:
-            #     print(f"  Checking BBCH {current_bbch}->{next_bbch}: thresholds {current_threshold:.1f} to {next_threshold:.1f}")
-            
-            # Check if forcing state is between thresholds
-            if current_threshold <= forcing_state < next_threshold:
-                # Interpolate BBCH code between current and next BBCH
-                if next_threshold > current_threshold:
-                    progress = (forcing_state - current_threshold) / (next_threshold - current_threshold)
-                    output.outputs_phenology.bbch_phenophase_code = current_bbch + (next_bbch - current_bbch) * progress
-                else:
-                    output.outputs_phenology.bbch_phenophase_code = current_bbch
-                
-                # print(f"BBCH Update: forcing={forcing_state:.1f}, between {current_bbch} and {next_bbch}, final={output.outputs_phenology.bbch_phenophase_code:.1f}")
-                return
-        
-        # If forcing is beyond the last threshold, use the last BBCH
-        last_bbch = bbch_keys[-1]
-        last_threshold = (
-            parameters.bbch_parameters[last_bbch].cycle_completion / 100.0 * cycle_length
-        )
-        
-        if forcing_state >= last_threshold:
-            output.outputs_phenology.bbch_phenophase_code = last_bbch
-            # print(f"BBCH Final: forcing={forcing_state:.1f} >= last_threshold={last_threshold:.1f}, BBCH={last_bbch}")
-        else:
-            # If forcing is less than the first threshold, use the first BBCH
-            first_bbch = bbch_keys[0]
-            first_threshold = (
-                parameters.bbch_parameters[first_bbch].cycle_completion / 100.0 * cycle_length
-            )
-            
-            if forcing_state < first_threshold:
-                # Proportional to the first BBCH
-                if first_threshold > 0:
-                    progress = forcing_state / first_threshold
-                    output.outputs_phenology.bbch_phenophase_code = first_bbch * progress
-                else:
-                    output.outputs_phenology.bbch_phenophase_code = 0.0
-                
-                # if forcing_state > 10:  # Only log when there's some meaningful forcing
-                #     print(f"BBCH Early: forcing={forcing_state:.1f} < first_threshold={first_threshold:.1f}, BBCH={output.outputs_phenology.bbch_phenophase_code:.1f}")
+        bbch_params = parameters.bbch_parameters
+
+        bbch_code = 0.0
+        for b in sorted(bbch_params.keys()):
+            if b < 98 and (b + 1) in bbch_params:
+                cum = bbch_params[b].cycle_completion / 100.0 * cycle_length
+                nxt = cum + bbch_params[b + 1].cycle_completion / 100.0 * cycle_length
+                if cum < forcing_state < nxt:
+                    bbch_code = b + (forcing_state - cum) / (nxt - cum)
+                    # nessun break: vince l'ultimo match (come nel C#)
+        output.outputs_phenology.bbch_phenophase_code = bbch_code
     
     @staticmethod
     def phenological_susceptibility(parameters: Parameters, output: Output) -> None:

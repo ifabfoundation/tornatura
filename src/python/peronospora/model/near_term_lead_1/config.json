@@ -2,25 +2,25 @@
   "horizon": "near_term",
   "lead_weeks": 1,
   "features": [
-    "bbch_code",
-    "plant_susceptibility",
-    "bbch_code_velocity",
-    "plant_susceptibility_velocity",
-    "forcing_state_velocity",
-    "bbch_code_acceleration",
-    "plant_susceptibility_acceleration",
-    "temp",
-    "temp_dew",
-    "prec",
-    "rh",
-    "wind_10m",
-    "lw",
-    "rule310",
-    "rule310_cum",
-    "dmcast",
-    "dmcast_cum",
-    "misfits",
-    "misfits_cum",
+    "bbch_code_fcW1",
+    "plant_susceptibility_fcW1",
+    "bbch_code_fcW1_velocity",
+    "plant_susceptibility_fcW1_velocity",
+    "forcing_state_fcW1_velocity",
+    "bbch_code_fcW1_acceleration",
+    "plant_susceptibility_fcW1_acceleration",
+    "temp_fcW1",
+    "temp_dew_fcW1",
+    "prec_fcW1",
+    "rh_fcW1",
+    "wind_10m_fcW1",
+    "lw_fcW1",
+    "rule310_fcW1",
+    "rule310_cum_fcW1",
+    "dmcast_fcW1",
+    "dmcast_cum_fcW1",
+    "misfits_fcW1",
+    "misfits_cum_fcW1",
     "week_cos"
   ],
   "n_features": 20,
@@ -41,15 +41,16 @@
     "n_jobs": -1
   },
   "cv_metrics": {
-    "mean_mae": 0.66,
-    "std_mae": 0.057,
-    "mean_r2": 0.353,
-    "std_r2": 0.186
+    "mean_mae": 0.676,
+    "std_mae": 0.0675,
+    "mean_r2": 0.3284,
+    "std_r2": 0.2086
   },
   "test_metrics": {
-    "mae": 0.588,
-    "rmse": 0.72,
-    "r2": 0.477,
+    "mae": 0.5803,
+    "rmse": 0.7048,
+    "r2": 0.4996,
+    "variance_ratio": 0.6922,
     "test_year": 2015,
     "n_samples": 323
   },
@@ -63,6 +64,8 @@
   "test_years": [
     2015
   ],
-  "version": "final_v20260113",
-  "created": "2026-01-13"
+  "model_type": "M6",
+  "description": "M0 traslato a W+1 forecast-aware: feature tutte sulla settimana target, calcolate dal forecast HRES emesso domenica W",
+  "version": "M6_v20260615",
+  "created": "2026-06-15"
 }

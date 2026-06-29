@@ -42,14 +42,14 @@
   },
   "cv_metrics": {
     "mean_mae": 0.661,
-    "std_mae": 0.067,
+    "std_mae": 0.066,
     "mean_r2": 0.352,
-    "std_r2": 0.193
+    "std_r2": 0.191
   },
   "test_metrics": {
-    "mae": 0.578,
+    "mae": 0.577,
     "rmse": 0.713,
-    "r2": 0.488,
+    "r2": 0.489,
     "test_year": 2015,
     "n_samples": 323
   },
@@ -63,6 +63,6 @@
   "test_years": [
     2015
   ],
-  "version": "final_v20260113",
-  "created": "2026-01-13"
+  "version": "final_v20260615",
+  "created": "2026-06-15"
 }

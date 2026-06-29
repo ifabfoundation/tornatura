@@ -7,7 +7,9 @@ import pandas as pd
 import numpy as np
 import xgboost as xgb
 from datetime import datetime
+
 from peronospora import paths
+
 
 # Load risk levels configuration
 with open(paths.PACKAGE_DIR / "risk_levels.json", 'r', encoding='utf-8') as f:
@@ -128,15 +130,18 @@ class PeronospotaPredictor:
         # Risk label from config
         results['risk_label'] = results['risk_level'].apply(get_risk_label)
 
-        # Fenologia
-        results['bbch_code'] = df['bbch_code'].round(0).astype(int)
-        results['plant_susceptibility'] = df['plant_susceptibility'].round(2)
-
-        # Meteo features per diagnostica
-        results['temp'] = df['temp'].round(1)
-        results['prec'] = df['prec'].round(1)
-        results['rh'] = df['rh'].round(1)
-        results['lw'] = df['lw'].round(0).astype(int)
+        # Fenologia + meteo per diagnostica/mappa.
+        # Per lead_1 con modello M6 le colonne diagnostiche sono `_fcW1` (settimana target);
+        # per lead_0 (M0) sono le colonne W standard. Il modello determina quale schema usare
+        # in base alle feature dichiarate nel config.
+        is_fcW1 = any(f.endswith('_fcW1') for f in feature_cols)
+        suffix = '_fcW1' if is_fcW1 else ''
+        results['bbch_code'] = df[f'bbch_code{suffix}'].round(0).astype(int)
+        results['plant_susceptibility'] = df[f'plant_susceptibility{suffix}'].round(2)
+        results['temp'] = df[f'temp{suffix}'].round(1)
+        results['prec'] = df[f'prec{suffix}'].round(1)
+        results['rh'] = df[f'rh{suffix}'].round(1)
+        results['lw'] = df[f'lw{suffix}'].round(0).astype(int)
 
         return results
 
@@ -160,9 +165,15 @@ class PeronospotaPredictor:
         test_years = self.configs[lead].get('test_years', [2017])
         test_year_str = ', '.join(map(str, test_years)) if isinstance(test_years, list) else str(test_years)
 
+        # Supporta entrambi i formati di metrics.json:
+        # - vecchio (M0): test.mae, test.r2
+        # - nuovo (M6):   test.regression.mae, test.regression.r2
+        test_metrics = self.metrics[lead].get('test', {})
+        if 'regression' in test_metrics:
+            test_metrics = test_metrics['regression']
         print(f"\nModel performance (test {test_year_str}):")
-        print(f"  MAE: {self.metrics[lead]['test']['mae']:.3f}")
-        print(f"  R²:  {self.metrics[lead]['test']['r2']:.3f}")
+        print(f"  MAE: {test_metrics.get('mae', float('nan')):.3f}")
+        print(f"  R²:  {test_metrics.get('r2', float('nan')):.3f}")
 
         # Aggregate by province
         agg = predictions.groupby('NUTS_3').agg({
