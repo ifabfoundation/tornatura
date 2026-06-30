@@ -107,7 +107,7 @@ export function CompanyTable() {
     const sortedData = [...data].sort((left, right) => right.creationTimeRaw - left.creationTimeRaw);
     const csvRows = [
       csvHeaders.map((column) => escapeCsvValue(column.headerText)).join(","),
-      ...sortedData.map((row) =>
+      ...sortedData.map((row: any) =>
         csvHeaders.map((column) => escapeCsvValue(row[column.id] ?? "")).join(","),
       ),
     ];
