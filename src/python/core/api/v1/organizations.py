@@ -50,7 +50,7 @@ async def create_organization(
             detail="Organization with the same name already exists"
         )
     
-    organization = organization_services.create(payload)
+    organization = organization_services.create(payload, created_by=token_info["sub"])
     if IsAgronomist.has_permission(token_info) and not IsAdmin.has_permission(token_info):
         organization_services.add_member(user_id=token_info["sub"], org_id=organization.orgId)
         organization_services.assign_role(user_id=token_info["sub"], org_id=organization.orgId, role=OrganizationDefaultRole.ViewMembers)

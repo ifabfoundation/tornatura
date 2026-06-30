@@ -59,7 +59,7 @@ export function CompaniesList() {
           <Col xs={6} md={4} xxl={3}>
             <Card
               className="add-item with-hover-effect"
-              data-text="Registra azienda"
+              data-text="Registra Impresa"
               onClick={() => navigate("/m/companies/new")}
             ></Card>
           </Col>

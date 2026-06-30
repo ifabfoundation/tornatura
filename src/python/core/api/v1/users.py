@@ -103,7 +103,7 @@ async def user_registration(
     user = user_services.create(payload)
     if payload.accountType == AccountTypeEnum.standard and payload.organization is not None:
         user_services.assign_role(user.id, ClientRole.CompanyOwner)
-        organization = organization_services.create(payload.organization)
+        organization = organization_services.create(payload.organization, created_by=user.id)
         # assign organization roles to the user
         organization_services.add_member(user_id=user.id, org_id=organization.orgId)
         organization_services.assign_role(user_id=user.id, org_id=organization.orgId, role=OrganizationDefaultRole.ManageOrganization)

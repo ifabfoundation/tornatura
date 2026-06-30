@@ -12,7 +12,7 @@ from phasetwo.model.organization_role_representation import OrganizationRoleRepr
 from urllib import error, request
 from core import config
 from core.decorators import catch_api_exception
-from core.models import OrganizationModel
+from core.models import OrganizationModel, OrganizationQuestionnaireModel
 from core.serializers import Organization, OrganizationCreatePayload, OrganizationUpdatePayload, OrganizationMember, StatusResponse
 from core.services.files_services import FileServices
 from core.services.users_services import UserServices
@@ -51,6 +51,7 @@ def get_service_access_token():
 class OrganizationServices:
     serializer = Organization
     model = OrganizationModel
+    questionnaire_model = OrganizationQuestionnaireModel
 
     def _serialize(self, obj, many=False):
         """Serialize object(s) to serializer instances
@@ -275,12 +276,12 @@ class OrganizationServices:
         return self._serialize(organization)
     
     @catch_api_exception
-    def create(self, payload: OrganizationCreatePayload):
+    def create(self, payload: OrganizationCreatePayload, created_by: str | None = None):
         """Create organization
         :rtype: Organization
         """
         data = payload.model_dump()
-        data.pop("questionnaire", None)
+        questionnaire = data.pop("questionnaire", None)
         current_time = int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp() * 1000)
         org_id = self._create_keycloak_organization(payload.name)
 
@@ -308,6 +309,15 @@ class OrganizationServices:
         })
         organization = self.model(**data)
         organization.save()
+        if questionnaire is not None:
+            organization_questionnaire = self.questionnaire_model(
+                orgId=org_id,
+                questionnaire=questionnaire,
+                createdBy=created_by,
+                creationTime=current_time,
+                lastUpdateTime=current_time,
+            )
+            organization_questionnaire.save()
         return self._serialize(organization)
     
     @catch_api_exception
