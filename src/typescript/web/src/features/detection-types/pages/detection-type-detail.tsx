@@ -63,10 +63,23 @@ export function DownloadDataButton({
   const convertToCsv = (rows: Record<string, unknown>[]) => {
     if (rows.length === 0) return "";
 
-    const headers = Object.keys(rows[0]);
+    const mapColNames = {
+      detectionId: "id_rilevamento",
+      detectionTime: "data_ora",
+      bbch: "stadio_fenologico",
+      observationNum: "numero_osservazione",
+      dotValue: "valore_osservato",
+      diseaseIndex: "indice_malattia",
+      counterLarve: "conteggio_larve",
+      counterAdulti: "conteggio_adulti",
+      counterSum: "conteggio_totale",
+    };
+
+    const headerKeys = Object.keys(rows[0]);
+    const headers = headerKeys.map((d) => mapColNames[d] ?? d);
     const csvRows = [
       headers.join(","), // header row
-      ...rows.map((row) => headers.map((h) => JSON.stringify(row[h] ?? "")).join(",")),
+      ...rows.map((row) => headerKeys.map((h) => JSON.stringify(row[h] ?? "")).join(",")),
     ];
 
     return csvRows.join("\n");
@@ -765,12 +778,12 @@ export function DetectionTypeDetail() {
                         <DownloadDataButton
                           data={sortedDetections}
                           format={"json"}
-                          filename={`campo ${fieldId}`}
+                          filename={`campo ${currentField?.name}`}
                         />
                         <DownloadDataButton
                           data={flatDetectionsData}
                           format={"csv"}
-                          filename={`campo ${fieldId}`}
+                          filename={`campo ${currentField?.name}`}
                         />
                       </div>
                     </Col>
@@ -814,9 +827,7 @@ export function DetectionTypeDetail() {
         }}
       >
         <AutoHeightIframe
-          src={
-            "https://www.tornatura.it/instructions/260326-tutorial-dati-rilevamento?partial=1"
-          }
+          src={"https://www.tornatura.it/instructions/260326-tutorial-dati-rilevamento?partial=1"}
         />
       </Infopanel>
     </div>
