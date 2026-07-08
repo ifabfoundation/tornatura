@@ -209,6 +209,7 @@ export default function SignupImpactQuestionnaireStep({
       lowProductivityWorkerReassignmentTiming: Yup.string().required("Campo obbligatorio"),
     }),
     onSubmit: async (values, { setSubmitting }) => {
+      setSubmitting(true);
       await onNextClick(values);
       setSubmitting(false);
     },

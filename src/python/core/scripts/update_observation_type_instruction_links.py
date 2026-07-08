@@ -24,20 +24,24 @@ from core.models import ObservationType
 INSTRUCTION_URLS = {
     "autographa_gamma": "https://www.tornatura.it/instructions/260520-autographa-gamma?partial=1",
     "cimice_asiatica": "https://www.tornatura.it/instructions/260310-cimice-asiatica?partial=1",
+    "cocciniglia_rossa_forte": "https://www.tornatura.it/instructions/260703-cocciniglia-rossa-forte?partial=1",
     "diabrotica": "https://www.tornatura.it/instructions/260310-diabrotica?partial=1",
     "giallumi": "https://www.tornatura.it/instructions/260310-giallumi?partial=1",
     "lisso": "https://www.tornatura.it/instructions/260310-lisso?partial=1",
     "mamestre_brassica": "https://www.tornatura.it/instructions/260520-mamestre-brassica?partial=1",
     "mosca_della_frutta": "https://www.tornatura.it/instructions/260527-mosca-della-frutta?partial=1",
     "mosca_dell_olivo": "https://www.tornatura.it/instructions/260527-mosca-dell-olivo?partial=1",
+    "panonycus_citri": "https://www.tornatura.it/instructions/260703-acaro-degli-agrumi?partial=1",
     "peronospora": "https://www.tornatura.it/instructions/260310-peronospora?partial=1",
     "scafoideo": "https://www.tornatura.it/instructions/260310-scafoideo?partial=1",
     "spodoptera_exigua": "https://www.tornatura.it/instructions/260520-spodoptera-exigua?partial=1",
     "cleono": "https://www.tornatura.it/instructions/260513-cleono?partial=1",
+    "tetranycus_urticae": "https://www.tornatura.it/instructions/260703-acaro-bimaculato?partial=1",
     "tignola_del_pesco": "https://www.tornatura.it/instructions/260604-tignola-del-pesco?partial=1",
     "tignola_dell_olivo": "https://www.tornatura.it/instructions/260527-tignola-dell-olivo?partial=1",
     "tignola_orientale_del_pesco": "https://www.tornatura.it/instructions/260604-tignola-orientale-del-pesco?partial=1",
 }
+
 
 TYPOLOGY_ALIASES = {
     "autographa_gamma": {
@@ -110,6 +114,15 @@ TYPOLOGY_ALIASES = {
     "cleono": {
         "cleono",
     },
+    "cocciniglia_rossa_forte": {
+        "cocciniglia rossa forte"
+    },
+    "tetranycus_urticae": {
+        "tetranycus urticae"
+    },
+    "panonycus_citri": {
+        "panonycus citri"
+    }
 }
 
 def connect_db() -> None:
@@ -190,6 +203,12 @@ def resolve_typology(typology: str) -> str | None:
         return "multi_insetto"
     if "cleono" in tokens:
         return "cleono"
+    if {"cocciniglia", "rossa", "forte"}.issubset(tokens):
+        return "cocciniglia_rossa_forte"
+    if {"tetranycus", "urticae"}.issubset(tokens):
+        return "tetranycus_urticae"
+    if {"panonycus", "citri"}.issubset(tokens):
+        return "panonycus_citri"
     return None
 
 

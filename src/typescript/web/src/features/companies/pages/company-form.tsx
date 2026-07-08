@@ -9,8 +9,6 @@ import { companiesActions } from "../state/companies-slice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useNavigate } from "react-router-dom";
 import keycloakInstance from "../../../providers/keycloak";
-import { getUserInfo } from "../../users/utils";
-import { userActions } from "../../users/state/user-slice";
 import SignupImpactQuestionnaireStep, {
   SignupImpactQuestionnaireFormData,
 } from "../../auth/components/signup-impact-questionnaire-step";
@@ -404,12 +402,11 @@ export function CompanyForm() {
       const createdOrganization = await dispatch(
         companiesActions.addNewCompanyAction(payloadWithQuestionnaire),
       ).then(unwrapResult);
-      await keycloakInstance.updateToken(-1);
-      const profile = await getUserInfo();
-      if (profile) {
-        await dispatch(userActions.setCurrentUserAction(profile));
-      }
-      navigate(`/m/companies/${createdOrganization.orgId}/fields`);
+      const redirectUri = `${window.location.origin}/m/companies/${createdOrganization.orgId}/fields`;
+
+      // The organization claims live in the Keycloak token, so we need a new login
+      // round-trip to get a freshly issued token for the current SSO session.
+      await keycloakInstance.login({ redirectUri });
     } catch (error: any) {
       const detail = error?.response?.data?.detail || error?.detail;
       setMessage(
