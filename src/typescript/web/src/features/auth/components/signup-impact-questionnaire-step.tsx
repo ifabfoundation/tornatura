@@ -2,14 +2,56 @@ import { useFormik } from "formik";
 import React from "react";
 import * as Yup from "yup";
 
+const DEFENSE_ACTION_NONE = "Nessuna";
+
 const defenseActionOptions = [
   "Acquisto di agrofarmaci",
   "Consulenze di agronomi",
   "Lavoro degli operatori per sopralluoghi e trattamenti",
   "Strumenti preventivi (es. centralina meteo, bollettini fitosanitari)",
   "Altro",
-  "Nessuna",
+  DEFENSE_ACTION_NONE,
 ];
+
+const defenseActionSpendFieldMap = {
+  "Acquisto di agrofarmaci": "annualSpendAgrochemicals",
+  "Consulenze di agronomi": "annualSpendAgronomists",
+  "Lavoro degli operatori per sopralluoghi e trattamenti": "annualSpendOperators",
+  "Strumenti preventivi (es. centralina meteo, bollettini fitosanitari)":
+    "annualSpendPreventiveTools",
+  Altro: "annualSpendOther",
+} as const;
+
+type AnnualSpendFieldName = (typeof defenseActionSpendFieldMap)[keyof typeof defenseActionSpendFieldMap];
+
+const annualSpendFieldNames = Object.values(defenseActionSpendFieldMap) as AnnualSpendFieldName[];
+
+function annualSpendValidationSchema(defenseActionOption: keyof typeof defenseActionSpendFieldMap) {
+  return Yup.string().test("annual-spend-required-when-selected", function (value) {
+    const defenseActions = (this.parent.defenseActions ?? []) as string[];
+    const isNoneSelected = defenseActions.includes(DEFENSE_ACTION_NONE);
+    const isSelected = defenseActions.includes(defenseActionOption);
+    const numericValue = Number(value);
+
+    if (isNoneSelected) {
+      return numericValue === 0;
+    }
+
+    if (!isSelected) {
+      return true;
+    }
+
+    if ((value ?? "").trim() === "") {
+      return this.createError({ message: "Campo obbligatorio" });
+    }
+
+    if (Number.isNaN(numericValue) || numericValue <= 0) {
+      return this.createError({ message: "Inserisci un valore valido" });
+    }
+
+    return true;
+  });
+}
 
 export interface SignupImpactQuestionnaireFormData {
   employeeCount: string;
@@ -129,12 +171,23 @@ export default function SignupImpactQuestionnaireStep({
         .min(0, "Valore minimo 0")
         .max(100, "Valore massimo 100")
         .required("Campo obbligatorio"),
-      defenseActions: Yup.array().of(Yup.string().required()).min(1, "Seleziona almeno un'opzione"),
-      annualSpendAgrochemicals: Yup.string().required('Campo obbligatorio'),
-      annualSpendAgronomists: Yup.string().required('Campo obbligatorio'),
-      annualSpendOperators: Yup.string().required('Campo obbligatorio'),
-      annualSpendPreventiveTools: Yup.string().required('Campo obbligatorio'),
-      annualSpendOther: Yup.string().required('Campo obbligatorio'),
+      defenseActions: Yup.array()
+        .of(Yup.string().required())
+        .min(1, "Seleziona almeno un'opzione")
+        .test(
+          "defense-action-none-exclusive",
+          "'Nessuna' non può essere selezionata insieme ad altre opzioni",
+          (value) => !value?.includes(DEFENSE_ACTION_NONE) || value.length === 1,
+        ),
+      annualSpendAgrochemicals: annualSpendValidationSchema("Acquisto di agrofarmaci"),
+      annualSpendAgronomists: annualSpendValidationSchema("Consulenze di agronomi"),
+      annualSpendOperators: annualSpendValidationSchema(
+        "Lavoro degli operatori per sopralluoghi e trattamenti",
+      ),
+      annualSpendPreventiveTools: annualSpendValidationSchema(
+        "Strumenti preventivi (es. centralina meteo, bollettini fitosanitari)",
+      ),
+      annualSpendOther: annualSpendValidationSchema("Altro"),
       annualSpendNone: Yup.boolean(),
       satisfactionEffectiveness: Yup.number()
         .typeError("Inserisci un numero")
@@ -161,43 +214,84 @@ export default function SignupImpactQuestionnaireStep({
     },
   });
 
-  React.useEffect(() => {
-    if (formik.values.annualSpendNone) {
-      let annualSpendAgrochemicals = formik.values.annualSpendAgrochemicals;
-      let annualSpendAgronomists = formik.values.annualSpendAgronomists;;
-      let annualSpendOperators = formik.values.annualSpendOperators;
-      let annualSpendPreventiveTools = formik.values.annualSpendPreventiveTools;
-      let annualSpendOther = formik.values.annualSpendOther;
-      let needUpdate = false;
-      if (!formik.values.annualSpendAgrochemicals){
-        annualSpendAgrochemicals = '0';
-        needUpdate = true;
-      }
-      if (!formik.values.annualSpendAgronomists){
-        annualSpendAgronomists = '0';
-        needUpdate = true;
-      }
-      if (!formik.values.annualSpendOperators){
-        annualSpendOperators = '0';
-        needUpdate = true;
-      }
-      if (!formik.values.annualSpendPreventiveTools){
-        annualSpendPreventiveTools = '0';
-        needUpdate = true;
-      }
-      if (!formik.values.annualSpendOther){
-        annualSpendOther = '0';
-        needUpdate = true;
-      }
+  const isNoneDefenseActionSelected = formik.values.defenseActions.includes(DEFENSE_ACTION_NONE);
 
-      if (needUpdate) {
-        formik.setValues({...formik.values, 
-          annualSpendAgrochemicals, annualSpendAgronomists, annualSpendOperators,
-           annualSpendOther, annualSpendPreventiveTools })
-      }
-      
+  React.useEffect(() => {
+    const nextValues = { ...formik.values };
+    let needUpdate = false;
+
+    if (formik.values.annualSpendNone !== isNoneDefenseActionSelected) {
+      nextValues.annualSpendNone = isNoneDefenseActionSelected;
+      needUpdate = true;
     }
-  }, [formik.values])
+
+    if (isNoneDefenseActionSelected) {
+      annualSpendFieldNames.forEach((fieldName) => {
+        if (nextValues[fieldName] !== "0") {
+          nextValues[fieldName] = "0";
+          needUpdate = true;
+        }
+      });
+    }
+
+    if (needUpdate) {
+      formik.setValues(nextValues);
+    }
+  }, [
+    formik.values,
+    formik.values.annualSpendNone,
+    formik.values.defenseActions,
+    formik.values.annualSpendAgrochemicals,
+    formik.values.annualSpendAgronomists,
+    formik.values.annualSpendOperators,
+    formik.values.annualSpendPreventiveTools,
+    formik.values.annualSpendOther,
+    isNoneDefenseActionSelected,
+  ]);
+
+  const handleDefenseActionChange = (option: string, checked: boolean) => {
+    const currentDefenseActions = formik.values.defenseActions;
+    let nextDefenseActions = currentDefenseActions;
+
+    if (option === DEFENSE_ACTION_NONE) {
+      nextDefenseActions = checked ? [DEFENSE_ACTION_NONE] : [];
+    } else if (checked) {
+      nextDefenseActions = [
+        ...currentDefenseActions.filter((item) => item !== DEFENSE_ACTION_NONE),
+        option,
+      ];
+    } else {
+      nextDefenseActions = currentDefenseActions.filter((item) => item !== option);
+    }
+
+    formik.setFieldValue("defenseActions", nextDefenseActions);
+  };
+
+  const handleAnnualSpendNoneChange = (checked: boolean) => {
+    if (checked) {
+      formik.setValues({
+        ...formik.values,
+        defenseActions: [DEFENSE_ACTION_NONE],
+        annualSpendAgrochemicals: "0",
+        annualSpendAgronomists: "0",
+        annualSpendOperators: "0",
+        annualSpendPreventiveTools: "0",
+        annualSpendOther: "0",
+        annualSpendNone: true,
+      });
+      return;
+    }
+
+    if (isNoneDefenseActionSelected) {
+      formik.setValues({
+        ...formik.values,
+        defenseActions: [],
+        annualSpendNone: false,
+      });
+    } else {
+      formik.setFieldValue("annualSpendNone", false);
+    }
+  };
 
   return (
     <form onSubmit={formik.handleSubmit} autoComplete="off">
@@ -297,7 +391,7 @@ export default function SignupImpactQuestionnaireStep({
                     type="checkbox"
                     name="defenseActions"
                     value={option}
-                    onChange={formik.handleChange}
+                    onChange={(event) => handleDefenseActionChange(option, event.target.checked)}
                     onBlur={formik.handleBlur}
                     checked={formik.values.defenseActions.includes(option)}
                     className="d-inline"
@@ -406,7 +500,7 @@ export default function SignupImpactQuestionnaireStep({
                   id="annualSpendNone"
                   name="annualSpendNone"
                   type="checkbox"
-                  onChange={formik.handleChange}
+                  onChange={(event) => handleAnnualSpendNoneChange(event.target.checked)}
                   onBlur={formik.handleBlur}
                   checked={formik.values.annualSpendNone}
                   className="d-inline"

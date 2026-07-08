@@ -20,7 +20,7 @@ const PhoneRegExp =
   /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 const PivaRegExp = /^\d{11}$/;
 const COREAPIS_BASE_PATH = process.env.REACT_APP_COREAPIS_SERVER_URL;
-// const OBJECT_STORAGE_ENDPOINT = process.env.REACT_APP_OBJECT_STORAGE_ENDPOINT;
+const OBJECT_STORAGE_ENDPOINT = process.env.REACT_APP_OBJECT_STORAGE_ENDPOINT;
 
 const initialQuestionnaireValues: SignupImpactQuestionnaireFormData = {
   employeeCount: "",
@@ -214,9 +214,11 @@ function CompanyConsentsStep({
 
   const formik = useFormik({
     initialValues: {
+      privacy: false,
       privacy4: false,
     },
     validationSchema: Yup.object({
+      privacy: Yup.boolean().oneOf([true], "È necessaria l'accettazione"),
       privacy4: Yup.boolean().oneOf([true], "È necessaria l'accettazione"),
     }),
     onSubmit: async (_values, { setSubmitting }) => {
@@ -271,6 +273,42 @@ function CompanyConsentsStep({
     <form onSubmit={formik.handleSubmit} autoComplete="off">
       <div className="form-section">
         <div className="container px-0">
+          <div className="row input-row">
+            <div className="col">
+              <label className="d-flex align-items-start">
+                <input
+                  id="privacy"
+                  name="privacy"
+                  type="checkbox"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  checked={formik.values.privacy}
+                  className="d-inline"
+                />
+                <span className="my-2">
+                  Ho letto e accetto i &nbsp;
+                  <a
+                    href={`${OBJECT_STORAGE_ENDPOINT}/public/media/termini-di-servizio.pdf`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Termini di servizio
+                  </a>
+                  &nbsp; e la &nbsp;
+                  <a
+                    href={`${OBJECT_STORAGE_ENDPOINT}/public/media/informativa-privacy.pdf`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Privacy policy
+                  </a>
+                </span>
+              </label>
+              {formik.touched.privacy && formik.errors.privacy ? (
+                <div className="error">{formik.errors.privacy}</div>
+              ) : null}
+            </div>
+          </div>
           <div className="row input-row">
             <div className="col">
               <label className="d-flex align-items-start">

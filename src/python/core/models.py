@@ -131,6 +131,24 @@ class OrganizationModel(Document):
         return str(self.orgId)
 
 
+class OrganizationQuestionnaireModel(Document):
+    """The organization impact questionnaire stored in a dedicated collection"""
+    orgId = StringField(required=True, unique=True)
+    questionnaire = DictField(required=True)
+    createdBy = StringField(null=True)
+    creationTime = IntField(required=True)
+    lastUpdateTime = IntField(required=True)
+
+    meta = {
+        'collection': 'organization_questionnaires',
+        'indexes': ['orgId', 'createdBy'],
+        'ordering': ['-creationTime']
+    }
+
+    def __str__(self):
+        return str(self.orgId)
+
+
 class ObservationType(Document):
     """The object Observation Type stored in the Database"""
     typology = StringField(required=True)
