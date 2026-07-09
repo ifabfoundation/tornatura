@@ -57,7 +57,7 @@ TEMP_DIR = paths.TEMP_DIR
 S3_BUCKET = 'ecmwf-data-forecast'
 
 # Target provinces - All Italy (loaded from config)
-_PROVINCES_CONFIG_FILE = DATA_DIR / "provinces_italy.json"
+_PROVINCES_CONFIG_FILE = paths.DATA_DIR / "provinces_italy.json"
 with open(_PROVINCES_CONFIG_FILE, 'r', encoding='utf-8') as _f:
     _provinces_config = json.load(_f)
 
@@ -458,6 +458,9 @@ def calculate_phenology_from_jan1(province_name, df_daily, df_hourly):
     params_file = str(PHENOLOGY_DIR / "parameters" / "octoPusParameters.csv")
     susceptibility_file = str(PHENOLOGY_DIR / "parameters" / "hostSusceptibilityParameters.csv")
     parameters = ParametersReader.read_all_parameters(params_file, susceptibility_file)
+    # Espande le soglie BBCH grezze in dettagliate (fix fenologia: replica del C#
+    # generateDetailedPhenologyParameters). Senza, il BBCH risultava molto in ritardo.
+    Forcing.generate_detailed_phenology_parameters(parameters)
 
     # Initialize models
     output = Output()
@@ -552,6 +555,7 @@ def calculate_phenology_from_jan1(province_name, df_daily, df_hourly):
             'lw': int(lw),
             # Phenology
             'chill_state': round(output.outputs_phenology.chill_state, 2),
+            'anti_chill_state': round(output.outputs_phenology.anti_chill_state, 2),
             'forcing_state': round(output.outputs_phenology.forcing_state, 1),
             'bbch_code': round(output.outputs_phenology.bbch_phenophase_code, 1),
             'plant_susceptibility': round(output.outputs_phenology.plant_susceptibility, 3),
@@ -608,104 +612,167 @@ def aggregate_to_weekly(df_phenology, province_name):
     return weekly
 
 
-def create_inference_datasets(combined_weekly, forecast_date):
+def _iso_target_period(target_year: int, target_week: int):
+    """Calcola le date (Monday, Sunday) della settimana ISO target."""
+    from datetime import date
+    dec_28 = date(target_year, 12, 28)
+    max_weeks_in_year = dec_28.isocalendar()[1]
+    if target_week > max_weeks_in_year:
+        target_year += 1
+        target_week -= max_weeks_in_year
+    jan4 = date(target_year, 1, 4)
+    week1_monday = jan4 - timedelta(days=jan4.weekday())
+    target_monday = week1_monday + timedelta(weeks=target_week - 1)
+    target_sunday = target_monday + timedelta(days=6)
+    return target_year, target_week, target_monday, target_sunday
+
+
+# Feature M0 (lead_0): settimana corrente W
+LEAD0_FEATURES = [
+    'bbch_code', 'plant_susceptibility',
+    'bbch_code_velocity', 'plant_susceptibility_velocity', 'forcing_state_velocity',
+    'bbch_code_acceleration', 'plant_susceptibility_acceleration',
+    'temp', 'temp_dew', 'prec', 'rh', 'wind_10m', 'lw',
+    'rule310', 'rule310_cum', 'dmcast', 'dmcast_cum', 'misfits', 'misfits_cum',
+    'week_cos',
+]
+
+# Feature M6 (lead_1): settimana W+1 forecast-aware, tutte suffixed con _fcW1
+# (eccetto week_cos invariante stagionale).
+# Mappa dalla colonna sorgente (in combined_weekly riga W+1) → nome feature attesa dal modello.
+LEAD1_M6_FEATURE_MAP = {
+    'bbch_code': 'bbch_code_fcW1',
+    'plant_susceptibility': 'plant_susceptibility_fcW1',
+    'bbch_code_velocity': 'bbch_code_fcW1_velocity',
+    'plant_susceptibility_velocity': 'plant_susceptibility_fcW1_velocity',
+    'forcing_state_velocity': 'forcing_state_fcW1_velocity',
+    'bbch_code_acceleration': 'bbch_code_fcW1_acceleration',
+    'plant_susceptibility_acceleration': 'plant_susceptibility_fcW1_acceleration',
+    'temp': 'temp_fcW1',
+    'temp_dew': 'temp_dew_fcW1',
+    'prec': 'prec_fcW1',
+    'rh': 'rh_fcW1',
+    'wind_10m': 'wind_10m_fcW1',
+    'lw': 'lw_fcW1',
+    'rule310': 'rule310_fcW1',
+    'rule310_cum': 'rule310_cum_fcW1',
+    'dmcast': 'dmcast_fcW1',
+    'dmcast_cum': 'dmcast_cum_fcW1',
+    'misfits': 'misfits_fcW1',
+    'misfits_cum': 'misfits_cum_fcW1',
+}
+
+LEAD1_M6_FEATURES = list(LEAD1_M6_FEATURE_MAP.values()) + ['week_cos']
+
+
+def create_inference_datasets(combined_weekly, forecast_date, force_lead1: bool = False):
     """
-    Create lead_0.csv and lead_1.csv with CORRECT week filtering.
+    Crea lead_0.csv (M0, settimana W) e lead_1.csv (M6, settimana W+1 forecast-aware).
 
-    Lead 0: Features from current week → predict current week risk
-    Lead 1: Features from current week → predict next week risk
+    - **Lead 0 (M0)**: feature della settimana ISO corrente W. Filtra combined_weekly su W
+      e produce le 20 feature originali del modello in produzione.
+    - **Lead 1 (M6)**: feature della settimana ISO successiva W+1, calcolate dai forecast
+      HRES che già coprono W+1 nel `combined_weekly`. Le velocity/acceleration sono il
+      delta temporale W+1 vs W (equivalente al delta spaziale del training).
+      Convenzione operativa: il modello lead_1 va calcolato la domenica (o lunedì alle 09:00
+      con il forecast emesso domenica) — vedi scheduler.py per la logica settimanale.
 
-    Each province should have exactly 1 row per lead (not multiple weeks!)
+    Ogni provincia ha esattamente 1 riga per ogni lead.
     """
     INFERENCE_DIR.mkdir(exist_ok=True)
 
-    FEATURE_COLS = [
-        'bbch_code', 'plant_susceptibility',
-        'bbch_code_velocity', 'plant_susceptibility_velocity', 'forcing_state_velocity',
-        'bbch_code_acceleration', 'plant_susceptibility_acceleration',
-        'temp', 'temp_dew', 'prec', 'rh', 'wind_10m', 'lw',
-        'rule310', 'rule310_cum', 'dmcast', 'dmcast_cum', 'misfits', 'misfits_cum',
-        'week_cos'
-    ]
-
-    # Get the ISO week of the forecast date (this is the "current" week)
     forecast_iso = forecast_date.isocalendar()
     forecast_iso_year = forecast_iso[0]
     forecast_iso_week = forecast_iso[1]
 
-    log_info(f"Forecast date: {forecast_date.strftime('%Y-%m-%d')} (ISO week {forecast_iso_week}, year {forecast_iso_year})")
+    log_info(f"Forecast date: {forecast_date.strftime('%Y-%m-%d')} "
+             f"(ISO week {forecast_iso_week}, year {forecast_iso_year})")
 
-    for lead in [0, 1]:
-        df = combined_weekly.copy()
+    id_cols = ['NUTS_3', 'forecast_base', 'lead_weeks', 'target_period_start', 'target_period_end']
 
-        # CRITICAL FIX: Filter to ONLY the current week's data
-        # For both lead 0 and lead 1, features come from the CURRENT week
-        df = df[(df['iso_week'] == forecast_iso_week) &
-                (df['iso_year'] == forecast_iso_year)]
+    # =========================================================================
+    # LEAD 0 (M0): settimana corrente W
+    # =========================================================================
+    df_W = combined_weekly[(combined_weekly['iso_week'] == forecast_iso_week) &
+                           (combined_weekly['iso_year'] == forecast_iso_year)].copy()
 
-        if len(df) == 0:
-            log_error(f"No data for week {forecast_iso_week}! Available weeks: {combined_weekly['iso_week'].unique()}")
-            # Fallback: use the latest available week
-            latest_week = combined_weekly['iso_week'].max()
-            df = combined_weekly[combined_weekly['iso_week'] == latest_week].copy()
-            log_info(f"Using fallback week {latest_week}")
+    if len(df_W) == 0:
+        log_error(f"No data for current week {forecast_iso_week}! "
+                  f"Available weeks: {combined_weekly['iso_week'].unique()}")
+        latest_week = combined_weekly['iso_week'].max()
+        df_W = combined_weekly[combined_weekly['iso_week'] == latest_week].copy()
+        log_info(f"Using fallback week {latest_week}")
 
-        df['forecast_week'] = forecast_iso_week
-        df['forecast_year'] = forecast_iso_year
-        df['lead_weeks'] = lead
+    df_W['lead_weeks'] = 0
+    target_year, target_week, target_monday, target_sunday = _iso_target_period(
+        forecast_iso_year, forecast_iso_week)
+    df_W['forecast_base'] = forecast_date.strftime("%Y-%m-%d")
+    df_W['target_period_start'] = target_monday.strftime("%Y-%m-%d")
+    df_W['target_period_end'] = target_sunday.strftime("%Y-%m-%d")
+    df_W['week_cos'] = np.cos(2 * np.pi * forecast_iso_week / 52.0)
 
-        # Calculate target week
-        target_week = forecast_iso_week + lead
-        target_year = forecast_iso_year
+    for col in LEAD0_FEATURES:
+        if col not in df_W.columns:
+            df_W[col] = 0
 
-        # Handle year boundary (some years have 53 ISO weeks)
-        # Check how many weeks the target year has
-        from datetime import date
-        dec_28 = date(target_year, 12, 28)
-        max_weeks_in_year = dec_28.isocalendar()[1]  # Week of Dec 28 = last week of year
+    out_lead0 = df_W[id_cols + LEAD0_FEATURES].copy()
+    out_lead0.to_csv(INFERENCE_DIR / 'lead_0.csv', index=False)
+    log_info(f"Saved lead_0.csv: {len(out_lead0)} records (M0, settimana W)")
 
-        if target_week > max_weeks_in_year:
-            target_year += 1
-            target_week -= max_weeks_in_year
+    # =========================================================================
+    # LEAD 1 (M6): settimana W+1 forecast-aware
+    # =========================================================================
+    # Convenzione operativa: il modello M6 è addestrato sul forecast emesso domenica W.
+    # Da lun-sab il forecast scaricato non copre tutta W+1 (fd 2..8 servono ma non
+    # disponibili). Genera lead_1.csv SOLO se forecast_date è domenica; altrimenti
+    # mantiene l'ultimo lead_1.csv prodotto della domenica precedente (valido per W+1).
+    is_sunday = forecast_date.weekday() == 6  # Mon=0, Sun=6
+    if not is_sunday and not force_lead1:
+        log_info(f"forecast_date {forecast_date.strftime('%A')} ≠ domenica: "
+                 f"lead_1.csv non rigenerato (preserva l'ultimo prodotto la domenica scorsa). "
+                 f"Usa --force-lead1 per forzare.")
+        return
+    if force_lead1 and not is_sunday:
+        log_info(f"--force-lead1 attivo: lead_1.csv rigenerato anche se "
+                 f"{forecast_date.strftime('%A')} ≠ domenica (copertura W+1 può essere ridotta).")
 
-        df['target_week'] = target_week
-        df['target_year'] = target_year
+    # Cerca la riga W+1 in combined_weekly per ogni provincia
+    target_year1, target_week1, target_monday1, target_sunday1 = _iso_target_period(
+        forecast_iso_year, forecast_iso_week + 1)
 
-        # Calculate actual target period dates based on ISO week
-        # ISO week 1 starts on the Monday of the week containing Jan 4th
-        from datetime import date
-        jan4 = date(target_year, 1, 4)
-        # Find Monday of week 1
-        week1_monday = jan4 - timedelta(days=jan4.weekday())
-        # Calculate Monday of target week
-        target_monday = week1_monday + timedelta(weeks=target_week - 1)
-        target_sunday = target_monday + timedelta(days=6)
+    df_W1 = combined_weekly[(combined_weekly['iso_week'] == target_week1) &
+                            (combined_weekly['iso_year'] == target_year1)].copy()
 
-        df['forecast_base'] = forecast_date.strftime("%Y-%m-%d")
-        df['target_period_start'] = target_monday.strftime("%Y-%m-%d")
-        df['target_period_end'] = target_sunday.strftime("%Y-%m-%d")
+    if len(df_W1) == 0:
+        log_error(f"No W+1 data for {target_year1}-W{target_week1}! "
+                  f"Available weeks: {sorted(combined_weekly['iso_week'].unique())}. "
+                  f"Lead_1 (M6) skipped.")
+        return
 
-        # Add cyclical week encoding (same as training)
-        df['week_cos'] = np.cos(2 * np.pi * forecast_iso_week / 52.0)
+    df_W1['lead_weeks'] = 1
+    df_W1['forecast_base'] = forecast_date.strftime("%Y-%m-%d")
+    df_W1['target_period_start'] = target_monday1.strftime("%Y-%m-%d")
+    df_W1['target_period_end'] = target_sunday1.strftime("%Y-%m-%d")
+    # week_cos invariante stagionale, usa la settimana di emissione W
+    df_W1['week_cos'] = np.cos(2 * np.pi * forecast_iso_week / 52.0)
 
-        for col in FEATURE_COLS:
-            if col not in df.columns:
-                df[col] = 0
+    # Rinomina le colonne sorgente con suffix _fcW1 (mappa LEAD1_M6_FEATURE_MAP)
+    df_W1 = df_W1.rename(columns=LEAD1_M6_FEATURE_MAP)
 
-        id_cols = ['NUTS_3', 'forecast_base', 'lead_weeks', 'target_period_start', 'target_period_end']
-        output_cols = id_cols + FEATURE_COLS
+    for col in LEAD1_M6_FEATURES:
+        if col not in df_W1.columns:
+            df_W1[col] = 0
 
-        model_ready = df[output_cols].copy()
-        output_file = INFERENCE_DIR / f'lead_{lead}.csv'
-        model_ready.to_csv(output_file, index=False)
-        log_info(f"Saved lead_{lead}.csv: {len(model_ready)} records (1 per province)")
+    out_lead1 = df_W1[id_cols + LEAD1_M6_FEATURES].copy()
+    out_lead1.to_csv(INFERENCE_DIR / 'lead_1.csv', index=False)
+    log_info(f"Saved lead_1.csv: {len(out_lead1)} records (M6, settimana W+1 forecast-aware)")
 
 
 # =============================================================================
 # MAIN PIPELINE
 # =============================================================================
 
-def run_pipeline(clear_cache_flag=False):
+def run_pipeline(clear_cache_flag=False, force_lead1=False):
     """Run the complete inference preparation pipeline"""
 
     log_header("INFERENCE DATA PREPARATION PIPELINE v2")
@@ -912,7 +979,7 @@ def run_pipeline(clear_cache_flag=False):
     log_step("Step 5: Creating inference datasets...")
 
     combined_weekly = pd.concat(all_weekly_data, ignore_index=True)
-    create_inference_datasets(combined_weekly, forecast_date)
+    create_inference_datasets(combined_weekly, forecast_date, force_lead1=force_lead1)
 
     log_success("Inference datasets ready")
 
@@ -929,6 +996,8 @@ def main():
     parser = argparse.ArgumentParser(description='Unified Inference Data Preparation')
     parser.add_argument('--clear-cache', action='store_true', help='Clear cache and re-download all')
     parser.add_argument('--list-only', action='store_true', help='Only list available dates')
+    parser.add_argument('--force-lead1', action='store_true',
+                        help='Forza la generazione di lead_1.csv anche se non è domenica')
     args = parser.parse_args()
 
     if args.list_only:
@@ -939,7 +1008,7 @@ def main():
         print(f"Cached dates: {sorted(cached)}")
         return 0
 
-    return run_pipeline(clear_cache_flag=args.clear_cache)
+    return run_pipeline(clear_cache_flag=args.clear_cache, force_lead1=args.force_lead1)
 
 
 if __name__ == "__main__":
