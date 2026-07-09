@@ -101,7 +101,9 @@ def _shapefile_candidates() -> list[Path]:
     local_shapefile = paths.SHAPEFILE_DIR / "province_emilia_romagna.shp"
     italy_shapefile = paths.SHAPEFILE_DIR / "province_italia.shp"
         
-    return [local_shapefile, italy_shapefile]
+    # Prefer the all-Italy shapefile so lat/lng in Campania (and other regions)
+    # resolve too; fall back to the Emilia-Romagna-only shapefile if it is absent.
+    return [italy_shapefile, local_shapefile]
 
 
 def _rename_first_matching_column(gdf: gpd.GeoDataFrame, candidates: tuple[str, ...], target: str) -> gpd.GeoDataFrame:

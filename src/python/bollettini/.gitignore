@@ -10,7 +10,7 @@ __pycache__/
 
 # Data (large files, generated)
 data/input_bollettini/
-data/chromadb/
+data/chunks.db
 data/cache/
 data/output_bollettini/
 logs/

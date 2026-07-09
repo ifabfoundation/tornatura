@@ -1,169 +1,86 @@
-# RAG Colture - Sistema di Produzione (Multi-regione)
+# RAG Colture (bollettini) — Sistema di Produzione
 
-## Descrizione
-Sistema RAG per estrazione automatica informazioni colturali dai bollettini fitosanitari.
-Supporta **Emilia-Romagna** (API REST Plone) e **Campania** (scraping HTML).
+Componente del monorepo **tornatura** (`src/python/bollettini`) che estrae informazioni per coltura
+dai bollettini fitosanitari e genera report (Markdown + HTML).
+Regioni: **Emilia-Romagna** (API REST Plone) e **Campania** (scraping HTML).
 
-## Struttura Progetto
+Principio guida: **estrazione fedele** — riportare TUTTO il crop-specifico della fonte, senza perdere
+dati e senza inventarne. Dettaglio tecnico completo: `REPORT.md`. Storico modifiche: `CHANGELOG.md`.
 
+## Architettura (aggiornata 2026-06)
+- **Storage: SQLite** (`modules/chunk_store.py`, `ChunkStore`, file `data/chunks.db`). **Niente
+  ChromaDB, niente embedding**: il retrieval è **match esatto sui metadati** (una coltura = un chunk).
+  `ChunkStore` ritorna la stessa forma di `ChromaDB.get()` per compatibilità coi consumatori.
+- **Due system prompt dedicati per regione** (`SYSTEM_PROMPT` ER quantitativo/regolatorio,
+  `SYSTEM_PROMPT_CAMPANIA` qualitativo) + **pass di verifica/revisione** indipendente (anti-perdita +
+  anti-allucinazione). I due prompt **non vanno ri-unificati** (un prompt unico, su Campania, induce
+  numeri inventati).
+- **Campania**: tabella di monitoraggio **iniettata deterministicamente** dal codice
+  (`extract_campania_monitoring`/`inject_monitoring`), non scritta dall'LLM; coda istituzionale rimossa
+  (`strip_campania_appendix`). **ER**: deroghe filtrate per-voce (`filter_deroghe_per_voce`).
+- Conversione PDF con **Docling, OCR disattivato** (`do_ocr=False`). Generazione `gpt-4o-mini`
+  (`temperature=0`).
+
+## Struttura del package
 ```
-RAG_colture/
-├── run_pipeline.py              # MAIN: orchestrator pipeline multi-regione
-├── requirements.txt             # Dipendenze Python
-├── CLAUDE.md                    # Documentazione
-│
+src/python/bollettini/
+├── api.py            # FastAPI: report per lat/lng (geopandas + shapefiles); /v1/bollettini/...
+├── scheduler.py      # APScheduler: esegue la pipeline ogni giorno (08:00 Europe/Rome)
+├── run_pipeline.py   # Orchestratore: download → process → query (exit 0/1/2)
+├── paths.py          # Path runtime: BOLLETTINI_RUNTIME_DIR → DATA_DIR/OUTPUT_DIR/SHAPEFILE_DIR
 ├── modules/
-│   ├── config.py                # Configurazione multi-regione e colture
-│   ├── downloaders/
-│   │   ├── __init__.py
-│   │   └── base.py              # Classe astratta BaseDownloader
-│   ├── download_bollettini.py   # Downloader Emilia-Romagna (API Plone)
-│   ├── download_campania.py     # Downloader Campania (scraping HTML)
-│   ├── process_bollettini.py    # PDF -> Markdown -> ChromaDB
-│   └── colture.py               # Query RAG per colture (multi-regione)
-│
-├── data/
-│   ├── input_bollettini/
-│   │   ├── emilia_romagna/
-│   │   │   ├── bollettini/       # PDF (symlink -> RAG_bollettini)
-│   │   │   └── cache_download.json
-│   │   └── campania/
-│   │       ├── bollettini/2026/  # PDF scaricati per anno
-│   │       └── cache_download.json
-│   ├── chromadb/                  # Symlink -> RAG_bollettini
-│   ├── cache/
-│   │   ├── processing_cache.json
-│   │   ├── colture_emilia_romagna_processed.json
-│   │   └── colture_campania_processed.json
-│   └── output_bollettini/
-│       ├── emilia_romagna/
-│       │   ├── vite/          # Report ER per coltura
-│       │   ├── pero/
-│       │   ├── pesco/
-│       │   ├── mais/
-│       │   └── barbabietola/
-│       └── campania/
-│           ├── vite/          # Report Campania per coltura
-│           ├── pesco/
-│           ├── olivo/
-│           ├── nocciolo/
-│           ├── actinidia/
-│           ├── melo/
-│           ├── castagno/
-│           ├── ciliegio/
-│           ├── susino/
-│           ├── agrumi/
-│           └── pomodoro/
-│
-├── .env                         # File indipendente
-└── venv/                        # Virtual environment indipendente
+│   ├── config.py             # REGIONI + COLTURE (ER 5, Campania 17)
+│   ├── chunk_store.py        # ChunkStore SQLite (no embedding)
+│   ├── downloaders/base.py   # BaseDownloader (astratto)
+│   ├── download_bollettini.py# Downloader Emilia-Romagna (API Plone)
+│   ├── download_campania.py  # Downloader Campania (scraping HTML, usa beautifulsoup4)
+│   ├── process_bollettini.py # PDF → Markdown (Docling) → chunk → SQLite
+│   └── colture.py            # Retrieval + generazione LLM → report MD/HTML (+ history/)
+├── shapefiles/       # province_italia.shp (usato), province_emilia_romagna.shp
+├── BUILD             # target Pants (pex_binary: scheduler, api)
+└── data/             # runtime, NON in git: chunks.db, input_bollettini/, cache/, output_bollettini/
 ```
 
-## Uso in Produzione
+## Dati runtime e path (`paths.py`)
+Tutto deriva da `RUNTIME_DIR` (env `BOLLETTINI_RUNTIME_DIR`, default = cartella del package):
+`DATA_DIR = RUNTIME_DIR/data`, `OUTPUT_DIR = DATA_DIR/output_bollettini`, `chunks.db` in `DATA_DIR`,
+`SHAPEFILE_DIR = <package>/shapefiles`. In Docker il volume è `/data/bollettini`. `data/**` è
+in `.gitignore` (artefatti runtime, non versionati).
 
-### Attivazione ambiente
+## Esecuzione
+**Produzione (Docker/AWS):** l'immagine `src/docker/bollettini` avvia lo **scheduler**
+(`--run-now` all'avvio, poi giornaliero) e l'**API**. Build via Pants (`pex_binary` `scheduler`/`api`).
+
+**Pipeline (CLI, per sviluppo):**
 ```bash
-cd /home/vito/projects/tornatura/RAG_colture
-source venv/bin/activate
+python -m bollettini.run_pipeline                 # tutte le regioni, solo bollettini nuovi
+python -m bollettini.run_pipeline --regione campania
+python -m bollettini.run_pipeline --force         # ignora cache, rigenera tutto
+python -m bollettini.run_pipeline --query-only    # solo generazione dai chunk esistenti
 ```
+Exit code: `0` nuovi dati · `1` niente di nuovo · `2` errore.
 
-### Pipeline completa (consigliato)
-```bash
-# Tutte le regioni
-python run_pipeline.py
-
-# Solo una regione
-python run_pipeline.py --regione campania
-python run_pipeline.py --regione emilia_romagna
+**API:**
 ```
-
-### Opzioni pipeline
-```bash
-python run_pipeline.py --force              # Ignora cache, riprocessa tutto
-python run_pipeline.py --query-only         # Solo generazione report (no download)
-python run_pipeline.py --download-only      # Solo download
+GET /v1/bollettini/culture/{coltura}/location?lat=<lat>&lng=<lng>
+GET /v1/bollettini/health
 ```
+Restituisce il report della coltura per la provincia che contiene il punto. Copre **Emilia-Romagna
+e Campania** (usa `province_italia.shp`).
 
-### Modulo singolo (debug/test)
-```bash
-python modules/download_campania.py    # Download solo Campania
-python modules/colture.py              # Solo report colture
-```
+## Regioni e colture
+- **Emilia-Romagna (5):** VITE, PERO, PESCO, MAIS, BARBABIETOLA.
+- **Campania (17):** VITE, OLIVO, PESCO, AGRUMI, ACTINIDIA, NOCCIOLO, NOCE, CIPOLLA, POMODORO,
+  FRAGOLA, CASTAGNO, CILIEGIO, MELO, PERO, PATATA, SUSINO, ALBICOCCO.
 
-## Regioni e Colture
-
-### Emilia-Romagna (5 colture)
-| ID | Nome |
-|----|------|
-| VITE | Vite |
-| PERO | Pero |
-| PESCO | Pesco |
-| MAIS | Mais |
-| BARBABIETOLA | Barbabietola |
-
-### Campania (11 colture)
-| ID | Nome |
-|----|------|
-| VITE | Vite |
-| OLIVO | Olivo |
-| PESCO | Pesco |
-| ACTINIDIA | Actinidia |
-| MELO | Melo |
-| CASTAGNO | Castagno |
-| CILIEGIO | Ciliegio |
-| SUSINO | Susino |
-| NOCCIOLO | Nocciolo |
-| AGRUMI | Agrumi |
-| POMODORO | Pomodoro |
-
-## Pipeline di Esecuzione
-
-```
-Per ogni regione:
-1. download (ER: API Plone / Campania: scraping HTML)
-   └-> Scarica PDF nuovi
-
-2. process_bollettini.py
-   └-> PDF -> Markdown (Docling) -> Chunks -> ChromaDB (con metadata regione)
-
-3. colture.py
-   └-> Per ogni bollettino (filtrato per regione):
-       └-> Per ogni coltura della regione:
-           └-> Retrieval sezione-based -> GPT-4o-mini -> Report MD + HTML
-```
-
-## Approccio Retrieval
-
-**Sezione-based con fallback keyword e filtro anti-contaminazione**:
-
-1. **PRIMA**: Match esatto su `section_title` (alta precisione)
-2. **POI**: Se pochi risultati (<2), cerca keywords nel contenuto
-3. **FILTRA**: Escludi sezioni di ALTRE colture (anti-contaminazione)
-
-## Differenze chiave tra regioni
-
-| | Emilia-Romagna | Campania |
-|--|----------------|----------|
-| Fonte | API REST Plone | Pagine HTML statiche |
-| Aree | 4 province raggruppate | 19 aree/comuni in 5 province |
-| Formato PDF | `Bollettino N del data di Province.pdf` | `Campania_{area}_{DD-MM-YYYY}.pdf` |
-| N. bollettino | Si | No (solo data) |
-
-## Cache
-
-- `data/bollettini_cache.json` - Download ER
-- `data/campania_cache.json` - Download Campania
-- `data/processing_cache.json` - Processing (tutte le regioni)
-- `data/cache/colture_{regione}_processed.json` - Report per regione
-- Per forzare riprocessamento: `python run_pipeline.py --force`
-
-## Dipendenze da RAG_bollettini
-
-- **ChromaDB**: Symlink a `../RAG_bollettini/data/chromadb/`
-- **Collezione**: Usa `cimice_asiatica` (contiene tutti i bollettini)
+## Dipendenze (Pants)
+Dichiarate in `3rdparty/python/bollettini-requirements.txt` (resolve `bollettini`, lockfile
+`bollettini.lock`). Principali: `docling`, `openai`, `markdown`, `requests`, `fastapi`, `uvicorn`,
+`geopandas`, `shapely`, `APScheduler`, `python-dotenv`. **Rimossi** `chromadb` e `sentence-transformers`.
+Dopo modifiche alle dipendenze: `pants generate-lockfiles --resolve=bollettini` (Linux/CI).
+> Nota: `download_campania.py` usa `beautifulsoup4`, dichiarata in `3rdparty/python/bollettini-requirements.txt` e nel `BUILD` (vedi CHANGELOG).
 
 ## Note operative
-
-1. **Frequenza bollettini ER**: ogni ~2 settimane
-2. **Frequenza bollettini Campania**: variabile per area
-3. Le colture Campania (OLIVO, AGRUMI, POMODORO, NOCCIOLO) vanno affinate dopo analisi PDF reali
+1. Solo l'**ultimo bollettino per provincia** viene rigenerato; i precedenti vanno in `history/`.
+2. Le colture fuori stagione producono report statici "Nessuna informazione…" (nessuna chiamata LLM).
+3. Per prompt completi, validazione, integrazione e costi: `REPORT.md`. Modifiche recenti: `CHANGELOG.md`.

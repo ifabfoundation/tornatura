@@ -2,7 +2,7 @@ python_sources(
     name="pysource",
     dependencies=[
         "3rdparty/python:bollettini#APScheduler",
-        "3rdparty/python:bollettini#chromadb",
+        "3rdparty/python:bollettini#beautifulsoup4",
         "3rdparty/python:bollettini#docling",
         "3rdparty/python:bollettini#fastapi",
         "3rdparty/python:bollettini#geopandas",
@@ -10,7 +10,6 @@ python_sources(
         "3rdparty/python:bollettini#openai",
         "3rdparty/python:bollettini#python-dotenv",
         "3rdparty/python:bollettini#requests",
-        "3rdparty/python:bollettini#sentence-transformers",
         "3rdparty/python:bollettini#shapely",
         "3rdparty/python:bollettini#uvicorn",
     ],

@@ -30,23 +30,19 @@ import json
 import time
 import shutil
 import re
-import chromadb
 import markdown
 from openai import OpenAI
 from dotenv import load_dotenv
+from bollettini import paths
+from bollettini.modules.chunk_store import ChunkStore
 import logging
 from typing import List, Dict, Optional, Tuple
-from bollettini import paths
 
 # ============= CONFIGURAZIONE =============
-BASE_DIR = Path(__file__).parent.parent
-CHROMADB_DIR = paths.DATA_DIR / "chromadb"
+CHUNKSTORE_DB = paths.DATA_DIR / "chunks.db"
 OUTPUT_DIR = paths.OUTPUT_DIR
 CACHE_FILE = paths.DATA_DIR / "cache" / "colture_processed.json"
 HISTORY_BASE_DIR = OUTPUT_DIR  # history lives under each regione/coltura dir
-
-# Usa la stessa collezione di cimice_asiatica (contiene tutti i bollettini)
-COLLECTION_NAME = "cimice_asiatica"
 
 # Modello LLM
 LLM_MODEL = "gpt-4o-mini"
@@ -71,59 +67,239 @@ def get_logger():
 
 
 # ============= COLTURE DA CONFIG =============
-from modules.config import COLTURE, REGIONI, get_colture_per_regione, get_area_display_name
+from bollettini.modules.config import COLTURE, REGIONI, get_colture_per_regione, get_area_display_name
 # ==========================================
 
 
-# ============= SYSTEM PROMPT UNICO =============
-SYSTEM_PROMPT = """Sei un esperto fitosanitario che prepara report concisi per agronomi.
-Estrai dai documenti TUTTE le informazioni sulla coltura specificata.
+# ============= SYSTEM PROMPT EMILIA-ROMAGNA (lean, struttura-first) =============
+# Prompt dedicato all'ER (la Campania ha SYSTEM_PROMPT_CAMPANIA piu' sotto: i due contenuti sono
+# opposti, l'unificazione e' stata testata e scartata perche' su Campania induceva fabbricazione).
+# Filosofia: definire la STRUTTURA e pretendere FEDELTA' TOTALE, senza "spingere" il contenuto
+# (niente elenchi di malattie/insetti, niente campi imposti). Si estrae TUTTO il crop-specifico
+# senza perdere ne' inventare; le sezioni non legate alla coltura non si mettono. Il safety-net
+# anti-perdita (lezione dei 391 fatti) e' la lista dei TIPI di dato da conservare "QUANDO
+# presenti" — non un obbligo di emetterli.
+SYSTEM_PROMPT = """Sei un redattore tecnico fitosanitario. Ricevi il testo di un bollettino
+relativo a UNA coltura. Riorganizzalo nella struttura sotto, restando FEDELE: trasferisci TUTTE
+le informazioni di QUELLA coltura cosi' come sono, senza perderne nessuna e senza aggiungerne.
+Non riassumere; togli solo ripetizioni, intestazioni/pie' di pagina e frasi di collegamento.
 
-FORMATO OUTPUT (usa esattamente questa struttura Markdown):
+PRINCIPIO — FEDELTA' TOTALE, NIENTE INVENZIONI:
+- Riporta SOLO cio' che e' scritto nella fonte, ma riportalo TUTTO: se un dato non c'e', non
+  scriverlo; se c'e', non perderlo.
+- Conserva con precisione, QUANDO la fonte li riporta: date e scadenze; soglie di intervento
+  (anche quantitative — ore di bagnatura, gradi-giorno, % — o diverse per varieta'); sostanze
+  attive con i loro limiti (Max interventi, intervalli di sicurezza); i limiti CUMULATIVI per
+  gruppo chimico o insieme di sostanze (es. "Tra gli SDHI Max 4", "Tra Ditianon e Captano Max
+  16"); le sostanze candidate alla sostituzione (*); gli accorgimenti agronomici (es. taglio a
+  una certa distanza dal sintomo, disinfezione attrezzi, fitotossicita'/distanziamenti); la
+  salvaguardia delle api; le deroghe/usi eccezionali con le DATE e il loro significato esatto
+  (distingui la data di CONCESSIONE da quella di SCADENZA/fine validita').
+- NON imporre questi campi se la fonte non li contiene. Molte fonti (es. i bollettini Campania)
+  danno consigli solo QUALITATIVI (es. "intervenire preventivamente con prodotti di copertura",
+  senza numeri): riportali COSI' come sono. E' un ERRORE GRAVE aggiungere "Max interventi: N",
+  "Intervallo di sicurezza: N giorni", soglie in % o qualsiasi altro numero quando la fonte NON
+  lo riporta per quella voce: NON farlo MAI.
+- Le TABELLE si COPIANO integralmente come tabelle markdown, riga per riga, senza aggiungerne,
+  perderne o modificarne nessuna (es. tabelle rischio->prodotto, schemi di diserbo). UNICA
+  ECCEZIONE: la tabella dei rilievi di monitoraggio in campo (colonne tipo Comune/Localita'/
+  Varieta'/Stadio fenologico/Stato fitosanitario, tipica dei bollettini Campania) NON va
+  riprodotta: viene inserita automaticamente.
 
-## Situazione Attuale
-- **Fase fenologica**: [stadio]
-- **Periodo**: [date bollettino]
+STRUTTURA (usa questi titoli; OMETTI ogni sezione di cui la fonte non parla per questa coltura:
+niente header vuoti, niente "nessuna indicazione"):
 
-## Avversità e Difesa
-### Malattie
-| Patogeno | Rischio | Trattamento | Note |
-|----------|---------|-------------|------|
+## Stato della coltura
+Fase fenologica e situazione generale della coltura, se presenti.
 
-### Insetti
-| Insetto | Presenza | Soglia | Trattamento |
-|---------|----------|--------|-------------|
+## Avversita' e difesa
+Una voce per ogni avversita' citata (malattia o insetto). Sotto ciascuna riporta FEDELMENTE cio'
+che la fonte dice (stato, criteri agronomico/chimico/biologico, soglie, sostanze attive con i
+loro limiti, accorgimenti), esattamente come scritto, senza inventarne e senza spostarli da
+un'avversita' all'altra. Se la fonte raggruppa piu' agenti sotto un titolo, conservali TUTTI.
+Suddividi in "### Malattie / Patogeni" (funghi, batteri, virus, fitoplasmi) e "### Insetti /
+Acari / Fitofagi" (organismi animali).
 
-## Trattamenti Consigliati
-| Target | Prodotto | Max interventi | Condizioni |
-|--------|----------|----------------|------------|
+## Difesa obbligatoria e scadenze
+Solo se la fonte impone per QUESTA coltura misure di lotta OBBLIGATORIA / organismi da quarantena
+(es. flavescenza dorata e il vettore scafoideo, colpo di fuoco, estirpi obbligatori). E' lotta
+obbligatoria: riporta TUTTO il protocollo senza comprimere — organismo e riferimento normativo;
+la SEQUENZA e il numero dei trattamenti con le DATE/finestre temporali esatte; le sostanze ammesse
+coi relativi Max; le fasce di rispetto; le precondizioni; la salvaguardia delle api; gli estirpi.
 
-## Note Operative
-[2-3 punti chiave per la settimana]
+## Pratiche agronomiche
+Solo se la fonte da' indicazioni agronomiche per QUESTA coltura: successione/rotazione,
+fertilizzazione, diserbo (lista COMPLETA delle sostanze erbicide come da documento, coi gruppi
+chimico/HRAC se indicati), irrigazione/gestione del suolo, cautele operative.
 
-REGOLE:
-1. Estrai SOLO info per la coltura specificata
-2. Basati SOLO sui documenti forniti - NON inventare dati
-3. NON usare placeholder tipo [non specificato], [da verificare], [N/A]
-4. Se non ci sono info specifiche per la coltura, scrivi:
-   "Nessuna informazione specifica per questa coltura in questo bollettino."
-5. NON mischiare con altre colture
-6. Sii CONCISO: info operative, non testi lunghi
-7. Tabelle: SOLO righe con dati reali trovati nel bollettino
-8. Include soglie numeriche quando disponibili
-9. Bollettini invernali (gen-mar): se poche info, è normale - scrivi solo quello che c'è, non inventare"""
+## Vincoli e deroghe
+Solo se citati per QUESTA coltura:
+- limiti annuali e CUMULATIVI per gruppo chimico o sostanza: riportali TUTTI (es. "Tra gli SDHI
+  Max 4", "Tra gli IBE Max 6", "Tra Ditianon e Captano Max 16", "Tra Fosetil Al e Fosfonato di K
+  Max 10", tetti tipo "max 3 interventi insetticidi/anno"). Se la fonte li RIPETE piu' volte,
+  raccoglili UNA sola volta ma senza ometterne NESSUNO;
+- sostanze candidate alla sostituzione (*);
+- deroghe/usi eccezionali con prodotto + sostanza attiva + DATE (concessione e scadenza, distinte).
+
+## Note operative
+2-4 azioni prioritarie della settimana, in bullet di una riga (richiami sintetici).
+
+REGOLE
+- Una sola coltura: ignora ogni riferimento ad ALTRE colture e le regole generali NON riferite a
+  questa coltura.
+- Fedelta' assoluta: nessuna invenzione e nessuna perdita. Niente placeholder ([N/A],
+  [da verificare], [non specificato]): ometti la voce.
+- Ogni avversita' compare UNA sola volta (Malattie OPPURE Insetti). Un organismo a lotta
+  obbligatoria: stato in "Avversita' e difesa", protocollo in "Difesa obbligatoria e scadenze".
+- Se la fonte non ha informazioni su questa coltura, scrivi un solo paragrafo: "Nessuna
+  informazione specifica per questa coltura in questo bollettino." e ometti le sezioni."""
 
 QUERY_TEMPLATE = """Coltura: {coltura_nome}
-Bollettino N.{numero} del {data}
+Bollettino del {data} - {province}
+
+DOCUMENTI:
+{context}
+
+---
+Estrai e riorganizza TUTTE le informazioni della coltura {coltura_nome} presenti nei documenti,
+nel formato richiesto, senza perderne e senza inventarne."""
+# ==========================================
+
+
+# ============= VERIFICA / REVISIONE (rete anti-perdita e anti-allucinazione) =============
+VERIFY_PROMPT = """Confronti la FONTE (estratto di un bollettino fitosanitario per una coltura)
+con il REPORT generato. Il REPORT deve preservare TUTTI i fatti operativi della FONTE ed essere
+FEDELE (niente di inventato).
+
+IGNORA la tabella di monitoraggio (rilievi in campo): e' gestita separatamente e inserita
+verbatim -- NON segnalare righe di monitoraggio mancanti, in piu' o alterate.
+
+Individua i fatti IMPORTANTI presenti nella FONTE ma MANCANTI o ALTERATI nel REPORT:
+- avversita' non riportate, o AGENTI persi quando la fonte ne raggruppa piu' d'uno sotto un titolo;
+- date e scadenze; soglie (anche quantitative o per varieta'); sostanze attive con Max interventi
+  e intervalli di sicurezza; limiti CUMULATIVI per gruppo chimico ("Tra gli SDHI Max 4", ecc.);
+  accorgimenti agronomici e salvaguardia delle api;
+- deroghe/usi eccezionali con le date e il loro significato (concessione vs scadenza);
+- trattamenti/misure obbligatorie ed estirpi; righe di tabella NON-di-monitoraggio omesse.
+
+Individua le AFFERMAZIONI del REPORT NON supportate dalla FONTE (allucinazioni), sempre da segnalare:
+- valori numerici (soglie, "Max interventi: N", "Intervallo di sicurezza: N giorni") non presenti;
+- sostanze, date o livelli di rischio non presenti; date di deroga col significato invertito;
+- criteri/soglie/campionamenti attribuiti a un'avversita' diversa da quella della fonte.
+
+Ignora le differenze di sola forma, prosa, ordine o sintesi non sostanziale.
+
+Rispondi SOLO con JSON valido nella forma:
+{"mancanti": ["fatto operativo mancante 1", "..."], "errati": ["affermazione errata 1", "..."]}
+Se non manca nulla e non c'e' nulla di errato: {"mancanti": [], "errati": []}."""
+
+REVISE_PROMPT = """Ti vengono dati: la FONTE, il REPORT attuale e una lista di CORREZIONI
+(fatti MANCANTI da integrare e affermazioni ERRATE da rimuovere/correggere).
+Restituisci il REPORT CORRETTO rispettando queste regole:
+- mantieni la stessa struttura di sezioni e lo stesso stile del report attuale;
+- AGGIUNGI i fatti mancanti nelle sezioni appropriate, fedeli alla FONTE;
+- RIMUOVI o correggi le affermazioni errate;
+- NON rimuovere nulla di corretto gia' presente; NON inventare nulla che non sia nella FONTE;
+- le tabelle restano tabelle markdown complete.
+Restituisci SOLO il report markdown corretto, senza commenti o preamboli."""
+# =========================================================================================
+
+
+# ============= PROMPT CAMPANIA (separato dall'ER per necessita') =============
+# ER e Campania hanno contenuti OPPOSTI: ER quantitativo/regolatorio (soglie, Max interventi,
+# limiti cumulativi, deroghe), Campania per lo piu' QUALITATIVO (consigli senza numeri). Un prompt
+# unico NON funziona: l'enfasi ER su "preserva Max/intervalli/limiti" (necessaria al recall ER) e'
+# proprio cio' che induce gpt-4o-mini a INVENTARE numeri/soglie e a riempire di placeholder le
+# sezioni regolatorie sulla Campania (verificato: re-introduce il bug SA VITE). Quindi: prompt
+# Campania dedicato, struttura-first, che VIETA l'invenzione di numeri. La tabella di monitoraggio
+# resta iniettata dal codice (inject_monitoring).
+SYSTEM_PROMPT_CAMPANIA = """Sei un redattore tecnico fitosanitario. Ricevi il testo di un
+bollettino relativo a UNA coltura. Riorganizzalo nella struttura indicata sotto, restando
+FEDELE: trasferisci le informazioni cosi' come sono, senza aggiungere e senza perdere nulla.
+Non riassumere; togli solo ripetizioni, intestazioni/pie' di pagina e frasi di collegamento.
+
+PRINCIPIO (il piu' importante): riporta SOLO cio' che e' scritto nella fonte. Non aggiungere
+campi, numeri, soglie, sostanze, date, livelli di rischio o consigli che la fonte non contiene.
+Se la fonte e' qualitativa, resta qualitativo. Se un dato non c'e', non scriverlo. Le TABELLE si
+COPIANO integralmente come tabelle markdown, riga per riga, senza aggiungerne, perderne o
+modificarne nessuna.
+
+STRUTTURA (usa questi titoli; OMETTI ogni sezione di cui la fonte non parla: niente header
+vuoti, niente "nessuna indicazione"):
+
+## Stato della coltura
+Riporta eventuali note testuali sulla fase fenologica o sulla situazione generale presenti nella
+fonte. NON riprodurre qui la tabella dei rilievi di monitoraggio: viene inserita automaticamente
+sotto un sotto-titolo "### Monitoraggio". Se non ci sono note testuali oltre alla tabella, scrivi
+solo l'header della sezione.
+
+## Avversita' e difesa
+Una voce per ogni avversita' citata. Sotto ciascuna, riporta FEDELMENTE cio' che la fonte dice:
+stato, criteri di difesa (agronomico/chimico/biologico), soglie, sostanze attive, campionamenti,
+accorgimenti, limiti -- esattamente come scritti, senza inventarne e senza spostarli da
+un'avversita' all'altra. Se la fonte raggruppa piu' agenti/avversita' sotto un titolo,
+conservali TUTTI. Puoi suddividere in "### Malattie" e "### Insetti/Acari".
+
+## Difesa obbligatoria
+Solo se la fonte cita obblighi di legge, lotta obbligatoria o organismi da quarantena:
+organismo, azione richiesta, riferimenti/scadenze citati.
+
+## Altre indicazioni
+Solo se presenti nella fonte: pratiche agronomiche generali, vincoli annuali/cumulativi,
+deroghe/usi eccezionali con le loro date esatte. Riportale come sono.
+
+## Note operative
+2-4 azioni prioritarie della settimana, bullet di una riga (richiami sintetici).
+
+REGOLE
+- Una sola coltura: ignora ogni riferimento ad altre colture.
+- Fedelta' assoluta: nessuna invenzione (vedi PRINCIPIO). Niente placeholder ([N/A],
+  [da verificare], [non specificato]) e niente frasi tipo "non sono previsti / non specificato":
+  se manca, OMETTI la voce o la sezione.
+- Classifica: funghi/batteri/virus/fitoplasmi = malattie; organismi animali = insetti/acari.
+- Se la fonte non ha informazioni sulla coltura, scrivi un solo paragrafo: "Nessuna informazione
+  specifica per questa coltura in questo bollettino." """
+
+QUERY_TEMPLATE_CAMPANIA = """Coltura: {coltura_nome}
+Bollettino del {data}
 Province: {province}
 
 DOCUMENTI:
 {context}
 
 ---
-Estrai TUTTE le informazioni specifiche per {coltura_nome} presenti nel bollettino.
-Focus su: fenologia, avversità, trattamenti consigliati, deroghe attive."""
-# ==========================================
+Estrai TUTTE le informazioni della coltura {coltura_nome} presenti nel bollettino (tabella di
+monitoraggio + malattie e insetti con i relativi consigli di difesa agronomico/chimico/biologico),
+riportandole FEDELMENTE nel formato richiesto. NON inventare numeri, soglie, intervalli di
+sicurezza o max interventi non presenti nella fonte."""
+
+VERIFY_PROMPT_CAMPANIA = """Confronti la FONTE (estratto di un bollettino fitosanitario della
+Campania per una coltura) con il REPORT generato. Il REPORT deve preservare TUTTI i fatti della
+FONTE ed essere FEDELE (niente di inventato).
+
+IGNORA COMPLETAMENTE la tabella di monitoraggio (rilievi in campo): e' gestita separatamente e
+inserita verbatim, quindi NON segnalare righe di monitoraggio mancanti, in piu' o alterate.
+
+Individua i fatti IMPORTANTI presenti nella FONTE ma MANCANTI o ALTERATI nel REPORT:
+- avversita' (malattie/insetti) non riportate, o AGENTI persi quando la fonte ne raggruppa piu'
+  d'uno sotto un titolo (es. Xylella, Cytospora, Phytophthora spp.);
+- criteri Agronomico/Chimico/Biologico, soglie, percentuali, metodi di campionamento, elenchi di
+  sostanze attive, limiti ("al massimo N interventi") presenti nella fonte e non riportati;
+- procedure obbligatorie / organismi da quarantena (Xylella, Flavescenza dorata) non riportati.
+
+Individua le AFFERMAZIONI del REPORT NON supportate dalla FONTE (allucinazioni). Sono
+particolarmente GRAVI e vanno SEMPRE segnalate:
+- "Intervallo di sicurezza: N giorni", "Max interventi: N", "Soglia: ..." o qualunque valore
+  numerico NON presente nella fonte;
+- sostanze attive, date, livelli di rischio non presenti nella fonte;
+- criteri/soglie/campionamenti attribuiti a un'avversita' diversa da quella della fonte.
+
+Ignora le differenze di sola forma, ordine o prosa.
+
+Rispondi SOLO con JSON valido nella forma:
+{"mancanti": ["fatto mancante 1", "..."], "errati": ["affermazione inventata 1", "..."]}
+Se non manca nulla e non c'e' nulla di errato: {"mancanti": [], "errati": []}."""
+# ============================================================================
 
 
 def parse_date_from_filename(filename: str) -> Optional[datetime]:
@@ -338,6 +514,181 @@ def is_other_coltura_section(section_title: str, current_coltura_id: str) -> boo
     return False
 
 
+# ============= FILTRO DEROGHE PER-VOCE (sezioni trasversali "a lista") =============
+# Termini-coltura CURATI per il match delle voci-deroga (le 5 colture ER).
+# Curati per evitare ambiguita': es. BARBABIETOLA usa solo 'barbabietola' e NON 'bietola',
+# perche' 'bietola da foglia' (bietola da costa) e' un'ALTRA coltura. Per PESCO includiamo le
+# varianti di genere/numero (nettarino/nettarina/nettarine) che la derivazione automatica
+# perderebbe. Per colture non in mappa si ricade sulla derivazione automatica da config.
+DEROGA_TERMS = {
+    "VITE": {"vite", "vigneto"},
+    "PERO": {"pero"},
+    "PESCO": {"pesco", "pesche", "nettarine", "nettarina", "nettarino"},
+    "MAIS": {"mais", "granoturco"},
+    "BARBABIETOLA": {"barbabietola"},
+}
+_DEROGA_STOPWORDS = {"zucchero", "industria", "semi", "forzata", "semiforzata", "bietola"}
+
+
+def coltura_match_terms(coltura_id: str) -> set:
+    """
+    Termini (nomi-coltura) per riconoscere quando una voce-deroga nomina questa coltura.
+    Usa la mappa curata DEROGA_TERMS se presente; altrimenti deriva da `nome` + `sezioni`
+    di config (nomi-coltura, NON keyword-malattia), escludendo token ambigui.
+    """
+    if coltura_id in DEROGA_TERMS:
+        return set(DEROGA_TERMS[coltura_id])
+    c = COLTURE.get(coltura_id, {})
+    terms = set()
+    for s in [c.get("nome", "")] + c.get("sezioni", []):
+        s = re.sub(r"COLTURA[\s:]*", " ", s, flags=re.I)
+        for tok in re.findall(r"[a-zàèéìòù]{4,}", s.lower()):
+            if tok not in _DEROGA_STOPWORDS:
+                terms.add(tok)
+    return terms
+
+
+def filter_deroghe_per_voce(content: str, coltura_id: str) -> str:
+    """
+    Spezza una sezione-lista (DEROGHE) in singole voci ('In data <gg> <mese> ... e' stata
+    concessa ...') e tiene SOLO le voci che nominano la coltura (match per parola intera sui
+    nomi-coltura). Deterministico: niente voci di altre colture (no mis-attribuzione), niente
+    voci pertinenti perse (no top-k). Ritorna le voci tenute (o "" se nessuna).
+    """
+    terms = coltura_match_terms(coltura_id)
+    if not terms:
+        return ""
+    pats = [re.compile(rf"\b{re.escape(t)}\b", re.I) for t in terms]
+    # Split robusto: prima di ogni "In data <numero>" ovunque compaia (gestisce anche le voci
+    # non a inizio riga o precedute da artefatti di pagina <!-- image --> / intestazioni).
+    items = re.split(r"(?=\bIn\s+data\s+\d{1,2})", content)
+    kept = [
+        it.strip() for it in items
+        if re.match(r"In\s+data\s+\d", it.strip()) and any(p.search(it) for p in pats)
+    ]
+    if not kept:
+        return ""
+    return ("## Deroghe e usi eccezionali pertinenti alla coltura\n\n" + "\n\n".join(kept))
+# ===================================================================================
+
+
+# ============= STRIP CODA ISTITUZIONALE CAMPANIA =============
+# I bollettini Campania chiudono con sezioni BULLETIN-WIDE (non di coltura) che il chunker
+# attribuisce all'ULTIMA coltura del documento, contaminandola: controlli/taratura attrezzature,
+# AVVISI di sostanze in scadenza, tabella generale di Deroghe territoriali (cita molte colture),
+# firma redazionale e data del prossimo bollettino. Vanno rimosse a monte: altrimenti rientrano
+# anche via il pass di verifica (le vede come "fatti mancanti" e le re-inietta).
+CAMPANIA_APPENDIX_MARKERS = [
+    r"Controlli\s+delle\s+attrezzature",
+    r"Piano\s+nazionale\s+sull[''’]uso\s+sostenibile",
+    r"Saranno\s+in\s+scadenza",
+    r"##\s*AVVISI\b",
+    r"##\s*DEROGHE\b",
+    r"Deroghe\s+territoriali",
+    r"Il\s+presente\s+Bollettino\s+[eè]\s+stato\s+redatto",
+    r"Il\s+prossimo\s+bollettino",
+]
+_CAMPANIA_APPENDIX_RE = re.compile("|".join(CAMPANIA_APPENDIX_MARKERS), re.I)
+
+
+def strip_campania_appendix(content: str) -> str:
+    """Taglia la coda istituzionale del bollettino Campania (vedi sopra), restituendo il
+    contenuto fino al PRIMO marcatore della coda. I marcatori compaiono sempre DOPO il
+    contenuto delle colture, quindi il taglio preserva l'informazione di coltura."""
+    m = _CAMPANIA_APPENDIX_RE.search(content)
+    return content[:m.start()].rstrip() if m else content
+# =============================================================
+
+
+# ============= TABELLA MONITORAGGIO DETERMINISTICA (Campania) =============
+# La tabella di monitoraggio (rilievi in campo) e' dato STRUTTURATO: farla "ricopiare" all'LLM
+# produce righe inventate/perse (osservato su SA OLIVO: 2 righe -> 3). Qui la estraiamo verbatim
+# dal markdown della fonte e la iniettiamo nel report, bypassando l'LLM: e' l'estrazione piu'
+# fedele possibile. Il monitoraggio in Campania precede sempre i "CONSIGLI DI DIFESA".
+_TABLE_SEP_RE = re.compile(r"^\|?[\s|:\-]+\|?$")
+
+
+def _normalize_md_table(block: List[str]) -> str:
+    """Assicura il separatore markdown dopo l'header: alcune tabelle Campania ne sono prive e
+    senza di esso il markdown non renderizza come tabella. Tutto il resto resta verbatim."""
+    lines = [l for l in block if l.strip()]
+    header = lines[0]
+    rest = lines[1:]
+    if rest and _TABLE_SEP_RE.match(rest[0].strip()):
+        return "\n".join(lines)  # separatore gia' presente
+    ncols = len(header.strip().strip("|").split("|"))
+    sep = "|" + "|".join(" --- " for _ in range(ncols)) + "|"
+    return "\n".join([header, sep] + rest)
+
+
+def _table_data_rows(block: List[str]) -> int:
+    """Conta le righe con contenuto reale in un blocco-tabella (header+separatore esclusi se
+    'vuoti'): una riga conta se ha almeno una cella con caratteri alfanumerici."""
+    n = 0
+    for ln in block:
+        s = ln.strip()
+        if not s or _TABLE_SEP_RE.match(s):
+            continue
+        cells = [c.strip() for c in s.strip("|").split("|")]
+        if any(re.search(r"[A-Za-z0-9]", c) for c in cells):
+            n += 1
+    return n
+
+
+def extract_campania_monitoring(source_text: str) -> Optional[str]:
+    """Estrae VERBATIM la tabella di monitoraggio dalla fonte Campania.
+
+    Strategia: guarda solo la parte PRIMA di 'CONSIGLI DI DIFESA' (dove sta il monitoraggio),
+    raggruppa le righe-tabella contigue in blocchi, e restituisce il blocco con piu' righe-dati
+    reali (header + >=1 riga). Le tabelle con sola intestazione (es. blocchi UTM vuoti) hanno
+    0 righe-dati e vengono scartate. Ritorna None se non c'e' una tabella con dati reali.
+    """
+    m = re.search(r"CONSIGLI\s+DI\s+DIFESA", source_text, re.I)
+    head = source_text[:m.start()] if m else source_text
+    blocks, cur = [], []
+    for ln in head.splitlines():
+        if ln.lstrip().startswith("|"):
+            cur.append(ln.rstrip())
+        elif cur:
+            blocks.append(cur)
+            cur = []
+    if cur:
+        blocks.append(cur)
+    if not blocks:
+        return None
+    best = max(blocks, key=lambda b: (_table_data_rows(b), len(b)))
+    # serve almeno header + 1 riga-dati reale
+    if _table_data_rows(best) < 2:
+        return None
+    return _normalize_md_table(best)
+
+
+def inject_monitoring(report: str, monit_table: str) -> str:
+    """Inserisce la tabella di monitoraggio (verbatim) come sotto-sezione '### Monitoraggio'
+    dentro '## Stato della coltura'. Per robustezza rimuove dalla sezione Stato QUALSIASI
+    riga-tabella e sotto-header '### Monitoraggio' eventualmente prodotti dall'LLM (che a volte
+    duplica la tabella nonostante le istruzioni), poi appende la tabella deterministica. Se la
+    sezione Stato manca, la crea in testa al report."""
+    block = f"### Monitoraggio\n\n{monit_table}\n"
+    m = re.search(r"(?im)^##\s+Stato della coltura[ \t]*$", report)
+    if not m:
+        return f"## Stato della coltura\n\n{block}\n{report.lstrip()}"
+    start = m.end()
+    nxt = re.search(r"(?m)^##\s+", report[start:])
+    end = start + nxt.start() if nxt else len(report)
+    sezione = report[start:end]
+    # togli righe-tabella e sotto-header Monitoraggio dalla sola sezione Stato
+    kept = [
+        ln for ln in sezione.splitlines()
+        if not ln.lstrip().startswith("|")
+        and not re.match(r"(?i)^\s*###\s+Monitoraggio\s*$", ln)
+    ]
+    sezione_clean = "\n".join(kept).strip()
+    new_section = (sezione_clean + "\n\n" if sezione_clean else "") + block
+    return report[:start].rstrip() + "\n\n" + new_section + "\n" + report[end:].lstrip()
+# ==========================================================================
+
+
 class ColtureQueryProcessor:
     """
     Processore query RAG per tutte le colture.
@@ -367,15 +718,17 @@ class ColtureQueryProcessor:
 
         # Cache separata per regione
         if regione:
-            self._cache_file = BASE_DIR / "data" / "cache" / f"colture_{regione}_processed.json"
+            self._cache_file = paths.DATA_DIR / "cache" / f"colture_{regione}_processed.json"
         else:
             self._cache_file = CACHE_FILE
         self.cache = self._load_cache()
 
         # Lazy loading
         self._openai_client = None
-        self._chromadb_client = None
-        self._collection = None
+        self._store = None
+
+        # Pass di verifica/revisione anti-perdita e anti-allucinazione (vedi docs/redesign_er.md)
+        self.verify = True
 
     # ============= CACHE MANAGEMENT =============
 
@@ -428,27 +781,20 @@ class ColtureQueryProcessor:
             load_dotenv()
 
             self.logger.info("Initializing OpenAI client...")
-            self._openai_client = OpenAI()
+            # timeout per chiamata + retry con backoff: evita hang indefiniti e
+            # assorbe i rate-limit transitori senza bloccare la pipeline.
+            self._openai_client = OpenAI(timeout=60.0, max_retries=4)
 
-            self.logger.info(f"Connecting to ChromaDB: {COLLECTION_NAME}")
-            self._chromadb_client = chromadb.PersistentClient(path=str(CHROMADB_DIR))
-            self._collection = self._chromadb_client.get_collection(COLLECTION_NAME)
+            self.logger.info(f"Apertura ChunkStore: {CHUNKSTORE_DB}")
+            self._store = ChunkStore(CHUNKSTORE_DB)
 
     # ============= BOLLETTINI RETRIEVAL =============
 
     def get_available_bollettini(self) -> List[Dict]:
-        """Recupera lista bollettini disponibili da ChromaDB, con filtro regione."""
+        """Recupera lista bollettini disponibili dal ChunkStore, con filtro regione."""
         self._init_models()
 
-        # Filtra per regione se specificata. Nessun limit: la collezione cresce nel tempo
-        # e limitare tagliava fuori i bollettini più recenti (inseriti per ultimi).
-        if self.regione:
-            all_docs = self._collection.get(
-                where={"regione": self.regione},
-                include=["metadatas"]
-            )
-        else:
-            all_docs = self._collection.get(include=["metadatas"])
+        all_docs = self._store.get_all(self.regione)
 
         bollettini_map = {}
         for meta in all_docs['metadatas']:
@@ -501,7 +847,7 @@ class ColtureQueryProcessor:
 
         return list(latest_by_province.values())
 
-    # ============= RETRIEVAL (SEZIONE + KEYWORD) =============
+    # ============= RETRIEVAL (SEZIONE + PARENT_COLTURA) =============
 
     def _retrieve_coltura_chunks(self, results: Dict, coltura_id: str) -> List[Dict]:
         """
@@ -510,83 +856,79 @@ class ColtureQueryProcessor:
         Accetta i chunks del bollettino già pre-caricati (fetch ChromaDB unico
         per bollettino in process_bollettino, riusato per tutte le colture).
 
-        Strategy (in ordine di priorità):
-        1. Match esatto su section_title (alta precisione)
-        2. Se pochi risultati, cerca keywords nel contenuto
-        3. FILTRA: Escludi sezioni di ALTRE colture (anti-contaminazione)
+        Strategia unica (entrambe le regioni usano slice-by-coltura):
+        - Match esatto su section_title (es. "VITE", "BARBABIETOLA DA ZUCCHERO")
+        - OR match su parent_coltura == coltura_id (per chunks con titoli generici
+          attribuiti via tracking del preprocess).
+        Ogni chunk contiene gia' tutto il contenuto della coltura (Difesa, Diserbo,
+        Tecniche, Vincoli, ecc.) grazie alla pipeline slice + merge consecutivi.
         """
         coltura = self.colture[coltura_id]
         sezioni = coltura["sezioni"]
-        keywords = coltura["keywords"]
 
-        coltura_chunks = []
+        own_chunks = []       # blocchi propri della coltura (section/parent)
+        cross_chunks = []     # sezioni trasversali applicabili (solo enrichment)
         seen_contents = set()  # Evita duplicati
 
-        # Step 1: Match su sezione (alta priorità). Prefix-match con word boundary
-        # per catturare varianti come "BARBABIETOLA DA ZUCCHERO" o "PESCO E NETTARINE".
         for doc, meta in zip(results['documents'], results['metadatas']):
             section_title = meta.get('section_title', '')
+            parent = meta.get('parent_coltura', '')
+            applies_to = meta.get('applies_to', '')
 
-            if section_matches(section_title, sezioni):
-                content_key = doc[:200]
+            # Campania: rimuovi la coda istituzionale che il chunker accoda all'ultima coltura
+            # (controlli attrezzature, AVVISI, deroghe territoriali generali, firma redazionale).
+            if meta.get('regione') == 'campania':
+                doc = strip_campania_appendix(doc)
+
+            # Trasversale "a lista" (DEROGHE): filtro per-voce deterministico.
+            if applies_to == "PER_VOCE":
+                filtered = filter_deroghe_per_voce(doc, coltura_id)
+                if filtered.strip():
+                    cross_chunks.append({
+                        "content": filtered,
+                        "metadata": meta,
+                        "match_type": "trasversale",
+                    })
+                continue
+
+            match_section = section_matches(section_title, sezioni)
+            match_parent = parent == coltura_id
+            # Trasversali: valgono per questa coltura (o per "ALL")
+            match_cross = bool(applies_to) and (
+                applies_to == "ALL"
+                or coltura_id in [a.strip() for a in applies_to.split(',')]
+            )
+
+            content_key = doc[:200]
+            if match_section or match_parent:
                 if content_key not in seen_contents:
                     seen_contents.add(content_key)
-                    coltura_chunks.append({
+                    own_chunks.append({
                         "content": doc,
                         "metadata": meta,
-                        "match_type": "section"
+                        "match_type": "section" if match_section else "parent",
                     })
+            elif match_cross:
+                cross_chunks.append({
+                    "content": doc,
+                    "metadata": meta,
+                    "match_type": "trasversale",
+                })
 
-        # Step 2: Fallback keyword. Soglia su parole totali (200) invece di chunk count:
-        # se il section match ha già contenuto sostanziale, non serve raccogliere chunks
-        # rumorosi via keyword (es. PERO con 1951 parole non aveva bisogno del fallback).
-        section_words = sum(len(c['content'].split()) for c in coltura_chunks)
-        if section_words < 200:
-            # Prepara keywords di TUTTE le altre colture per filtro anti-contaminazione
-            other_crop_keywords = set()
-            for other_id, other_data in COLTURE.items():
-                if other_id == coltura_id:
-                    continue
-                for kw in other_data.get("keywords", [])[:3]:  # prime 3 kw piu' specifiche
-                    other_crop_keywords.add(kw.lower())
-            # Rimuovi keywords condivise (es. una keyword potrebbe essere in piu' colture)
-            my_keywords_set = {kw.lower() for kw in keywords}
-            other_crop_keywords -= my_keywords_set
+        # Le sezioni trasversali ENRICHISCONO solo una coltura che ha gia' un blocco
+        # proprio nel bollettino. Se la coltura non e' presente (nessun blocco proprio),
+        # ritorna vuoto -> report statico "Nessuna informazione" (no resurrezione di
+        # colture fuori stagione da solo contenuto generale).
+        if not own_chunks:
+            return []
 
-            for doc, meta in zip(results['documents'], results['metadatas']):
-                section_title = meta.get('section_title', '')
+        for c in cross_chunks:
+            content_key = c["content"][:200]
+            if content_key not in seen_contents:
+                seen_contents.add(content_key)
+                own_chunks.append(c)
 
-                # Skip se già incluso
-                content_key = doc[:200]
-                if content_key in seen_contents:
-                    continue
-
-                # FILTRO ANTI-CONTAMINAZIONE: escludi sezioni di altre colture
-                if is_other_coltura_section(section_title, coltura_id):
-                    continue
-
-                # Match su keywords nel contenuto
-                doc_lower = doc.lower()
-                content_match = any(kw.lower() in doc_lower for kw in keywords)
-
-                if content_match:
-                    # Filtro anti-contaminazione rafforzato:
-                    # Se il chunk contiene anche keywords di ALTRE colture,
-                    # e' probabilmente un chunk misto (es. "Stato fitosanitario delle colture")
-                    # Conta quante keywords nostre vs altre sono presenti
-                    my_hits = sum(1 for kw in keywords if kw.lower() in doc_lower)
-                    other_hits = sum(1 for kw in other_crop_keywords if kw in doc_lower)
-                    if other_hits > my_hits:
-                        # Piu' keywords di altre colture che nostre -> chunk contaminato, skip
-                        continue
-                    seen_contents.add(content_key)
-                    coltura_chunks.append({
-                        "content": doc,
-                        "metadata": meta,
-                        "match_type": "keyword"
-                    })
-
-        return coltura_chunks
+        return own_chunks
 
     # ============= LLM GENERATION =============
 
@@ -600,14 +942,29 @@ class ColtureQueryProcessor:
             meta = chunk['metadata']
             section = meta.get('section_title', 'Generale')
             match_type = chunk.get('match_type', 'unknown')
-            context += f"\n--- [{section}] (match: {match_type}) ---\n"
+            if match_type == "trasversale":
+                context += (
+                    f"\n--- [{section}] (SEZIONE TRASVERSALE: vale per piu' colture; "
+                    f"riporta SOLO cio' che riguarda {coltura['nome']}, ignorando le altre colture) ---\n"
+                )
+            else:
+                context += f"\n--- [{section}] ---\n"
             context += chunk['content']
             context += "\n"
 
         numero = bollettino.get('numero_bollettino')
         numero_str = str(numero) if numero else "N/D"
 
-        user_prompt = QUERY_TEMPLATE.format(
+        # Prompt PER-REGIONE: ER (quantitativo/regolatorio) e Campania (qualitativo) hanno
+        # contenuti opposti -> un prompt unico induce fabbricazione di numeri sulla Campania
+        # (verificato). Due prompt dedicati. La tabella di monitoraggio Campania resta iniettata
+        # dal codice (sotto), fuori dal prompt.
+        regione = bollettino.get('regione', 'emilia_romagna')
+        is_campania = regione == 'campania'
+        system_prompt = SYSTEM_PROMPT_CAMPANIA if is_campania else SYSTEM_PROMPT
+        query_template = QUERY_TEMPLATE_CAMPANIA if is_campania else QUERY_TEMPLATE
+
+        user_prompt = query_template.format(
             coltura_nome=coltura['nome'],
             numero=numero_str,
             data=bollettino['data'],
@@ -615,16 +972,80 @@ class ColtureQueryProcessor:
             context=context
         )
 
-        response = self._openai_client.chat.completions.create(
-            model=LLM_MODEL,
-            messages=[
-                {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user", "content": user_prompt}
-            ],
-            temperature=0
-        )
+        content = self._chat(system_prompt, user_prompt)
+        content = self._fix_table_spacing(content)
 
-        return response.choices[0].message.content
+        # Pass di verifica/revisione: recupera fatti omessi e rimuove allucinazioni.
+        content = self._verify_and_revise(coltura['nome'], context, content, is_campania)
+
+        # Campania: la tabella di monitoraggio NON la scrive l'LLM (inventava righe). La estraggo
+        # verbatim dalla fonte e la inietto qui, dopo la verifica -> sempre fedele.
+        if is_campania:
+            monit = extract_campania_monitoring(context)
+            if monit:
+                content = inject_monitoring(content, monit)
+        return content
+
+    # ============= LLM HELPERS =============
+
+    def _chat(self, system: str, user: str, json_mode: bool = False) -> str:
+        """Chiamata chat singola (temperature=0). json_mode forza output JSON."""
+        kwargs = {
+            "model": LLM_MODEL,
+            "temperature": 0,
+            "messages": [
+                {"role": "system", "content": system},
+                {"role": "user", "content": user},
+            ],
+        }
+        if json_mode:
+            kwargs["response_format"] = {"type": "json_object"}
+        return self._openai_client.chat.completions.create(**kwargs).choices[0].message.content
+
+    @staticmethod
+    def _fix_table_spacing(content: str) -> str:
+        """Inserisce riga vuota tra header e tabella markdown attaccata (rendering)."""
+        return re.sub(r'(^#{1,6}\s+.+)\n(\|)', r'\1\n\n\2', content, flags=re.M)
+
+    def _verify_and_revise(self, coltura_nome: str, context: str, report: str,
+                           is_campania: bool = False) -> str:
+        """
+        Rete di sicurezza: un pass indipendente confronta FONTE e REPORT, elenca i
+        fatti operativi mancanti e le affermazioni non supportate, e (se ce ne sono)
+        rigenera il report integrando/correggendo. 1 sola iterazione.
+        Verify prompt per-regione (Campania: caccia anche i numeri inventati).
+        """
+        if not self.verify:
+            return report
+        verify_prompt = VERIFY_PROMPT_CAMPANIA if is_campania else VERIFY_PROMPT
+        try:
+            crit = self._chat(
+                verify_prompt,
+                f"FONTE:\n{context}\n\nREPORT:\n{report}",
+                json_mode=True,
+            )
+            data = json.loads(crit)
+            missing = [m for m in data.get("mancanti", []) if isinstance(m, str) and m.strip()]
+            wrong = [w for w in data.get("errati", []) if isinstance(w, str) and w.strip()]
+            if not missing and not wrong:
+                return report
+
+            corrections = ""
+            if missing:
+                corrections += "FATTI MANCANTI da integrare:\n" + "\n".join(f"- {m}" for m in missing)
+            if wrong:
+                corrections += "\n\nAFFERMAZIONI errate da rimuovere/correggere:\n" + "\n".join(f"- {w}" for w in wrong)
+
+            revised = self._chat(
+                REVISE_PROMPT,
+                f"FONTE:\n{context}\n\nREPORT ATTUALE:\n{report}\n\nCORREZIONI:\n{corrections}",
+            )
+            revised = self._fix_table_spacing(revised)
+            self.logger.info(f"    [verifica] {coltura_nome}: +{len(missing)} mancanti, -{len(wrong)} errati")
+            return revised
+        except Exception as e:
+            self.logger.warning(f"    [verifica] saltata per {coltura_nome}: {e}")
+            return report
 
     # ============= OUTPUT =============
 
@@ -724,10 +1145,7 @@ class ColtureQueryProcessor:
         self.logger.info(f"Processing: {province} (Bollettino {bollettino['numero_bollettino']})")
 
         # Fetch chunks del bollettino UNA VOLTA, riusati per tutte le colture
-        bollettino_chunks = self._collection.get(
-            where={"doc_name": doc_name},
-            include=["documents", "metadatas"]
-        )
+        bollettino_chunks = self._store.get_by_doc(doc_name)
 
         success = 0
         skipped = 0
