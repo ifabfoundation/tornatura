@@ -63,7 +63,7 @@ export function DownloadDataButton({
   const convertToCsv = (rows: Record<string, unknown>[]) => {
     if (rows.length === 0) return "";
 
-    const mapColNames = {
+    const mapColNames :any = {
       detectionId: "id_rilevamento",
       detectionTime: "data_ora",
       bbch: "stadio_fenologico",
