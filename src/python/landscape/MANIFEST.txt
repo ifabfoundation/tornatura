@@ -1,0 +1,55 @@
+LANDSCAPE (paesaggio agricolo) - Package di produzione
+======================================================
+
+Nome:      landscape
+Versione:  2.1.0
+Data:      2026-08-20
+Servizio:  API del paesaggio agricolo e dei confini dichiarati
+
+Contenuto
+---------
+[OK] api.py                     API FastAPI (health, coverage, composition, parcels,
+                                pieces, parcel-at)
+[OK] paths.py                   path statici (iColt nel pex) e runtime (AGREA sul volume, log)
+[OK] modules/config.py          classi, famiglie, mappatura colture, costanti, soglie
+[OK] modules/landscape.py       sorgente iColt + combinazione delle due sorgenti
+[OK] modules/agrea.py           sorgente AGREA, ai due livelli di granularita'
+[OK] data/icolt2026_er.parquet  layer ARPAE iColt 2026 (~34 MB, EPSG:4326, nel pex)
+[OK] BUILD                      target Pants (due pex_binary: api, updater)
+[OK] updater.py                 scarica AGREA dalla fonte e prepara i parquet sul volume
+[OK] modules/agrea_prepare.py   logica di preparazione (scarico, specie, i tre layer)
+[NO] scheduler.py               ASSENTE per scelta: dataset annuali, nulla da schedulare
+
+Dati NON nel package (vivono sul volume runtime)
+------------------------------------------------
+/data/landscape/agrea/agrea2026_colture_er.parquet    291 MB   824.326 appezzamenti
+/data/landscape/agrea/agrea2026_parcelle_er.parquet   696 MB   874.974 pezzi >= 0,25 ha
+/data/landscape/agrea/agrea2026_elementi_er.parquet    53 MB    902.542 elementi
+Se assenti il servizio funziona sul solo iColt: nessun errore, nessuna pagina rotta.
+Se manca il solo file dei pezzi, il disegno del campo torna a essere solo manuale.
+Si preparano con:  updater.pex --run-now   (scarica dalla fonte pubblica AGREA,
+idempotente, una volta l'anno; stesso schema con cui peronospora scarica ECMWF).
+
+Due sorgenti
+------------
+iColt (ARPAE)  classificazione satellitare invernale, 117.696 particelle, minimo 0,5 ha,
+               copre la PIANURA. Licenza CC BY 4.0. Nel pex.
+AGREA          piani colturali dichiarati per la PAC, 311 specie, copre anche la collina,
+               contiene bosco ed elementi del paesaggio. Licenza NON dichiarata: da
+               chiarire con la Regione prima di andare in produzione. Sul volume.
+
+Istruzioni
+----------
+1. Lockfile:        pants generate-lockfiles --resolve=landscape
+2. Costruire:       pants package src/python/landscape:api
+                    pants package src/python/landscape:updater
+3. Avvio locale:    LANDSCAPE_RUNTIME_DIR=<volume> LANDSCAPE_API_PORT=8093 \
+                    python dist/src.python.landscape/api.pex
+4. Immagine:        pants package src/docker/landscape:docker
+5. In produzione serve una regola nel reverse proxy: /v1/landscape/* -> questo servizio
+
+Documentazione
+--------------
+README.md     panoramica e API
+CLAUDE.md     doc operativa (architettura, due sorgenti, calcolo, limiti misurati)
+CHANGELOG.md  storico modifiche e note per il team
