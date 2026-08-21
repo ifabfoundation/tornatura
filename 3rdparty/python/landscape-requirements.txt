@@ -1,0 +1,10 @@
+fastapi==0.115.11
+uvicorn==0.34.0
+# La lettura per finestra da GeoParquet 1.1 (colonna bbox di copertura,
+# write_covering_bbox, read_parquet(bbox=...)) richiede geopandas 1.0+.
+# Con un vincolo piu' basso una futura rigenerazione del lock potrebbe risolvere
+# una 0.x e il servizio tornerebbe a caricare tutto in RAM, in silenzio.
+geopandas>=1.0
+shapely==2.1.2
+pandas==2.2.3
+pyarrow>=15.0.0

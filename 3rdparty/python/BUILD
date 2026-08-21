@@ -18,3 +18,9 @@ python_requirements(
     source="bollettini-requirements.txt",
     resolve="bollettini"
 )
+
+python_requirements(
+    name="landscape",
+    source="landscape-requirements.txt",
+    resolve="landscape"
+)
