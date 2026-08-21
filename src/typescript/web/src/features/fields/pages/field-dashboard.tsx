@@ -125,6 +125,18 @@ export function FieldDashboard() {
                       >
                         <Icon iconName={"fullscreen"} color={"black"} />
                       </button>
+                      {/* Dentro questo contenitore e non nella colonna: e' lui a
+                          portare `me-md-4`, quindi qui `w-100` misura la mappa e
+                          non la colonna, e il pulsante resta larga come la foto. */}
+                      <button
+                        className="trnt_btn secondary type-rounded w-100 mt-3"
+                        onClick={() =>
+                          navigate(`/m/companies/${companyId}/fields/${fieldId}/landscape`)
+                        }
+                      >
+                        <Icon iconName={"sprout"} color={"black"} />
+                        &nbsp;Il tuo paesaggio
+                      </button>
                     </div>
                   </Col>
                   <Col>
