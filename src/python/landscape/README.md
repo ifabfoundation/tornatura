@@ -16,7 +16,7 @@ centroide del poligono del campo, la coltura è il suo `harvest` dichiarato.
 **AGREA** — i piani colturali che le aziende dichiarano per la PAC. Nomina 311
 specie, copre anche la collina, e contiene bosco, siepi, margini e fossi. Ma
 esiste solo per le aziende che presentano la dichiarazione, e non tutte ne hanno
-l'obbligo. È la sorgente principale. Vive sul **volume runtime** (~1 GB).
+l'obbligo. È la sorgente principale. Vive sul **volume runtime** (~1,5 GB).
 
 **iColt (ARPAE)** — classificazione da immagini satellitari invernali. 16 classi,
 minimo 0,5 ha, copre la pianura e praticamente nulla sopra i 200 m di quota. È il

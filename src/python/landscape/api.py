@@ -132,7 +132,7 @@ def pieces_by_location(
     lng: float = Query(..., ge=-180, le=180),
     radius_m: int = Query(
         config.AGREA_PIECES_MAX_RADIUS_M,
-        ge=config.MIN_RADIUS_M,
+        ge=config.AGREA_PIECES_MIN_RADIUS_M,
         le=config.AGREA_PIECES_MAX_RADIUS_M,
     ),
 ) -> Dict[str, Any]:

@@ -39,7 +39,7 @@ il disegno a mano, e mentre lo si usa il click sui pezzi viene ignorato.
 | bosco, siepi | 179.460 + 34.460 ha | assenti |
 | completezza | solo aziende che dichiarano | tutti i campi |
 | licenza | **non dichiarata** | CC BY 4.0 |
-| dove | volume `/data/landscape/agrea/` (~1 GB) | dentro il pex (34 MB) |
+| dove | volume `/data/landscape/agrea/` (~1,5 GB) | dentro il pex (34 MB) |
 
 `modules/landscape.py` porta iColt e la funzione `composition_with_sources()` che
 combina; `modules/agrea.py` porta AGREA. **Se i file AGREA mancano tutto ricade su
@@ -77,25 +77,32 @@ file si chiama `Uti_Part` = *utilizzi per particella*.
 |---|---|---|
 | cos'è | frammenti dissolti per (azienda, `ID_APPEZ`) | il frammento come sta nel dato |
 | file | `agrea<anno>_colture_er.parquet` | `agrea<anno>_parcelle_er.parquet` |
-| soglia | 0,05 ha | 0,25 ha |
+| soglia | 0,05 ha | 0,01 ha (100 m²) |
 | semplificato | sì, 1 m | **no** (vedi sotto) |
 | serve a | *"Il tuo paesaggio"* | disegnare il campo |
 | endpoint | `/composition`, `/parcels` | `/pieces` |
-| quanti (Ferrara) | 196.972 | 375.303 frammenti, 97.754 sopra soglia |
-| quanti (regione) | 824.326 · 291 MB | 874.974 · 696 MB |
+| quanti (Ferrara) | 196.972 | 375.303 frammenti |
+| quanti (regione) | 824.326 · 291 MB | 1.956.071 · 1.130 MB |
 
 Controllo che giustifica l'appezzamento come unità agronomica: su 196.972, **zero**
 contengono più di una coltura.
 
-**Perché la soglia non è "il minimo assoluto".** Il frammento mediano misura 0,04
-ha (400 m²) e il 51,8% dei frammenti sta sotto 0,05 ha valendo insieme l'1,27%
-della superficie: sono le schegge dove una linea di *proprietà* taglia un campo di
-sbieco, bordi che sul terreno non si vedono. A 0,25 ha si tiene il **97,25%**
-della superficie che il servizio serve davvero — le righe SAU più il bosco — e il
-94,5% se a denominatore si prende ogni riga dell'archivio, comprese le non
-agricole che non serviamo mai: il primo numero è quello che descrive il costo
-vero della soglia. I pezzi sono poligoni semplici nel 91,9% dei casi, contro il
-71,6% degli appezzamenti interi.
+**La soglia dei pezzi è un pavimento del rumore, non un giudizio di utilità.** È
+la distinzione che conta, e il primo valore scelto (0,25 ha) era di fatto la
+seconda cosa: escludeva campi veri. Misurato, rendeva **non selezionabile il 59%
+degli appezzamenti delle otto colture di tornatura in collina** e il 30% in
+pianura, colpendo soprattutto le arboree, che si dichiarano in appezzamenti
+minuscoli — albicocco e pesco con mediana 0,13-0,24 ha, olivo 0,12.
+
+A **0,01 ha (100 m²)** la copertura degli appezzamenti delle otto colture passa a
+**99,3% in pianura e 99,1% in collina**. Da lì a zero si guadagnerebbe meno di un
+punto prendendo dentro ~60.000 frammenti sotto i 100 m² per provincia di collina:
+un frammento da 5 m² non è un campo, è la scheggia dove una linea di *proprietà*
+taglia di sbieco l'angolo di un appezzamento, e siccome quelle schegge stanno
+lungo i confini dei campi veri **rubano il click** a chi mira vicino al bordo.
+
+Il peso della risposta non dipende più da questa soglia: ci pensa il tetto sui
+vertici. Vedi `CHANGELOG.md` per la tabella completa.
 
 **Perché sui pezzi non si semplifica né si arrotonda.** `simplify` lavora un
 poligono per volta: due pezzi confinanti verrebbero semplificati in modo

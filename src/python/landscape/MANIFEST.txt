@@ -23,7 +23,7 @@ Contenuto
 Dati NON nel package (vivono sul volume runtime)
 ------------------------------------------------
 /data/landscape/agrea/agrea2026_colture_er.parquet    291 MB   824.326 appezzamenti
-/data/landscape/agrea/agrea2026_parcelle_er.parquet   696 MB   874.974 pezzi >= 0,25 ha
+/data/landscape/agrea/agrea2026_parcelle_er.parquet  1130 MB 1.956.071 pezzi >= 0,01 ha
 /data/landscape/agrea/agrea2026_elementi_er.parquet    53 MB    902.542 elementi
 Se assenti il servizio funziona sul solo iColt: nessun errore, nessuna pagina rotta.
 Se manca il solo file dei pezzi, il disegno del campo torna a essere solo manuale.

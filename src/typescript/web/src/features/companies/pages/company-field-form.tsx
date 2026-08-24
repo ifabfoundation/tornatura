@@ -625,6 +625,13 @@ export function FieldFormInfo({ formData, action, onNextClick, onBackClick }: Fi
  */
 const PEZZI_ZOOM_MIN = 13;
 const PEZZI_RAGGIO_MAX_M = 3000;
+/**
+ * Il raggio non scende sotto questo valore: a zoom alto la mezza diagonale della
+ * vista diventa piccolissima, e sotto il minimo accettato dall'endpoint la
+ * richiesta tornerebbe 422 lasciando la mappa senza pezzi proprio quando si sta
+ * mirando a un pezzo piccolo. Deve restare >= AGREA_PIECES_MIN_RADIUS_M.
+ */
+const PEZZI_RAGGIO_MIN_M = 250;
 
 /**
  * Quanti pezzi scelti si elencano uno per uno, con il loro cestino. "Tutto il
@@ -1118,7 +1125,7 @@ export const FieldFormMap = ({ action, onNextClick }: FieldProps) => {
           const dLng =
             (b.getEast() - b.getWest()) * 111_320 * Math.cos((c.lat * Math.PI) / 180);
           const raggio = Math.min(
-            Math.round(Math.hypot(dLat, dLng) / 2),
+            Math.max(Math.round(Math.hypot(dLat, dLng) / 2), PEZZI_RAGGIO_MIN_M),
             PEZZI_RAGGIO_MAX_M,
           );
           const v = vicinatoRef.current;

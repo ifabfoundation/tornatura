@@ -290,17 +290,34 @@ AGREA_DATUM_ACCURACY_M = 4.0
 #                 Alimenta il disegno del campo, dove il bordo deve essere
 #                 preciso e l'utente deve poter scegliere una porzione.
 #
-# Perche' non si scende sotto la soglia: il frammento mediano e' 0,04 ha (400 m2)
-# e il 51,8% dei frammenti sta sotto 0,05 ha, valendo insieme l'1,27% della
-# superficie. Sono le schegge dove una linea di PROPRIETA' taglia un campo di
-# sbieco: bordi che sul terreno non si vedono. A 0,25 ha si tiene il 97,25% della
-# superficie che il servizio serve DAVVERO, cioe' le righe SAU piu' il bosco: e'
-# il 94,5% solo se a denominatore si prende ogni riga dell'archivio, comprese le
-# non agricole che non serviamo mai. I pezzi restano poligoni semplici nel 91,9%
-# dei casi (contro il
-# 71,6% degli appezzamenti interi) e il 41,2% degli appezzamenti offre una scelta
-# vera, con mediana 2-3 pezzi.
-AGREA_PIECE_MIN_HA = 0.25
+# La soglia e' un PAVIMENTO DEL RUMORE, non un giudizio su quanto un campo deve
+# essere grande per interessare all'utente. La distinzione conta, perche' il primo
+# valore scelto (0,25 ha) era di fatto la seconda cosa ed escludeva campi veri.
+#
+# Storia, perche' non si ripeta: 0,25 ha nacque per contenere il PESO della
+# risposta, quando era l'unica difesa disponibile. Poi e' arrivato
+# AGREA_PIECES_VERTEX_BUDGET, che regola il peso da solo servendo i pezzi piu'
+# grandi e dichiarando la soglia effettiva. Da quel momento la soglia nel file non
+# proteggeva piu' nulla sul peso, ma continuava a costare copertura: misurato, in
+# collina rendeva NON SELEZIONABILE il 59% degli appezzamenti delle otto colture di
+# tornatura, e in pianura il 30%. Colpiva soprattutto le arboree, che si dichiarano
+# in appezzamenti minuscoli: albicocco e pesco con mediana 0,13-0,24 ha, olivo 0,12.
+# Mais e barbabietola no, perche' sono campi grandi.
+#
+# Perche' 0,01 ha (100 m2) e non zero. La copertura degli appezzamenti delle otto
+# colture, misurata su Ferrara e Forli'-Cesena:
+#     0,25 ha   70,5% / 41,1%      file 1,00x
+#     0,05 ha   94,3% / 85,5%      file 1,24x / 1,38x
+#     0,01 ha   99,3% / 99,1%      file 1,35x / 1,53x
+#     nessuna    100% /  100%      file 1,41x / 1,61x
+# Da 0,01 a zero si guadagna meno di un punto e si prendono dentro 60.000
+# frammenti sotto i 100 m2 per provincia di collina (15.988 da 1-10 m2, 44.001 da
+# 10-100). Un frammento da 5 m2 non e' un campo: e' la scheggia dove una linea di
+# PROPRIETA' taglia di sbieco l'angolo di un appezzamento. E fa un danno concreto,
+# non estetico: quelle schegge stanno LUNGO I CONFINI dei campi veri, quindi
+# rubano il click a chi mira vicino al bordo, e ognuna aggiunge un contorno
+# disegnato proprio dove serve precisione.
+AGREA_PIECE_MIN_HA = 0.01
 
 # I pezzi NON sono semplificati, e non e' una dimenticanza: la semplificazione
 # lavora un poligono per volta, quindi due pezzi confinanti si allontanerebbero
@@ -310,8 +327,16 @@ AGREA_PIECE_MIN_HA = 0.25
 AGREA_PIECES_SIMPLIFY_M = 0.0
 
 # Raggio massimo servibile del layer fine. Piu' basso di quello degli
-# appezzamenti perche' il livello e' 1,54x i poligoni e 2,40x i vertici.
+# appezzamenti perche' il livello e' molto piu' fitto.
 AGREA_PIECES_MAX_RADIUS_M = 3000
+
+# Raggio MINIMO, e non si riusa MIN_RADIUS_M. Quel minimo di 1 km esiste per
+# /composition, dove un buffer di paesaggio sotto il chilometro non descrive
+# niente. Qui il significato e' opposto: la finestra segue la vista, e a zoom alto
+# — cioe' proprio quando si mira a un pezzo piccolo — la mezza diagonale scende
+# sotto il chilometro. Con il minimo a 1 km quelle richieste tornavano 422 e la
+# mappa restava senza pezzi nel momento in cui servivano di piu'.
+AGREA_PIECES_MIN_RADIUS_M = 200
 
 # Tetto sui VERTICI, non sui pezzi: e' il numero di vertici che determina il peso
 # della risposta, e il rapporto e' misurato stabile fra 6,0 e 6,6 byte compressi

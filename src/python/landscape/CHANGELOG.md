@@ -4,6 +4,117 @@ Registro delle modifiche per il team backend.
 
 ---
 
+## [2026-08-24] - v2.1.1: la soglia dei pezzi scende da 0,25 a 0,01 ha
+
+### Perche'
+
+La soglia del layer fine escludeva **campi veri**, non rumore. Il 2,75% di
+superficie persa che la v2.1.0 dichiarava era un aggregato, e nascondeva la
+distribuzione: un appezzamento e' **del tutto non selezionabile** se nessuno dei
+suoi frammenti raggiunge la soglia, e succedeva molto piu' spesso di quanto quel
+numero suggerisse.
+
+| provincia | appezzamenti non selezionabili | valgono | campi >= 0,3 ha persi interi |
+|---|---|---|---|
+| FE (pianura) | 19.435 = **30,5%** | 1,05% della superficie | 813 |
+| BO (mista) | 88.788 = **54,2%** | 3,29% | 2.579 |
+| FC (collina) | 95.421 = **61,5%** | 6,56% | 2.753 |
+
+Tanti in numero, pochissimi in superficie: quindi campi piccoli. Ma erano
+**concentrati sulle colture di tornatura**, perche' le arboree si dichiarano in
+appezzamenti minuscoli:
+
+| coltura | non selezionabili (FE / BO / FC) | mediana |
+|---|---|---|
+| albicocco | 78% / 67% / 77% | 0,13-0,17 ha |
+| pesco | 72% / 55% / 65% | 0,16-0,24 ha |
+| olivo | — / 64% / 74% | 0,12-0,17 ha |
+| pero | 38% / 53% / 69% | 0,17-0,38 ha |
+| vite | 53% / 33% / 36% | 0,25-0,51 ha |
+| mais | 10% / 9% / 15% | 1,2-2,8 ha |
+| barbabietola | 7% / 11% / 22% | 1,0-3,0 ha |
+
+In collina il **59% degli appezzamenti delle otto colture** non era selezionabile.
+E a differenza del blocco sulle colture, la soglia **non aveva via d'uscita**: il
+pezzo non arrivava al client, quindi non c'era nulla su cui cliccare e l'utente non
+poteva sapere che mancasse qualcosa.
+
+### L'errore di metodo, che vale piu' del numero
+
+0,25 ha era stato scelto per contenere il **peso della risposta**, quando era
+l'unica difesa disponibile. Poi, nella stessa versione, e' arrivato
+`AGREA_PIECES_VERTEX_BUDGET`, che regola il peso da solo servendo i pezzi piu'
+grandi e dichiarando la soglia effettiva. **Da quel momento la soglia nel file non
+proteggeva piu' nulla, ma continuava a costare copertura** — e non e' stata
+ricontrollata. Una scelta va rivista quando cambia l'architettura che la
+giustificava.
+
+### Perche' 0,01 ha e non zero
+
+Copertura degli appezzamenti delle otto colture, misurata su Ferrara e
+Forli'-Cesena:
+
+| soglia | pianura | collina | file |
+|---|---|---|---|
+| 0,25 ha | 70,5% | 41,1% | 1,00x |
+| 0,05 ha | 94,3% | 85,5% | 1,24x / 1,38x |
+| **0,01 ha** | **99,3%** | **99,1%** | 1,35x / 1,53x |
+| nessuna | 100% | 100% | 1,41x / 1,61x |
+
+Da 0,01 a zero si guadagna meno di un punto e si prendono dentro **60.000
+frammenti sotto i 100 m² per provincia di collina** (15.988 da 1-10 m², 44.001 da
+10-100). Un frammento da 5 m² non e' un campo: e' la scheggia dove una linea di
+PROPRIETA' taglia di sbieco l'angolo di un appezzamento. E fa un danno concreto,
+non estetico: quelle schegge stanno **lungo i confini** dei campi veri, quindi
+rubano il click a chi mira vicino al bordo, e ognuna aggiunge un contorno disegnato
+proprio dove serve precisione.
+
+La soglia diventa quindi un **pavimento del rumore** e non un giudizio su quanto un
+campo debba essere grande per interessare all'utente.
+
+### Effetto misurato
+
+| | prima | dopo |
+|---|---|---|
+| pezzi in regione | 874.974 | **1.956.071** |
+| file dei pezzi | 696 MB | **1.130 MB** |
+| volume totale | 1,04 GB | **1,47 GB** |
+| campi con almeno un pezzo | 506.275 | **989.107** |
+
+`agrea2026_colture_er.parquet` e `agrea2026_elementi_er.parquet` sono rigenerati
+**identici** (291,0 MB / 824.326 poligoni / 1.217.047,5 ha e 53,3 MB / 902.542):
+la pagina del paesaggio non e' toccata, e la verifica di non-regressione torna gli
+stessi numeri fino all'ultimo decimale.
+
+Il payload non peggiora, perche' il tetto sui vertici fa il suo lavoro:
+
+| raggio | soglia effettiva | troncato | payload |
+|---|---|---|---|
+| 300-1.200 m | **0,01 ha** | no | 4,8-197 kB |
+| 2.000-3.000 m | 0,08-1,86 ha | si' | ~215 kB |
+
+I pezzi piccoli arrivano **esattamente agli zoom in cui sono cliccabili**, e a
+vista larga vengono rimandati con la soglia dichiarata in risposta.
+
+Qualita' dell'unione invariata o migliore, verificata sui nuovi pezzi piccoli: zero
+contorni nulli su pezzo singolo, zero errori, e l'unione dei fratelli risulta un
+solo poligono nell'86,3% dei casi in pianura contro il 78,7% di prima — piu'
+frammenti disponibili ricuciono meglio.
+
+### Un difetto trovato nel rimisurare
+
+`/pieces` riusava `MIN_RADIUS_M = 1000`, che esiste per `/composition` dove un
+buffer di paesaggio sotto il chilometro non descrive niente. Qui il significato e'
+opposto: la finestra segue la vista, e **a zoom alto — cioe' proprio quando si mira
+a un pezzo piccolo — la mezza diagonale scende sotto il chilometro**. Quelle
+richieste tornavano **422** e la mappa restava senza pezzi nel momento in cui
+servivano di piu'.
+
+Corretto con `AGREA_PIECES_MIN_RADIUS_M = 200`, e il frontend limita il raggio dal
+basso a 250 m per non emettere richieste invalide.
+
+---
+
 ## [2026-08-20] - v2.1.0: scelta del confine dai pezzi dichiarati
 
 ### In breve, per chi legge solo questo
