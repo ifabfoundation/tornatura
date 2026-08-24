@@ -56,7 +56,10 @@ nella sola Ferrara.
 
 A **0,25 ha**:
 
-- si tiene il **94,5%** della superficie;
+- si tiene il **97,25%** della superficie che il servizio serve davvero, cioe' le
+  righe SAU piu' il bosco. E' il 94,5% solo se a denominatore si prende ogni riga
+  dell'archivio, comprese le non agricole che non serviamo mai: il primo numero
+  e' quello che descrive il costo vero della soglia;
 - i pezzi sono poligoni semplici nel **91,92%** dei casi, contro il 71,58% degli
   appezzamenti interi;
 - il **58,8%** degli appezzamenti ha un solo pezzo, quindi per quelli

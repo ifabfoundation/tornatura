@@ -90,9 +90,12 @@ contengono più di una coltura.
 **Perché la soglia non è "il minimo assoluto".** Il frammento mediano misura 0,04
 ha (400 m²) e il 51,8% dei frammenti sta sotto 0,05 ha valendo insieme l'1,27%
 della superficie: sono le schegge dove una linea di *proprietà* taglia un campo di
-sbieco, bordi che sul terreno non si vedono. A 0,25 ha si tiene il 94,5% della
-superficie e i pezzi sono poligoni semplici nel 91,9% dei casi, contro il 71,6%
-degli appezzamenti interi.
+sbieco, bordi che sul terreno non si vedono. A 0,25 ha si tiene il **97,25%**
+della superficie che il servizio serve davvero — le righe SAU più il bosco — e il
+94,5% se a denominatore si prende ogni riga dell'archivio, comprese le non
+agricole che non serviamo mai: il primo numero è quello che descrive il costo
+vero della soglia. I pezzi sono poligoni semplici nel 91,9% dei casi, contro il
+71,6% degli appezzamenti interi.
 
 **Perché sui pezzi non si semplifica né si arrotonda.** `simplify` lavora un
 poligono per volta: due pezzi confinanti verrebbero semplificati in modo

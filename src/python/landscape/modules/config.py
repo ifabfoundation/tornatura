@@ -293,8 +293,11 @@ AGREA_DATUM_ACCURACY_M = 4.0
 # Perche' non si scende sotto la soglia: il frammento mediano e' 0,04 ha (400 m2)
 # e il 51,8% dei frammenti sta sotto 0,05 ha, valendo insieme l'1,27% della
 # superficie. Sono le schegge dove una linea di PROPRIETA' taglia un campo di
-# sbieco: bordi che sul terreno non si vedono. A 0,25 ha si tiene il 94,5% della
-# superficie, i pezzi restano poligoni semplici nel 91,9% dei casi (contro il
+# sbieco: bordi che sul terreno non si vedono. A 0,25 ha si tiene il 97,25% della
+# superficie che il servizio serve DAVVERO, cioe' le righe SAU piu' il bosco: e'
+# il 94,5% solo se a denominatore si prende ogni riga dell'archivio, comprese le
+# non agricole che non serviamo mai. I pezzi restano poligoni semplici nel 91,9%
+# dei casi (contro il
 # 71,6% degli appezzamenti interi) e il 41,2% degli appezzamenti offre una scelta
 # vera, con mediana 2-3 pezzi.
 AGREA_PIECE_MIN_HA = 0.25
