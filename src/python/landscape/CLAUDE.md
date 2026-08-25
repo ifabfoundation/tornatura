@@ -151,7 +151,10 @@ pezzo la cui specie dichiarata corrisponde a una coltura del registro, perche' a
 ogni coltura sono legate le sue avversita' e i suoi bollettini e un campo di soia
 non avrebbe nulla da mostrare. L'autorita' su *quali* colture esistono resta il
 database (`harvest_type`), non questo file: aggiungerne una li' la rende
-selezionabile, purche' qui ci sia la riga con le sue specie AGREA. Gli esclusi si
+selezionabile, purche' qui ci siano le sue righe — `HARVEST_TO_AGREA_SPECIES` per
+il disegno del campo e `HARVEST_TO_ICOLT` per il controllo satellitare. Servono
+entrambe: con la sola prima la mappa AGREA funziona e il paesaggio iColt continua
+a dire "coltura non riconosciuta". Gli esclusi si
 disegnano comunque, a tratteggio, e restano usabili con una conferma esplicita —
 AGREA dichiara la campagna in corso, quindi un impianto nuovo ha il confine giusto
 e la coltura ancora vecchia. Misurato: a 1,5 km il filtro esclude il 58,7% dei

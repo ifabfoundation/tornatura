@@ -386,11 +386,27 @@ modulo non possono divergere. Verificato: gli otto codici nel database
 (`agrumi, albicocco, barbabietola, mais, olivo, pero, pesco, vite`) combaciano
 esattamente con le otto chiavi della mappatura.
 
-**Per aggiungere una coltura domani**: la si aggiunge in `harvest_type` come si fa
-oggi, e si scrive **una riga** in `HARVEST_TO_AGREA_SPECIES` con le specie AGREA
-corrispondenti. Nient'altro, in nessun file. Quel raccordo non e' automatizzabile —
-nessuno puo' dedurre da solo che l'albicocco si dichiara `ALBICOCCO` e che il
-pesco comprende anche `PESCO NETTARINA` — ma e' l'unica cosa da scrivere.
+**Per aggiungere una coltura domani**, per la parte di QUESTO servizio: il record
+in `harvest_type` come si fa oggi, piu' **due righe** in `modules/config.py` —
+`HARVEST_TO_AGREA_SPECIES` con le specie AGREA e `HARVEST_TO_ICOLT` con la classe
+iColt, se quella coltura esiste anche in iColt. Nessuno dei due raccordi e'
+automatizzabile: nessuno puo' dedurre da solo che l'albicocco si dichiara
+`ALBICOCCO`, che il pesco comprende anche `PESCO NETTARINA` o che il melo e' la
+classe 24.
+
+Attenzione a `HARVEST_TO_AGREA_SPECIES`: il confronto e' per uguaglianza esatta, e
+i nomi AGREA contengono trappole. Cercare "MELO" per sottostringa pescherebbe
+MELONE, MELOGRANO, MELANZANA e "LOTO (KAKI) (COMPRESO IL CACO MELA)", cioe'
++55,9% di ettari inventati. Le stringhe si verificano sempre sul dato preparato,
+contando poligoni ed ettari, prima di scrivere la riga.
+
+**Fuori da questo servizio** ne servono altre tre, e ometterle rende la coltura
+registrabile ma inutilizzabile: `INITIAL_MAPPING` in
+`core/scripts/migrate_observation_type_supported_harvests.py` (senza, nessuna
+avversita' selezionabile), la chiave in `bbchs` di
+`web/src/features/detections/pages/bbch.ts` (senza, il wizard dei rilevamenti si
+ferma su "Coltura non ancora supportata") e la lista `colture` della regione in
+`bollettini/modules/config.py` (senza, nessun bollettino).
 
 **Il blocco e' strutturale, non una condizione.** I pezzi ammessi e quelli esclusi
 stanno su due layer distinti, e il gestore del click e' solo sul primo: non c'e'

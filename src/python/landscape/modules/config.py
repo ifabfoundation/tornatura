@@ -153,6 +153,9 @@ MAX_GEOMETRY_RADIUS_M = 10000
 HARVEST_TO_ICOLT = {
     "vite": "vigneti",
     "pero": "pero",
+    # iColt distingue il melo: classe 24, gia' presente in CROP_CLASS_MAP e nella
+    # mappa delle famiglie. Serviva solo il raccordo dal codice di tornatura.
+    "melo": "melo",
     "pesco": "pesco",
     "olivo": "olivo",
     "albicocco": "albicocco",
@@ -217,6 +220,13 @@ AGREA_YEAR = 2026
 HARVEST_TO_AGREA_SPECIES = {
     "vite": {"VITE"},
     "pero": {"PERO"},
+    # Una sola specie, e il confronto e' per UGUAGLIANZA ESATTA (agrea.py usa
+    # `isin`): con un match per sottostringa "MELO" pescherebbe anche MELONE
+    # (1.247 poligoni, 1.382 ha), LOTO (KAKI) (COMPRESO IL CACO MELA) (2.795,
+    # 1.194 ha), MELOGRANO (258, 69 ha) e MELANZANA (309, 54 ha) — cioe' +55,9%
+    # di ettari inventati sul melo vero, che in regione e' 6.668 poligoni per
+    # 4.827 ha. Verificato sul dato preparato, non dedotto.
+    "melo": {"MELO"},
     "pesco": {"PESCO", "PESCO NETTARINA"},
     "mais": {"GRANTURCO (MAIS)"},
     "barbabietola": {"BARBABIETOLA - RAPA ROSSA/BIETOLA DA COSTA"},
