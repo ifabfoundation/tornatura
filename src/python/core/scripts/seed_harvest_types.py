@@ -13,6 +13,9 @@ from core.models import HarvestType
 ACTIVE_HARVEST_TYPES = [
     {"code": "vite", "label": "Vite", "active": True, "sortOrder": 10},
     {"code": "pero", "label": "Pero", "active": True, "sortOrder": 20},
+    # sortOrder 25 e non 90: tiene le pomacee vicine nel menu e non richiede di
+    # rinumerare le altre otto, che vanno di dieci in dieci.
+    {"code": "melo", "label": "Melo", "active": True, "sortOrder": 25},
     {"code": "pesco", "label": "Pesco", "active": True, "sortOrder": 30},
     {"code": "mais", "label": "Mais", "active": True, "sortOrder": 40},
     {"code": "barbabietola", "label": "Barbabietola", "active": True, "sortOrder": 50},

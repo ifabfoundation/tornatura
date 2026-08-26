@@ -2103,6 +2103,17 @@ export const bbchs: any = {
     baseUrl: baseUrl,
     data: bbchsPero,
   },
+  // Il melo riusa la scala del pero invece di duplicarla una quarta volta.
+  // Non e' un ripiego: e' la scala BBCH delle POMACEE, e infatti le miniature si
+  // chiamano `pomacee_*.png`. Verificato che bbchsPero, bbchsPesco e
+  // bbchsAlbicocco sono oggetti IDENTICI - 338 righe, 48 stadi, stessi nomi,
+  // stessi valori, stesse immagini - quindi una quarta copia aggiungerebbe solo
+  // un posto in cui sbagliare. Riusandola non serve caricare nessuna immagine
+  // nuova nell'object storage.
+  melo: {
+    baseUrl: baseUrl,
+    data: bbchsPero,
+  },
   pesco: {
     baseUrl: baseUrl,
     data: bbchsPesco,

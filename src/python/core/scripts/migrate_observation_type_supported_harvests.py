@@ -21,6 +21,12 @@ INITIAL_MAPPING = {
         "Cimice",
         "Mosca della frutta",
     ],
+    # Il melo ha le stesse avversita' del pero: sono entrambe pomacee e i due
+    # fitofagi seguiti (Halyomorpha halys e mosca della frutta) non distinguono.
+    "melo": [
+        "Cimice",
+        "Mosca della frutta",
+    ],
     "pesco": [
         "Cimice",
         "Mosca della frutta",

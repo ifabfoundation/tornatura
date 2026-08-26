@@ -78,6 +78,14 @@ export function FieldDetail() {
         familyItems: [],
       },
       {
+        id: "field-landscape",
+        icon: "sprout" as IconName,
+        text: "Il tuo paesaggio",
+        path: `/m/companies/${companyId}/fields/${fieldId}/landscape`,
+        type: "single",
+        familyItems: [],
+      },
+      {
         id: "new-detection",
         icon: "add",
         text: "Nuovo tipo rilevamento",

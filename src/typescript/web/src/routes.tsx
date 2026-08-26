@@ -28,6 +28,7 @@ import { MyInvitations } from "./features/invitations/pages/my-invitations";
 import { DetectionTypeDetail } from "./features/detection-types/pages/detection-type-detail";
 import { FieldModelPeronospora } from "./features/fields/pages/field-model-peronospora";
 import { FieldModelBollettini } from "./features/fields/pages/field-model-bollettini";
+import { FieldLandscape } from "./features/fields/pages/field-landscape";
 
 
 
@@ -201,6 +202,10 @@ const routesInitials: RouteObject[] = [
           {
             path: "bulletins/:culture",
             element: <FieldModelBollettini />
+          },
+          {
+            path: "landscape",
+            element: <FieldLandscape />
           },
         ]
       }
