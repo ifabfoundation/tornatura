@@ -2,9 +2,104 @@
 Configurazione centralizzata multi-regione per RAG Colture.
 
 Contiene:
+- Caricamento della API key OpenAI da UNA sola fonte, fuori dal repo (load_openai_key)
 - Dizionario regioni (aree, colture, URL)
 - Dizionario colture completo (unione di tutte le regioni)
 """
+import os
+import re
+from pathlib import Path
+
+# ============= CREDENZIALI =============
+# La API key NON vive nel progetto. Un solo punto di lettura per tutta la pipeline, cosi' la
+# chiave sta in un posto e non si moltiplica in copie: e' esattamente il modo in cui la stessa
+# chiave era finita in una decina di .env, dentro archivi di trasferimento e su OneDrive.
+#
+# Precedenza (la prima che risponde vince):
+#   1. OPENAI_API_KEY gia' presente nell'ambiente  -> container, CI, systemd, `export` a mano.
+#   2. il file indicato da OPENAI_KEY_FILE          -> override esplicito.
+#   3. ~/.config/openai/key.env  (o $XDG_CONFIG_HOME/openai/key.env)  -> posizione canonica.
+#   4. %APPDATA%\openai\key.env                    -> equivalente su Windows.
+#   5. ~/.config/rag_colture/env                    -> alternativa per-progetto, sempre in home.
+# Se nessuna risponde, si solleva un errore con le istruzioni: MAI un fallback dentro il repo.
+_XDG = os.getenv("XDG_CONFIG_HOME")
+_APPDATA = os.getenv("APPDATA")
+
+def openai_key_candidates() -> list:
+    """I file (fuori dal repo) in cui si cerca la chiave, in ordine di precedenza."""
+    cand = []
+    esplicito = os.getenv("OPENAI_KEY_FILE")
+    if esplicito:
+        cand.append(Path(esplicito).expanduser())
+    cand.append(Path(_XDG).expanduser() / "openai" / "key.env" if _XDG
+                else Path.home() / ".config" / "openai" / "key.env")
+    if _APPDATA:
+        cand.append(Path(_APPDATA) / "openai" / "key.env")
+    cand.append(Path.home() / ".config" / "rag_colture" / "env")
+    return cand
+
+
+def load_openai_key(verbose: bool = False) -> str:
+    """Popola os.environ['OPENAI_API_KEY'] leggendola dalla prima fonte disponibile.
+
+    Ritorna una descrizione MASCHERATA della provenienza, adatta al log
+    (es. "sk-proj-...Rb4A da ~/.config/openai/key.env"). Non ritorna mai la chiave.
+    Solleva RuntimeError se non la trova, spiegando dove metterla.
+    """
+    from dotenv import load_dotenv  # import locale: config.py resta importabile senza dotenv
+
+    origine = None
+    if os.getenv("OPENAI_API_KEY"):
+        origine = "variabile d'ambiente"
+    else:
+        for f in openai_key_candidates():
+            if f.is_file():
+                # override=False: l'ambiente ha sempre l'ultima parola (regola 1)
+                load_dotenv(f, override=False)
+                if os.getenv("OPENAI_API_KEY"):
+                    origine = f"{f}"
+                    _controlla_permessi(f)
+                    break
+
+    if not origine:
+        percorsi = "\n  ".join(str(f) for f in openai_key_candidates())
+        raise RuntimeError(
+            "OPENAI_API_KEY non trovata. La chiave NON va messa nel progetto: creala in uno "
+            f"di questi percorsi (permessi 600), con dentro `OPENAI_API_KEY=sk-...`:\n  {percorsi}\n"
+            "Oppure esportala nell'ambiente, oppure indica il file con OPENAI_KEY_FILE."
+        )
+
+    _avvisa_se_chiave_nel_repo()
+    k = os.environ["OPENAI_API_KEY"]
+    descrizione = f"{k[:8]}...{k[-4:]} da {origine}"
+    if verbose:
+        print(f"Chiave OpenAI: {descrizione}")
+    return descrizione
+
+
+def _controlla_permessi(f: Path):
+    """Avvisa se il file della chiave e' leggibile da altri utenti (solo POSIX)."""
+    if os.name == "nt":
+        return
+    modo = f.stat().st_mode & 0o077
+    if modo:
+        print(f"ATTENZIONE: {f} e' leggibile da altri utenti. Correggi con: chmod 600 {f}")
+
+
+def _avvisa_se_chiave_nel_repo():
+    """Rete di sicurezza: segnala se una chiave ricompare in un .env dentro il repo."""
+    for nome in (".env", ".env.local"):
+        f = Path(__file__).resolve().parent.parent / nome
+        try:
+            testo = f.read_text(encoding="utf-8", errors="ignore") if f.is_file() else ""
+            if re.search(r"sk-[A-Za-z0-9_-]{20,}|ghp_[A-Za-z0-9]{36}|github_pat_|AKIA[0-9A-Z]{16}", testo):
+                print(f"ATTENZIONE: {f} contiene una credenziale. Le chiavi non vanno nel "
+                      f"progetto (rischio di copie e di finire in archivi/cloud): spostala in "
+                      f"~/.config/openai/key.env e cancella questo file.")
+        except OSError:
+            pass
+# ==========================================
+
 
 # ============= REGIONI =============
 REGIONI = {
@@ -17,7 +112,7 @@ REGIONI = {
             "Modena-Reggio-Emilia": "modena-reggio-emilia",
             "Parma-Piacenza": "parma-piacenza",
         },
-        "colture": ["VITE", "PERO", "PESCO", "MAIS", "BARBABIETOLA"],
+        "colture": ["VITE", "PERO", "PESCO", "MELO", "MAIS", "BARBABIETOLA"],
     },
     "campania": {
         "nome": "Campania",
@@ -108,6 +203,8 @@ COLTURE = {
         "keywords": ["barbabietola", "bietola", "bieticoltura"],
     },
     # === Campania (confermati da PDF reali marzo 2026) ===
+    # Nota: MELO (piu' sotto) e' usata da ENTRAMBE le regioni: negli ER l'header e' sempre
+    # "MELO" secco, in Campania compaiono anche le varianti "COLTURA: MELO" ecc.
     "OLIVO": {
         "nome": "Olivo",
         "sezioni": [
@@ -150,6 +247,11 @@ COLTURE = {
             "cancri e disseccamenti rameali",
             "podosphaera leucotricha", "oidium farinosum",
             "afide grigio", "fillominatori",
+            # avversita' tipiche dei bollettini Emilia-Romagna
+            "colpo di fuoco batterico", "erwinia amylovora",
+            "glomerella", "colletotrichum",
+            "afide lanigero", "eriosoma lanigerum",
+            "carpocapsa", "cemiostoma", "litocollete", "eulia",
         ],
     },
     "CASTAGNO": {

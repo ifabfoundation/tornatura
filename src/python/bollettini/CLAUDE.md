@@ -69,7 +69,9 @@ Restituisce il report della coltura per la provincia che contiene il punto. Copr
 e Campania** (usa `province_italia.shp`).
 
 ## Regioni e colture
-- **Emilia-Romagna (5):** VITE, PERO, PESCO, MAIS, BARBABIETOLA.
+- **Emilia-Romagna (6):** VITE, PERO, PESCO, MELO, MAIS, BARBABIETOLA.
+  MELO aggiunto il 2026-08-25: i chunk erano gia' nello store (`parent_coltura='MELO'`, header
+  `## MELO` negli ultimi bollettini delle 6 province), quindi non serve ri-processare i PDF.
 - **Campania (17):** VITE, OLIVO, PESCO, AGRUMI, ACTINIDIA, NOCCIOLO, NOCE, CIPOLLA, POMODORO,
   FRAGOLA, CASTAGNO, CILIEGIO, MELO, PERO, PATATA, SUSINO, ALBICOCCO.
 
