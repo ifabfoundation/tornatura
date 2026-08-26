@@ -81,7 +81,7 @@ src/python/bollettini/           # package nel monorepo tornatura
     ├── chunks.db                # ← STORE SQLITE (chunk + metadati)
     ├── cache/                   # processing_cache.json, colture_{regione}_processed.json
     └── output_bollettini/       # ← OUTPUT FINALE
-        ├── emilia_romagna/      # 5 colture: vite pero pesco mais barbabietola
+        ├── emilia_romagna/      # 6 colture: vite pero pesco melo mais barbabietola
         └── campania/            # 17 colture: vite olivo pesco agrumi actinidia nocciolo
                                  #   noce cipolla pomodoro fragola castagno ciliegio melo
                                  #   pero patata susino albicocco
@@ -98,7 +98,7 @@ src/python/bollettini/           # package nel monorepo tornatura
 data/output_bollettini/{regione}/{coltura}/{province_slug}_{DD-MM-YYYY}.md (+ .html)
 ```
 - `regione` ∈ `{emilia_romagna, campania}`.
-- `coltura` (lowercase): ER → `vite, pero, pesco, mais, barbabietola`; Campania → 17 (vedi struttura).
+- `coltura` (lowercase): ER → `vite, pero, pesco, melo, mais, barbabietola`; Campania → 17 (vedi struttura).
 - `province_slug` da `normalize_province_slug()` (lowercase, separatori → `_`, accenti rimossi). ER: `bologna_ferrara, forli_cesena_ravenna_rimini, modena, reggio_emilia, parma, piacenza`. Campania: `av, bn, ce, na, sa`.
 - data in formato italiano `DD-MM-YYYY`.
 - **Storico**: all'arrivo di un report più recente per la stessa (coltura, provincia), il precedente è spostato in `history/{anno}/{province_slug}/` da `move_to_history()`.
@@ -179,7 +179,7 @@ python -m bollettini.run_pipeline --query-only --force
 
 **Emilia-Romagna** (`download_bollettini.py`, `BollettiniDownloader`, standalone)
 - API REST Plone. **4 slug di download** (raggruppamenti): `bologna-e-ferrara`, `forli-cesena-ravenna-rimini`, `modena-reggio-emilia`, `parma-piacenza`; sub-endpoint `/{slug}/@search` paginato.
-- I PDF interni specificano **province concrete distinte** → nei filename/metadata si vedono 6 valori (Bologna-Ferrara, Forlì-Cesena-Ravenna-Rimini, Modena, Reggio Emilia, Parma, Piacenza), da cui i **30 report ER** (6 province × 5 colture).
+- I PDF interni specificano **province concrete distinte** → nei filename/metadata si vedono 6 valori (Bologna-Ferrara, Forlì-Cesena-Ravenna-Rimini, Modena, Reggio Emilia, Parma, Piacenza), da cui i **36 report ER** (6 province × 6 colture).
 - Fallback anno (solo 404, un anno indietro), quick-check/early-exit, rate-limit 2s. Cache: `…/emilia_romagna/cache_download.json`.
 
 **Campania** (`download_campania.py`, `CampaniaDownloader`, estende `BaseDownloader`)
@@ -192,6 +192,7 @@ python -m bollettini.run_pipeline --query-only --force
 1. **Docling** PDF → Markdown in memoria (`do_ocr=False`).
 2. **Chunking "slice-by-coltura"** (`create_chunks_from_markdown`) — **un chunk = una coltura intera**:
    - **ER**: `trim_pi_section()` (taglia la parte "Produzione Biologica") → `slice_markdown_by_coltura()` → `_merge_consecutive_same_coltura()`. Inoltre `slice_cross_cutting_sections()` estrae le sezioni **trasversali** ER (`CROSS_CUTTING_SECTIONS`): `DEROGHE AI DISCIPLINARI…` → `applies_to="PER_VOCE"`, `REVOCA PRODOTTI FITOSANITARI` → `applies_to=""`.
+   - **ER**, prima dello slicing: `promote_plaintext_coltura_headers()` promuove a `## NOME` le righe che sono un nome-coltura che **Docling non ha emesso come header**. Senza, quel blocco non apre un chunk e viene **assorbito nella coltura precedente** (report vuoto per la coltura assorbita, contaminato per quella che assorbe). Regole strette: riga uguale a una chiave di `COLTURA_HEADER_TO_ID`, **tutta maiuscola** (indispensabile: nei bollettini invernali esistono elenchi in Title Case tipo `Melo` + `: bottoni rosa`), paragrafo isolato, riga successiva non iniziante per `:`, e non dentro una sezione trasversale. Righe di tabella e artefatti `<!-- … -->` sempre esclusi.
    - **Campania**: `preprocess_campania_markdown()` (vedi sotto) → `slice_markdown_by_coltura()` → `_merge_consecutive_same_coltura()`. **Niente sezioni trasversali** (la Campania non le ha).
    - `slice_markdown_by_coltura()` scorre gli header `## `: un header in `COLTURA_HEADER_TO_ID` apre un chunk che raccoglie tutto fino al confine successivo (altra coltura / *group divider* / fine doc). `COLTURA_HEADER_TO_ID` normalizza gli alias (`PESCO E NETTARINE → PESCO`, `GRANOTURCO → MAIS`); le colture non configurate sono mappate a `_ID` (consumano il flusso ma non vengono mai recuperate).
 3. **Preprocessing Campania** (`preprocess_campania_markdown`) — normalizza gli header inconsistenti dei PDF provinciali, a più passate:
@@ -212,7 +213,7 @@ python -m bollettini.run_pipeline --query-only --force
   `section_matches(section_title, sezioni)` **OR** `parent_coltura == coltura_id`.
   `section_matches()` = match esatto o **prefisso con word boundary** (`"BARBABIETOLA DA ZUCCHERO"` matcha `"BARBABIETOLA"`; `"PEROXIDE"` no).
 - **cross_chunks** (solo ER, arricchimento) per `applies_to`:
-  - `"PER_VOCE"` (deroghe): `filter_deroghe_per_voce()` — filtro **deterministico** che spezza la sezione in voci (`"In data …"`) e tiene **solo** quelle che nominano la coltura (match per parola intera, mappa `DEROGA_TERMS`). Niente top-k, niente embedding.
+  - `"PER_VOCE"` (deroghe): `filter_deroghe_per_voce()` — filtro **deterministico** che spezza la sezione in voci (`"In data …"`) e tiene **solo** quelle che nominano la coltura (match per parola intera, mappa `DEROGA_TERMS`). Niente top-k, niente embedding. Dentro ogni voce tenuta agisce poi `_prune_clausole_altre_colture()`: alcune voci sono **elenchi multi-coltura** (`"…sono le seguenti: melo: …; ciliegio: … - effettuare massimo 1 trattamento; …"`) e consegnarle intere faceva **mis-attribuire i limiti delle altre colture**. Si tiene il preambolo **verbatim** (prodotto, sostanza attiva, date di validita') e le sole clausole la cui **etichetta** nomina la coltura; le clausole senza etichetta-coltura non vengono mai scartate (es. `"margaronia (…) sulla coltura dell'olivo"`).
   - `"ALL"` o coltura presente nella lista `applies_to`.
 - **Gate anti-resurrezione**: le trasversali arricchiscono **solo** una coltura che ha già un blocco proprio nel bollettino. Coltura assente → ritorna vuoto → report statico (nessuna chiamata LLM).
 
@@ -499,8 +500,8 @@ Gli artefatti di validazione e i grader sono in `test/` (`snapshot_er.py`, `snap
 
 1. `run_pipeline.py` — orchestrazione, flag, exit code.
 2. `modules/config.py` — `REGIONI`, `COLTURE`.
-3. `modules/colture.py` — **core query**: `SYSTEM_PROMPT` / `SYSTEM_PROMPT_CAMPANIA` / `VERIFY_*` / `REVISE_PROMPT`; `_retrieve_coltura_chunks` (own + cross-cutting + gate); `filter_deroghe_per_voce`; `extract_campania_monitoring` / `inject_monitoring`; `strip_campania_appendix`; `_generate_report` / `_verify_and_revise`.
-4. `modules/process_bollettini.py` — **core ingest**: `slice_markdown_by_coltura`, `COLTURA_HEADER_TO_ID`, `GROUP_DIVIDERS`, `CROSS_CUTTING_SECTIONS`, `trim_pi_section`, `preprocess_campania_markdown` (`_leading_crop`, `VARIETA_TO_CROP`, `PATOGENO_TO_CROP`), `process_single_pdf`.
+3. `modules/colture.py` — **core query**: `SYSTEM_PROMPT` / `SYSTEM_PROMPT_CAMPANIA` / `VERIFY_*` / `REVISE_PROMPT`; `_retrieve_coltura_chunks` (own + cross-cutting + gate); `filter_deroghe_per_voce` / `_prune_clausole_altre_colture`; `extract_campania_monitoring` / `inject_monitoring`; `strip_campania_appendix`; `_generate_report` / `_verify_and_revise`.
+4. `modules/process_bollettini.py` — **core ingest**: `slice_markdown_by_coltura`, `COLTURA_HEADER_TO_ID`, `GROUP_DIVIDERS`, `CROSS_CUTTING_SECTIONS`, `trim_pi_section`, `promote_plaintext_coltura_headers`, `preprocess_campania_markdown` (`_leading_crop`, `VARIETA_TO_CROP`, `PATOGENO_TO_CROP`), `process_single_pdf`.
 5. `modules/chunk_store.py` — `ChunkStore` (SQLite), `META_FIELDS`.
 6. `modules/download_bollettini.py` (ER) e `modules/download_campania.py` (estende `downloaders/base.py`).
 7. **Integrazione di produzione** (non parte del core RAG): `api.py` (FastAPI, lat/lng→report), `scheduler.py` (APScheduler), `paths.py` (path runtime), `BUILD` (target Pants), `shapefiles/`, `Dockerfile`.

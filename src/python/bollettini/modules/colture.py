@@ -32,7 +32,6 @@ import shutil
 import re
 import markdown
 from openai import OpenAI
-from dotenv import load_dotenv
 from bollettini import paths
 from bollettini.modules.chunk_store import ChunkStore
 import logging
@@ -67,7 +66,7 @@ def get_logger():
 
 
 # ============= COLTURE DA CONFIG =============
-from bollettini.modules.config import COLTURE, REGIONI, get_colture_per_regione, get_area_display_name
+from bollettini.modules.config import COLTURE, REGIONI, get_colture_per_regione, get_area_display_name, load_openai_key
 # ==========================================
 
 
@@ -90,9 +89,11 @@ PRINCIPIO — FEDELTA' TOTALE, NIENTE INVENZIONI:
 - Conserva con precisione, QUANDO la fonte li riporta: date e scadenze; soglie di intervento
   (anche quantitative — ore di bagnatura, gradi-giorno, % — o diverse per varieta'); sostanze
   attive con i loro limiti (Max interventi, intervalli di sicurezza); i limiti CUMULATIVI per
-  gruppo chimico o insieme di sostanze (es. "Tra gli SDHI Max 4", "Tra Ditianon e Captano Max
-  16"); le sostanze candidate alla sostituzione (*); gli accorgimenti agronomici (es. taglio a
-  una certa distanza dal sintomo, disinfezione attrezzi, fitotossicita'/distanziamenti); la
+  gruppo chimico o insieme di sostanze (formulazioni tipo "Tra i <gruppo chimico> Max <numero>"
+  o "Tra <sostanza A> e <sostanza B> Max <numero>", da copiare dalla fonte coi SUOI valori: i
+  segnaposto tra <> sono schemi, non dati, e non vanno mai riportati); le sostanze candidate
+  alla sostituzione (*); gli accorgimenti agronomici (es. taglio a una certa distanza dal
+  sintomo, disinfezione attrezzi, fitotossicita'/distanziamenti); la
   salvaguardia delle api; le deroghe/usi eccezionali con le DATE e il loro significato esatto
   (distingui la data di CONCESSIONE da quella di SCADENZA/fine validita').
 - NON imporre questi campi se la fonte non li contiene. Molte fonti (es. i bollettini Campania)
@@ -134,10 +135,12 @@ chimico/HRAC se indicati), irrigazione/gestione del suolo, cautele operative.
 
 ## Vincoli e deroghe
 Solo se citati per QUESTA coltura:
-- limiti annuali e CUMULATIVI per gruppo chimico o sostanza: riportali TUTTI (es. "Tra gli SDHI
-  Max 4", "Tra gli IBE Max 6", "Tra Ditianon e Captano Max 16", "Tra Fosetil Al e Fosfonato di K
-  Max 10", tetti tipo "max 3 interventi insetticidi/anno"). Se la fonte li RIPETE piu' volte,
-  raccoglili UNA sola volta ma senza ometterne NESSUNO;
+- limiti annuali e CUMULATIVI per gruppo chimico o sostanza: riportali TUTTI, con i valori
+  ESATTI della fonte. Hanno forme come "Tra i <gruppo chimico> Max <numero>", "Tra <sostanza A>
+  e <sostanza B> Max <numero>", o tetti tipo "max <numero> interventi insetticidi/anno": sono
+  SCHEMI per riconoscerli, non contenuti — non riportare mai un limite che la fonte non scrive,
+  ne' i segnaposto. Se la fonte li RIPETE piu' volte, raccoglili UNA sola volta ma senza
+  ometterne NESSUNO;
 - sostanze candidate alla sostituzione (*);
 - deroghe/usi eccezionali con prodotto + sostanza attiva + DATE (concessione e scadenza, distinte).
 
@@ -177,7 +180,8 @@ verbatim -- NON segnalare righe di monitoraggio mancanti, in piu' o alterate.
 Individua i fatti IMPORTANTI presenti nella FONTE ma MANCANTI o ALTERATI nel REPORT:
 - avversita' non riportate, o AGENTI persi quando la fonte ne raggruppa piu' d'uno sotto un titolo;
 - date e scadenze; soglie (anche quantitative o per varieta'); sostanze attive con Max interventi
-  e intervalli di sicurezza; limiti CUMULATIVI per gruppo chimico ("Tra gli SDHI Max 4", ecc.);
+  e intervalli di sicurezza; limiti CUMULATIVI per gruppo chimico o insieme di sostanze
+  (forme tipo "Tra i <gruppo chimico> Max <numero>"), coi valori della FONTE;
   accorgimenti agronomici e salvaguardia delle api;
 - deroghe/usi eccezionali con le date e il loro significato (concessione vs scadenza);
 - trattamenti/misure obbligatorie ed estirpi; righe di tabella NON-di-monitoraggio omesse.
@@ -515,15 +519,18 @@ def is_other_coltura_section(section_title: str, current_coltura_id: str) -> boo
 
 
 # ============= FILTRO DEROGHE PER-VOCE (sezioni trasversali "a lista") =============
-# Termini-coltura CURATI per il match delle voci-deroga (le 5 colture ER).
+# Termini-coltura CURATI per il match delle voci-deroga (le colture ER).
 # Curati per evitare ambiguita': es. BARBABIETOLA usa solo 'barbabietola' e NON 'bietola',
 # perche' 'bietola da foglia' (bietola da costa) e' un'ALTRA coltura. Per PESCO includiamo le
 # varianti di genere/numero (nettarino/nettarina/nettarine) che la derivazione automatica
-# perderebbe. Per colture non in mappa si ricade sulla derivazione automatica da config.
+# perderebbe. Per MELO solo 'melo': nelle deroghe ER convivono 'melone' e 'meloidogyne', che il
+# match per parola intera esclude correttamente (mentre 'mele'/'meleto' non compaiono mai come
+# nome-coltura nelle voci). Per colture non in mappa si ricade sulla derivazione automatica.
 DEROGA_TERMS = {
     "VITE": {"vite", "vigneto"},
     "PERO": {"pero"},
     "PESCO": {"pesco", "pesche", "nettarine", "nettarina", "nettarino"},
+    "MELO": {"melo"},
     "MAIS": {"mais", "granoturco"},
     "BARBABIETOLA": {"barbabietola"},
 }
@@ -548,12 +555,51 @@ def coltura_match_terms(coltura_id: str) -> set:
     return terms
 
 
+# Alcune voci-deroga sono ELENCHI multi-coltura: dopo il marcatore "...sono le seguenti:" hanno
+# clausole "coltura: avversita' [- limite]" separate da ';'. Tenere la voce intera consegna
+# all'LLM anche le clausole di altre colture, e i limiti che le accompagnano finiscono
+# mis-attribuiti alla coltura del report (osservato in produzione: 3 report PESCO su 5 hanno
+# ricevuto un "effettuare massimo 1 trattamento" che nella fonte e' di ciliegio/kaki/actinidia/
+# pomodoro). Qui le clausole delle altre colture vengono tolte in modo DETERMINISTICO, prima
+# dell'LLM: si tiene il preambolo verbatim (prodotto, sostanza attiva, date di validita') e le
+# sole clausole la cui ETICHETTA nomina la coltura. Le clausole senza etichetta-coltura non
+# vengono mai scartate (es. "margaronia (...) sulla coltura dell'olivo", "coltivazioni in serra
+# di peperone, melanzana e melone"): la selezione resta a carico del prompt, come prima.
+_DEROGA_ELENCO_RE = re.compile(r"sono\s+le\s+seguenti\s*:", re.I)
+# Artefatti Docling che possono finire dentro l'etichetta di una clausola a cavallo di pagina.
+_DEROGA_LABEL_NOISE = re.compile(
+    r"<!--.*?-->|DIREZIONE\s+GENERALE\s+AGRICOLTURA,\s+CACCIA\s+E\s+PESCA", re.I | re.S)
+
+
+def _prune_clausole_altre_colture(voce: str, pats: List) -> str:
+    """Toglie da una voce-deroga a elenco le clausole etichettate con ALTRE colture.
+    Se non c'e' nulla da togliere ritorna la voce VERBATIM (byte-identica)."""
+    m = _DEROGA_ELENCO_RE.search(voce)
+    if not m:
+        return voce
+    preambolo, elenco = voce[:m.end()], voce[m.end():]
+    tenute, scartate = [], 0
+    for clausola in elenco.split(';'):
+        etichetta = re.match(r"^([^:]{1,200}):\s", clausola.strip())
+        if etichetta:
+            testo = _DEROGA_LABEL_NOISE.sub(" ", etichetta.group(1))
+            if '.' not in testo and not any(p.search(testo) for p in pats):
+                scartate += 1
+                continue
+        tenute.append(clausola)
+    if not scartate:
+        return voce
+    return preambolo + ';'.join(tenute)
+
+
 def filter_deroghe_per_voce(content: str, coltura_id: str) -> str:
     """
     Spezza una sezione-lista (DEROGHE) in singole voci ('In data <gg> <mese> ... e' stata
     concessa ...') e tiene SOLO le voci che nominano la coltura (match per parola intera sui
-    nomi-coltura). Deterministico: niente voci di altre colture (no mis-attribuzione), niente
-    voci pertinenti perse (no top-k). Ritorna le voci tenute (o "" se nessuna).
+    nomi-coltura); dentro ogni voce tenuta, toglie le clausole etichettate con altre colture
+    (vedi _prune_clausole_altre_colture). Deterministico: niente voci/clausole di altre colture
+    (no mis-attribuzione), niente voci pertinenti perse (no top-k). Ritorna le voci tenute
+    (o "" se nessuna).
     """
     terms = coltura_match_terms(coltura_id)
     if not terms:
@@ -563,7 +609,7 @@ def filter_deroghe_per_voce(content: str, coltura_id: str) -> str:
     # non a inizio riga o precedute da artefatti di pagina <!-- image --> / intestazioni).
     items = re.split(r"(?=\bIn\s+data\s+\d{1,2})", content)
     kept = [
-        it.strip() for it in items
+        _prune_clausole_altre_colture(it.strip(), pats) for it in items
         if re.match(r"In\s+data\s+\d", it.strip()) and any(p.search(it) for p in pats)
     ]
     if not kept:
@@ -778,7 +824,8 @@ class ColtureQueryProcessor:
     def _init_models(self):
         """Inizializza modelli solo quando necessario."""
         if self._openai_client is None:
-            load_dotenv()
+            # La chiave arriva da UNA sola fonte, fuori dal repo (vedi modules/config.py).
+            self.logger.info(f"Chiave OpenAI: {load_openai_key()}")
 
             self.logger.info("Initializing OpenAI client...")
             # timeout per chiamata + retry con backoff: evita hang indefiniti e

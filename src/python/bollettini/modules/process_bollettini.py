@@ -952,6 +952,73 @@ def trim_pi_section(md_text: str) -> str:
     return md_text
 
 
+# ============= PROMOZIONE HEADER-COLTURA NON RICONOSCIUTI (ER) =============
+# Su alcuni PDF ER Docling NON emette il nome della coltura come header markdown: la coltura
+# compare come paragrafo di testo semplice. Siccome slice_markdown_by_coltura riconosce solo gli
+# header '## ', quel blocco non apre un nuovo chunk e viene ASSORBITO nel chunk della coltura
+# precedente (osservato: il chunk CILIEGIO di "Bollettino 12 del 28 aprile 2026 di Modena" da 22k
+# caratteri inghiotte KAKI, MELO, OLIVO e PERO; in Modena n.13 KAKI inghiotte MELO e PERO
+# inghiotte PESCO; in Reggio Emilia n.12 MELO inghiotte OLIVO). Effetto: report vuoti per le
+# colture assorbite e report contaminati per quella che le assorbe.
+#
+# Qui quelle righe vengono promosse a '## NOME'. Regole deterministiche e volutamente STRETTE,
+# tarate sui markdown ER reali in test/**/raw*.md:
+#   1. la riga, normalizzata, e' esattamente una chiave di COLTURA_HEADER_TO_ID;
+#   2. e' TUTTA MAIUSCOLA, come gli header-coltura dei bollettini ER. Vincolo indispensabile:
+#      nei bollettini invernali esistono elenchi in Title Case ("Melo", "Pesco e Nettarine")
+#      che sono VOCI di una lista ("Melo" + ": bottoni rosa"), non sezioni-coltura;
+#   3. e' un paragrafo a se' stante (riga vuota, o inizio/fine documento, prima e dopo);
+#   4. la prima riga non vuota successiva non inizia con ':' (ulteriore protezione contro le
+#      voci "NOME: valore" che Docling spezza su due righe);
+#   5. non siamo dentro una sezione trasversale (DEROGHE/REVOCA), che elenca nomi di coltura.
+# Righe di tabella ('|') e artefatti Docling ('<!-- ... -->') sono sempre esclusi.
+def promote_plaintext_coltura_headers(md_text: str) -> str:
+    """Promuove a '## NOME' le righe che sono un nome-coltura non emesso come header. Vedi sopra."""
+    lines = md_text.splitlines()
+    promoted: List[str] = []
+    in_cross_cutting = False
+
+    def _next_non_empty(idx: int) -> Optional[str]:
+        for l in lines[idx + 1:]:
+            if l.strip():
+                return l.strip()
+        return None
+
+    for i, line in enumerate(lines):
+        s_line = line.strip()
+
+        if s_line.startswith('#'):
+            norm_hdr = _normalize_header(s_line.lstrip('#').strip())
+            in_cross_cutting = any(
+                norm_hdr == key or norm_hdr.startswith(key) for key in CROSS_CUTTING_SECTIONS
+            )
+            continue
+
+        if not s_line or '|' in s_line or '<!--' in s_line:
+            continue
+        if in_cross_cutting:                                   # regola 5
+            continue
+        if s_line != s_line.upper():                           # regola 2
+            continue
+        if _normalize_header(s_line) not in COLTURA_HEADER_TO_ID:   # regola 1
+            continue
+        prev_blank = i == 0 or not lines[i - 1].strip()         # regola 3
+        next_blank = i + 1 >= len(lines) or not lines[i + 1].strip()
+        if not (prev_blank and next_blank):
+            continue
+        nxt = _next_non_empty(i)                               # regola 4
+        if nxt and nxt.startswith(':'):
+            continue
+
+        lines[i] = f'## {s_line}'
+        promoted.append(s_line)
+
+    if promoted:
+        logger.info(f"  header-coltura promossi (non emessi da Docling): {promoted}")
+    return '\n'.join(lines)
+# ==========================================
+
+
 def _merge_consecutive_same_coltura(chunks: List[Dict]) -> List[Dict]:
     """
     Unisce chunks consecutivi con lo stesso coltura_id in un unico chunk.
@@ -1106,6 +1173,9 @@ def create_chunks_from_markdown(md_text: str, doc_name: str) -> List[Dict]:
     if regione == "emilia_romagna":
         # Trim della parte di Produzione Biologica (per ora ignorata)
         md_text = trim_pi_section(md_text)
+        # Recupera le colture il cui nome Docling non ha emesso come header markdown:
+        # senza questo passaggio verrebbero assorbite nel chunk della coltura precedente.
+        md_text = promote_plaintext_coltura_headers(md_text)
 
         coltura_chunks = slice_markdown_by_coltura(md_text)
         coltura_chunks = _merge_consecutive_same_coltura(coltura_chunks)

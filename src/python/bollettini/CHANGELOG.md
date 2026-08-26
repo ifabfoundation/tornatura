@@ -4,6 +4,72 @@ Registro delle modifiche per il team backend.
 
 ---
 
+## [2026-08-26] - MELO in Emilia-Romagna + tre fix di fedelta' del contenuto
+
+### Overview per il team
+Allineamento del package allo standalone `RAG_colture` alla data del 2026-08-25. Aggiunge **MELO**
+come sesta coltura ER e porta tre correzioni che riguardano la **fedelta' del report alla fonte**
+(non la struttura). Modifiche **additive**: nessuna firma cambiata, nessun endpoint nuovo,
+`api.py` / `scheduler.py` / `run_pipeline.py` / geopandas / Docker **intatti**.
+
+### Cosa cambia
+1. **MELO, sesta coltura ER** (`modules/config.py`). I chunk erano **gia' nello store**
+   (`parent_coltura='MELO'`, header `## MELO` negli ultimi bollettini delle 6 province): non serve
+   ri-processare i PDF. Le 21 keyword includono le avversita' specifiche ER (colpo di fuoco
+   batterico/*Erwinia amylovora*, glomerella/*Colletotrichum*, afide lanigero/*Eriosoma lanigerum*,
+   carpocapsa, cemiostoma, litocollete, eulia). Report ER: da 30 a **36** (6 province x 6 colture).
+   In `DEROGA_TERMS` il melo ha il solo termine `'melo'`: nelle deroghe ER convivono `'melone'` e
+   `'meloidogyne'`, che il match **per parola intera** esclude correttamente.
+2. **Chunking ER: recupero delle colture che Docling non emette come header**
+   (`modules/process_bollettini.py`, `promote_plaintext_coltura_headers`). Su alcuni PDF il nome
+   della coltura compare come **paragrafo di testo** invece che come `## NOME`: `slice_markdown_by_coltura`
+   non apre un nuovo chunk e il blocco viene **assorbito nella coltura precedente** (report vuoto per
+   la coltura assorbita, report contaminato per quella che assorbe; osservato: il chunk CILIEGIO di
+   Modena n.12 da 22k caratteri inghiottiva KAKI, MELO, OLIVO e PERO). Promozione **deterministica**
+   con cinque regole strette, la piu' importante delle quali e' *tutta maiuscola*: nei bollettini
+   invernali esistono elenchi in Title Case (`Melo` + `: bottoni rosa`) che sono **voci di lista**, non
+   sezioni-coltura. Righe di tabella e artefatti Docling sempre esclusi.
+3. **Deroghe: pruning delle clausole di altre colture** (`modules/colture.py`,
+   `_prune_clausole_altre_colture`). Alcune voci-deroga sono **elenchi multi-coltura** e consegnarle
+   intere all'LLM faceva **mis-attribuire i limiti** delle altre colture (osservato in produzione: 3
+   report PESCO su 6 riportavano un `"effettuare massimo 1 trattamento"` che nella fonte e' di
+   ciliegio/kaki/actinidia/pomodoro). Ora si tiene il preambolo **verbatim** (prodotto, sostanza
+   attiva, date di validita') e le sole clausole la cui **etichetta** nomina la coltura; le clausole
+   **senza** etichetta-coltura non vengono mai scartate (es. `"margaronia (…) sulla coltura
+   dell'olivo"`) e restano a carico del prompt. Se non c'e' nulla da togliere, la voce e' ritornata
+   **byte-identica**.
+4. **Prompt ER: esempi numerici sostituiti da schemi** (`modules/colture.py`, 3 punti). I limiti
+   cumulativi erano illustrati con **valori concreti** (`"Tra gli SDHI Max 4"`, `"Tra Ditianon e
+   Captano Max 16"`, …): l'LLM li riportava anche quando la fonte non li conteneva. Ora il prompt usa
+   **segnaposto** (`"Tra i <gruppo chimico> Max <numero>"`) e dichiara esplicitamente che sono schemi
+   di riconoscimento, non dati, e che non vanno mai riportati. Anti-allucinazione, nessun cambio di
+   struttura del report.
+5. **Chiave OpenAI: una sola fonte, fuori dal repo** (`modules/config.py`, `modules/colture.py`).
+   Al posto di `load_dotenv()` su un `.env` di package, `load_openai_key()` cerca la chiave in ordine:
+   variabile d'ambiente, poi i file-chiave nella **home** (`~/.config/openai/key.env`). Verifica i
+   permessi del file e **avvisa** se una chiave viene trovata dentro il repository. Complementare alla
+   rimozione di `.env` dalle `resources()` del BUILD (vedi voce precedente): i segreti si passano ai
+   container dall'esterno (`env_file` nel compose), non dentro l'immagine.
+
+### Verifica eseguita
+- I tre moduli toccati differiscono dallo standalone **solo** per l'adattamento monorepo
+  (`from bollettini.modules.*`, `paths.DATA_DIR` / `paths.OUTPUT_DIR`); `config.py` e' byte-identico.
+- `promote_plaintext_coltura_headers`: output **identico** a quello dello standalone su **405**
+  markdown reali (0 differenze). Sui 9 `raw*.md` di test recupera 4 sezioni-coltura reali
+  (SOIA, VITE, POMODORO DA INDUSTRIA, MAIS), tutte verificate come sezioni autentiche.
+- `_prune_clausole_altre_colture`: preambolo verbatim, clausola della coltura tenuta, clausole di
+  ciliegio/kaki scartate, clausola senza etichetta tenuta, voce senza marcatore ritornata byte-identica.
+- `MELO` non intercetta `'melone'` ne' `'meloidogyne'`; nessun esempio numerico concreto residuo nei prompt.
+- `pants package src/python/bollettini:scheduler src/python/bollettini:api` → **exit 0**.
+
+### Nota
+`black` e `isort` falliscono su **tutto** il package `bollettini` (11 file, inclusi `api.py` e
+`chunk_store.py`, mai toccati qui): e' **preesistente** e identico su `main`. Non e' stato lanciato
+`pants fmt`, che avrebbe riformattato l'intero package mescolando la formattazione con queste
+modifiche. La formattazione va concordata come intervento a se'.
+
+---
+
 ## [2026-06-24] - Migrazione a SQLite + due prompt dedicati + Campania completa
 
 ### Overview per il team
