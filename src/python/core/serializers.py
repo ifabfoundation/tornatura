@@ -308,6 +308,15 @@ class MultiDetectionCreateResponse(BaseModel):
     sessionId: str
     detections: List[Detection]
 
+class DetectionTimeUpdatePayload(BaseModel):
+    detectionTime: int
+
+class DetectionTimeUpdateResponse(BaseModel):
+    # Una sessione di rilevamento multiplo condivide un solo detectionTime, quindi la
+    # correzione muove tutti i suoi membri: la risposta li restituisce tutti.
+    sessionId: Optional[str] = None
+    detections: List[Detection]
+
 class UserCreatePayload(BaseModel):
     firstName: str
     lastName: str

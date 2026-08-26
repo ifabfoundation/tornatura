@@ -1,6 +1,8 @@
 import datetime
 import uuid
 from fastapi import HTTPException, status
+from bson.errors import InvalidId
+from mongoengine.errors import ValidationError as MongoValidationError
 from core.decorators import catch_api_exception
 from core.models import (
     DetectionData,
@@ -15,9 +17,20 @@ from core.models import (
     Point,
     detectionPhoto,
 )
-from core.serializers import Detection, DetectionMutationPayload, MultiDetectionMutationPayload
+from core.serializers import (
+    Detection,
+    DetectionMutationPayload,
+    DetectionTimeUpdatePayload,
+    MultiDetectionMutationPayload,
+)
 from core.services.agrifields_services import AgriFieldServices
 from core.services.files_services import FileServices
+
+
+# Tolleranza sul futuro per detectionTime. Gli orologi dei telefoni usati in campo sono
+# spesso sfasati e un rilevamento vero non deve mai essere rifiutato per qualche minuto:
+# rifiutiamo solo cio' che non puo' essere uno scarto d'orologio.
+FUTURE_TOLERANCE_MS = 24 * 60 * 60 * 1000
 
 
 class DetectionServices:
@@ -336,6 +349,74 @@ class DetectionServices:
             )
         return self._serialize(detection)
     
+    @catch_api_exception
+    def update_time(
+        self, agrifield_id: str, detection_id: str, payload: DetectionTimeUpdatePayload
+    ):
+        """Correct when a detection was made.
+
+        `creationTime` is deliberately left untouched: it stays the record of when the
+        detection entered the system, so the original information is never lost.
+
+        When the detection belongs to a multi-detection session, every member moves
+        together. `create_bulk` writes a single detectionTime for the whole session, so
+        moving one member alone would produce a state the app cannot create.
+
+        Args:
+            agrifield_id: ID of the agricultural field the detection must belong to
+            detection_id: ID of the detection to correct
+            payload: the new detectionTime, in milliseconds
+
+        Returns:
+            dict with the session ID (if any) and the serialized updated detections
+        """
+        try:
+            detection = self.model.objects(id=detection_id, deleted=False).first()
+        except (InvalidId, MongoValidationError):
+            # Un id malformato non puo' corrispondere a nulla: la risposta onesta e' 404.
+            # Senza questo, mongoengine solleva e handle_api_exceptions restituisce 500.
+            detection = None
+        if not detection or detection.agrifieldId != agrifield_id:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Detection not found"
+            )
+
+        new_time = payload.detectionTime
+        current_time = int(datetime.datetime.now(tz=datetime.timezone.utc).timestamp() * 1000)
+        if new_time <= 0:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Invalid detection time"
+            )
+        if new_time > current_time + FUTURE_TOLERANCE_MS:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Detection time cannot be in the future"
+            )
+
+        session_id = detection.sessionId or None
+        if session_id:
+            # Filtriamo anche per agrifieldId: una sessione nasce sempre su un solo campo
+            # (create_bulk ne riceve uno), e cosi' non possiamo toccare dati di altri campi.
+            targets = list(
+                self.model.objects(
+                    sessionId=session_id, agrifieldId=agrifield_id, deleted=False
+                )
+            )
+        else:
+            targets = [detection]
+
+        for target in targets:
+            target.detectionTime = new_time
+            target.lastUpdateTime = current_time
+            target.save()
+
+        return {
+            "sessionId": session_id,
+            "detections": self._serialize(targets, many=True),
+        }
+
     @catch_api_exception
     def delete(self, detection_id: str):
         """Soft delete detection
