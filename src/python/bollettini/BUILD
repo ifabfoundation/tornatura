@@ -23,7 +23,12 @@ resources(
         "modules/**",
         "MANIFEST.txt",
         "REPORT.md",
-        ".env",
+        # NIENTE ".env" qui: queste risorse entrano nel pex, e il pex viene
+        # copiato dentro l'immagine Docker, che e' PUBBLICA su Docker Hub. Un
+        # .env presente in locale al momento della build finirebbe leggibile da
+        # chiunque con un `docker pull`. E' successo: la chiave OpenAI e un token
+        # GitHub sono stati esposti per sette mesi, in sette tag pubblicati.
+        # I segreti si passano ai container dall'esterno (env_file nel compose).
         "CLAUDE.md"
     ],
 )

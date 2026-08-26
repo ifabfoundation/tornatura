@@ -80,5 +80,11 @@ pex_binary(
 
 resources(
     name="statics",
-    sources=["media/**", ".env", "templates/**"],
+    # NIENTE ".env": queste risorse entrano nel pex, che finisce nell'immagine
+    # Docker pubblica. Qui la trappola non e' ancora scattata solo perche' chi ha
+    # costruito le immagini pubblicate non aveva un .env in locale — ma
+    # core/.env contiene la password di Mongo, il client secret di Keycloak, la
+    # secret key di MinIO e la password SMTP. In produzione il core li riceve
+    # gia' come variabili del container: questo file non serviva.
+    sources=["media/**", "templates/**"],
 )
