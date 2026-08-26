@@ -128,6 +128,59 @@ export const deleteDetection = createAsyncThunk(
   },
 );
 
+interface IUpdateDetectionTimePayload {
+  orgId: string;
+  fieldId: string;
+  detectionId: string;
+  detectionTime: number;
+}
+
+/**
+ * Corregge il momento in cui un rilevamento e' stato fatto.
+ *
+ * Passa da `fetch` e non dall'SDK: la rotta esiste nel core ma non nel pacchetto
+ * `@tornatura/coreapis`, che la web consuma come tarball pre-compilato. E' lo stesso
+ * approccio gia' usato per `/v1/forms/.../pdf` in `pages/auth.tsx`. L'indirizzo e il
+ * token (con rinnovo) arrivano comunque da `getCoreApiConfiguration`, per non
+ * duplicare la logica di autenticazione.
+ *
+ * Se il rilevamento fa parte di una sessione multipla il server sposta TUTTI i suoi
+ * membri, perche' condividono un solo `detectionTime`, e li restituisce: per questo la
+ * risposta e' una lista e il reducer fa `upsertMany`.
+ */
+export const updateDetectionTime = createAsyncThunk(
+  "detections/updateDetectionTime",
+  async (
+    { orgId, fieldId, detectionId, detectionTime }: IUpdateDetectionTimePayload,
+    { rejectWithValue },
+  ) => {
+    const apiConfig = await getCoreApiConfiguration();
+    try {
+      const response = await fetch(
+        `${apiConfig.basePath}/v1/organizations/${orgId}/agrifields/${fieldId}/detections/${detectionId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            ...((apiConfig.baseOptions?.headers ?? {}) as Record<string, string>),
+          },
+          body: JSON.stringify({ detectionTime }),
+        },
+      );
+      if (!response.ok) {
+        return rejectWithValue(await response.text());
+      }
+      const data = (await response.json()) as {
+        sessionId: string | null;
+        detections: Detection[];
+      };
+      return data.detections;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  },
+);
+
 const detectionsSlice = createSlice({
   name: "detections",
   initialState,
@@ -177,6 +230,10 @@ const detectionsSlice = createSlice({
     builder.addCase(deleteDetection.fulfilled, (state, action) => {
       detectionsAdapter.removeOne(state, action.payload as string);
     });
+
+    builder.addCase(updateDetectionTime.fulfilled, (state, action) => {
+      detectionsAdapter.upsertMany(state, action.payload as Detection[]);
+    });
   },
 });
 
@@ -207,6 +264,7 @@ export const detectionsActions = {
   addNewDetectionAction: addNewDetection,
   addBulkDetectionsAction: addBulkDetections,
   deleteDetectionAction: deleteDetection,
+  updateDetectionTimeAction: updateDetectionTime,
 };
 
 export const detectionsReducer = detectionsSlice.reducer;

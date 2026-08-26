@@ -6,6 +6,7 @@ interface DetectionsTableProps {
   detections: Detection[];
   observationType: string;
   handleHighlightDetection?: (row: { detection?: Detection }) => void;
+  handleEditDetectionTime?: (row: { detection?: Detection }) => void;
   handleDeleteDetection?: (row: { detection?: Detection }) => void; // Maybe it can be handeled directly from inside here
 }
 
@@ -26,6 +27,7 @@ export function DetectionsTable({
   detections,
   observationType,
   handleHighlightDetection,
+  handleEditDetectionTime,
   handleDeleteDetection,
 }: DetectionsTableProps) {
   const tableOptions: TableOptions = {
@@ -38,6 +40,10 @@ export function DetectionsTable({
       headerText: "Data",
       id: "detectionTime",
       sortable: true,
+      // Ordina sul valore grezzo in millisecondi, non sulla stringa mostrata: quella e'
+      // in formato italiano (gg/mm/aa) e un ordinamento alfabetico metterebbe il 26
+      // agosto DOPO il 5 settembre, confrontando prima il giorno.
+      sortValueId: "detectionTimeValue",
       style: "normal",
       type: "text",
     },
@@ -146,6 +152,22 @@ export function DetectionsTable({
     },
     {
       headerText: "",
+      id: "action3",
+      type: "button",
+      style: "normal",
+      shrink: true,
+      buttonIcon: "pencil",
+      onButtonClick: (data) => {
+        if (handleEditDetectionTime) {
+          handleEditDetectionTime(data);
+          return;
+        }
+        console.log("handleEditDetectionTime not set", data);
+        alert("handleEditDetectionTime not set");
+      },
+    },
+    {
+      headerText: "",
       id: "action1",
       type: "button",
       style: "normal",
@@ -178,6 +200,7 @@ export function DetectionsTable({
     const diseaseIndexColor = getColorDiseaseIndex(ds.diseaseIndex);
     return {
       detection,
+      detectionTimeValue: detection.detectionTime,
       detectionTime:
         new Date(detection.detectionTime).toLocaleDateString("it-IT", {
           dateStyle: "short",

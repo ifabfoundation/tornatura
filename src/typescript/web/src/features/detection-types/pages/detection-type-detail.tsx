@@ -24,6 +24,7 @@ import {
   shouldUseGradients,
 } from "../../../helpers/detections";
 import { ModalConfirm } from "../../../components/ModalConfirm";
+import { ModalEditDetectionTime } from "../../../components/ModalEditDetectionTime";
 import { DetectionsTable } from "../../../components/DetectionsTable";
 import { useIsMobile } from "../../../helpers/common";
 import { Infopanel } from "../../../components/Infopanel";
@@ -152,6 +153,11 @@ export function DetectionTypeDetail() {
   const detections = useAppSelector((state) =>
     detectionsSelectors.selectDetectionByTypeId(state, typeId ?? "default"),
   );
+  // Tutti i rilevamenti del campo, non solo quelli di questa tipologia: serve a contare
+  // i compagni di sessione, che appartengono ad altre tipologie e non compaiono qui.
+  const allFieldDetections = useAppSelector((state) =>
+    detectionsSelectors.selectDetectionbyFieldId(state, fieldId ?? "default"),
+  );
   React.useEffect(() => {
     dispatch(headerbarActions.setTitle({ title: "Focus Rilevamento", subtitle: "Subtitle" }));
   }, []);
@@ -256,6 +262,46 @@ export function DetectionTypeDetail() {
             const remaining = detections.filter((item) => item.id !== detection.id);
             setSelectedDetectionId(remaining.length > 0 ? remaining[0].id : null);
           }
+        },
+      },
+    });
+    setModalOpen(true);
+  }
+
+  function handleEditTimeClick(row: { detection?: Detection }) {
+    const detection = row?.detection;
+    if (!detection || !companyId || !fieldId) {
+      return;
+    }
+    // Quanti rilevamenti si muoveranno: quelli di una sessione multipla condividono una
+    // sola data, quindi il server li sposta insieme e all'utente va detto prima.
+    // `allFieldDetections` guarda TUTTO il campo, non solo questa tipologia: i compagni
+    // di sessione appartengono ad altre tipologie e non comparirebbero in questa tabella.
+    const affectedCount = detection.sessionId
+      ? allFieldDetections.filter((item) => item.sessionId === detection.sessionId).length
+      : 1;
+    setModal({
+      component: ModalEditDetectionTime,
+      componentProps: {
+        detectionTime: detection.detectionTime,
+        isSession: !!detection.sessionId,
+        affectedCount,
+        handleCancel: () => setModalOpen(false),
+        handleConfirm: async (detectionTime: number) => {
+          const result = await dispatch(
+            detectionsActions.updateDetectionTimeAction({
+              orgId: companyId,
+              fieldId,
+              detectionId: detection.id,
+              detectionTime,
+            }),
+          );
+          if (result.meta.requestStatus === "rejected") {
+            // La modale resta aperta col messaggio: chiuderla farebbe credere all'utente
+            // di aver corretto la data quando invece nel database non e' cambiato nulla.
+            return "Non è stato possibile salvare la data. Riprova.";
+          }
+          setModalOpen(false);
         },
       },
     });
@@ -759,6 +805,7 @@ export function DetectionTypeDetail() {
                           setSelectedDetectionId(row.detection?.id ?? null);
                           scrollToGraphAndMap();
                         }}
+                        handleEditDetectionTime={handleEditTimeClick}
                         handleDeleteDetection={handleDeleteClick}
                       />
                     </Col>
