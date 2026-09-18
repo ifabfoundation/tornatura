@@ -1,5 +1,5 @@
 from enum import Enum
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 from typing import Any, List, Optional
 
 
@@ -274,7 +274,9 @@ class OrganizationUpdatePayload(BaseModel):
     
 class AgriFieldMutationPayload(BaseModel):
     name: str
-    description: str
+    # Allineato a DESCRIPTION_MAX_LENGTH in models.py: dichiararlo qui fa rispondere
+    # 422 con il campo e il limite, invece di far fallire il salvataggio con un 500.
+    description: str = Field("", max_length=500)
     map : List[Point]
     harvest: str
     area: float

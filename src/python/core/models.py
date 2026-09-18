@@ -83,6 +83,12 @@ class Office(EmbeddedDocument):
     city = StringField(required=True)
 
 
+# Lunghezza massima della descrizione di un campo. Il limite esiste per non trasformare
+# la descrizione in un tema libero; e' dichiarato anche nel serializzatore, cosi' l'API
+# risponde 422 con un messaggio esplicito invece di 500 al salvataggio.
+DESCRIPTION_MAX_LENGTH = 500
+
+
 class AgriFieldModel(Document):
     """The object AgriField stored in the Database"""
     name = StringField(required=True)
@@ -96,7 +102,7 @@ class AgriFieldModel(Document):
     grassing = StringField(default='')
     weaving = StringField(default='')
     map = ListField(EmbeddedDocumentField(Point), default=[])
-    description = StringField(required=True, max_length=100)
+    description = StringField(required=True, max_length=DESCRIPTION_MAX_LENGTH)
     orgId = StringField(required=True)
     deleted = BooleanField(default=False)
     createdBy = StringField(null=True)
