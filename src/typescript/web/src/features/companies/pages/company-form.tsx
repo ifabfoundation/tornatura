@@ -13,7 +13,6 @@ import SignupImpactQuestionnaireStep, {
   SignupImpactQuestionnaireFormData,
 } from "../../auth/components/signup-impact-questionnaire-step";
 import Stepper from "../../../components/Stepper";
-import axios from "axios";
 import Modal from "../../../components/Modal";
 
 const PhoneRegExp =
