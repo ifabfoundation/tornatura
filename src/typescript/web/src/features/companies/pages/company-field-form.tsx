@@ -99,6 +99,13 @@ type Contorno = {
  * anello esterno, perche' il database non puo' contenere buchi. Questi due numeri
  * servono a DIRLO, non a cambiare la geometria.
  */
+/**
+ * Lunghezza massima della descrizione del campo. Deve restare allineata a
+ * `DESCRIPTION_MAX_LENGTH` in `core/models.py`: se il form lascia passare piu' di cosi',
+ * il salvataggio viene rifiutato dal server.
+ */
+const DESCRIZIONE_MAX = 500;
+
 const VUOTO_MIN_M2 = 100;
 const VUOTO_MIN_COMPATTEZZA = 0.1;
 
@@ -241,6 +248,10 @@ export function FieldFormInfo({ formData, action, onNextClick, onBackClick }: Fi
     },
     validationSchema: Yup.object({
       name: Yup.string().required("Campo necessario"),
+      description: Yup.string().max(
+        DESCRIZIONE_MAX,
+        `La descrizione non può superare ${DESCRIZIONE_MAX} caratteri`,
+      ),
       harvest: Yup.string().required("Campo necessario"),
       area: Yup.number()
         .typeError("Il valore inserito non è positivo")
@@ -582,7 +593,8 @@ export function FieldFormInfo({ formData, action, onNextClick, onBackClick }: Fi
                 <textarea
                   id="FIELD_12"
                   name="description"
-                  rows={15}
+                  maxLength={DESCRIZIONE_MAX}
+                  rows={5}
                   cols={50}
                   placeholder="Descrizione del campo"
                   onChange={formik.handleChange}
@@ -590,6 +602,9 @@ export function FieldFormInfo({ formData, action, onNextClick, onBackClick }: Fi
                   value={formik.values.description}
                 />
               </label>
+              <small className="d-block mt-1 text-muted text-end">
+                {formik.values.description.length} / {DESCRIZIONE_MAX}
+              </small>
               {formik.touched.description && formik.errors.description ? (
                 <div className="error">{formik.errors.description}</div>
               ) : null}
@@ -1679,6 +1694,7 @@ export function CompanyFieldForm() {
     companiesSelectors.selectCompanybyId(state, companyId ?? "default"),
   );
   const [step, setStep] = React.useState(1);
+  const [erroreSalvataggio, setErroreSalvataggio] = React.useState("");
   const [action, setAction] = React.useState("Avanti");
   const [formData, setFormData] = React.useState<AgriFieldMutationPayload>({
     name: "",
@@ -1703,17 +1719,31 @@ export function CompanyFieldForm() {
     }
   }, [step]);
 
+  /**
+   * Salva il campo e, SOLO se il salvataggio e' riuscito, torna all'elenco.
+   *
+   * Il thunk usa `rejectWithValue`, quindi in caso di errore non solleva: restituisce
+   * un'azione di rifiuto. Un `try/catch` qui non scatterebbe mai e si navigherebbe via
+   * come se il campo fosse stato creato, che e' esattamente il modo in cui un errore
+   * del server diventava invisibile. Va controllato `requestStatus`.
+   */
   const createFieldAction = async (payload: AgriFieldMutationPayload) => {
-    if (currentCompany) {
-      try {
-        await dispatch(
-          fieldsActions.addNewFieldAction({ orgId: currentCompany.orgId, body: payload }),
-        );
-        navigate(`/m/companies/${companyId}/fields`, { replace: true });
-      } catch (reason) {
-        console.error("Error creating field with reason: ", reason);
-      }
+    if (!currentCompany) {
+      return;
     }
+    setErroreSalvataggio("");
+    const result = await dispatch(
+      fieldsActions.addNewFieldAction({ orgId: currentCompany.orgId, body: payload }),
+    );
+    if (result.meta.requestStatus === "rejected") {
+      console.error("Error creating field: ", result);
+      setErroreSalvataggio(
+        "Non è stato possibile salvare il campo. I dati inseriti sono ancora qui: " +
+          "controlla i valori e riprova.",
+      );
+      return;
+    }
+    navigate(`/m/companies/${companyId}/fields`, { replace: true });
   };
 
   const handleNextClick = async (data: any) => {
@@ -1768,6 +1798,9 @@ export function CompanyFieldForm() {
         <Container>
           <Row className="mt-2">
             <Col xl={12} className="py-3">
+              {erroreSalvataggio !== "" && (
+                <div className="error mb-3 font-m-600">{erroreSalvataggio}</div>
+              )}
               <FieldFormInfo
                 formData={formData}
                 action={action}
