@@ -13,6 +13,8 @@ import SignupImpactQuestionnaireStep, {
   SignupImpactQuestionnaireFormData,
 } from "../../auth/components/signup-impact-questionnaire-step";
 import Stepper from "../../../components/Stepper";
+import axios from "axios";
+import Modal from "../../../components/Modal";
 
 const PhoneRegExp =
   /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
@@ -355,6 +357,8 @@ export function CompanyForm() {
   const [companyPayload, setCompanyPayload] = React.useState<CompanyPayloadDraft>();
   const [questionnaireValues, setQuestionnaireValues] =
     React.useState<SignupImpactQuestionnaireFormData>(initialQuestionnaireValues);
+  const [registrationErrorMessage, setRegistrationErrorMessage] = React.useState("");
+  const [isRegistrationErrorModalOpen, setIsRegistrationErrorModalOpen] = React.useState(false);
 
   React.useEffect(() => {
     dispatch(headerbarActions.setTitle({ title: "Nuova azienda", subtitle: "Aziende gestite" }));
@@ -409,16 +413,19 @@ export function CompanyForm() {
       await keycloakInstance.login({ redirectUri });
     } catch (error: any) {
       const detail = error?.response?.data?.detail || error?.detail;
-      setMessage(
-        detail === "Organization with the same name already exists"
+      const message = detail === "Bad Request organization already exists"
           ? "Un'azienda con lo stesso nome esiste già sulla piattaforma."
-          : "Non è stato possibile creare l'azienda. Riprova più tardi.",
-      );
+          : "Non è stato possibile creare l'azienda. Riprova più tardi.";
+      setMessage(message);
+      console.log("Error creating account", error);
+      setRegistrationErrorMessage(message);
+      setIsRegistrationErrorModalOpen(true);
     }
   };
 
   return (
     <Container className="px-0">
+      {isRegistrationErrorModalOpen && <ErrorModal message={registrationErrorMessage} handleCloseClick={() => setIsRegistrationErrorModalOpen(false)}/>}
       <Stepper
         items={stepperSteps.map((stepItem) => stepItem.label)}
         currentStep={currentStepIndex}
@@ -472,5 +479,30 @@ export function CompanyForm() {
         )}
       </div>
     </Container>
+  );
+}
+
+interface ErrorModalProps {
+  message?: string;
+  handleCloseClick: () => void;
+}
+
+export function ErrorModal({message, handleCloseClick}: ErrorModalProps) {
+  return (
+    <Modal
+      closeModal={handleCloseClick}
+      title="Registrazione non completata"
+    >
+      <div className="font-m ms-2 mr-2">{message ||"Si è verificato un errore durante la registrazione. Riprova più tardi."}</div>
+      <hr />
+      <div className="buttons-wrapper text-center">
+        <button className="trnt_btn secondary" onClick={handleCloseClick}>
+          Chiudi
+        </button>
+        <button className={`trnt_btn primary`} onClick={handleCloseClick}>
+          Ho capito
+        </button>
+      </div>
+    </Modal>
   );
 }
