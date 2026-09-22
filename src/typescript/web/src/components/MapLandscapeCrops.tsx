@@ -1,5 +1,6 @@
 import React from "react";
 import mapboxgl from "mapbox-gl";
+import type { FilterSpecification } from "mapbox-gl";
 import * as turf from "@turf/turf";
 
 /**
@@ -96,8 +97,13 @@ export type MapLandscapeCropsProps = {
   aggregatedClasses: Record<string, string>;
   /** Es. "ARPAE iColt 2026", mostrato in legenda. */
   datasetLabel: string;
-  showAgri: boolean;
+  /** Famiglie di uso del suolo accese: una famiglia spenta non si disegna. */
+  enabledFamilies: string[];
   showCrop: boolean;
+  onToggleFamily: (family: string) => void;
+  onToggleCrop: () => void;
+  /** Titolo della legenda, che e' anche il pannello con cui si accendono i layer. */
+  legendTitle?: React.ReactNode;
 };
 
 const vuoto: ParcelsFC = { type: "FeatureCollection", features: [] };
@@ -118,8 +124,11 @@ export default function MapLandscapeCrops({
   cropLabel,
   aggregatedClasses,
   datasetLabel,
-  showAgri,
+  enabledFamilies,
   showCrop,
+  onToggleFamily,
+  onToggleCrop,
+  legendTitle,
 }: MapLandscapeCropsProps) {
   const mapContainerRef = React.useRef<HTMLDivElement>(null);
   const mapRef = React.useRef<any>(null);
@@ -313,40 +322,63 @@ export default function MapLandscapeCrops({
     }
     const set = (id: string, on: boolean) =>
       map.setLayoutProperty(id, "visibility", on ? "visible" : "none");
-    set(LYR_AGRI, showAgri);
-    set(LYR_AGRI_LINE, showAgri);
+    // Le famiglie spente escono dal filtro: un solo layer serve tutte le voci
+    // della legenda, senza duplicare la sorgente per ogni famiglia.
+    const filtroFamiglie: FilterSpecification = [
+      "in",
+      ["get", "family"],
+      ["literal", enabledFamilies],
+    ];
+    map.setFilter(LYR_AGRI, filtroFamiglie);
+    map.setFilter(LYR_AGRI_LINE, filtroFamiglie);
+    set(LYR_AGRI, enabledFamilies.length > 0);
+    set(LYR_AGRI_LINE, enabledFamilies.length > 0);
     set(LYR_COLTURA, showCrop);
     set(LYR_COLTURA_LINE, showCrop);
-  }, [mapLoaded, showAgri, showCrop]);
+  }, [mapLoaded, enabledFamilies, showCrop]);
 
   return (
     <div className="map-observations-wrapper">
       <div ref={mapContainerRef} className="map-observations"></div>
       <div className="map-legend">
+        {legendTitle && <div className="legend-title font-s-label">{legendTitle}</div>}
         <div className="llist-group">
           <div className="llist-group-item p-0 h-s d-flex align-items-center">
             <div className="dot me-2" data-size="12" style={{ background: COLORE_CAMPO }}></div>
             <span className="font-s">Il tuo campo</span>
           </div>
           {cropLabel && (
-            <div className="llist-group-item p-0 h-s d-flex align-items-center">
+            <button
+              type="button"
+              className="llist-group-item legend-toggle p-0 h-s"
+              aria-pressed={showCrop}
+              title={showCrop ? "Nascondi dalla mappa" : "Mostra sulla mappa"}
+              onClick={onToggleCrop}
+            >
               <div
                 className="dot me-2"
                 data-size="12"
                 style={{ background: COLORE_COLTURA }}
               ></div>
               <span className="font-s">{cropLabel}</span>
-            </div>
+            </button>
           )}
-          {LEGENDA_FAMIGLIE.map((f) => (
-            <div
-              key={f.family}
-              className="llist-group-item p-0 h-s d-flex align-items-center"
-            >
-              <div className="dot me-2" data-size="12" style={{ background: f.color }}></div>
-              <span className="font-s">{f.label}</span>
-            </div>
-          ))}
+          {LEGENDA_FAMIGLIE.map((f) => {
+            const accesa = enabledFamilies.includes(f.family);
+            return (
+              <button
+                key={f.family}
+                type="button"
+                className="llist-group-item legend-toggle p-0 h-s"
+                aria-pressed={accesa}
+                title={accesa ? "Nascondi dalla mappa" : "Mostra sulla mappa"}
+                onClick={() => onToggleFamily(f.family)}
+              >
+                <div className="dot me-2" data-size="12" style={{ background: f.color }}></div>
+                <span className="font-s">{f.label}</span>
+              </button>
+            );
+          })}
           <div className="llist-group-item p-0 h-s">
             <span className="font-s opacity-05">{datasetLabel}</span>
           </div>
