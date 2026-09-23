@@ -37,8 +37,8 @@ import * as turf from "@turf/turf";
  * cambia nessuna decisione. La distinzione persa resta leggibile nella tabella,
  * dove ogni classe ha la sua riga.
  */
-const COLORE_CAMPO = "#EAFF00";
-const COLORE_COLTURA = "#e87ba4";
+export const COLORE_CAMPO = "#EAFF00";
+export const COLORE_COLTURA = "#e87ba4";
 const COLORE_PERMANENTI = "#2a78d6";
 const COLORE_ERBACEE = "#eda100";
 const COLORE_SEMINATURALE = "#008300";
@@ -91,8 +91,6 @@ export type MapLandscapeCropsProps = {
   /** Geometria del buffer restituita dal servizio (Polygon GeoJSON). */
   buffer: any | null;
   parcels: ParcelsFC | null;
-  /** Etichetta della classe iColt della coltura dell'utente, se mappabile. */
-  cropLabel: string | null;
   /** Classi iColt che raggruppano piu' colture: classe -> cosa contiene. */
   aggregatedClasses: Record<string, string>;
   /** Es. "ARPAE iColt 2026", mostrato in legenda. */
@@ -100,10 +98,6 @@ export type MapLandscapeCropsProps = {
   /** Famiglie di uso del suolo accese: una famiglia spenta non si disegna. */
   enabledFamilies: string[];
   showCrop: boolean;
-  onToggleFamily: (family: string) => void;
-  onToggleCrop: () => void;
-  /** Titolo della legenda, che e' anche il pannello con cui si accendono i layer. */
-  legendTitle?: React.ReactNode;
 };
 
 const vuoto: ParcelsFC = { type: "FeatureCollection", features: [] };
@@ -121,14 +115,10 @@ export default function MapLandscapeCrops({
   fieldRing,
   buffer,
   parcels,
-  cropLabel,
   aggregatedClasses,
   datasetLabel,
   enabledFamilies,
   showCrop,
-  onToggleFamily,
-  onToggleCrop,
-  legendTitle,
 }: MapLandscapeCropsProps) {
   const mapContainerRef = React.useRef<HTMLDivElement>(null);
   const mapRef = React.useRef<any>(null);
@@ -340,50 +330,6 @@ export default function MapLandscapeCrops({
   return (
     <div className="map-observations-wrapper">
       <div ref={mapContainerRef} className="map-observations"></div>
-      <div className="map-legend">
-        {legendTitle && <div className="legend-title font-s-label">{legendTitle}</div>}
-        <div className="llist-group">
-          <div className="llist-group-item p-0 h-s d-flex align-items-center">
-            <div className="dot me-2" data-size="12" style={{ background: COLORE_CAMPO }}></div>
-            <span className="font-s">Il tuo campo</span>
-          </div>
-          {cropLabel && (
-            <button
-              type="button"
-              className="llist-group-item legend-toggle p-0 h-s"
-              aria-pressed={showCrop}
-              title={showCrop ? "Nascondi dalla mappa" : "Mostra sulla mappa"}
-              onClick={onToggleCrop}
-            >
-              <div
-                className="dot me-2"
-                data-size="12"
-                style={{ background: COLORE_COLTURA }}
-              ></div>
-              <span className="font-s">{cropLabel}</span>
-            </button>
-          )}
-          {LEGENDA_FAMIGLIE.map((f) => {
-            const accesa = enabledFamilies.includes(f.family);
-            return (
-              <button
-                key={f.family}
-                type="button"
-                className="llist-group-item legend-toggle p-0 h-s"
-                aria-pressed={accesa}
-                title={accesa ? "Nascondi dalla mappa" : "Mostra sulla mappa"}
-                onClick={() => onToggleFamily(f.family)}
-              >
-                <div className="dot me-2" data-size="12" style={{ background: f.color }}></div>
-                <span className="font-s">{f.label}</span>
-              </button>
-            );
-          })}
-          <div className="llist-group-item p-0 h-s">
-            <span className="font-s opacity-05">{datasetLabel}</span>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }

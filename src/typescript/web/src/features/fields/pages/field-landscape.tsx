@@ -13,7 +13,11 @@ import {
 } from "../../../services/model-api";
 import { Container, Row, Col } from "react-bootstrap";
 import TableCozy, { TableColumn, TableOptions } from "../../../components/TableCozy";
-import MapLandscapeCrops, { LEGENDA_FAMIGLIE } from "../../../components/MapLandscapeCrops";
+import MapLandscapeCrops, {
+  COLORE_CAMPO,
+  COLORE_COLTURA,
+  LEGENDA_FAMIGLIE,
+} from "../../../components/MapLandscapeCrops";
 import InfoPopover from "../../../components/InfoPopover";
 
 const RADIUS_OPTIONS_M = [3000, 5000, 10000];
@@ -278,12 +282,8 @@ export function FieldLandscape() {
                   </Col>
                 </Row>
 
-                <Row className="mb-3 align-items-start">
-                  <Col lg={8} className="mb-3 mb-lg-0">
-                    <p className="font-m mb-2">
-                      Seleziona un raggio e attiva i layer per esplorare le colture e gli
-                      elementi del paesaggio che circondano il tuo appezzamento.
-                    </p>
+                <Row className="mb-3">
+                  <Col>
                     <p className="font-m-600 mb-1">Perché è importante?</p>
                     <p className="font-m mb-2">
                       Conoscere cosa viene coltivato vicino al tuo campo può aiutarti a
@@ -310,8 +310,65 @@ export function FieldLandscape() {
                       </p>
                     )}
                   </Col>
+                </Row>
+
+                <MapLandscapeCrops
+                  fieldRing={fieldRing}
+                  buffer={geo?.buffer ?? null}
+                  parcels={(geo?.parcels as any) ?? null}
+                  aggregatedClasses={geo?.aggregated_classes ?? {}}
+                  datasetLabel={datasetLabel}
+                  enabledFamilies={famiglieAccese}
+                  showCrop={showCrop}
+                />
+
+                {/* --- controlli sotto la mappa: legenda cliccabile a sinistra, raggio a destra --- */}
+                <Row className="mt-3">
+                  <Col lg={8} className="mb-2 mb-lg-0">
+                    <div className="iiinfo-label font-s-label mb-1 d-flex align-items-center">
+                      Cosa vuoi vedere?
+                      <InfoPopover title="Layer" text={DEF_LAYER} />
+                    </div>
+                    <div className="d-flex flex-wrap align-items-center">
+                      <span className="legend-chip is-static me-3 mb-2 font-s">
+                        <span className="dot me-2" data-size="10" style={{ background: COLORE_CAMPO }}></span>
+                        Il tuo campo
+                      </span>
+                      {cropLayerLabel && (
+                        <button
+                          type="button"
+                          className={`trnt_btn slim-y narrow-x type-rounded legend-chip me-2 mb-2 ${
+                            showCrop ? "primary" : "secondary"
+                          }`}
+                          aria-pressed={showCrop}
+                          onClick={() => setShowCrop(!showCrop)}
+                        >
+                          <span className="dot me-2" data-size="10" style={{ background: COLORE_COLTURA }}></span>
+                          {cropLayerLabel}
+                        </button>
+                      )}
+                      {LEGENDA_FAMIGLIE.map((f) => {
+                        const accesa = famiglieAccese.includes(f.family);
+                        return (
+                          <button
+                            key={f.family}
+                            type="button"
+                            className={`trnt_btn slim-y narrow-x type-rounded legend-chip me-2 mb-2 ${
+                              accesa ? "primary" : "secondary"
+                            }`}
+                            aria-pressed={accesa}
+                            onClick={() => toggleFamiglia(f.family)}
+                          >
+                            <span className="dot me-2" data-size="10" style={{ background: f.color }}></span>
+                            {f.label}
+                          </button>
+                        );
+                      })}
+                      <span className="font-s opacity-05 mb-2">{datasetLabel}</span>
+                    </div>
+                  </Col>
                   <Col lg={4}>
-                    <div className="iiinfo-label font-s-label mb-2 d-flex align-items-center">
+                    <div className="iiinfo-label font-s-label mb-1 d-flex align-items-center">
                       Quanto lontano vuoi guardare?
                       <InfoPopover title="Raggio" text={DEF_RAGGIO} />
                     </div>
@@ -320,7 +377,7 @@ export function FieldLandscape() {
                         <button
                           key={option}
                           type="button"
-                          className={`trnt_btn type-rounded me-2 mb-2 ${
+                          className={`trnt_btn slim-y narrow-x type-rounded me-2 mb-2 ${
                             radiusM === option ? "primary" : "secondary"
                           }`}
                           onClick={() => setRadiusM(option)}
@@ -331,25 +388,6 @@ export function FieldLandscape() {
                     </div>
                   </Col>
                 </Row>
-
-                <MapLandscapeCrops
-                  fieldRing={fieldRing}
-                  buffer={geo?.buffer ?? null}
-                  parcels={(geo?.parcels as any) ?? null}
-                  cropLabel={cropLayerLabel}
-                  aggregatedClasses={geo?.aggregated_classes ?? {}}
-                  datasetLabel={datasetLabel}
-                  enabledFamilies={famiglieAccese}
-                  showCrop={showCrop}
-                  onToggleFamily={toggleFamiglia}
-                  onToggleCrop={() => setShowCrop(!showCrop)}
-                  legendTitle={
-                    <>
-                      Cosa vuoi vedere?
-                      <InfoPopover title="Layer" text={DEF_LAYER} />
-                    </>
-                  }
-                />
 
                 {geo?.truncated && (
                   <div className="alert alert-warning mt-3 mb-0 font-s">

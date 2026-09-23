@@ -3535,30 +3535,14 @@ table.model-table {
 }
 
 // --- Il tuo paesaggio: legenda cliccabile, definizioni al click, tabella scorrevole ------
-.map-legend {
-  .legend-title {
-    display: flex;
-    align-items: center;
-    padding: 0 5px 6px;
+.legend-chip {
+  display: inline-flex;
+  align-items: center;
+  .dot {
+    flex-shrink: 0;
   }
-  .legend-toggle {
-    width: 100%;
-    border: 0;
-    background: transparent;
-    text-align: left;
-    justify-content: flex-start;
-    cursor: pointer;
-    transition: opacity 0.15s ease;
-    &[aria-pressed="false"] {
-      opacity: 0.4;
-      .font-s {
-        text-decoration: line-through;
-      }
-    }
-    &:focus-visible {
-      outline: 2px solid currentColor;
-      outline-offset: -2px;
-    }
+  &.is-static {
+    cursor: default;
   }
 }
 .info-btn {

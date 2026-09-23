@@ -1,4 +1,3 @@
-import React from "react";
 import { OverlayTrigger, Popover } from "react-bootstrap";
 
 type InfoPopoverProps = {
