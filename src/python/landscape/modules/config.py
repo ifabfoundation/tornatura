@@ -129,7 +129,14 @@ HARVEST_COVERAGE_NOTE = {
 METRIC_EPSG = 32632
 
 DEFAULT_RADIUS_M = 3000
-MIN_RADIUS_M = 1000
+# 500 m e non piu' 1000: sotto il chilometro la composizione descrive i VICINI e
+# non il paesaggio, ma per gli organismi e' proprio la scala locale che conta
+# (Forresi et al. 2024: effetti a 200 m dalla trappola; Kirkpatrick et al. 2019:
+# area di cattura 70 m). Misurato: la % di ospiti a 500 m e a 3 km correlano solo
+# 0,77 fra loro, quindi sono due informazioni diverse e vale la pena mostrarle
+# entrambe. A 500 m molte specie finiscono in "altre colture" per la regola dei
+# tre appezzamenti: e' giusto cosi', e la pagina lo dichiara.
+MIN_RADIUS_M = 500
 MAX_RADIUS_M = 20000
 
 # Rete di sicurezza sul numero di particelle servite alla mappa: a 10 km sono
@@ -365,3 +372,24 @@ AGREA_PIECES_VERTEX_BUDGET = 30_000
 # proprieta' su cui si regge l'unione dei pezzi. Misurato: dimezza il payload
 # (336 -> 91 kB a 1,5 km) al costo di 22-91 ms di calcolo.
 AGREA_PIECES_COORD_DECIMALS = 7
+
+
+# ==============================================================================
+# Organismi: habitat nel paesaggio dichiarato (modules/pests.py)
+# ==============================================================================
+#
+# Ogni organismo e' una cartella in data/pests/<codice>/ (hosts.csv + meta.json):
+# la cimice asiatica e' la prima, il calcolo e' unico. Vedi la nota di decisione
+# docs/decisioni/2026-09_paesaggio-organismi.md e il CLAUDE.md di landscape.
+
+PEST_DEFAULT = "halyha"
+
+# La distanza dal frutteto ospite o dalla siepe piu' vicini si pubblica SOLO come
+# classe: "entro 100 m" (l'effetto bordo vive nei primi 50-100 m: Maistrello 2017,
+# Bergh 2021), 100-500, 500-1000, oltre 1000, nessuno entro il raggio. Mai in
+# metri: una distanza precisa indicherebbe il campo di una singola azienda.
+PEST_NEAREST_CLASSES_M = (100, 500, 1000)
+
+# Il contorno del campo arriva nella query string come "lng,lat;lng,lat;...": un
+# anello di campo ha 10-50 vertici, il tetto protegge da input abnormi.
+PEST_RING_MAX_VERTICES = 200

@@ -4,6 +4,80 @@ Registro delle modifiche per il team backend.
 
 ---
 
+## [2026-09-24] - v2.2.0: l'habitat di un organismo nel paesaggio (primo: la cimice asiatica)
+
+### In breve, per chi legge solo questo
+
+Due endpoint nuovi, `GET /v1/landscape/pests?crop=` e
+`GET /v1/landscape/pest-habitat?lat&lng&radius_m&crop&pest&ring`, un modulo nuovo
+(`modules/pests.py`) e una cartella dati per organismo (`data/pests/<codice>/`:
+`hosts.csv` + `meta.json`). La cimice asiatica (`halyha`) e' la prima; il calcolo e'
+unico e un organismo nuovo e' una cartella in piu', non codice. `/parcels` accetta
+`pest=` e allora ogni feature porta `declared` (la specie come sta nel dato) e
+`host_level`. `MIN_RADIUS_M` scende da 1000 a **500 m**. Nessuna dipendenza nuova, il
+core non e' toccato, i parquet sul volume sono gli stessi.
+
+### Cosa misura, e perche' proprio questo
+
+Deciso da un esperimento, non a tavolino (`esperimenti/cimice_landscape/`, 33 punti
+in pianura e collina per 4 raggi, 24/09/2026):
+
+| candidata | esito | perche' |
+|---|---|---|
+| % di superficie ospite per livello, sul dichiarato | **entra** | la metrica di tutta la letteratura sulla cimice (Tamburini 2023: miglior raggio 3000 m; Forresi 2024: 200 m) |
+| serbatoi semi-naturali (bosco + elementi) | **entra** | gia' misurati dalla pagina; sono il driver per le ninfe |
+| distanza bordo a bordo al frutteto ospite / alla siepe piu' vicini | **entra, in classi** | informazione parzialmente diversa dalla % (rho -0,80); effetto bordo nei primi 50-100 m |
+| indice di connettivita' a kernel `sum(A_j exp(-d_j/D))` | **no** | correlato 0,85-0,97 con la % per ogni D fra 250 e 3000 m e ogni raggio |
+| metriche FRAGSTATS (pylandstats, ENN, mesh size, LSI, densita' di bordo e di patch) | **no** | correlate 0,67-0,94 con la %; le due piu' basse misurano frammentazione, non ospite |
+
+Due scale e non una: la % ospiti a 500 m e a 3 km correlano solo 0,77 fra loro, a 3
+e 5 km 0,98. Per questo il raggio minimo scende a 500 m su tutta la pagina.
+
+### La lista ospiti non e' un giudizio
+
+Livelli dedotti da una **matrice di evidenze** (23 fonti, 230 righe, in
+`esperimenti/cimice_landscape/ospiti/`) con regola dichiarata: principale = danno
+documentato in Italia o Europa da almeno due fonti indipendenti; secondario = almeno
+un'evidenza di ospite; non ospite = nessuna o negativa (Maistrello 2017: mai nelle
+aree inerbite; Bergmann 2016: gimnosperme). Sulle 312 specie del parquet: 15
+principali (pero, melo, pesco e nettarina, ciliegio, kiwi, nocciolo, soia, mais,
+pomodoro, peperone, fagiolo e fagiolino), 82 secondarie (fra cui vite, girasole,
+albicocco, susino, noce, olivo, kaki con una sola fonte di danno), 169 non ospiti,
+46 non classificabili. EPPO da solo non bastava: la sua lista (216 piante) non
+distingue major e minor. La versione della tabella viaggia nella risposta
+(`hosts_version`); una fonte nuova cambia una riga, non il codice.
+
+### Anonimato
+
+Totali per livello aggregati su molte specie; prime specie con la regola dei tre
+appezzamenti (`MIN_PARCELS_PER_ROW`); distanze in **classi** (entro 100 m · 100-500 ·
+500-1000 · oltre 1000 · nessuno entro il raggio), mai in metri: una distanza precisa
+indicherebbe il campo di una singola azienda. Il campo dell'utente e' escluso dai patch
+per le distanze: col `ring` gli appezzamenti che lo intersecano, senza `ring`
+l'appezzamento dichiarato che contiene il centroide (logica di `parcel_at`).
+
+### Verifica di non-regressione (Ferrara 44.80951, 11.75644, pero, dati AGREA 2026)
+
+```
+GET /v1/landscape/pest-habitat?...&radius_m=3000&crop=pero&pest=halyha
+  ospiti 63,2% del dichiarato · principali 58,6% (frutteti 19,9%, erbacee 43,3%) · secondari 4,6%
+  serbatoi 2,7% del cerchio · frutteto con danno documentato piu' vicino: entro 100 m
+  prime specie: mais 483 ha, soia 373, pero 268 (= l'11,3% della pagina), melo 164, pomodoro 59
+GET /v1/landscape/composition?...&radius_m=500   -> 200 (prima 422)
+GET /v1/landscape/pest-habitat?...&pest=xyz      -> 404 "Unknown pest"
+volume senza AGREA                                -> available: false, nessun 500
+```
+
+### Cosa resta fuori, di proposito
+
+La finestra fenologica delle erbacee (soia e mais contano tutto l'anno: sono ospiti
+solo in maturazione, Forresi 2024 trova che come classe non hanno effetto), il verde
+urbano (AGREA non lo contiene), l'indice di connettivita'. Le fasi suscettibili sono
+gia' raccolte nella matrice (tipo D) per il passo successivo. Nota di decisione:
+`docs/decisioni/2026-09_paesaggio-organismi.md`.
+
+---
+
 ## [2026-08-24] - v2.1.1: la soglia dei pezzi scende da 0,25 a 0,01 ha
 
 ### Perche'

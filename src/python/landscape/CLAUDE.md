@@ -54,16 +54,18 @@ circa l'**80%**, non il 100%. In pianura, dove esistono entrambe, quel disaccord
 ```
 src/python/landscape/
 ├── api.py                  # FastAPI: health, coverage, composition, parcels,
-│                           #   pieces, parcel-at
+│                           #   pieces, parcel-at, pests, pest-habitat
 ├── paths.py                # iColt statico nel pex; AGREA e log sul volume
 ├── updater.py              # CLI: prepara i dati AGREA sul volume
 ├── BUILD                   # target Pants (due pex_binary: api, updater)
 ├── data/
-│   └── icolt2026_er.parquet # layer iColt 2026 (EPSG:4326, particelle > 0,5 ha)
+│   ├── icolt2026_er.parquet # layer iColt 2026 (EPSG:4326, particelle > 0,5 ha)
+│   └── pests/<codice>/      # un organismo = una cartella: hosts.csv + meta.json
 └── modules/
     ├── config.py           # classi, famiglie, mappatura colture, soglie
     ├── landscape.py        # sorgente iColt + combinazione delle due
     ├── agrea.py            # sorgente AGREA, ai due livelli di granularità
+    ├── pests.py            # habitat di un organismo nel paesaggio (calcolo unico)
     └── agrea_prepare.py    # dall'archivio pubblico ai tre GeoParquet
 ```
 
@@ -254,6 +256,46 @@ Misurato: sotto 210 kB e 0,37 s in pianura come in collina.
    (confronta gli ETag), scrittura atomica, una volta l'anno. Vedi `CHANGELOG.md`
    per le misure e per le tre strade scartate.
 
+## Organismi: l'habitat nel paesaggio (`modules/pests.py`, `data/pests/`)
+
+La pagina dice anche **quanto l'intorno ospita un organismo**. La cimice asiatica
+(`halyha`) e' la prima, ma la funzione e' scritta per qualsiasi organismo: **un
+organismo = una cartella** `data/pests/<codice>/` con `hosts.csv` (specie AGREA `cls`
+-> livello ospite e famiglia) e `meta.json` (nome, colture a cui si applica, serbatoi,
+etichette, testi, fonti, versione). Il calcolo e' uno solo; aggiungere lo scafoideo o
+la diabrotica e' aggiungere una cartella. Nota di decisione:
+`docs/decisioni/2026-09_paesaggio-organismi.md`.
+
+**Cosa si misura, deciso da un esperimento** (`esperimenti/cimice_landscape/`, 33 punti
+x 4 raggi): % di superficie per livello ospite sul dichiarato, separando frutteti ed
+erbacee; serbatoi semi-naturali (riusa `agrea.seminatural`); distanza bordo a bordo dal
+frutteto ospite e dalla siepe o bosco piu' vicini, **in classi**. **Cosa NON si misura**:
+l'indice di connettivita' a kernel e le metriche FRAGSTATS, ridondanti con la % (0,85-0,97
+e 0,67-0,94). La % a 500 m e a 3 km correlano solo 0,77: due scale, e per questo
+`MIN_RADIUS_M` e' 500.
+
+**I livelli non sono un giudizio.** Discendono da una matrice di evidenze con fonti
+(regola: principale = danno documentato in Italia/Europa da >= 2 fonti; secondario =
+almeno un'evidenza di ospite; non ospite = nessuna o negativa). Per cambiare un livello
+si aggiunge una fonte alla matrice in `esperimenti/cimice_landscape/ospiti/` e si
+rigenera `hosts.csv`; `hosts_version` nella risposta dice quale tabella e' in uso. Una
+`cls` assente dalla tabella e' `non_classificabile`, mai un errore.
+
+**Trappole.**
+1. `hosts.csv` e' indicizzato sulla colonna `cls` del parquet (312 valori), non su
+   `DESC_SUOLO` del foglio Excel (367): cinque nomi differiscono per troncature. La
+   tabella si rigenera dal parquet, non dal foglio.
+2. Le distanze si pubblicano **solo come classi** (`PEST_NEAREST_CLASSES_M`): un numero
+   di metri indicherebbe il campo di un vicino. Il campo dell'utente va escluso dai patch
+   (col `ring`, o l'appezzamento che contiene il centroide), altrimenti la distanza e' zero.
+3. `/parcels?pest=` aggiunge `declared` e `host_level` alle feature: e' il server a fare
+   il join, il client non deve conoscere la tabella.
+4. Il `ring` viaggia in query string come `lng,lat;...` con tetto a 200 vertici; oltre
+   e' un 422. Non viene conservato.
+5. Soia e mais sono `principale` (danno documentato da piu' fonti) ma ospiti solo in
+   maturazione: `by_family` separa erbacee e frutteti proprio per questo, e la finestra
+   fenologica e' il passo successivo, non un difetto da correggere nella tabella.
+
 ## Verifica di non-regressione
 
 ```
@@ -271,3 +313,8 @@ Collina, dove iColt è cieca: Brisighella `olivo 11,8%`, semi-naturale `15,1%`
 (350,8 ha di bosco); Colli Bolognesi `vite 9,0%`, semi-naturale `15,0%`. Con un
 volume privo dei file AGREA la stessa chiamata deve tornare `fonte icolt` e 10
 classi, senza errori.
+
+Organismi: `GET /v1/landscape/pest-habitat?lat=44.80951&lng=11.75644&radius_m=3000&crop=pero&pest=halyha`
+deve dare ospiti 63,2% del dichiarato, principali 58,6%, serbatoi 2,7%, frutteto con
+danno documentato piu' vicino "entro 100 m", pero 268 ha fra le prime specie. Con il
+volume vuoto `available: false`, senza errore.

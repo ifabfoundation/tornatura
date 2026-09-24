@@ -1,0 +1,313 @@
+cls,livello,famiglia,nome_latino,n_fonti_danno,evidenze
+ABETE,non_classificabile,seminaturale,Abies,0,N:BERGMANN2016
+ACERO,non_classificabile,seminaturale,Acer,0,"B:BERGMANN2016,ER_NOTE2023,MAISTRELLO2017; A:EPPO2026,STOPBMSB"
+ACHILLEA,non_ospite,erbacea,Achillea millefolium,0,
+ACTINIDIA (KIWI),principale,permanente,Actinidia deliciosa,4,"C:BARISELLI2016,CONSORZIO_PC,ER_NOTE2023,ER_SCHEDA2025; B:TAMBURINI2023; A:EPPO2026"
+AGAPANTO,non_ospite,erbacea,Agapanthus,0,
+AGLIO,non_ospite,erbacea,Allium sativum,0,
+AGLIONE,non_ospite,erbacea,Allium ampeloprasum,0,
+AGRETTO,non_ospite,erbacea,Salsola soda,0,
+AGRUMI,non_ospite,permanente,Citrus,0,
+ALBERI IN FILARE,non_classificabile,seminaturale,,0,
+ALBERI ISOLATI,non_classificabile,seminaturale,,0,
+ALBICOCCO,secondario,permanente,Prunus armeniaca,1,"C:ER_NOTE2023; B:BERGMANN2016,MAISTRELLO2017; H:ER_SCHEDA2025; A:EPPO2026,STOPBMSB"
+ALCHECHENGI,non_ospite,erbacea,Physalis alkekengi,0,
+ALLORO,non_ospite,permanente,Laurus nobilis,0,
+ALOE,non_ospite,erbacea,Aloe vera,0,
+AMARANTO,secondario,erbacea,Amaranthus,0,"A:EPPO2026,STOPBMSB"
+ANETO,non_ospite,erbacea,Anethum graveolens,0,
+ARACHIDE,non_ospite,erbacea,Arachis hypogaea,0,
+ARBORETO CONSOCIABILE (CON COLTIVAZIONI ERBACEE),non_classificabile,permanente,,0,
+ARBORICOLTURA,non_classificabile,seminaturale,,0,
+AREA A SEMINATIVO DEDICATA ALL'ELICICOLTURA,non_classificabile,erbacea,,0,
+ARNICA,non_ospite,erbacea,Arnica montana,0,
+ARONIA NERA,non_ospite,permanente,Aronia melanocarpa,0,
+ARTEMISIA,non_ospite,erbacea,Artemisia,0,
+ARUNDO DONAX,non_ospite,permanente,Arundo donax,0,
+ASPARAGO,secondario,erbacea,Asparagus officinalis,0,H:CONSORZIO_PC; A:EPPO2026
+AVENA,non_ospite,erbacea,Avena sativa,0,
+BABY LEAF,non_classificabile,erbacea,,0,
+BAMBU,non_ospite,permanente,Phyllostachys,0,
+BAMBU GIGANTE,non_ospite,permanente,Phyllostachys edulis,0,
+BANANO DEL NORD,secondario,permanente,Asimina triloba,0,"A:EPPO2026,STOPBMSB"
+BARBABIETOLA - RAPA ROSSA/BIETOLA DA COSTA,secondario,erbacea,Beta vulgaris,0,"A:EPPO2026,STOPBMSB"
+BARDANA,secondario,erbacea,Arctium lappa,0,"A:EPPO2026,STOPBMSB"
+BASILICO,secondario,erbacea,Ocimum basilicum,0,A:EPPO2026
+BIANCOSPINO,secondario,permanente,Crataegus monogyna,0,"A:EPPO2026,STOPBMSB"
+"BIETOLA (Compresa la CHELTENHAM BEET, BARBABIETOLA ROSSA/)",secondario,erbacea,Beta vulgaris,0,"A:EPPO2026,STOPBMSB"
+"BIETOLA (Compresa la CHELTENHAM BEET, BARBABIETOLA ROSSA/BIETOLA DA COSTA)",secondario,erbacea,Beta vulgaris,0,"A:EPPO2026,STOPBMSB"
+BORRAGINE,secondario,erbacea,Borago officinalis,0,A:EPPO2026
+BOSCO,non_classificabile,seminaturale,,0,
+BRASSICA CARINATA (CAVOLO ABISSINO),secondario,erbacea,Brassica carinata,0,A:EPPO2026
+BROCCOLETTO O CIME DI RAPA,secondario,erbacea,Brassica rapa,0,A:EPPO2026
+CALENDULA,non_ospite,erbacea,Calendula officinalis,0,
+CAMELINA o DORELLA COLTIVATA,non_ospite,erbacea,Camelina sativa,0,
+CAMOMILLA,non_ospite,erbacea,Matricaria chamomilla,0,
+CAMOMILLA ROMANA,non_ospite,erbacea,Chamaemelum nobile,0,
+CANAPA,secondario,erbacea,Cannabis sativa,0,"A:EPPO2026,STOPBMSB"
+CANNA CINESE (MISCANTHUS SINENSIS),non_ospite,permanente,Miscanthus sinensis,0,
+CAPPERO,non_ospite,permanente,Capparis spinosa,0,
+CARCIOFO,non_ospite,erbacea,Cynara cardunculus,0,
+CARDI,non_ospite,erbacea,Cynara cardunculus,0,
+CARDO MARIANO,non_ospite,erbacea,Silybum marianum,0,
+CAROTA,non_ospite,erbacea,Daucus carota,0,
+CARPINO,secondario,permanente,Carpinus betulus,0,"B:MAISTRELLO2017; A:EPPO2026,STOPBMSB"
+CARPINO NERO,non_ospite,permanente,Ostrya carpinifolia,0,
+CARTAMO,non_ospite,erbacea,Carthamus tinctorius,0,
+CASTAGNO,non_ospite,permanente,Castanea sativa,0,
+CAVOLFIORE,secondario,erbacea,Brassica oleracea,0,"A:EPPO2026,STOPBMSB"
+CAVOLO,secondario,erbacea,Brassica oleracea,0,"A:EPPO2026,STOPBMSB"
+CAVOLO BROCCOLO,secondario,erbacea,Brassica oleracea,0,"A:EPPO2026,STOPBMSB"
+CAVOLO CINESE,secondario,erbacea,Brassica rapa,0,A:EPPO2026
+CAVOLO NERO,secondario,erbacea,Brassica oleracea,0,"A:EPPO2026,STOPBMSB"
+CAVOLO RAPA,secondario,erbacea,Brassica oleracea,0,"A:EPPO2026,STOPBMSB"
+CAVOLO VERZA,secondario,erbacea,Brassica oleracea,0,"A:EPPO2026,STOPBMSB"
+CECE,non_ospite,erbacea,Cicer arietinum,0,
+CEDRO,non_classificabile,seminaturale,Cedrus,0,N:BERGMANN2016
+CERRO,secondario,permanente,Quercus cerris,0,"B:BOSCO2020; A:EPPO2026,STOPBMSB"
+CETRIOLO,secondario,erbacea,Cucumis sativus,0,"A:EPPO2026,STOPBMSB"
+CHENOPODIUM QUINOA,secondario,erbacea,Chenopodium quinoa,0,A:EPPO2026
+CICERCHIA,non_ospite,erbacea,Lathyrus sativus,0,
+CICORIA,non_ospite,erbacea,Cichorium intybus,0,
+CILIEGIO,principale,permanente,Prunus avium,3,"C:BARISELLI2016,CONSORZIO_PC,ER_NOTE2023; B:BERGMANN2016,MAISTRELLO2017; H:ER_SCHEDA2025; A:EPPO2026,STOPBMSB"
+"CILIEGIO ACIDO (MARASCA,VISCIOLA,AMARENA)",secondario,permanente,Prunus cerasus,0,"B:BERGMANN2016,MAISTRELLO2017; A:EPPO2026"
+CIPOLLA ANCHE DI TIPO LUNGO (echalion),non_ospite,erbacea,Allium cepa,0,
+CIPOLLETTA CIPOLLA D'INVERNO O BUNCHING ONION,non_ospite,erbacea,Allium fistulosum,0,
+CIPRESSO,non_classificabile,seminaturale,Cupressus sempervirens,0,N:BERGMANN2016
+COCOMERO,non_ospite,erbacea,Citrullus lanatus,0,
+COLTIVAZIONI ARBOREE PROMISCUE (PIU' SPECIE ARBOREE),non_classificabile,permanente,,0,
+COLTIVAZIONI ARBOREE SPECIALIZZATE,non_classificabile,permanente,,0,
+COLZA,secondario,erbacea,Brassica napus,0,A:EPPO2026
+CORBEZZOLO,non_ospite,permanente,Arbutus unedo,0,
+CORIANDOLO,non_ospite,erbacea,Coriandrum sativum,0,
+COTOGNO,non_ospite,permanente,Cydonia oblonga,0,
+CRESCIONE DEI GIARDINI O CRESCIONE INGLESE,non_ospite,erbacea,Lepidium sativum,0,
+CRISANTEMO,non_ospite,erbacea,Chrysanthemum,0,
+DOUGLASIA,non_classificabile,seminaturale,Pseudotsuga menziesii,0,N:BERGMANN2016
+ECHINACEA PALLIDA,non_ospite,erbacea,Echinacea pallida,0,
+ECHINACEA PURPUREA,non_ospite,erbacea,Echinacea purpurea,0,
+ELICRISO,non_ospite,erbacea,Helichrysum italicum,0,
+EQUISETO,non_ospite,erbacea,Equisetum arvense,0,
+ERBA CIPOLLINA,non_ospite,erbacea,Allium schoenoprasum,0,
+ERBA MAZZOLINA,non_ospite,prato,Dactylis glomerata,0,N:MAISTRELLO2017
+ERBA MEDICA,non_ospite,prato,Medicago sativa,0,N:MAISTRELLO2017
+ERBA MEDICA (SP. MEDICAGO SATIVA L. (VARIETA')),non_ospite,prato,Medicago sativa,0,N:MAISTRELLO2017
+ERBAIO,non_ospite,prato,,0,N:MAISTRELLO2017
+ESCOLZIA,non_ospite,erbacea,Eschscholzia californica,0,
+EUCALIPTO,non_ospite,permanente,Eucalyptus,0,
+FACELIA,non_ospite,erbacea,Phacelia tanacetifolia,0,
+FAGIOLINO,principale,erbacea,Phaseolus vulgaris,2,"C:BARISELLI2016,ER_NOTE2023; H:CONSORZIO_PC; A:EPPO2026,STOPBMSB"
+FAGIOLO,principale,erbacea,Phaseolus vulgaris,2,"C:BARISELLI2016,ER_NOTE2023; H:CONSORZIO_PC; A:EPPO2026,STOPBMSB"
+FAGIOLO DALL'OCCHIO,non_ospite,erbacea,Vigna unguiculata,0,
+FAGIOLO DI LIMA,secondario,erbacea,Phaseolus lunatus,0,A:STOPBMSB
+FAGIOLO DI SPAGNA,secondario,erbacea,Phaseolus coccineus,0,A:STOPBMSB
+FARNIA,non_classificabile,seminaturale,Quercus robur,0,"B:BOSCO2020; A:EPPO2026,STOPBMSB"
+FARRO,non_ospite,erbacea,Triticum dicoccum,0,
+FASCE TAMPONE NON RIPARIALI,non_classificabile,seminaturale,,0,
+FASCE TAMPONE RIPARIALI,non_classificabile,seminaturale,,0,
+FAVA (FAVA GROSSA),secondario,erbacea,Vicia faba,0,H:ER_SCHEDA2025
+FAVA (FAVETTA),secondario,erbacea,Vicia faba,0,H:ER_SCHEDA2025
+FAVINO,secondario,erbacea,Vicia faba,0,H:ER_SCHEDA2025
+FESTUCA (SP. FESTUCA ARUNDINACEA SCHREB.),non_ospite,prato,Festuca arundinacea,0,N:MAISTRELLO2017
+FICO,secondario,permanente,Ficus carica,0,"A:EPPO2026,STOPBMSB"
+FIENO GRECO,non_ospite,erbacea,Trigonella foenum-graecum,0,
+FINOCCHIO,non_ospite,erbacea,Foeniculum vulgare,0,
+FIORDALISO,non_ospite,erbacea,Centaurea cyanus,0,
+FIORI EDULI,non_classificabile,erbacea,,0,
+FLEOLO (CODA DI TOPO) (SP. PHLEUM PRATENSE L.),non_ospite,prato,Phleum pratense,0,N:MAISTRELLO2017
+FOSSATI E CANALI,non_classificabile,seminaturale,,0,
+FRAGOLA,non_ospite,erbacea,Fragaria x ananassa,0,
+FRAGOLA DI BOSCO,non_ospite,erbacea,Fragaria vesca,0,
+FRASSINO,non_classificabile,seminaturale,Fraxinus,0,"B:ER_NOTE2023,MAISTRELLO2017; A:EPPO2026,STOPBMSB"
+FRUMENTO SEGALATO,non_ospite,erbacea,Triticum,0,
+FRUTTA A GUSCIO,non_classificabile,permanente,,0,
+FRUTTETI FAMILIARI,non_classificabile,permanente,,0,
+FUNGHI,non_classificabile,altro,,0,
+GELSO,secondario,permanente,Morus alba,0,"B:MAISTRELLO2017; A:EPPO2026,STOPBMSB"
+GIAGGIOLO (IRIS) PALLIDA,non_ospite,erbacea,Iris pallida,0,
+GIAGGIOLO O GIGLIO BIANCO IRIS FIORENTINA,non_ospite,erbacea,Iris florentina,0,
+GINEPRO,secondario,permanente,Juniperus communis,0,"A:EPPO2026,STOPBMSB"
+GINESTRINO,non_ospite,prato,Lotus corniculatus,0,N:MAISTRELLO2017
+GIRASOLE,secondario,erbacea,Helianthus annuus,1,"C:BARISELLI2016; H:CONSORZIO_PC; A:EPPO2026,STOPBMSB"
+GIUGGIOLO,non_ospite,permanente,Ziziphus jujuba,0,
+GLADIOLO,non_ospite,erbacea,Gladiolus,0,
+GRANO (FRUMENTO) DURO,non_ospite,erbacea,Triticum durum,0,
+GRANO (FRUMENTO) TENERO,non_ospite,erbacea,Triticum aestivum,0,
+GRANO DEL MIRACOLO,non_ospite,erbacea,Triticum turgidum,0,
+GRANO SARACENO,non_ospite,erbacea,Fagopyrum esculentum,0,
+GRANO TURANICUM O FRUMENTO ORIENTALE O GRANO KHORASAN,non_ospite,erbacea,Triticum turanicum,0,
+GRANTURCO (MAIS),principale,erbacea,Zea mays,2,"C:BARISELLI2016,ER_NOTE2023; X:CISSEL2015; H:CONSORZIO_PC,ER_SCHEDA2025; A:EPPO2026,STOPBMSB"
+GRUPPI DI ALBERI E BOSCHETTI,non_classificabile,seminaturale,,0,
+INDIVIA o SCAROLA,non_ospite,erbacea,Cichorium endivia,0,
+IPERICO,non_ospite,erbacea,Hypericum perforatum,0,
+IPPOCASTANO O CASTAGNO D'INDIA,non_classificabile,seminaturale,Aesculus hippocastanum,0,"A:EPPO2026,STOPBMSB"
+ISSOPO,non_ospite,erbacea,Hyssopus officinalis,0,
+LAMPONE,secondario,permanente,Rubus idaeus,0,"H:CONSORZIO_PC; A:EPPO2026,STOPBMSB"
+LATTUGA LATTUGHINO,non_ospite,erbacea,Lactuca sativa,0,
+LATYRUS spp (TARTUFO DI PRATO),non_ospite,erbacea,Lathyrus tuberosus,0,
+LAVANDA,non_ospite,permanente,Lavandula angustifolia,0,
+LECCIO,secondario,permanente,Quercus ilex,0,"B:BOSCO2020; A:EPPO2026,STOPBMSB"
+LENTICCHIE,non_ospite,erbacea,Lens culinaris,0,
+LILIUM,non_ospite,erbacea,Lilium,0,
+LINO,non_ospite,erbacea,Linum usitatissimum,0,
+LIPPIA CITRIODORA O CEDRINA O LIMONCINA (ALOYSIA CITRODORA),non_ospite,permanente,Aloysia citrodora,0,
+LOIETTO (SP. LOLIUM X BOUCHEANUM KUNT.),non_ospite,prato,Lolium x boucheanum,0,N:MAISTRELLO2017
+LOIETTO LOGLIO,non_ospite,prato,Lolium multiflorum,0,N:MAISTRELLO2017
+LOIETTO LOGLIO PERENNE/LOIETTO INGLESE,non_ospite,prato,Lolium perenne,0,N:MAISTRELLO2017
+LOTO (KAKI) (COMPRESO IL CACO MELA),secondario,permanente,Diospyros kaki,1,"C:CONSORZIO_PC; X:LEE2013; A:EPPO2026,STOPBMSB"
+LUPINELLA,non_ospite,prato,Onobrychis viciifolia,0,N:MAISTRELLO2017
+LUPPOLO,secondario,permanente,Humulus lupulus,0,"A:EPPO2026,STOPBMSB"
+LYCIUM BARBARUM (GOJI),secondario,permanente,Lycium barbarum,0,A:EPPO2026
+"MACERI, STAGNI E LAGHETTI",non_classificabile,seminaturale,,0,
+MAGGIORANA,non_ospite,erbacea,Origanum majorana,0,
+MALVA,non_ospite,erbacea,Malva sylvestris,0,
+MANDORLO,secondario,permanente,Prunus dulcis,0,"B:BERGMANN2016,MAISTRELLO2017; A:EPPO2026,STOPBMSB"
+MARGHERITA,non_ospite,erbacea,Leucanthemum vulgare,0,
+MARGINI (BORDI) DEI CAMPI,non_classificabile,seminaturale,,0,
+MELANZANA,secondario,erbacea,Solanum melongena,1,"C:ER_NOTE2023; A:EPPO2026,STOPBMSB"
+MELILOTO,non_ospite,prato,Melilotus officinalis,0,N:MAISTRELLO2017
+MELISSA,non_ospite,erbacea,Melissa officinalis,0,
+MELO,principale,permanente,Malus domestica,4,"C:BARISELLI2016,CONSORZIO_PC,ER_NOTE2023,ER_SCHEDA2025; B:ACEBES2016,BERGMANN2016,TAMBURINI2023; A:EPPO2026,STOPBMSB"
+MELOGRANO,non_ospite,permanente,Punica granatum,0,
+MELONE,secondario,erbacea,Cucumis melo,0,A:EPPO2026
+MENTA,non_ospite,erbacea,Mentha,0,
+MENTA DOLCE,non_ospite,erbacea,Mentha spicata,0,
+MENTA PIPERITA,non_ospite,erbacea,Mentha x piperita,0,
+MIGLIO,non_ospite,erbacea,Panicum miliaceum,0,
+"MIRTILLI ROSSI, MIRTILLI NERI ED ALTRI FRUTTI DEL GENERE ""VACCINIUM""",secondario,permanente,Vaccinium,0,H:CONSORZIO_PC
+MISCUGLI DI COLTURE,non_classificabile,erbacea,,0,
+MIZUNA O BRASSICA RAPA,secondario,erbacea,Brassica rapa,0,A:EPPO2026
+MORE,secondario,permanente,Rubus fruticosus,0,"A:EPPO2026,STOPBMSB"
+NAVONI RUTABAGA,secondario,erbacea,Brassica napus,0,A:EPPO2026
+NESPOLO,non_ospite,permanente,Mespilus germanica,0,
+NOCCIOLO,principale,permanente,Corylus avellana,4,"C:BARISELLI2016,BOSCO2020,CONSORZIO_PC,ER_NOTE2023; B:MAISTRELLO2017; H:ER_SCHEDA2025; A:EPPO2026,STOPBMSB"
+NOCE,secondario,permanente,Juglans regia,1,"C:ER_NOTE2023; B:BOSCO2020,TAMBURINI2023; A:EPPO2026,STOPBMSB"
+OKRA o OCRA o GOMBO,secondario,erbacea,Abelmoschus esculentus,0,"A:EPPO2026,STOPBMSB"
+OLIVELLO O OLIVELLO SPINOSO,non_ospite,permanente,Hippophae rhamnoides,0,
+OLIVO,secondario,permanente,Olea europaea,1,C:SANNA2024; A:EPPO2026
+OLMO,secondario,permanente,Ulmus minor,0,"B:MAISTRELLO2017; A:EPPO2026,STOPBMSB"
+ONTANO,non_ospite,permanente,Alnus glutinosa,0,
+ORIGANO,non_ospite,erbacea,Origanum vulgare,0,
+ORTI FAMILIARI,non_classificabile,erbacea,,0,
+ORTICA,non_ospite,erbacea,Urtica dioica,0,
+ORTIVE A PIENO CAMPO,non_classificabile,erbacea,,0,
+ORZO,non_ospite,erbacea,Hordeum vulgare,0,
+PANICO,non_ospite,erbacea,Panicum miliaceum,0,
+PAPAVERO,non_ospite,erbacea,Papaver somniferum,0,
+PASCOLO ARBORATO - CESPUGLIATO TARA 20%,non_ospite,prato,,0,N:MAISTRELLO2017
+PASCOLO ARBORATO - TARA 50%,non_ospite,prato,,0,N:MAISTRELLO2017
+PASCOLO POLIFITA,non_ospite,prato,,0,N:MAISTRELLO2017
+PASCOLO POLIFITA CON ROCCIA AFFIORANTE TARA 20%,non_ospite,prato,,0,N:MAISTRELLO2017
+PASCOLO POLIFITA CON ROCCIA AFFIORANTE TARA 50%,non_ospite,prato,,0,N:MAISTRELLO2017
+PASSIFLORA (MARACUJA o FRUTTO DELLA PASSIONE),non_ospite,permanente,Passiflora edulis,0,
+PASTINACA,non_ospite,erbacea,Pastinaca sativa,0,
+PATATA,secondario,erbacea,Solanum tuberosum,0,A:EPPO2026
+PATATA AMERICANA (BATATA),non_ospite,erbacea,Ipomoea batatas,0,
+PAULOWNIA TOMENTOSA,secondario,permanente,Paulownia tomentosa,0,"B:ER_NOTE2023; A:EPPO2026,STOPBMSB"
+PECAN,secondario,permanente,Carya illinoinensis,0,"A:EPPO2026,STOPBMSB"
+PEONIA,non_ospite,permanente,Paeonia,0,
+PEPERONCINO PEPERETTA,principale,erbacea,Capsicum annuum,2,"C:BARISELLI2016,ER_NOTE2023; H:CONSORZIO_PC,ER_SCHEDA2025; A:EPPO2026,STOPBMSB"
+PEPERONE,principale,erbacea,Capsicum annuum,2,"C:BARISELLI2016,ER_NOTE2023; H:CONSORZIO_PC,ER_SCHEDA2025; A:EPPO2026,STOPBMSB"
+PERO,principale,permanente,Pyrus communis,5,"C:BARISELLI2016,CONSORZIO_PC,ER_NOTE2023,ER_SCHEDA2025,MAISTRELLO2017; B:TAMBURINI2023; A:EPPO2026,STOPBMSB"
+PESCO,principale,permanente,Prunus persica,4,"C:BARISELLI2016,CONSORZIO_PC,ER_NOTE2023,ER_SCHEDA2025; B:ACEBES2016,BERGMANN2016,MAISTRELLO2017,TAMBURINI2023; A:EPPO2026,STOPBMSB"
+PESCO NETTARINA,principale,permanente,Prunus persica,4,"C:BARISELLI2016,CONSORZIO_PC,ER_NOTE2023,ER_SCHEDA2025; B:ACEBES2016,BERGMANN2016,MAISTRELLO2017,TAMBURINI2023; A:EPPO2026,STOPBMSB"
+PIANTE AROMATICHE E MEDICINALI E SPEZIE,non_classificabile,erbacea,,0,
+PILOSELLA,non_ospite,erbacea,Hieracium pilosella,0,
+PINO,non_classificabile,seminaturale,Pinus,0,N:BERGMANN2016
+PINO MARITTIMO,non_classificabile,seminaturale,Pinus pinaster,0,N:BERGMANN2016
+PIOPPO,secondario,permanente,Populus,0,A:EPPO2026
+PIOPPO BIANCO,secondario,permanente,Populus alba,0,A:EPPO2026
+PIOPPO NERO,secondario,permanente,Populus nigra,0,A:EPPO2026
+PISELLO,secondario,erbacea,Pisum sativum,0,"H:CONSORZIO_PC,ER_SCHEDA2025"
+PISTACCHIO,secondario,permanente,Pistacia vera,0,A:EPPO2026
+POMODORINO,principale,erbacea,Solanum lycopersicum,2,"C:BARISELLI2016,ER_NOTE2023; H:CONSORZIO_PC,ER_SCHEDA2025; A:EPPO2026,STOPBMSB"
+POMODORO,principale,erbacea,Solanum lycopersicum,2,"C:BARISELLI2016,ER_NOTE2023; H:CONSORZIO_PC,ER_SCHEDA2025; A:EPPO2026,STOPBMSB"
+PORRO,non_ospite,erbacea,Allium porrum,0,
+PRATI PERMANENTI NATURALI CON VINCOLI AMBIENTALI,non_ospite,prato,,0,N:MAISTRELLO2017
+PRATI PERMANENTI NATURALI CON VINCOLI AMBIENTALI - TARA 20%,non_ospite,prato,,0,N:MAISTRELLO2017
+PRATI PERMANENTI NATURALI CON VINCOLI AMBIENTALI - TARA 50%,non_ospite,prato,,0,N:MAISTRELLO2017
+PRATO IN ROTOLO (TAPPETO ERBOSO),non_ospite,prato,,0,N:MAISTRELLO2017
+PRATO PASCOLO,non_ospite,prato,,0,N:MAISTRELLO2017
+PRATO POLIFITA,non_ospite,prato,,0,N:MAISTRELLO2017
+PREZZEMOLO,non_ospite,erbacea,Petroselinum crispum,0,
+PRUGNOLO,secondario,permanente,Prunus spinosa,0,"B:BERGMANN2016,MAISTRELLO2017; A:EPPO2026"
+PSILLO O PLANTAGO OVATA,non_ospite,erbacea,Plantago ovata,0,
+QUERCIA DI DALECHAMPS,secondario,permanente,Quercus dalechampii,0,"B:BOSCO2020; A:EPPO2026,STOPBMSB"
+QUERCIA SPINOSA,secondario,permanente,Quercus coccifera,0,"B:BOSCO2020; A:EPPO2026,STOPBMSB"
+RADICCHIO,non_ospite,erbacea,Cichorium intybus,0,
+RAFANO,secondario,erbacea,Armoracia rusticana,0,"A:EPPO2026,STOPBMSB"
+RAVANELLO,non_ospite,erbacea,Raphanus sativus,0,
+RAVIZZONE,secondario,erbacea,Brassica rapa,0,A:EPPO2026
+RIBES BIANCO (UVA SPINA),non_ospite,permanente,Ribes uva-crispa,0,
+RIBES NERO,non_ospite,permanente,Ribes nigrum,0,
+RIBES ROSSO,non_ospite,permanente,Ribes rubrum,0,
+RISONE,secondario,erbacea,Oryza sativa,0,A:EPPO2026
+ROBINIA,secondario,permanente,Robinia pseudoacacia,0,"B:ER_NOTE2023; A:EPPO2026,STOPBMSB"
+ROSA,secondario,permanente,Rosa,0,H:CONSORZIO_PC; A:EPPO2026
+ROSA CANINA,secondario,permanente,Rosa canina,0,"H:CONSORZIO_PC; A:EPPO2026,STOPBMSB"
+ROSMARINO,non_ospite,permanente,Salvia rosmarinus,0,
+ROVERELLA,secondario,permanente,Quercus pubescens,0,"B:BOSCO2020; A:EPPO2026,STOPBMSB"
+RUCOLA,non_ospite,erbacea,Eruca vesicaria,0,
+RUSCO PUNGITOPO,non_ospite,permanente,Ruscus aculeatus,0,
+RUSCUS,non_ospite,permanente,Ruscus aculeatus,0,
+SALICE,secondario,permanente,Salix,0,"A:EPPO2026,STOPBMSB"
+SALVIA,non_ospite,erbacea,Salvia officinalis,0,
+SAMBUCO,secondario,permanente,Sambucus nigra,0,B:BOSCO2020; H:CONSORZIO_PC
+SCAGLIOLA,non_ospite,erbacea,Phalaris canariensis,0,
+SCALOGNO,non_ospite,erbacea,Allium cepa,0,
+SCORZONERA,non_ospite,erbacea,Scorzonera hispanica,0,
+SEDANO,non_ospite,erbacea,Apium graveolens,0,
+SEGALA,secondario,erbacea,Secale cereale,0,"A:EPPO2026,STOPBMSB"
+SEMINATIVI,non_classificabile,erbacea,,0,
+SENAPE,non_ospite,erbacea,Sinapis alba,0,
+SENAPE BRUNA,secondario,erbacea,Brassica juncea,0,A:EPPO2026
+SENAPE NERA,secondario,erbacea,Brassica nigra,0,A:EPPO2026
+SIEPI E FASCE ALBERATE,non_classificabile,seminaturale,,0,
+SILENE o SIRENE o STRIGOLI,non_ospite,erbacea,Silene vulgaris,0,
+SILFIO (PIANTA DI COPPO) Silphium perfoliatum,non_ospite,erbacea,Silphium perfoliatum,0,
+SOIA,principale,erbacea,Glycine max,2,"C:BARISELLI2016,ER_NOTE2023; X:LEE2013,OWENS2013; B:BAKKEN2015; H:CONSORZIO_PC,ER_SCHEDA2025; A:EPPO2026,STOPBMSB"
+SORBO,secondario,permanente,Sorbus domestica,0,A:EPPO2026
+SORGO,non_ospite,erbacea,Sorghum bicolor,0,
+SPELTA,non_ospite,erbacea,Triticum spelta,0,
+SPINACIO,non_ospite,erbacea,Spinacia oleracea,0,
+STATICE,non_ospite,erbacea,Limonium sinuatum,0,
+SUGHERA QUERCIA DA SUGHERO,non_classificabile,seminaturale,Quercus suber,0,"B:BOSCO2020; A:EPPO2026,STOPBMSB"
+SULLA,non_ospite,prato,Hedysarum coronarium,0,N:MAISTRELLO2017
+SUPERFICI AGRICOLE RITIRATE DALLA PRODUZIONE,non_classificabile,altro,,0,
+SUSINO,secondario,permanente,Prunus domestica,1,"C:ER_NOTE2023; B:BERGMANN2016,MAISTRELLO2017; A:EPPO2026"
+TABACCO,non_ospite,erbacea,Nicotiana tabacum,0,
+TARASSACO,non_ospite,erbacea,Taraxacum officinale,0,
+TARTUFO,non_classificabile,seminaturale,,0,
+TEF o TEFF,non_ospite,erbacea,Eragrostis tef,0,
+TERRAZZAMENTI,non_classificabile,seminaturale,,0,
+TIGLIO,non_classificabile,seminaturale,Tilia,0,"A:EPPO2026,STOPBMSB"
+TIMO,non_ospite,erbacea,Thymus vulgaris,0,
+TOPINAMBUR,secondario,erbacea,Helianthus tuberosus,0,A:STOPBMSB
+TRIFOGLIO,non_ospite,prato,Trifolium,0,N:MAISTRELLO2017
+TRIFOGLIO (SP. TRIFOLIUM ALEXANDRINUM L.),non_ospite,prato,Trifolium alexandrinum,0,N:MAISTRELLO2017
+TRIFOGLIO (SP. TRIFOLIUM INCARNATUM L.),non_ospite,prato,Trifolium incarnatum,0,N:MAISTRELLO2017
+TRIFOGLIO (SP. TRIFOLIUM PRATENSE L.),non_ospite,prato,Trifolium pratense,0,N:MAISTRELLO2017
+TRIFOGLIO (SP. TRIFOLIUM REPENS L.),non_ospite,prato,Trifolium repens,0,N:MAISTRELLO2017
+TRIFOGLIO (SP. TRIFOLIUM SQUARROSUM L.),non_ospite,prato,Trifolium squarrosum,0,N:MAISTRELLO2017
+TRITICALE,non_ospite,erbacea,Triticosecale,0,
+TULIPANO,non_ospite,erbacea,Tulipa,0,
+VALERIANA,non_ospite,erbacea,Valeriana officinalis,0,
+VECCE,non_ospite,prato,Vicia sativa,0,N:MAISTRELLO2017
+VECCIA SATIVA,non_ospite,prato,Vicia sativa,0,N:MAISTRELLO2017
+VECCIA VILLOSA,non_ospite,prato,Vicia villosa,0,N:MAISTRELLO2017
+VERBENA OFFICINALE,non_ospite,erbacea,Verbena officinalis,0,
+VITE,secondario,permanente,Vitis vinifera,1,"C:SCACCINI2024; H:ER_SCHEDA2025; A:EPPO2026,STOPBMSB; L:TAMBURINI2023"
+"VIVAI DI ALBERI E ARBUSTI PER GIARDINI,PARCHI, STRADE E SCARPATE (COME PIANTE PER SIEPI,ROSAI,ALTRI ARBUSTI ORNAMENTALI CONIFERE ORNAMENTALI)COMPRESI I RELATIVI PORTAINNESTI E PIANTICELLE",non_classificabile,permanente,,0,
+VIVAI FLORICOLI /ORNAMENTALI,non_classificabile,permanente,,0,
+VIVAI FLORICOLI/ORNAMENTALI,non_classificabile,permanente,,0,
+VIVAI FORESTALI COMMERCIALI COMPRESI ALBERI DI NATALE ESCLUSI VIVAI FORESTALI SITUATI IN FORESTA E DESTINATI AL FABBISOGNO DELL'AZIENDA,non_classificabile,permanente,,0,
+VIVAI FRUTTICOLI COMPRESE LE PIANTE DA BACCHE,non_classificabile,permanente,,0,
+VIVAI OLIVICOLI,secondario,permanente,Olea europaea,1,C:SANNA2024; A:EPPO2026
+VIVAI ORTICOLI,non_classificabile,erbacea,,0,
+VIVAI VITICOLI E VITI MADRI DI PORTAINNESTI,non_ospite,permanente,Vitis,0,
+YUCCA (ALBERO DI GIOSUE'),non_ospite,permanente,Yucca,0,
+ZAFFERANO,non_ospite,erbacea,Crocus sativus,0,
+ZENZERO,non_ospite,erbacea,Zingiber officinale,0,
+ZUCCA,secondario,erbacea,Cucurbita maxima,0,H:CONSORZIO_PC; A:EPPO2026
+ZUCCA LAGENARIA,non_ospite,erbacea,Lagenaria siceraria,0,
+ZUCCHINO,secondario,erbacea,Cucurbita pepo,0,"H:CONSORZIO_PC; A:EPPO2026,STOPBMSB"

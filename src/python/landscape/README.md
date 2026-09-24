@@ -35,15 +35,25 @@ GET /v1/landscape/composition?lat=&lng=&radius_m=&crop=
 GET /v1/landscape/parcels?lat=&lng=&radius_m=&crop=
 GET /v1/landscape/pieces?lat=&lng=&radius_m=
 GET /v1/landscape/parcel-at?lat=&lng=
+GET /v1/landscape/pests?crop=
+GET /v1/landscape/pest-habitat?lat=&lng=&radius_m=&crop=&pest=halyha&ring=
 ```
 
-`radius_m`: default 3000, ammessi 1000–20000 per `composition`, fino a 10000 per
+`radius_m`: default 3000, ammessi 500–20000 per `composition` e `pest-habitat`, fino a 10000 per
 `parcels` (il layer geometrico AGREA è cappato a 5000), fino a 3000 per `pieces`.
 
 `parcels` serve il livello **grosso** — l'appezzamento dichiarato, per la pagina
 del paesaggio. `pieces` serve il livello **fine** — il frammento come sta nel
 dato, per disegnare il campo. Sono due granularità con due scopi, non un
 doppione: vedi `CLAUDE.md`.
+
+`pests` elenca gli **organismi** di cui il servizio sa descrivere l'habitat per una coltura;
+`pest-habitat` dice quanto il paesaggio dichiarato intorno al campo ospita quell'organismo:
+% di superficie per livello ospite (frutteti ed erbacee separati), serbatoi semi-naturali,
+distanza in classi dal frutteto ospite e dalla siepe o bosco piu' vicini. Ogni organismo e'
+una cartella in `data/pests/<codice>/`; la cimice asiatica e' la prima. `ring` e' il contorno
+del campo (`lng,lat;...`) per le distanze bordo a bordo; senza, si usa l'appezzamento
+dichiarato che contiene il punto.
 
 ## Principio guida
 
