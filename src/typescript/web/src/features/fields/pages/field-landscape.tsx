@@ -7,9 +7,14 @@ import { AgriField, Point } from "@tornatura/coreapis";
 import * as turf from "@turf/turf";
 import {
   LandscapeParcelsResponse,
+  LandscapePestHabitat,
+  LandscapePestSummary,
   LandscapeResponse,
   fetchLandscapeComposition,
   fetchLandscapeParcels,
+  fetchLandscapePestHabitat,
+  fetchLandscapePests,
+  ringParam,
 } from "../../../services/model-api";
 import { Container, Row, Col } from "react-bootstrap";
 import TableCozy, { TableColumn, TableOptions } from "../../../components/TableCozy";
@@ -17,10 +22,17 @@ import MapLandscapeCrops, {
   COLORE_CAMPO,
   COLORE_COLTURA,
   LEGENDA_FAMIGLIE,
+  LEGENDA_OSPITI,
 } from "../../../components/MapLandscapeCrops";
 import InfoPopover from "../../../components/InfoPopover";
+import PestHabitatSection from "../../../components/PestHabitatSection";
 
-const RADIUS_OPTIONS_M = [3000, 5000, 10000];
+// 500 m e 1 km sono la scala LOCALE (effetti entro 200 m dal campo: Forresi 2024;
+// area di cattura di una trappola 70 m: Kirkpatrick 2019), 3 km quella di paesaggio
+// (Tamburini 2023). Misurato: la % di ospiti a 500 m e a 3 km correlano solo 0,77
+// fra loro, quindi sono due informazioni diverse. 5 e 10 km restano per continuita'.
+const RADIUS_OPTIONS_M = [500, 1000, 3000, 5000, 10000];
+const etichettaRaggio = (m: number) => (m >= 1000 ? `${m / 1000} km` : `${m} m`);
 const DEFAULT_RADIUS_M = 3000;
 const TUTTE_LE_FAMIGLIE = LEGENDA_FAMIGLIE.map((f) => f.family);
 
@@ -125,6 +137,11 @@ export function FieldLandscape() {
       prev.includes(family) ? prev.filter((f) => f !== family) : [...prev, family],
     );
   const [tabellaEspansa, setTabellaEspansa] = React.useState<boolean>(false);
+  // Gli organismi pertinenti alla coltura e, per ciascuno, il suo habitat nel raggio.
+  const [pests, setPests] = React.useState<LandscapePestSummary[]>([]);
+  const [habitats, setHabitats] = React.useState<Record<string, LandscapePestHabitat>>({});
+  // Codice dell'organismo di cui la mappa colora gli ospiti, o null.
+  const [hostMode, setHostMode] = React.useState<string | null>(null);
 
   const centroid = React.useMemo(() => getFieldCentroid(currentField), [currentField]);
   const fieldRing = React.useMemo(() => getFieldRing(currentField), [currentField]);
@@ -154,27 +171,49 @@ export function FieldLandscape() {
     const lat = Number(centroid.lat.toFixed(6));
     const lng = Number(centroid.lng.toFixed(6));
 
-    Promise.all([
-      fetchLandscapeComposition(lat, lng, radiusM, currentField.harvest),
-      fetchLandscapeParcels(lat, lng, radiusM, currentField.harvest),
-    ])
-      .then(([composition, parcels]) => {
-        setData(composition);
-        setGeo(parcels);
-      })
-      .catch((err) => {
-        setData(null);
-        setGeo(null);
-        setError(
-          err instanceof Error
-            ? err.message
-            : "Non è stato possibile caricare il paesaggio agricolo del campo.",
-        );
-      })
-      .finally(() => {
-        setLoading(false);
+    // Prima gli organismi pertinenti (una lista, quasi statica), poi il resto: i
+    // pezzi della mappa portano il livello ospite del primo organismo, cosi' il
+    // chip "ospiti" non richiede una seconda richiesta. Se la lista fallisce la
+    // pagina resta quella di sempre: gli organismi sono un'aggiunta, non un requisito.
+    const harvest = currentField.harvest;
+    const ring = ringParam(fieldRing);
+    fetchLandscapePests(harvest)
+      .then((r) => r.pests ?? [])
+      .catch(() => [] as LandscapePestSummary[])
+      .then((lista) => {
+        setPests(lista);
+        const primo = lista[0]?.code;
+        const principali = Promise.all([
+          fetchLandscapeComposition(lat, lng, radiusM, harvest),
+          fetchLandscapeParcels(lat, lng, radiusM, harvest, primo),
+        ])
+          .then(([composition, parcels]) => {
+            setData(composition);
+            setGeo(parcels);
+          })
+          .catch((err) => {
+            setData(null);
+            setGeo(null);
+            setError(
+              err instanceof Error
+                ? err.message
+                : "Non è stato possibile caricare il paesaggio agricolo del campo.",
+            );
+          })
+          .finally(() => {
+            setLoading(false);
+          });
+        // Gli habitat arrivano per conto loro: un errore su uno non tocca gli altri
+        // ne' la pagina (la sezione semplicemente non compare).
+        setHabitats({});
+        lista.forEach((p) => {
+          fetchLandscapePestHabitat(lat, lng, radiusM, p.code, harvest, ring)
+            .then((h) => setHabitats((prev) => ({ ...prev, [p.code]: h })))
+            .catch(() => undefined);
+        });
+        return principali;
       });
-  }, [currentField, centroid, radiusM]);
+  }, [currentField, centroid, radiusM, fieldRing]);
 
   if (!currentField) {
     return (
@@ -210,6 +249,9 @@ export function FieldLandscape() {
         ).toLowerCase()})`
       : formatHarvestName(crop.icolt_class)
     : null;
+
+  const organismoAttivo = pests.find((p) => p.code === hostMode) ?? null;
+  const toggleHostMode = (code: string) => setHostMode((prev) => (prev === code ? null : code));
 
   const coloreFamiglia = (family?: string) =>
     LEGENDA_FAMIGLIE.find((f) => f.family === family)?.color ??
@@ -320,6 +362,8 @@ export function FieldLandscape() {
                   datasetLabel={datasetLabel}
                   enabledFamilies={famiglieAccese}
                   showCrop={showCrop}
+                  hostMode={hostMode !== null}
+                  hostModeLabel={organismoAttivo?.label ?? undefined}
                 />
 
                 {/* --- controlli sotto la mappa: legenda cliccabile a sinistra, raggio a destra --- */}
@@ -334,7 +378,7 @@ export function FieldLandscape() {
                         <span className="dot me-2" data-size="10" style={{ background: COLORE_CAMPO }}></span>
                         Il tuo campo
                       </span>
-                      {cropLayerLabel && (
+                      {hostMode === null && cropLayerLabel && (
                         <button
                           type="button"
                           className={`trnt_btn slim-y narrow-x type-rounded legend-chip me-2 mb-2 ${
@@ -347,23 +391,50 @@ export function FieldLandscape() {
                           {cropLayerLabel}
                         </button>
                       )}
-                      {LEGENDA_FAMIGLIE.map((f) => {
-                        const accesa = famiglieAccese.includes(f.family);
-                        return (
-                          <button
-                            key={f.family}
-                            type="button"
-                            className={`trnt_btn slim-y narrow-x type-rounded legend-chip me-2 mb-2 ${
-                              accesa ? "primary" : "secondary"
-                            }`}
-                            aria-pressed={accesa}
-                            onClick={() => toggleFamiglia(f.family)}
-                          >
-                            <span className="dot me-2" data-size="10" style={{ background: f.color }}></span>
-                            {f.label}
-                          </button>
-                        );
-                      })}
+                      {hostMode === null &&
+                        LEGENDA_FAMIGLIE.map((f) => {
+                          const accesa = famiglieAccese.includes(f.family);
+                          return (
+                            <button
+                              key={f.family}
+                              type="button"
+                              className={`trnt_btn slim-y narrow-x type-rounded legend-chip me-2 mb-2 ${
+                                accesa ? "primary" : "secondary"
+                              }`}
+                              aria-pressed={accesa}
+                              onClick={() => toggleFamiglia(f.family)}
+                            >
+                              <span className="dot me-2" data-size="10" style={{ background: f.color }}></span>
+                              {f.label}
+                            </button>
+                          );
+                        })}
+                      {/* In modalita' ospiti la legenda cambia significato: tre livelli, non quattro famiglie. */}
+                      {hostMode !== null &&
+                        LEGENDA_OSPITI.map((l) => (
+                          <span key={l.level} className="legend-chip is-static me-3 mb-2 font-s">
+                            <span className="dot me-2" data-size="10" style={{ background: l.color }}></span>
+                            {l.label}
+                          </span>
+                        ))}
+                      {/* Un chip per organismo, esclusivo con famiglie e coltura: acceso lui, la mappa
+                          colora per livello ospite. Solo se la sorgente e' AGREA: iColt non nomina le specie. */}
+                      {daDichiarazioni &&
+                        pests
+                          .filter((p) => habitats[p.code]?.available)
+                          .map((p) => (
+                            <button
+                              key={p.code}
+                              type="button"
+                              className={`trnt_btn slim-y narrow-x type-rounded legend-chip me-2 mb-2 ${
+                                hostMode === p.code ? "primary" : "secondary"
+                              }`}
+                              aria-pressed={hostMode === p.code}
+                              onClick={() => toggleHostMode(p.code)}
+                            >
+                              Ospiti: {p.label ?? p.code}
+                            </button>
+                          ))}
                       <span className="font-s opacity-05 mb-2">{datasetLabel}</span>
                     </div>
                   </Col>
@@ -382,7 +453,7 @@ export function FieldLandscape() {
                           }`}
                           onClick={() => setRadiusM(option)}
                         >
-                          {option / 1000} km
+                          {etichettaRaggio(option)}
                         </button>
                       ))}
                     </div>
@@ -569,6 +640,15 @@ export function FieldLandscape() {
                   )}
                 </section>
               )}
+
+              {/* --- gli organismi: una sezione per ciascuno, stesso componente ---- */}
+              {numeriAttendibili &&
+                daDichiarazioni &&
+                pests.map((p) =>
+                  habitats[p.code]?.available ? (
+                    <PestHabitatSection key={p.code} data={habitats[p.code]} km={km} />
+                  ) : null,
+                )}
 
               {/* --- composizione e limiti del dato ----------------------- */}
               {numeriAttendibili && (
