@@ -3533,3 +3533,53 @@ table.model-table {
 .CodeMirror .CodeMirror-scroll {
   overflow: visible !important;
 }
+
+// --- Il tuo paesaggio: legenda cliccabile, definizioni al click, tabella scorrevole ------
+.legend-chip {
+  display: inline-flex;
+  align-items: center;
+  .dot {
+    flex-shrink: 0;
+  }
+  &.is-static {
+    cursor: default;
+  }
+}
+.info-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  margin-left: 6px;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+  background: transparent;
+  color: inherit;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0.7;
+  flex-shrink: 0;
+  &:hover,
+  &:focus-visible {
+    opacity: 1;
+  }
+}
+.info-term {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-decoration: underline dotted;
+  cursor: pointer;
+}
+.info-popover {
+  max-width: 320px;
+}
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}

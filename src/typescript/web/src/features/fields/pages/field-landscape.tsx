@@ -13,10 +13,41 @@ import {
 } from "../../../services/model-api";
 import { Container, Row, Col } from "react-bootstrap";
 import TableCozy, { TableColumn, TableOptions } from "../../../components/TableCozy";
-import MapLandscapeCrops, { LEGENDA_FAMIGLIE } from "../../../components/MapLandscapeCrops";
+import MapLandscapeCrops, {
+  COLORE_CAMPO,
+  COLORE_COLTURA,
+  LEGENDA_FAMIGLIE,
+} from "../../../components/MapLandscapeCrops";
+import InfoPopover from "../../../components/InfoPopover";
 
 const RADIUS_OPTIONS_M = [3000, 5000, 10000];
 const DEFAULT_RADIUS_M = 3000;
+const TUTTE_LE_FAMIGLIE = LEGENDA_FAMIGLIE.map((f) => f.family);
+
+// Testi delle definizioni al click, scritti con i colleghi agronomi.
+const DEF_LAYER =
+  "Livelli di informazioni che puoi mostrare o nascondere sulla mappa. Seleziona le categorie che ti interessano per scoprire quali colture e ambienti sono presenti intorno al tuo campo.";
+const DEF_RAGGIO =
+  "La distanza dal tuo campo entro cui viene analizzato il territorio circostante. Scegli 3, 5 o 10 km per vedere come cambiano colture, superfici ed elementi del paesaggio a diverse distanze.";
+const DEF_PAC =
+  "La politica dell'Unione europea che sostiene il settore agricolo. Le domande PAC contengono informazioni dichiarate dagli agricoltori sulle superfici, le colture e alcuni elementi del paesaggio delle aziende agricole.";
+
+/**
+ * Pagina ufficiale della fonte, per anno. Gli indirizzi seguono lo schema che i due
+ * enti usano da anni; il link e' un rimando, non un dato: se cambia, si aggiorna qui.
+ */
+function sourceUrl(source?: string | null, year?: number | string | null): string | null {
+  if (!year) {
+    return null;
+  }
+  if (source === "agrea") {
+    return `https://agreagestione.regione.emilia-romagna.it/agrea-file/UtilizziGrafici/${year}/`;
+  }
+  if (source === "icolt") {
+    return `https://dati.arpae.it/it/dataset/arpa_suo_classcoltureteleril_colt${year}`;
+  }
+  return null;
+}
 
 /**
  * Anello del poligono del campo, chiuso.
@@ -88,7 +119,11 @@ export function FieldLandscape() {
   const [error, setError] = React.useState<string | null>(null);
   const [radiusM, setRadiusM] = React.useState<number>(DEFAULT_RADIUS_M);
   const [showCrop, setShowCrop] = React.useState<boolean>(true);
-  const [showAgri, setShowAgri] = React.useState<boolean>(true);
+  const [famiglieAccese, setFamiglieAccese] = React.useState<string[]>(TUTTE_LE_FAMIGLIE);
+  const toggleFamiglia = (family: string) =>
+    setFamiglieAccese((prev) =>
+      prev.includes(family) ? prev.filter((f) => f !== family) : [...prev, family],
+    );
   const [tabellaEspansa, setTabellaEspansa] = React.useState<boolean>(false);
 
   const centroid = React.useMemo(() => getFieldCentroid(currentField), [currentField]);
@@ -161,6 +196,7 @@ export function FieldLandscape() {
   const semi = data?.seminatural;
   const cross = data?.crosscheck;
   const daDichiarazioni = data?.source === "agrea";
+  const fonteUrl = sourceUrl(data?.source, data?.dataset?.year);
   // Fuori dall'area cartografata i numeri non si mostrano: la mappa resta, con il
   // campo e il cerchio vuoto, che e' la cosa piu' onesta da far vedere.
   const numeriAttendibili = oss?.status !== "suppressed";
@@ -246,46 +282,97 @@ export function FieldLandscape() {
                   </Col>
                 </Row>
 
+                <Row className="mb-3">
+                  <Col>
+                    <p className="font-m-600 mb-1">Perché è importante?</p>
+                    <p className="font-m mb-2">
+                      Conoscere cosa viene coltivato vicino al tuo campo può aiutarti a
+                      individuare potenziali aree di rischio per la diffusione di parassiti e
+                      malattie, soprattutto quando la stessa coltura è molto presente nel
+                      territorio, e a interpretare meglio ciò che accade nel tuo appezzamento.
+                    </p>
+                    <p className="font-m-600 mb-1">Esplora la mappa</p>
+                    <p className="font-m mb-2">
+                      Clicca su un appezzamento per scoprire quale coltura è dichiarata e quanto
+                      è presente nel territorio circostante. Cambia il raggio tra 3, 5 e 10 km
+                      per osservare il tuo vicinato agricolo a diverse scale. Il cerchio
+                      tratteggiato indica l&apos;area considerata: tutti i valori e le
+                      percentuali mostrati nella pagina sono calcolati al suo interno.
+                    </p>
+                    {geo?.map_min_ha != null && geo.map_pct_of_area != null && (
+                      <p className="font-s mb-0">
+                        <em>
+                          La mappa visualizza gli appezzamenti superiori a{" "}
+                          {geo.map_min_ha.toLocaleString("it-IT")} ha, che rappresentano il{" "}
+                          {geo.map_pct_of_area.toFixed(0)}% della superficie agricola. I calcoli
+                          percentuali includono comunque tutti gli appezzamenti.
+                        </em>
+                      </p>
+                    )}
+                  </Col>
+                </Row>
+
                 <MapLandscapeCrops
                   fieldRing={fieldRing}
                   buffer={geo?.buffer ?? null}
                   parcels={(geo?.parcels as any) ?? null}
-                  cropLabel={cropLayerLabel}
                   aggregatedClasses={geo?.aggregated_classes ?? {}}
                   datasetLabel={datasetLabel}
-                  showAgri={showAgri}
+                  enabledFamilies={famiglieAccese}
                   showCrop={showCrop}
                 />
 
+                {/* --- controlli sotto la mappa: legenda cliccabile a sinistra, raggio a destra --- */}
                 <Row className="mt-3">
-                  <Col md={6} className="mb-2 mb-md-0">
-                    <div className="iiinfo-label font-s-label mb-1">Layer</div>
-                    <div className="d-flex flex-wrap">
+                  <Col lg={8} className="mb-2 mb-lg-0">
+                    <div className="iiinfo-label font-s-label mb-1 d-flex align-items-center">
+                      Cosa vuoi vedere?
+                      <InfoPopover title="Layer" text={DEF_LAYER} />
+                    </div>
+                    <div className="d-flex flex-wrap align-items-center">
+                      <span className="legend-chip is-static me-3 mb-2 font-s">
+                        <span className="dot me-2" data-size="10" style={{ background: COLORE_CAMPO }}></span>
+                        Il tuo campo
+                      </span>
                       {cropLayerLabel && (
                         <button
                           type="button"
-                          className={`trnt_btn slim-y narrow-x type-rounded me-2 mb-2 ${
+                          className={`trnt_btn slim-y narrow-x type-rounded legend-chip me-2 mb-2 ${
                             showCrop ? "primary" : "secondary"
                           }`}
+                          aria-pressed={showCrop}
                           onClick={() => setShowCrop(!showCrop)}
                         >
+                          <span className="dot me-2" data-size="10" style={{ background: COLORE_COLTURA }}></span>
                           {cropLayerLabel}
                         </button>
                       )}
-                      <button
-                        type="button"
-                        className={`trnt_btn slim-y narrow-x type-rounded me-2 mb-2 ${
-                          showAgri ? "primary" : "secondary"
-                        }`}
-                        onClick={() => setShowAgri(!showAgri)}
-                      >
-                        Superfici agricole
-                      </button>
+                      {LEGENDA_FAMIGLIE.map((f) => {
+                        const accesa = famiglieAccese.includes(f.family);
+                        return (
+                          <button
+                            key={f.family}
+                            type="button"
+                            className={`trnt_btn slim-y narrow-x type-rounded legend-chip me-2 mb-2 ${
+                              accesa ? "primary" : "secondary"
+                            }`}
+                            aria-pressed={accesa}
+                            onClick={() => toggleFamiglia(f.family)}
+                          >
+                            <span className="dot me-2" data-size="10" style={{ background: f.color }}></span>
+                            {f.label}
+                          </button>
+                        );
+                      })}
+                      <span className="font-s opacity-05 mb-2">{datasetLabel}</span>
                     </div>
                   </Col>
-                  <Col md={6}>
-                    <div className="iiinfo-label font-s-label mb-1">Raggio</div>
-                    <div className="d-flex">
+                  <Col lg={4}>
+                    <div className="iiinfo-label font-s-label mb-1 d-flex align-items-center">
+                      Quanto lontano vuoi guardare?
+                      <InfoPopover title="Raggio" text={DEF_RAGGIO} />
+                    </div>
+                    <div className="d-flex flex-wrap">
                       {RADIUS_OPTIONS_M.map((option) => (
                         <button
                           key={option}
@@ -309,20 +396,6 @@ export function FieldLandscape() {
                     restano calcolate su tutti. Riduci il raggio per vederli tutti.
                   </div>
                 )}
-
-                <p className="font-s opacity-05 mb-0">
-                  Clicca un appezzamento per sapere quale coltura vi è dichiarata e quanti
-                  ettari occupa entro il raggio. Il cerchio tratteggiato è l&apos;area su cui
-                  tutti i numeri di questa pagina sono calcolati.
-                  {geo?.map_min_ha != null && geo.map_pct_of_area != null && (
-                    <>
-                      {" "}
-                      La mappa disegna gli appezzamenti sopra {geo.map_min_ha} ettari, cioè il{" "}
-                      {geo.map_pct_of_area.toFixed(0)}% della superficie; le percentuali li
-                      includono tutti.
-                    </>
-                  )}
-                </p>
               </section>
 
               {/* --- la tua coltura nel paesaggio -------------------------- */}
@@ -367,7 +440,7 @@ export function FieldLandscape() {
                         {formatHa(data?.agri_ha)} di superficie agricola che iColt cartografa
                         intorno al tuo campo.
                       </p>
-                      <p className="font-s mb-0">
+                      <p className="font-m mb-0">
                         Perché guardarlo: quanto una coltura è concentrata nel paesaggio dice
                         quanta risorsa continua è disponibile per gli organismi che vivono su
                         quella coltura. È un elemento di consapevolezza, non una previsione: il
@@ -448,19 +521,35 @@ export function FieldLandscape() {
                           </div>
                         </Col>
                       </Row>
-                      <p className="font-s opacity-05 mt-2 mb-0">
-                        Bosco, siepi, filari, fossi e maceri dichiarati nelle domande PAC.
-                        Sono l&apos;elemento di paesaggio che la letteratura collega piu&apos;
-                        spesso alla presenza di insetti e dei loro antagonisti, e che la
-                        classificazione satellitare non contiene affatto. La superficie
-                        degli elementi minori e&apos; contata per appartenenza del loro
-                        centro al raggio, con uno scarto misurato dello 0-2%.
+                      <p className="font-m-600 mt-3 mb-1">Perché sono importanti?</p>
+                      <p className="font-m mb-2">
+                        Boschi, siepi, filari, margini, fossi e maceri offrono rifugio, risorse e
+                        habitat a insetti utili e antagonisti naturali dei parassiti. La loro
+                        presenza e distribuzione nel paesaggio può quindi contribuire alla
+                        biodiversità e ai servizi naturali di controllo biologico a supporto
+                        delle colture.
+                      </p>
+                      <p className="font-m mb-2">
+                        I valori mostrati derivano dagli elementi dichiarati nelle domande{" "}
+                        <InfoPopover label="PAC" title="PAC – Politica Agricola Comune" text={DEF_PAC} />.
+                        Questi ambienti sono particolarmente interessanti perché molti degli
+                        elementi più piccoli, come siepi, fossi e margini, non sono
+                        rappresentati nella classificazione satellitare.
+                      </p>
+                      <p className="font-s mb-0">
+                        <em>
+                          La superficie degli elementi minori è attribuita al raggio in base
+                          alla posizione del loro centro, con uno scarto misurato dello 0–2%.
+                          Poiché questi elementi non sono rilevati dalla classificazione
+                          satellitare, non è disponibile una seconda misura indipendente con
+                          cui confrontare i valori.
+                        </em>
                       </p>
                     </Fragment>
                   )}
 
                   {cross && cross.usable && cross.crop_pct_of_agri != null && (
-                    <p className="font-s mt-4 mb-0">
+                    <p className="font-m mt-4 mb-0">
                       <strong>Controllo indipendente.</strong> Sulla stessa domanda la
                       classificazione satellitare {cross.source === "icolt" ? "iColt" : ""}{" "}
                       {cross.year} dice {cross.crop_pct_of_agri.toFixed(1)}%
@@ -473,7 +562,7 @@ export function FieldLandscape() {
                     </p>
                   )}
                   {cross && cross.usable === false && (
-                    <p className="font-s opacity-05 mt-4 mb-0">
+                    <p className="font-m mt-4 mb-0">
                       Qui la classificazione satellitare non arriva, quindi non c&apos;e&apos;
                       una seconda misura con cui confrontare questi numeri.
                     </p>
@@ -485,7 +574,20 @@ export function FieldLandscape() {
               {numeriAttendibili && (
               <section className="soft bg-white">
                 <h2 className="mb-3">Composizione della superficie cartografata</h2>
-                <TableCozy columns={tableColumns} data={tableData} options={tableOptions} />
+                <Row className="mb-3">
+                  <Col md={6} className="iiinfo-col mb-2">
+                    <div className="iiinfo-label font-s-label">Superficie agricola entro {km} km</div>
+                    <div className="iiinfo-value font-l-600">{formatHa(data?.agri_ha)}</div>
+                  </Col>
+                  <Col md={6} className="iiinfo-col mb-2">
+                    <div className="iiinfo-label font-s-label">Appezzamenti</div>
+                    <div className="iiinfo-value font-l-600">{data?.parcels ?? "-"}</div>
+                  </Col>
+                </Row>
+                {/* Su schermi stretti la tabella scorre dentro il suo riquadro invece di uscire dalla sezione. */}
+                <div className="table-scroll">
+                  <TableCozy columns={tableColumns} data={tableData} options={tableOptions} />
+                </div>
                 {(righeNascoste > 0 || tabellaEspansa) && (
                   <button
                     type="button"
@@ -498,19 +600,16 @@ export function FieldLandscape() {
                   </button>
                 )}
 
-                <Row className="mt-4">
-                  <Col md={6} className="iiinfo-col mb-2">
-                    <div className="iiinfo-label font-s-label">Superficie agricola entro {km} km</div>
-                    <div className="iiinfo-value font-l-600">{formatHa(data?.agri_ha)}</div>
-                  </Col>
-                  <Col md={6} className="iiinfo-col mb-2">
-                    <div className="iiinfo-label font-s-label">Appezzamenti</div>
-                    <div className="iiinfo-value font-l-600">{data?.parcels ?? "-"}</div>
-                  </Col>
-                </Row>
-
-                <p className="font-s opacity-05 mt-3 mb-0">
-                  Fonte: {datasetLabel}.{" "}
+                <p className="font-s mt-3 mb-0">
+                  Fonte:{" "}
+                  {fonteUrl ? (
+                    <a href={fonteUrl} target="_blank" rel="noopener noreferrer">
+                      {datasetLabel}
+                    </a>
+                  ) : (
+                    datasetLabel
+                  )}
+                  .{" "}
                   {daDichiarazioni
                     ? "Sono i piani colturali che le aziende dichiarano per la PAC: coprono anche la collina e nominano le colture, ma esistono solo per le aziende che presentano la dichiarazione, e non tutte ne hanno l'obbligo."
                     : "Classificazione colturale da immagini satellitari di ARPAE Emilia-Romagna, che cartografa gli appezzamenti oltre 0,5 ettari della pianura: dove la copertura è parziale, in particolare in collina, le superfici sono sottostimate."}{" "}

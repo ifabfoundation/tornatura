@@ -1,5 +1,6 @@
 import React from "react";
 import mapboxgl from "mapbox-gl";
+import type { FilterSpecification } from "mapbox-gl";
 import * as turf from "@turf/turf";
 
 /**
@@ -36,8 +37,8 @@ import * as turf from "@turf/turf";
  * cambia nessuna decisione. La distinzione persa resta leggibile nella tabella,
  * dove ogni classe ha la sua riga.
  */
-const COLORE_CAMPO = "#EAFF00";
-const COLORE_COLTURA = "#e87ba4";
+export const COLORE_CAMPO = "#EAFF00";
+export const COLORE_COLTURA = "#e87ba4";
 const COLORE_PERMANENTI = "#2a78d6";
 const COLORE_ERBACEE = "#eda100";
 const COLORE_SEMINATURALE = "#008300";
@@ -90,13 +91,12 @@ export type MapLandscapeCropsProps = {
   /** Geometria del buffer restituita dal servizio (Polygon GeoJSON). */
   buffer: any | null;
   parcels: ParcelsFC | null;
-  /** Etichetta della classe iColt della coltura dell'utente, se mappabile. */
-  cropLabel: string | null;
   /** Classi iColt che raggruppano piu' colture: classe -> cosa contiene. */
   aggregatedClasses: Record<string, string>;
   /** Es. "ARPAE iColt 2026", mostrato in legenda. */
   datasetLabel: string;
-  showAgri: boolean;
+  /** Famiglie di uso del suolo accese: una famiglia spenta non si disegna. */
+  enabledFamilies: string[];
   showCrop: boolean;
 };
 
@@ -115,10 +115,9 @@ export default function MapLandscapeCrops({
   fieldRing,
   buffer,
   parcels,
-  cropLabel,
   aggregatedClasses,
   datasetLabel,
-  showAgri,
+  enabledFamilies,
   showCrop,
 }: MapLandscapeCropsProps) {
   const mapContainerRef = React.useRef<HTMLDivElement>(null);
@@ -313,45 +312,24 @@ export default function MapLandscapeCrops({
     }
     const set = (id: string, on: boolean) =>
       map.setLayoutProperty(id, "visibility", on ? "visible" : "none");
-    set(LYR_AGRI, showAgri);
-    set(LYR_AGRI_LINE, showAgri);
+    // Le famiglie spente escono dal filtro: un solo layer serve tutte le voci
+    // della legenda, senza duplicare la sorgente per ogni famiglia.
+    const filtroFamiglie: FilterSpecification = [
+      "in",
+      ["get", "family"],
+      ["literal", enabledFamilies],
+    ];
+    map.setFilter(LYR_AGRI, filtroFamiglie);
+    map.setFilter(LYR_AGRI_LINE, filtroFamiglie);
+    set(LYR_AGRI, enabledFamilies.length > 0);
+    set(LYR_AGRI_LINE, enabledFamilies.length > 0);
     set(LYR_COLTURA, showCrop);
     set(LYR_COLTURA_LINE, showCrop);
-  }, [mapLoaded, showAgri, showCrop]);
+  }, [mapLoaded, enabledFamilies, showCrop]);
 
   return (
     <div className="map-observations-wrapper">
       <div ref={mapContainerRef} className="map-observations"></div>
-      <div className="map-legend">
-        <div className="llist-group">
-          <div className="llist-group-item p-0 h-s d-flex align-items-center">
-            <div className="dot me-2" data-size="12" style={{ background: COLORE_CAMPO }}></div>
-            <span className="font-s">Il tuo campo</span>
-          </div>
-          {cropLabel && (
-            <div className="llist-group-item p-0 h-s d-flex align-items-center">
-              <div
-                className="dot me-2"
-                data-size="12"
-                style={{ background: COLORE_COLTURA }}
-              ></div>
-              <span className="font-s">{cropLabel}</span>
-            </div>
-          )}
-          {LEGENDA_FAMIGLIE.map((f) => (
-            <div
-              key={f.family}
-              className="llist-group-item p-0 h-s d-flex align-items-center"
-            >
-              <div className="dot me-2" data-size="12" style={{ background: f.color }}></div>
-              <span className="font-s">{f.label}</span>
-            </div>
-          ))}
-          <div className="llist-group-item p-0 h-s">
-            <span className="font-s opacity-05">{datasetLabel}</span>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }
