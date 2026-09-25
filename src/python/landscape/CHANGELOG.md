@@ -4,6 +4,52 @@ Registro delle modifiche per il team backend.
 
 ---
 
+## [2026-09-25] - v2.3.0: la finestra stagionale (quali ospiti sono oggi nella fase che l'organismo attacca)
+
+### In breve, per chi legge solo questo
+Nuovo endpoint `GET /v1/landscape/pest-season?lat&lng&radius_m&pest&date` e nuovo modulo
+`modules/season.py`. Per ogni appezzamento ospite nel cerchio: fase della coltura dal servizio
+**bollettini** (`/v1/bollettini/fenologia`, via HTTP sulla rete interna) o, se non risponde, dal
+**calendario 2026** (`data/phenology/calendario_er_2026.csv`); classe rispetto alla finestra
+dell'organismo (`meta.json`, chiave `season`, con le fonti); ettari per classe e per settore di
+45 gradi. Nessuna dipendenza nuova (HTTP con `urllib`), core non toccato, `/pest-habitat`
+invariato salvo i `limits` e le fonti in `meta.json`. Nota: `docs/decisioni/2026-09_finestra-stagionale.md`.
+
+### Configurazione
+`LANDSCAPE_BOLLETTINI_API_URL` (predefinito `http://bollettini-api:8080`, il container di
+produzione; in staging `http://bollettini-api-staging:8080`; vuota = solo calendario). Timeout 4 s,
+cache 30 minuti per punto e data.
+
+### Verifica (Ferrara 44.80951, 11.75644, halyha)
+```
+GET /v1/landscape/pest-season?...&radius_m=3000&date=2026-06-10   (fonte bulletins)
+  nella fase che attacca 35,5% · in arrivo 32,4% · non ancora 25,1% · fase non disponibile 0,8%
+  · senza finestra 6,2% · prime righe: pero e melo attivi (accrescimento / ingrossamento frutti)
+stesso punto a 500 m, bollettini spenti                          (fonte calendar_2026)
+  attivo 16,5% · in arrivo 65,2% · non ancora 18,4%, risposta in 0,4 s
+pest=xyz -> 404 · fuori copertura -> 404
+```
+Identico alla curva dell'esperimento `esperimenti/cimice_landscape/fenologia/curva.py` su 3 punti
+(Ferrara, Brisighella, Colli Bolognesi) x 4 date x tutte le classi.
+
+### Revisione avversaria (25/09/2026), corretto prima del merge
+Regola "concluso" del susino sulla sola voce piu' recente dell'unione; pomodoro: prima sezione con
+un intervallo BBCH; zone dei bollettini dallo shapefile del servizio bollettini (quelle semplificate
+avevano fessure) piu' tolleranza di 2 km; direzioni principali sul totale degli ettari attivi;
+l'appezzamento sotto il punto va al "centro"; niente cache degli errori del servizio bollettini;
+`fallback_reason` dice perche' si usa il calendario. Web: annullamento delle richieste superate al
+cambio raggio, messaggio fuori stagione calcolato sui soli ospiti con finestra, ettari con un
+decimale sotto i 10. Dopo le correzioni: 243/243 confronti identici alla curva dell'esperimento
+(3 punti x 3 raggi x 27 date).
+
+### Regole
+Fase valida 14 giorni; "concluso" e' finale (coltura tolta dal bollettino dopo la raccolta);
+"attivo" in parte contato anche in `partial_active_ha`; un settore o una riga per specie mostra gli
+ettari solo con almeno 3 appezzamenti; direzioni principali = settori con almeno un quarto degli
+ettari attivi.
+
+---
+
 ## [2026-09-24] - v2.2.0: l'habitat di un organismo nel paesaggio (primo: la cimice asiatica)
 
 ### In breve, per chi legge solo questo

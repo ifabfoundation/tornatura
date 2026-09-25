@@ -8,23 +8,41 @@
   "hosts_method": "Livelli dedotti da una matrice di evidenze con fonti (23 fonti, 230 righe): principale = danno documentato in Italia o Europa da almeno due fonti indipendenti; secondario = almeno un'evidenza di ospite (una sola fonte di danno, ospite riproduttivo, lista EPPO o StopBMSB, segnalazione del servizio fitosanitario); non ospite = nessuna evidenza o evidenza negativa; non classificabile = bosco senza specie, voci generiche, non agricolo. Matrice e regola in esperimenti/cimice_landscape/ospiti/.",
   "applies_to_harvests": null,
   "levels": {
-    "principale": {"label": "Colture con danno documentato", "short": "danno documentato"},
-    "secondario": {"label": "Altre piante ospiti", "short": "altri ospiti"},
-    "non_ospite": {"label": "Non ospiti", "short": "non ospiti"},
-    "non_classificabile": {"label": "Non classificabili (bosco senza specie, voci generiche)", "short": "non classificabili"}
+    "principale": {
+      "label": "Colture con danno documentato",
+      "short": "danno documentato"
+    },
+    "secondario": {
+      "label": "Altre piante ospiti",
+      "short": "altri ospiti"
+    },
+    "non_ospite": {
+      "label": "Non ospiti",
+      "short": "non ospiti"
+    },
+    "non_classificabile": {
+      "label": "Non classificabili (bosco senza specie, voci generiche)",
+      "short": "non classificabili"
+    }
   },
   "reservoirs": {
     "label": "Serbatoi semi-naturali",
     "description": "Bosco, siepi, boschetti, fasce e margini: e' dove la cimice sverna, si rifugia e depone le uova, e da dove entra nelle colture (Maistrello 2017; Forresi 2024; Note tecniche ER 2023).",
-    "classes": ["BOSCO"],
+    "classes": [
+      "BOSCO"
+    ],
     "elements": true,
     "nearest_label": "siepe, boschetto o bosco"
   },
   "nearest": {
     "host_orchard": {
       "label": "frutteto con danno documentato",
-      "levels": ["principale"],
-      "families": ["permanente"]
+      "levels": [
+        "principale"
+      ],
+      "families": [
+        "permanente"
+      ]
     }
   },
   "texts": {
@@ -38,17 +56,422 @@
   "limits": [
     "Dichiarazioni AGREA della campagna in corso: esistono solo per le aziende che presentano il piano colturale e si consolidano nei mesi successivi.",
     "Il bosco non ha specie nel dato: resta 'non classificabile' anche se e' un rifugio importante.",
-    "La finestra stagionale delle colture erbacee (quando il seme matura) non e' ancora considerata: soia e mais contano tutto l'anno.",
     "La lista delle piante ospiti discende da fonti pubblicate con una regola dichiarata; una nuova fonte puo' cambiare il livello di una specie."
   ],
   "sources": [
-    {"id": "EPPO2026", "citation": "EPPO Global Database, Halyomorpha halys (HALYHA), piante ospiti", "url": "https://gd.eppo.int/taxon/HALYHA/hosts"},
-    {"id": "BARISELLI2016", "citation": "Bariselli M., Bugiani R., Maistrello L. (2016) Distribution and damage caused by Halyomorpha halys in Italy. EPPO Bulletin 46:332-334", "url": "https://doi.org/10.1111/epp.12289"},
-    {"id": "MAISTRELLO2017", "citation": "Maistrello L. et al. (2017) Monitoring of the invasive Halyomorpha halys, a new key pest of fruit orchards in northern Italy. J. Pest Sci. 90:1231-1244", "url": "https://doi.org/10.1007/s10340-017-0896-2"},
-    {"id": "TAMBURINI2023", "citation": "Tamburini G. et al. (2023) Effect of landscape composition on the invasive pest Halyomorpha halys in fruit orchards. Agric. Ecosyst. Environ. 353:108530", "url": "https://doi.org/10.1016/j.agee.2023.108530"},
-    {"id": "FORRESI2024", "citation": "Forresi C. et al. (2024) A data platform for real-time monitoring and analysis of the brown marmorated stink bug in Northern Italy. Ecol. Inform. 82:102713", "url": "https://doi.org/10.1016/j.ecoinf.2024.102713"},
-    {"id": "ER_NOTE2023", "citation": "Regione Emilia-Romagna, Servizio fitosanitario (2023) Note tecniche per la gestione della cimice asiatica", "url": "https://agricoltura.regione.emilia-romagna.it/fitosanitario/difesa-sostenibile/bollettini/approfondimenti/note-tecniche-gestione-cimice-asiatica"},
-    {"id": "ER_SCHEDA2025", "citation": "Regione Emilia-Romagna, Servizio fitosanitario. Scheda Cimice asiatica (agg. 04/11/2025)", "url": "https://agricoltura.regione.emilia-romagna.it/fitosanitario/avversita/schede/avversita-per-nome/cimice-asiatica"},
-    {"id": "GRILO2026", "citation": "Grilo L. et al. (2026) Spatiotemporal modelling of phenology and population dynamics of Halyomorpha halys in Emilia-Romagna, Italy. Sci 8(7):163", "url": "https://doi.org/10.3390/sci8070163"}
-  ]
+    {
+      "id": "EPPO2026",
+      "citation": "EPPO Global Database, Halyomorpha halys (HALYHA), piante ospiti",
+      "url": "https://gd.eppo.int/taxon/HALYHA/hosts"
+    },
+    {
+      "id": "BARISELLI2016",
+      "citation": "Bariselli M., Bugiani R., Maistrello L. (2016) Distribution and damage caused by Halyomorpha halys in Italy. EPPO Bulletin 46:332-334",
+      "url": "https://doi.org/10.1111/epp.12289"
+    },
+    {
+      "id": "MAISTRELLO2017",
+      "citation": "Maistrello L. et al. (2017) Monitoring of the invasive Halyomorpha halys, a new key pest of fruit orchards in northern Italy. J. Pest Sci. 90:1231-1244",
+      "url": "https://doi.org/10.1007/s10340-017-0896-2"
+    },
+    {
+      "id": "TAMBURINI2023",
+      "citation": "Tamburini G. et al. (2023) Effect of landscape composition on the invasive pest Halyomorpha halys in fruit orchards. Agric. Ecosyst. Environ. 353:108530",
+      "url": "https://doi.org/10.1016/j.agee.2023.108530"
+    },
+    {
+      "id": "FORRESI2024",
+      "citation": "Forresi C. et al. (2024) A data platform for real-time monitoring and analysis of the brown marmorated stink bug in Northern Italy. Ecol. Inform. 82:102713",
+      "url": "https://doi.org/10.1016/j.ecoinf.2024.102713"
+    },
+    {
+      "id": "ER_NOTE2023",
+      "citation": "Regione Emilia-Romagna, Servizio fitosanitario (2023) Note tecniche per la gestione della cimice asiatica",
+      "url": "https://agricoltura.regione.emilia-romagna.it/fitosanitario/difesa-sostenibile/bollettini/approfondimenti/note-tecniche-gestione-cimice-asiatica"
+    },
+    {
+      "id": "ER_SCHEDA2025",
+      "citation": "Regione Emilia-Romagna, Servizio fitosanitario. Scheda Cimice asiatica (agg. 04/11/2025)",
+      "url": "https://agricoltura.regione.emilia-romagna.it/fitosanitario/avversita/schede/avversita-per-nome/cimice-asiatica"
+    },
+    {
+      "id": "GRILO2026",
+      "citation": "Grilo L. et al. (2026) Spatiotemporal modelling of phenology and population dynamics of Halyomorpha halys in Emilia-Romagna, Italy. Sci 8(7):163",
+      "url": "https://doi.org/10.3390/sci8070163"
+    },
+    {
+      "id": "ACEBES2016",
+      "citation": "Acebes-Doria A.L., Leskey T.C., Bergh J.C. (2016) Host plant effects on Halyomorpha halys nymphal development and survivorship. Environ. Entomol. 45(3):663-670",
+      "url": "https://doi.org/10.1093/ee/nvw018"
+    },
+    {
+      "id": "OWENS2013",
+      "citation": "Owens D.R., Herbert D.A., Dively G.P., Reisig D.D., Kuhar T.P. (2013) Does feeding by Halyomorpha halys reduce soybean seed quality and yield? J. Econ. Entomol. 106(3):1317-1323",
+      "url": "https://doi.org/10.1603/ec12488"
+    },
+    {
+      "id": "CISSEL2015",
+      "citation": "Cissel W.J., Mason C.E., Whalen J., Hough-Goldstein J., Hooks C.R. (2015) Effects of brown marmorated stink bug feeding injury on sweet corn yield and quality. J. Econ. Entomol. 108(3):1065-1071",
+      "url": "https://doi.org/10.1093/jee/tov059"
+    },
+    {
+      "id": "SCACCINI2024",
+      "citation": "Scaccini D., Fornasiero D., Tirello P. et al. (2024) Seasonal dynamics and damage of Halyomorpha halys in Italian vineyards. Insects 15(6):378",
+      "url": "https://doi.org/10.3390/insects15060378"
+    },
+    {
+      "id": "SANNA2024",
+      "citation": "Sanna F., Mori N., Santoiemma G., Pozzebon A. (2024) Halyomorpha halys as the major contributor to early olive drop in northern Italy. J. Econ. Entomol. 117(4):1336",
+      "url": "https://doi.org/10.1093/jee/toae126"
+    }
+  ],
+  "season": {
+    "_nota": "Finestre di suscettibilita' in codici BBCH (Meier 2001), per coltura dei bollettini. attivo = la coltura offre la risorsa che la cimice attacca (frutti o semi in sviluppo); in_arrivo = lo stadio subito prima. Verificate in esperimenti/cimice_landscape/fenologia/ (dizionario.py, FINESTRE).",
+    "windows": {
+      "PERO": {
+        "active": [
+          71,
+          89
+        ],
+        "arriving": [
+          60,
+          70
+        ],
+        "note": "Regione ER, Note tecniche cimice 2023: 'si nutrono ... per lo piu' frutti e semi in via di maturazione'; pero danneggiato gia' ad aprile-maggio (frutticini). Acebes-Doria et al. 2016: sviluppo ninfale scarso sulle sole foglie, buono con i frutti. BBCH 71 (allegagione) - 89 (frutto maturo).",
+        "sources": [
+          "ER_NOTE2023",
+          "ACEBES2016"
+        ]
+      },
+      "MELO": {
+        "active": [
+          71,
+          89
+        ],
+        "arriving": [
+          60,
+          70
+        ],
+        "note": "Regione ER, Note tecniche cimice 2023: 'si nutrono ... per lo piu' frutti e semi in via di maturazione'; pero danneggiato gia' ad aprile-maggio (frutticini). Acebes-Doria et al. 2016: sviluppo ninfale scarso sulle sole foglie, buono con i frutti. BBCH 71 (allegagione) - 89 (frutto maturo).",
+        "sources": [
+          "ER_NOTE2023",
+          "ACEBES2016"
+        ]
+      },
+      "PESCO": {
+        "active": [
+          71,
+          89
+        ],
+        "arriving": [
+          60,
+          70
+        ],
+        "note": "Regione ER, Note tecniche cimice 2023: 'si nutrono ... per lo piu' frutti e semi in via di maturazione'; pero danneggiato gia' ad aprile-maggio (frutticini). Acebes-Doria et al. 2016: sviluppo ninfale scarso sulle sole foglie, buono con i frutti. BBCH 71 (allegagione) - 89 (frutto maturo).",
+        "sources": [
+          "ER_NOTE2023",
+          "ACEBES2016"
+        ]
+      },
+      "ALBICOCCO": {
+        "active": [
+          71,
+          89
+        ],
+        "arriving": [
+          60,
+          70
+        ],
+        "note": "Regione ER, Note tecniche cimice 2023: 'si nutrono ... per lo piu' frutti e semi in via di maturazione'; pero danneggiato gia' ad aprile-maggio (frutticini). Acebes-Doria et al. 2016: sviluppo ninfale scarso sulle sole foglie, buono con i frutti. BBCH 71 (allegagione) - 89 (frutto maturo).",
+        "sources": [
+          "ER_NOTE2023",
+          "ACEBES2016"
+        ]
+      },
+      "CILIEGIO": {
+        "active": [
+          71,
+          89
+        ],
+        "arriving": [
+          60,
+          70
+        ],
+        "note": "Regione ER, Note tecniche cimice 2023: 'si nutrono ... per lo piu' frutti e semi in via di maturazione'; pero danneggiato gia' ad aprile-maggio (frutticini). Acebes-Doria et al. 2016: sviluppo ninfale scarso sulle sole foglie, buono con i frutti. BBCH 71 (allegagione) - 89 (frutto maturo).",
+        "sources": [
+          "ER_NOTE2023",
+          "ACEBES2016"
+        ]
+      },
+      "SUSINO": {
+        "active": [
+          71,
+          89
+        ],
+        "arriving": [
+          60,
+          70
+        ],
+        "note": "Regione ER, Note tecniche cimice 2023: 'si nutrono ... per lo piu' frutti e semi in via di maturazione'; pero danneggiato gia' ad aprile-maggio (frutticini). Acebes-Doria et al. 2016: sviluppo ninfale scarso sulle sole foglie, buono con i frutti. BBCH 71 (allegagione) - 89 (frutto maturo).",
+        "sources": [
+          "ER_NOTE2023",
+          "ACEBES2016"
+        ]
+      },
+      "SUSINO_EUROPEO": {
+        "active": [
+          71,
+          89
+        ],
+        "arriving": [
+          60,
+          70
+        ],
+        "note": "Regione ER, Note tecniche cimice 2023: 'si nutrono ... per lo piu' frutti e semi in via di maturazione'; pero danneggiato gia' ad aprile-maggio (frutticini). Acebes-Doria et al. 2016: sviluppo ninfale scarso sulle sole foglie, buono con i frutti. BBCH 71 (allegagione) - 89 (frutto maturo).",
+        "sources": [
+          "ER_NOTE2023",
+          "ACEBES2016"
+        ]
+      },
+      "SUSINO_CINO_GIAPPONESE": {
+        "active": [
+          71,
+          89
+        ],
+        "arriving": [
+          60,
+          70
+        ],
+        "note": "Regione ER, Note tecniche cimice 2023: 'si nutrono ... per lo piu' frutti e semi in via di maturazione'; pero danneggiato gia' ad aprile-maggio (frutticini). Acebes-Doria et al. 2016: sviluppo ninfale scarso sulle sole foglie, buono con i frutti. BBCH 71 (allegagione) - 89 (frutto maturo).",
+        "sources": [
+          "ER_NOTE2023",
+          "ACEBES2016"
+        ]
+      },
+      "ACTINIDIA": {
+        "active": [
+          71,
+          89
+        ],
+        "arriving": [
+          60,
+          70
+        ],
+        "note": "Regione ER, Note tecniche cimice 2023: 'si nutrono ... per lo piu' frutti e semi in via di maturazione'; pero danneggiato gia' ad aprile-maggio (frutticini). Acebes-Doria et al. 2016: sviluppo ninfale scarso sulle sole foglie, buono con i frutti. BBCH 71 (allegagione) - 89 (frutto maturo).",
+        "sources": [
+          "ER_NOTE2023",
+          "ACEBES2016"
+        ]
+      },
+      "KAKI": {
+        "active": [
+          71,
+          89
+        ],
+        "arriving": [
+          60,
+          70
+        ],
+        "note": "Regione ER, Note tecniche cimice 2023: 'si nutrono ... per lo piu' frutti e semi in via di maturazione'; pero danneggiato gia' ad aprile-maggio (frutticini). Acebes-Doria et al. 2016: sviluppo ninfale scarso sulle sole foglie, buono con i frutti. BBCH 71 (allegagione) - 89 (frutto maturo).",
+        "sources": [
+          "ER_NOTE2023",
+          "ACEBES2016"
+        ]
+      },
+      "NOCE": {
+        "active": [
+          71,
+          89
+        ],
+        "arriving": [
+          60,
+          70
+        ],
+        "note": "Regione ER, Note tecniche cimice 2023: 'si nutrono ... per lo piu' frutti e semi in via di maturazione'; pero danneggiato gia' ad aprile-maggio (frutticini). Acebes-Doria et al. 2016: sviluppo ninfale scarso sulle sole foglie, buono con i frutti. BBCH 71 (allegagione) - 89 (frutto maturo).",
+        "sources": [
+          "ER_NOTE2023",
+          "ACEBES2016"
+        ]
+      },
+      "OLIVO": {
+        "active": [
+          71,
+          89
+        ],
+        "arriving": [
+          60,
+          70
+        ],
+        "note": "Sanna et al. 2024 (J. Econ. Entomol. 117:1336): cascola precoce da BBCH 69-71 a 79 (giugno-inizio agosto) e danni da BBCH 78-79 alla maturazione di raccolta.",
+        "sources": [
+          "SANNA2024"
+        ]
+      },
+      "VITE": {
+        "active": [
+          77,
+          89
+        ],
+        "arriving": [
+          71,
+          76
+        ],
+        "note": "Scaccini et al. 2024 (Insects 15:378): infestazioni a BBCH 77, 81, 83, 85, 89, danno osservato in tutti gli stadi provati; preferenza per i frutti in maturazione. Stadi prima di 77 non provati.",
+        "sources": [
+          "SCACCINI2024"
+        ]
+      },
+      "SOIA": {
+        "active": [
+          71,
+          79
+        ],
+        "arriving": [
+          60,
+          70
+        ],
+        "note": "Owens et al. 2013 (J. Econ. Entomol. 106:1317): R2 (piena fioritura) poco colpita, R4 (baccello pieno) e R6 (seme pieno) sensibili; BBCH 71-79 = baccelli a lunghezza finale e semi in riempimento, dall'80 baccelli maturi secchi.",
+        "sources": [
+          "OWENS2013"
+        ]
+      },
+      "MAIS": {
+        "active": [
+          63,
+          75
+        ],
+        "arriving": [
+          51,
+          62
+        ],
+        "note": "Cissel et al. 2015 (J. Econ. Entomol. 108:1065): danno alla spiga da emissione sete (R1) a maturazione lattea (R3); BBCH 63-75. La maturazione cerosa non e' stata provata.",
+        "sources": [
+          "CISSEL2015"
+        ]
+      },
+      "POMODORO_INDUSTRIA": {
+        "active": [
+          71,
+          89
+        ],
+        "arriving": [
+          60,
+          70
+        ],
+        "note": "Regione ER, Note tecniche cimice 2023: sui frutti di pomodoro, peperone, melanzana 'tessuti decolorati e spugnosi'; BBCH 71 (primo frutto) - 89 (maturo).",
+        "sources": [
+          "ER_NOTE2023"
+        ]
+      },
+      "POMODORO": {
+        "active": [
+          71,
+          89
+        ],
+        "arriving": [
+          60,
+          70
+        ],
+        "note": "Regione ER, Note tecniche cimice 2023: sui frutti di pomodoro, peperone, melanzana 'tessuti decolorati e spugnosi'; BBCH 71 (primo frutto) - 89 (maturo).",
+        "sources": [
+          "ER_NOTE2023"
+        ]
+      },
+      "POMODORO_MENSA": {
+        "active": [
+          71,
+          89
+        ],
+        "arriving": [
+          60,
+          70
+        ],
+        "note": "Regione ER, Note tecniche cimice 2023: sui frutti di pomodoro, peperone, melanzana 'tessuti decolorati e spugnosi'; BBCH 71 (primo frutto) - 89 (maturo).",
+        "sources": [
+          "ER_NOTE2023"
+        ]
+      },
+      "PEPERONE": {
+        "active": [
+          71,
+          89
+        ],
+        "arriving": [
+          60,
+          70
+        ],
+        "note": "Regione ER, Note tecniche cimice 2023: sui frutti di pomodoro, peperone, melanzana 'tessuti decolorati e spugnosi'; BBCH 71 (primo frutto) - 89 (maturo).",
+        "sources": [
+          "ER_NOTE2023"
+        ]
+      },
+      "MELANZANA": {
+        "active": [
+          71,
+          89
+        ],
+        "arriving": [
+          60,
+          70
+        ],
+        "note": "Regione ER, Note tecniche cimice 2023: sui frutti di pomodoro, peperone, melanzana 'tessuti decolorati e spugnosi'; BBCH 71 (primo frutto) - 89 (maturo).",
+        "sources": [
+          "ER_NOTE2023"
+        ]
+      },
+      "FAGIOLO": {
+        "active": [
+          71,
+          79
+        ],
+        "arriving": [
+          60,
+          70
+        ],
+        "note": "Regione ER, Note tecniche cimice 2023: nelle leguminose 'danni prevalentemente sui baccelli'; Bariselli et al. 2016: fagiolo danneggiato in Italia. BBCH 71-79 = baccelli in accrescimento.",
+        "sources": [
+          "ER_NOTE2023",
+          "BARISELLI2016"
+        ]
+      },
+      "FAGIOLINO": {
+        "active": [
+          71,
+          79
+        ],
+        "arriving": [
+          60,
+          70
+        ],
+        "note": "Regione ER, Note tecniche cimice 2023: nelle leguminose 'danni prevalentemente sui baccelli'; Bariselli et al. 2016: fagiolo danneggiato in Italia. BBCH 71-79 = baccelli in accrescimento.",
+        "sources": [
+          "ER_NOTE2023",
+          "BARISELLI2016"
+        ]
+      },
+      "GIRASOLE": {
+        "active": [
+          71,
+          85
+        ],
+        "arriving": [
+          61,
+          70
+        ],
+        "note": "Bariselli et al. 2016: danni sul girasole in Italia (senza stadio); Note tecniche ER 2023: 'semi in via di maturazione'. BBCH 71-85 = semi in sviluppo fino a meta' maturazione. Finestra generica.",
+        "sources": [
+          "BARISELLI2016",
+          "ER_NOTE2023"
+        ]
+      }
+    },
+    "classes": {
+      "active": "Nella fase che la cimice attacca",
+      "arriving": "In arrivo nelle prossime settimane",
+      "not_yet": "Non ancora",
+      "over": "Fase conclusa",
+      "no_phase": "Fase non disponibile",
+      "no_window": "Ospiti senza finestra documentata"
+    }
+  }
 }

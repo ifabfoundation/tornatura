@@ -1,3 +1,4 @@
+import datetime as dt
 import logging
 import os
 from typing import Any, Dict, Optional
@@ -8,7 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from landscape.modules import agrea, config
 from landscape.modules import landscape as landscape_service
-from landscape.modules import pests
+from landscape.modules import pests, season
 from landscape.modules.landscape import DatasetUnavailable
 
 logger = logging.getLogger("landscape_api")
@@ -261,6 +262,46 @@ def pest_habitat(
             raise HTTPException(status_code=422, detail=f"Invalid ring: {exc}")
         except agrea.AgreaUnavailable as exc:
             logger.info("habitat non disponibile: %s", exc)
+            return {
+                "available": False,
+                "reason": "dati dichiarativi non disponibili",
+                "pest": pests.summary(pests.get_meta(pest)),
+            }
+    except DatasetUnavailable as exc:
+        logger.error("dataset unavailable: %s", exc)
+        raise HTTPException(status_code=500, detail="Landscape dataset not available")
+
+
+@app.get("/v1/landscape/pest-season")
+def pest_season(
+    lat: float = Query(..., ge=-90, le=90),
+    lng: float = Query(..., ge=-180, le=180),
+    radius_m: int = Query(
+        config.DEFAULT_RADIUS_M, ge=config.MIN_RADIUS_M, le=config.MAX_RADIUS_M
+    ),
+    pest: str = Query(config.PEST_DEFAULT),
+    on: Optional[dt.date] = Query(
+        None, alias="date", description="giorno (AAAA-MM-GG); predefinito: oggi"
+    ),
+) -> Dict[str, Any]:
+    """Quali ospiti intorno al campo sono oggi nella fase che l'organismo attacca, e dove.
+
+    Fasi dal servizio bollettini (bollettino di produzione integrata della zona), o dal
+    calendario di riserva 2026 se il servizio non risponde: `source` lo dichiara. Classi rispetto
+    alla finestra dell'organismo in `meta.json` (con le fonti), direzione in 8 settori. Regole in
+    `modules/season.py`. `available: false` non e' un errore; fuori copertura e' un 404.
+    """
+    try:
+        if not landscape_service.is_covered(lat, lng):
+            raise HTTPException(
+                status_code=404, detail="Location outside data coverage"
+            )
+        try:
+            return season.season(lat, lng, radius_m, on, pest)
+        except pests.PestUnknown:
+            raise HTTPException(status_code=404, detail="Unknown pest")
+        except agrea.AgreaUnavailable as exc:
+            logger.info("stagione non disponibile: %s", exc)
             return {
                 "available": False,
                 "reason": "dati dichiarativi non disponibili",

@@ -8,11 +8,13 @@ import * as turf from "@turf/turf";
 import {
   LandscapeParcelsResponse,
   LandscapePestHabitat,
+  LandscapePestSeason,
   LandscapePestSummary,
   LandscapeResponse,
   fetchLandscapeComposition,
   fetchLandscapeParcels,
   fetchLandscapePestHabitat,
+  fetchLandscapePestSeason,
   fetchLandscapePests,
   ringParam,
 } from "../../../services/model-api";
@@ -140,6 +142,7 @@ export function FieldLandscape() {
   // Gli organismi pertinenti alla coltura e, per ciascuno, il suo habitat nel raggio.
   const [pests, setPests] = React.useState<LandscapePestSummary[]>([]);
   const [habitats, setHabitats] = React.useState<Record<string, LandscapePestHabitat>>({});
+  const [seasons, setSeasons] = React.useState<Record<string, LandscapePestSeason>>({});
   // Codice dell'organismo di cui la mappa colora gli ospiti, o null.
   const [hostMode, setHostMode] = React.useState<string | null>(null);
 
@@ -177,10 +180,16 @@ export function FieldLandscape() {
     // pagina resta quella di sempre: gli organismi sono un'aggiunta, non un requisito.
     const harvest = currentField.harvest;
     const ring = ringParam(fieldRing);
+    // Cambiando raggio mentre le richieste precedenti sono in volo, una risposta vecchia non
+    // deve sovrascrivere la nuova: ogni esecuzione dell'effetto scrive solo se e' ancora attuale.
+    let attuale = true;
     fetchLandscapePests(harvest)
       .then((r) => r.pests ?? [])
       .catch(() => [] as LandscapePestSummary[])
       .then((lista) => {
+        if (!attuale) {
+          return;
+        }
         setPests(lista);
         const primo = lista[0]?.code;
         const principali = Promise.all([
@@ -188,10 +197,16 @@ export function FieldLandscape() {
           fetchLandscapeParcels(lat, lng, radiusM, harvest, primo),
         ])
           .then(([composition, parcels]) => {
+            if (!attuale) {
+              return;
+            }
             setData(composition);
             setGeo(parcels);
           })
           .catch((err) => {
+            if (!attuale) {
+              return;
+            }
             setData(null);
             setGeo(null);
             setError(
@@ -201,18 +216,29 @@ export function FieldLandscape() {
             );
           })
           .finally(() => {
-            setLoading(false);
+            if (attuale) {
+              setLoading(false);
+            }
           });
         // Gli habitat arrivano per conto loro: un errore su uno non tocca gli altri
         // ne' la pagina (la sezione semplicemente non compare).
         setHabitats({});
+        setSeasons({});
         lista.forEach((p) => {
           fetchLandscapePestHabitat(lat, lng, radiusM, p.code, harvest, ring)
-            .then((h) => setHabitats((prev) => ({ ...prev, [p.code]: h })))
+            .then((h) => attuale && setHabitats((prev) => ({ ...prev, [p.code]: h })))
+            .catch(() => undefined);
+          // la finestra stagionale e' un blocco in piu' della stessa sezione: se non arriva,
+          // la sezione resta com'e'
+          fetchLandscapePestSeason(lat, lng, radiusM, p.code)
+            .then((s) => attuale && setSeasons((prev) => ({ ...prev, [p.code]: s })))
             .catch(() => undefined);
         });
         return principali;
       });
+    return () => {
+      attuale = false;
+    };
   }, [currentField, centroid, radiusM, fieldRing]);
 
   if (!currentField) {
@@ -646,7 +672,7 @@ export function FieldLandscape() {
                 daDichiarazioni &&
                 pests.map((p) =>
                   habitats[p.code]?.available ? (
-                    <PestHabitatSection key={p.code} data={habitats[p.code]} km={km} />
+                    <PestHabitatSection key={p.code} data={habitats[p.code]} km={km} season={seasons[p.code]} />
                   ) : null,
                 )}
 

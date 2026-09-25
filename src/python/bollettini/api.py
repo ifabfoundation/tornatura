@@ -2,7 +2,7 @@ import logging
 import os
 import re
 import unicodedata
-from datetime import datetime
+from datetime import date, datetime
 from pathlib import Path
 from typing import Any, Dict, Optional
 
@@ -240,6 +240,33 @@ def culture_by_location(
     if not culture_id:
         raise HTTPException(status_code=400, detail="Invalid culture")
     return _load_colture_report(culture_id, lat, lng)
+
+
+@app.get("/v1/bollettini/fenologia")
+def fenologia(
+    lat: float = Query(..., ge=-90, le=90),
+    lng: float = Query(..., ge=-180, le=180),
+    on: Optional[date] = Query(None, alias="date", description="giorno (AAAA-MM-GG); predefinito: oggi"),
+    crops: Optional[str] = Query(None, description="colture dei bollettini separate da virgola (PERO,MELO,...)"),
+) -> Dict[str, Any]:
+    """Fase fenologica di ogni coltura nella zona del punto, dai bollettini di produzione integrata.
+
+    Solo Emilia-Romagna. Per ogni coltura: diciture del bollettino, intervallo BBCH (dizionario
+    verificato), data del bollettino e giorni trascorsi. Regole in `modules/fenologia/archivio.py`.
+    Fuori regione o prima che l'archivio sia costruito: `available: false` con il motivo (mai 500).
+    """
+    from bollettini.modules.fenologia import archivio
+
+    location = _location_from_point(lat, lng)
+    if not location:
+        raise HTTPException(status_code=404, detail="Location not in supported province")
+    area = archivio.area_da_provincia(_normalize_text(location["province_name"]))
+    base = {"province": location["province_name"], "location": {"lat": lat, "lng": lng},
+            "source": "Bollettini di produzione integrata, Regione Emilia-Romagna"}
+    if area is None:
+        return {**base, "available": False, "reason": "fenologia disponibile solo per l'Emilia-Romagna"}
+    colture = [c.strip().upper() for c in crops.split(",") if c.strip()] if crops else None
+    return {**base, **archivio.fasi_al(area, on or date.today(), colture)}
 
 
 if __name__ == "__main__":

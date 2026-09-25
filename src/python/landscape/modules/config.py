@@ -5,6 +5,8 @@ prevenzione, l'ambiente e l'energia dell'Emilia-Romagna), derivata da immagini
 satellitari. Copre la sola Emilia-Romagna, con aggiornamento annuale.
 """
 
+import os
+
 # --- Dataset ------------------------------------------------------------------
 
 DATASET_SOURCE = "ARPAE iColt"
@@ -393,3 +395,18 @@ PEST_NEAREST_CLASSES_M = (100, 500, 1000)
 # Il contorno del campo arriva nella query string come "lng,lat;lng,lat;...": un
 # anello di campo ha 10-50 vertici, il tetto protegge da input abnormi.
 PEST_RING_MAX_VERTICES = 200
+
+# --- Finestra stagionale (modules/season.py) ----------------------------------
+#
+# La fase delle colture arriva dal servizio bollettini (/v1/bollettini/fenologia), sulla rete
+# interna dei container: in produzione il container si chiama `bollettini-api`; lo staging
+# imposta LANDSCAPE_BOLLETTINI_API_URL. Vuota = non chiamare, usare il calendario di riserva.
+# Se il servizio non risponde entro il timeout si usa il calendario 2026 e la risposta lo dice
+# (`source: calendar_2026`): la pagina non si rompe mai per colpa dell'altro servizio.
+BOLLETTINI_API_URL = os.getenv(
+    "LANDSCAPE_BOLLETTINI_API_URL", "http://bollettini-api:8080"
+)
+PHENOLOGY_TIMEOUT_S = 4.0
+PHENOLOGY_CACHE_S = 1800
+# Una fase vale 14 giorni: i bollettini sono settimanali (la stessa regola del servizio bollettini).
+PHENOLOGY_VALIDITY_DAYS = 14

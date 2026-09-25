@@ -259,6 +259,19 @@ def run_pipeline(
                     any_new_data = True
                     logger.info(f"Nuovi bollettini indicizzati per {REGIONI[regione_id]['nome']}")
 
+        # STEP 2b: Fasi fenologiche (solo Emilia-Romagna). Indipendente dai report: un errore
+        # qui finisce nel log e non cambia l'esito della pipeline.
+        if not query_only and not download_only and "emilia_romagna" in regioni_da_processare:
+            try:
+                from bollettini.modules.fenologia import archivio
+
+                logger.info("Fasi fenologiche: aggiornamento dell'archivio")
+                stat_fen = archivio.aggiorna(forza=force)
+                logger.info(f"  - Letti: {stat_fen['letti']} | gia' presenti: {stat_fen['gia_presenti']} | "
+                            f"fasi: {stat_fen['fasi']} | errori: {stat_fen['errori']}")
+            except Exception as e:  # noqa: BLE001
+                logger.error(f"Fasi fenologiche: errore (i report non ne risentono): {e}")
+
         # STEP 3: Query Colture
         run_queries = any_new_data or force or query_only
 

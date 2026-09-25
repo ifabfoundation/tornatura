@@ -2,14 +2,15 @@ LANDSCAPE (paesaggio agricolo) - Package di produzione
 ======================================================
 
 Nome:      landscape
-Versione:  2.2.0
-Data:      2026-09-24
+Versione:  2.3.0
+Data:      2026-09-25
 Servizio:  API del paesaggio agricolo e dei confini dichiarati
 
 Contenuto
 ---------
 [OK] api.py                     API FastAPI (health, coverage, composition, parcels,
-                                pieces, parcel-at, pests, pest-habitat)
+                                pieces, parcel-at, pests, pest-habitat,
+                                pest-season)
 [OK] paths.py                   path statici (iColt nel pex) e runtime (AGREA sul volume, log)
 [OK] modules/config.py          classi, famiglie, mappatura colture, costanti, soglie
 [OK] modules/landscape.py       sorgente iColt + combinazione delle due sorgenti

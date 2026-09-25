@@ -297,6 +297,58 @@ type LandscapePestHabitat = {
   sources?: Array<{ id: string; citation: string; url?: string }>;
 };
 
+/** Classi della finestra stagionale, nell'ordine in cui si mostrano. */
+type LandscapeSeasonClass = "active" | "arriving" | "not_yet" | "over" | "no_phase" | "no_window";
+
+/**
+ * Quali ospiti intorno al campo sono oggi nella fase che l'organismo attacca, e dove.
+ * `source` dice da dove arrivano le fasi: dal bollettino della zona o, se il servizio
+ * bollettini non risponde, dal calendario 2026. `available: false` non e' un errore.
+ */
+type LandscapePestSeason = {
+  available: boolean;
+  reason?: string;
+  pest?: LandscapePestSummary;
+  date?: string;
+  radius_m?: number;
+  source?: "bulletins" | "calendar_2026";
+  area?: string | null;
+  last_bulletin?: { file: string; date: string } | null;
+  /** Perche' si usa il calendario: servizio non raggiungibile, non configurato o senza dati. */
+  fallback_reason?: "bulletins_unreachable" | "bulletins_not_configured" | "bulletins_no_data" | null;
+  /** Ettari attivi che hanno una direzione (escluso l'appezzamento sotto il punto). */
+  active_ha_directional?: number;
+  validity_days?: number;
+  hosts_ha?: number;
+  classes?: Record<LandscapeSeasonClass, { ha: number; pct_of_hosts: number; parcels: number; label?: string }>;
+  partial_active_ha?: number;
+  crops?: Array<{
+    species: string;
+    declared?: string;
+    class: LandscapeSeasonClass;
+    partial?: boolean;
+    ha: number;
+    parcels: number;
+    phases?: string[];
+    bbch_min?: number | null;
+    bbch_max?: number | null;
+    bulletin_date?: string | null;
+  }>;
+  /** Ettari per settore di 45 gradi; null quando il settore ha meno di tre appezzamenti. */
+  sectors?: Array<{
+    sector: string;
+    label: string;
+    parcels: number;
+    shown: boolean;
+    active_ha: number | null;
+    arriving_ha: number | null;
+  }>;
+  main_directions?: string[];
+  min_parcels_per_row?: number;
+  windows?: Record<string, { active: number[]; arriving: number[]; note?: string; sources?: string[] }>;
+  method?: string;
+};
+
 const MODEL_API_BASE = (process.env.REACT_APP_MODELAPIS_SERVER_URL ?? "").replace(/\/$/, "");
 
 type ModelApiErrorPayload = {
@@ -483,6 +535,15 @@ export async function fetchLandscapePestHabitat(
   });
 }
 
+export async function fetchLandscapePestSeason(lat: number, lng: number, radiusM: number, pest: string) {
+  return fetchJson<LandscapePestSeason>("/v1/landscape/pest-season", {
+    lat,
+    lng,
+    radius_m: radiusM,
+    pest,
+  });
+}
+
 export async function fetchLandscapePieces(lat: number, lng: number, radiusM: number) {
   return fetchJson<LandscapePiecesResponse>("/v1/landscape/pieces", {
     lat,
@@ -513,4 +574,6 @@ export type {
   LandscapePestShare,
   LandscapePestHabitat,
   LandscapeDistanceClass,
+  LandscapePestSeason,
+  LandscapeSeasonClass,
 };

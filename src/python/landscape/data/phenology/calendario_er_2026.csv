@@ -1,0 +1,1758 @@
+area,data,coltura,bbch_min,bbch_max,fasi
+Bologna e Ferrara,2026-02-04,ACTINIDIA,0,0,gemma ferma
+Bologna e Ferrara,2026-02-04,ALBICOCCO,0,51,da gemma ferma a rigonfiamento gemme
+Bologna e Ferrara,2026-02-04,PESCO,0,3,da gemma ferma a inizio rottura gemma a legno
+Bologna e Ferrara,2026-02-04,SUSINO_CINO_GIAPPONESE,0,51,da gemma ferma a rigonfiamento gemme
+Bologna e Ferrara,2026-02-18,ACTINIDIA,0,0,gemma ferma
+Bologna e Ferrara,2026-02-18,ALBICOCCO,51,57,da gemma gonfia a bottone rosso
+Bologna e Ferrara,2026-02-18,MAIS,0,0,pre-semina
+Bologna e Ferrara,2026-02-18,MELO,0,51,da gemma ferma a inizio rigonfiamento gemme
+Bologna e Ferrara,2026-02-18,PERO,0,51,da gemma ferma a inizio rigonfiamento gemme
+Bologna e Ferrara,2026-02-18,PESCO,0,3,da gemma ferma a inizio rottura gemma a legno
+Bologna e Ferrara,2026-02-18,SUSINO_CINO_GIAPPONESE,51,56,da gemma gonfia a bottone verde
+Bologna e Ferrara,2026-02-18,VITE,0,0,gemma ferma
+Bologna e Ferrara,2026-02-25,ACTINIDIA,0,3,gemma ferma (cv verdi); rigonfiamento gemme (cv gialle)
+Bologna e Ferrara,2026-02-25,ALBICOCCO,57,61,da bottone rosso a inizio fioritura
+Bologna e Ferrara,2026-02-25,CILIEGIO,51,51,rigonfiamento gemme
+Bologna e Ferrara,2026-02-25,MAIS,0,0,pre-semina
+Bologna e Ferrara,2026-02-25,MELO,51,52,rigonfiamento gemme
+Bologna e Ferrara,2026-02-25,PERO,51,52,ingrossamento gemme
+Bologna e Ferrara,2026-02-25,PESCO,3,57,da rottura gemma a legno a bottone rosa
+Bologna e Ferrara,2026-02-25,SUSINO_CINO_GIAPPONESE,56,59,da bottone verde a bottone bianco
+Bologna e Ferrara,2026-02-25,SUSINO_EUROPEO,51,51,Inizio rigonfiamento gemme
+Bologna e Ferrara,2026-02-25,VITE,0,0,gemma ferma
+Bologna e Ferrara,2026-03-04,ACTINIDIA,0,5,gemma ferma (cv verdi); gemma cotonosa (cv gialle)
+Bologna e Ferrara,2026-03-04,ALBICOCCO,57,69,da bottone rosso a fioritura
+Bologna e Ferrara,2026-03-04,CILIEGIO,51,53,da rigonfiamento gemme a inizio rottura gemme le varietà precoci
+Bologna e Ferrara,2026-03-04,KAKI,0,3,da gemma ferma a gemma ingrossata
+Bologna e Ferrara,2026-03-04,MAIS,0,0,pre-semina
+Bologna e Ferrara,2026-03-04,MELO,51,53,da rigonfiamento gemme a punte verdi
+Bologna e Ferrara,2026-03-04,PERO,51,53,da ingrossamento gemme a rottura gemme
+Bologna e Ferrara,2026-03-04,PESCO,57,61,da bottone rosa a inizio fioritura
+Bologna e Ferrara,2026-03-04,SUSINO_CINO_GIAPPONESE,57,61,da bottone bianco a inizio fioritura
+Bologna e Ferrara,2026-03-04,SUSINO_EUROPEO,51,51,rigonfiamento gemme
+Bologna e Ferrara,2026-03-04,VITE,0,1,da gemma ferma a inizio rigonfiamento gemme
+Bologna e Ferrara,2026-03-11,ACTINIDIA,1,5,ingrossamento gemme (cv verdi); gemma cotonosa (cv gialle)
+Bologna e Ferrara,2026-03-11,ALBICOCCO,60,69,fioritura
+Bologna e Ferrara,2026-03-11,CILIEGIO,53,53,rottura gemme
+Bologna e Ferrara,2026-03-11,KAKI,0,3,da gemma ferma a gemma ingrossata
+Bologna e Ferrara,2026-03-11,MAIS,0,0,pre-semina
+Bologna e Ferrara,2026-03-11,MELO,53,54,da punte verdi a orecchiette di topo
+Bologna e Ferrara,2026-03-11,PERO,53,55,da rottura gemme a comparsa mazzetti
+Bologna e Ferrara,2026-03-11,PESCO,57,69,da bottone rosa a fioritura
+Bologna e Ferrara,2026-03-11,POMODORO_INDUSTRIA,0,13,pre-trapianto
+Bologna e Ferrara,2026-03-11,SUSINO_CINO_GIAPPONESE,60,69,fioritura
+Bologna e Ferrara,2026-03-11,SUSINO_EUROPEO,53,59,da rottura gemme a bottone bianco
+Bologna e Ferrara,2026-03-11,VITE,0,5,da gemma ferma a gemma cotonosa
+Bologna e Ferrara,2026-03-18,ACTINIDIA,1,7,ingrossamento gemme (cv verdi); inizio germogliamento (cv gialle)
+Bologna e Ferrara,2026-03-18,ALBICOCCO,67,69,da fine fioritura a caduta petali
+Bologna e Ferrara,2026-03-18,CILIEGIO,51,59,da gemma gonfia a bottone bianco
+Bologna e Ferrara,2026-03-18,KAKI,1,3,gemma ingrossata
+Bologna e Ferrara,2026-03-18,MAIS,0,0,pre-semina
+Bologna e Ferrara,2026-03-18,MELO,53,55,da punte verdi a comparsa mazzetti
+Bologna e Ferrara,2026-03-18,OLIVO,1,9,ripresa vegetativa
+Bologna e Ferrara,2026-03-18,PERO,55,56,da comparsa mazzetti fiorali a mazzetti divaricati
+Bologna e Ferrara,2026-03-18,PESCO,60,69,da fioritura a inizio caduta petali
+Bologna e Ferrara,2026-03-18,POMODORO_INDUSTRIA,0,13,pre-trapianto
+Bologna e Ferrara,2026-03-18,SUSINO_CINO_GIAPPONESE,60,69,da fioritura a inizio caduta petali
+Bologna e Ferrara,2026-03-18,SUSINO_EUROPEO,53,59,da rottura gemme a bottone bianco
+Bologna e Ferrara,2026-03-18,VITE,0,5,da rigonfiamento gemma a gemma cotonosa || da gemma ferma a gemma cotonosa
+Bologna e Ferrara,2026-03-25,ACTINIDIA,7,33,inizio germogliamento (cv verdi); 5-7 cm (cv gialle)
+Bologna e Ferrara,2026-03-25,ALBICOCCO,67,73,da caduta petali ad scamiciatura || da caduta petali a scamiciatura
+Bologna e Ferrara,2026-03-25,CILIEGIO,57,69,da bottone bianco a fioritura || da bottone bianco fioritura
+Bologna e Ferrara,2026-03-25,GIRASOLE,0,0,Pre-semina || presemina
+Bologna e Ferrara,2026-03-25,KAKI,7,7,inizio germogliamento
+Bologna e Ferrara,2026-03-25,MAIS,0,0,da presemina a semina
+Bologna e Ferrara,2026-03-25,MELO,55,61,da mazzetti affioranti a inizio fioritura
+Bologna e Ferrara,2026-03-25,OLIVO,1,9,ripresa vegetativa
+Bologna e Ferrara,2026-03-25,PERO,60,69,fioritura
+Bologna e Ferrara,2026-03-25,PESCO,60,71,da fioritura ad allegagione
+Bologna e Ferrara,2026-03-25,POMODORO_INDUSTRIA,0,13,pre-trapianto
+Bologna e Ferrara,2026-03-25,SUSINO_CINO_GIAPPONESE,67,71,da caduta petali ad allegagione
+Bologna e Ferrara,2026-03-25,SUSINO_EUROPEO,57,69,da bottone bianco a fioritura
+Bologna e Ferrara,2026-03-25,VITE,5,7,da gemma cotonosa a inizio germogliamento
+Bologna e Ferrara,2026-04-01,ACTINIDIA,7,9,germogliamento
+Bologna e Ferrara,2026-04-01,ALBICOCCO,72,73,scamiciatura
+Bologna e Ferrara,2026-04-01,CILIEGIO,60,69,fioritura
+Bologna e Ferrara,2026-04-01,GIRASOLE,0,0,Pre-semina || presemina
+Bologna e Ferrara,2026-04-01,KAKI,7,9,germogliamento
+Bologna e Ferrara,2026-04-01,MAIS,0,8,da presemina a pre-emergenza
+Bologna e Ferrara,2026-04-01,MELO,57,69,da bottoni rosa a fioritura
+Bologna e Ferrara,2026-04-01,NOCE,7,7,inizio germogliamento
+Bologna e Ferrara,2026-04-01,OLIVO,1,9,ripresa vegetativa
+Bologna e Ferrara,2026-04-01,PERO,60,69,fioritura
+Bologna e Ferrara,2026-04-01,PESCO,67,71,da caduta petali ad allegagione
+Bologna e Ferrara,2026-04-01,POMODORO_INDUSTRIA,0,13,pre-trapianto
+Bologna e Ferrara,2026-04-01,SOIA,0,0,Pre-semina
+Bologna e Ferrara,2026-04-01,SUSINO_CINO_GIAPPONESE,71,71,allegagione
+Bologna e Ferrara,2026-04-01,SUSINO_EUROPEO,60,69,da fioritura a caduta petali
+Bologna e Ferrara,2026-04-01,VITE,5,7,da gemma cotonosa a inizio germogliamento
+Bologna e Ferrara,2026-04-08,ACTINIDIA,7,9,germogliamento
+Bologna e Ferrara,2026-04-08,ALBICOCCO,71,79,da scamiciatura ad accrescimento frutti
+Bologna e Ferrara,2026-04-08,CILIEGIO,67,69,caduta petali
+Bologna e Ferrara,2026-04-08,GIRASOLE,0,0,da pre-semina a semina
+Bologna e Ferrara,2026-04-08,KAKI,7,55,da germogliamento a comparsa abbozzi fiorali
+Bologna e Ferrara,2026-04-08,MAIS,0,8,pre-emergenza
+Bologna e Ferrara,2026-04-08,MELO,60,69,da fioritura a caduta petali
+Bologna e Ferrara,2026-04-08,NOCE,7,7,inizio germogliamento
+Bologna e Ferrara,2026-04-08,OLIVO,1,9,ripresa vegetativa
+Bologna e Ferrara,2026-04-08,PERO,67,71,da caduta petali a inizio allegagione || da caduta petali ad inizio allegagione
+Bologna e Ferrara,2026-04-08,PESCO,71,79,da scamiciatura a ingrossamento frutti
+Bologna e Ferrara,2026-04-08,POMODORO_INDUSTRIA,0,15,da pre-trapianto a trapianto || pre-trapianto
+Bologna e Ferrara,2026-04-08,SOIA,0,0,Pre-semina
+Bologna e Ferrara,2026-04-08,SUSINO,67,73,da caduta petali a scamiciatura
+Bologna e Ferrara,2026-04-08,VITE,7,53,da inizio germogliamento a grappolini visibili
+Bologna e Ferrara,2026-04-15,ACTINIDIA,7,55,verde: germogliamento; giallo: comparsa bottoni fiorali
+Bologna e Ferrara,2026-04-15,ALBICOCCO,71,79,accrescimento frutti
+Bologna e Ferrara,2026-04-15,CILIEGIO,67,79,da caduta petali ad accrescimento frutti || da caduta petali a ingrossamento frutti
+Bologna e Ferrara,2026-04-15,GIRASOLE,0,0,da pre-semina a semina
+Bologna e Ferrara,2026-04-15,KAKI,7,55,da germogliamento a comparsa abbozzi fiorali
+Bologna e Ferrara,2026-04-15,MAIS,0,9,emergenza || da pre-emergenza a emergenza
+Bologna e Ferrara,2026-04-15,MELO,67,71,da caduta petali ad allegagione || caduta petali ad allegagione
+Bologna e Ferrara,2026-04-15,NOCE,7,59,da germogliamento a emissione degli amenti
+Bologna e Ferrara,2026-04-15,OLIVO,1,9,ripresa vegetativa
+Bologna e Ferrara,2026-04-15,PERO,71,71,allegagione
+Bologna e Ferrara,2026-04-15,PESCO,71,79,da scamiciatura a ingrossamento frutti
+Bologna e Ferrara,2026-04-15,POMODORO_INDUSTRIA,0,15,da pre-trapianto a trapianto || pre-trapianto
+Bologna e Ferrara,2026-04-15,SOIA,0,0,Pre-semina
+Bologna e Ferrara,2026-04-15,SUSINO,67,72,da caduta petali ad inizio ingrossamento frutti || da caduta petali a inizio ingrossamento frutti
+Bologna e Ferrara,2026-04-15,VITE,11,53,da prime foglie distese a grappolini visibili
+Bologna e Ferrara,2026-04-22,ACTINIDIA,7,55,verde: germogliamento; giallo: comparsa bottoni fiorali
+Bologna e Ferrara,2026-04-22,ALBICOCCO,71,79,da accrescimento frutti a indurimento nocciolo
+Bologna e Ferrara,2026-04-22,CILIEGIO,67,79,da caduta petali a scamiciatura accrescimento frutti || accrescimento frutti
+Bologna e Ferrara,2026-04-22,GIRASOLE,0,9,da semina a emergenza
+Bologna e Ferrara,2026-04-22,KAKI,51,55,comparsa abbozzi fiorali
+Bologna e Ferrara,2026-04-22,MAIS,9,13,da emergenza a 2/3 foglie
+Bologna e Ferrara,2026-04-22,MELO,71,79,da allegagione ad ingrossamento frutti
+Bologna e Ferrara,2026-04-22,NOCE,7,59,da germogliamento a emissione degli amenti
+Bologna e Ferrara,2026-04-22,OLIVO,1,52,da ripresa vegetativa a inizio mignolatura
+Bologna e Ferrara,2026-04-22,PERO,71,79,da allegagione a accrescimento frutti
+Bologna e Ferrara,2026-04-22,PESCO,71,79,ingrossamento frutti
+Bologna e Ferrara,2026-04-22,POMODORO_INDUSTRIA,0,15,da pre-trapianto a trapianto || pre-trapianto
+Bologna e Ferrara,2026-04-22,SOIA,0,0,Pre-semina a semina
+Bologna e Ferrara,2026-04-22,SUSINO,71,79,ingrossamento frutti
+Bologna e Ferrara,2026-04-22,VITE,11,53,da sviluppo foglie a grappolini visibili
+Bologna e Ferrara,2026-04-29,ACTINIDIA,51,61,da comparsa bottoni fiorali a inizio fioritura
+Bologna e Ferrara,2026-04-29,ALBICOCCO,71,79,da accrescimento frutti a indurimento nocciolo
+Bologna e Ferrara,2026-04-29,CILIEGIO,71,85,da accrescimento frutti a invaiatura
+Bologna e Ferrara,2026-04-29,GIRASOLE,0,10,da pre-emergenza a cotiledoni
+Bologna e Ferrara,2026-04-29,KAKI,51,55,comparsa abbozzi fiorali
+Bologna e Ferrara,2026-04-29,MAIS,12,15,2/5 foglie
+Bologna e Ferrara,2026-04-29,MELO,71,79,ingrossamento frutti
+Bologna e Ferrara,2026-04-29,NOCE,60,69,fioritura
+Bologna e Ferrara,2026-04-29,OLIVO,1,52,da ripresa vegetativa a inizio mignolatura
+Bologna e Ferrara,2026-04-29,PERO,71,79,accrescimento frutti
+Bologna e Ferrara,2026-04-29,PESCO,71,79,ingrossamento frutti
+Bologna e Ferrara,2026-04-29,POMODORO_INDUSTRIA,0,15,da pre-trapianto a trapianto
+Bologna e Ferrara,2026-04-29,SOIA,0,9,da semina a emergenza
+Bologna e Ferrara,2026-04-29,SUSINO,71,79,ingrossamento frutti
+Bologna e Ferrara,2026-04-29,VITE,53,55,da grappolini visibili a racimoli separati
+Bologna e Ferrara,2026-05-06,ACTINIDIA,60,69,fioritura
+Bologna e Ferrara,2026-05-06,ALBICOCCO,75,77,indurimento nocciolo
+Bologna e Ferrara,2026-05-06,CILIEGIO,71,81,accrescimento frutti-inizio maturazione cv. precocissime
+Bologna e Ferrara,2026-05-06,GIRASOLE,10,14,da cotiledoni a 2/4 foglie
+Bologna e Ferrara,2026-05-06,KAKI,60,69,fioritura
+Bologna e Ferrara,2026-05-06,MAIS,15,19,5/10 foglie
+Bologna e Ferrara,2026-05-06,MELO,71,79,ingrossamento frutti
+Bologna e Ferrara,2026-05-06,NOCE,67,69,da fine fioritura ad allegagione
+Bologna e Ferrara,2026-05-06,OLIVO,50,57,mignolatura
+Bologna e Ferrara,2026-05-06,PERO,71,79,accrescimento frutti
+Bologna e Ferrara,2026-05-06,PESCO,71,79,ingrossamento frutti
+Bologna e Ferrara,2026-05-06,POMODORO_INDUSTRIA,0,61,da pre-trapianto a inizio fioritura primo palco varietà precocissime
+Bologna e Ferrara,2026-05-06,SOIA,0,11,da pre-semina a prime foglie vere
+Bologna e Ferrara,2026-05-06,SUSINO,71,79,ingrossamento frutti
+Bologna e Ferrara,2026-05-06,VITE,55,55,racimoli separati
+Bologna e Ferrara,2026-05-13,ACTINIDIA,60,69,da fioritura ad allegagione
+Bologna e Ferrara,2026-05-13,ALBICOCCO,75,81,da indurimento nocciolo a inizio maturazione
+Bologna e Ferrara,2026-05-13,CILIEGIO,71,89,da accrescimento frutti a maturazione
+Bologna e Ferrara,2026-05-13,GIRASOLE,12,16,2/6 foglie
+Bologna e Ferrara,2026-05-13,KAKI,60,69,fioritura
+Bologna e Ferrara,2026-05-13,MAIS,16,19,6/10 foglie
+Bologna e Ferrara,2026-05-13,MELO,71,79,ingrossamento frutti
+Bologna e Ferrara,2026-05-13,NOCE,69,69,allegagione
+Bologna e Ferrara,2026-05-13,OLIVO,50,57,mignolatura
+Bologna e Ferrara,2026-05-13,PERO,71,79,accrescimento frutti
+Bologna e Ferrara,2026-05-13,PESCO,71,79,ingrossamento frutti
+Bologna e Ferrara,2026-05-13,POMODORO_INDUSTRIA,0,71,pre-trapianto - allegagione primo palco - fioritura secondo palco
+Bologna e Ferrara,2026-05-13,SOIA,9,11,da emergenza a prime foglie vere
+Bologna e Ferrara,2026-05-13,SUSINO,71,79,ingrossamento frutti
+Bologna e Ferrara,2026-05-13,VITE,55,57,da racimoli separati a inizio bottoni fiorali separati
+Bologna e Ferrara,2026-05-20,ACTINIDIA,60,69,da fioritura ad allegagione
+Bologna e Ferrara,2026-05-20,ALBICOCCO,71,89,da accrescimento frutti a maturazione
+Bologna e Ferrara,2026-05-20,CILIEGIO,81,89,da invaiatura a maturazione || da invaiatura maturazione
+Bologna e Ferrara,2026-05-20,GIRASOLE,14,16,4/6 foglie
+Bologna e Ferrara,2026-05-20,KAKI,51,69,da abbozzi fiorali a fioritura
+Bologna e Ferrara,2026-05-20,MAIS,16,19,6/10 foglie
+Bologna e Ferrara,2026-05-20,MELO,71,79,ingrossamento frutti
+Bologna e Ferrara,2026-05-20,NOCE,71,79,accrescimento frutto
+Bologna e Ferrara,2026-05-20,OLIVO,50,69,mignolatura - fioritura
+Bologna e Ferrara,2026-05-20,PERO,71,79,accrescimento frutti
+Bologna e Ferrara,2026-05-20,PESCO,71,79,da ingrossamento frutti a indurimento nocciolo
+Bologna e Ferrara,2026-05-20,POMODORO_INDUSTRIA,0,71,pre-trapianto - allegagione primo palco - fioritura secondo palco
+Bologna e Ferrara,2026-05-20,SOIA,11,13,da prime foglie vere a 2° foglia trilobata
+Bologna e Ferrara,2026-05-20,SUSINO,71,79,ingrossamento frutti
+Bologna e Ferrara,2026-05-20,VITE,60,61,inizio fioritura
+Bologna e Ferrara,2026-05-27,ACTINIDIA,69,79,da allegagione a ingrossamento frutti
+Bologna e Ferrara,2026-05-27,ALBICOCCO,75,89,da indurimento nocciolo a maturazione
+Bologna e Ferrara,2026-05-27,CILIEGIO,81,89,da invaiatura a maturazione || da invaiatura maturazione
+Bologna e Ferrara,2026-05-27,KAKI,60,69,da fioritura a caduta petali
+Bologna e Ferrara,2026-05-27,MAIS,18,39,da 8 foglie a levata
+Bologna e Ferrara,2026-05-27,MELO,71,79,da ingrossamento frutti a frutto noce
+Bologna e Ferrara,2026-05-27,NOCE,71,79,accrescimento frutto
+Bologna e Ferrara,2026-05-27,OLIVO,60,69,fioritura
+Bologna e Ferrara,2026-05-27,PERO,71,79,accrescimento frutti
+Bologna e Ferrara,2026-05-27,PESCO,71,79,da ingrossamento frutti a indurimento nocciolo
+Bologna e Ferrara,2026-05-27,POMODORO_INDUSTRIA,0,73,pre-trapianto - allegagione terzo palco
+Bologna e Ferrara,2026-05-27,SOIA,13,15,2-4 foglie trilobate
+Bologna e Ferrara,2026-05-27,SUSINO,71,79,ingrossamento frutti
+Bologna e Ferrara,2026-05-27,VITE,60,71,fioritura – allegagione
+Bologna e Ferrara,2026-06-03,ACTINIDIA,69,79,da allegagione a ingrossamento frutti
+Bologna e Ferrara,2026-06-03,ALBICOCCO,71,89,da accrescimento frutti a maturazione
+Bologna e Ferrara,2026-06-03,CILIEGIO,81,89,maturazione
+Bologna e Ferrara,2026-06-03,KAKI,71,79,accrescimento frutti
+Bologna e Ferrara,2026-06-03,MAIS,18,39,da 8 foglie a levata
+Bologna e Ferrara,2026-06-03,MELO,71,79,ingrossamento frutti || da ingrossamento frutti a frutto noce
+Bologna e Ferrara,2026-06-03,NOCE,71,79,accrescimento frutto
+Bologna e Ferrara,2026-06-03,OLIVO,60,69,fioritura
+Bologna e Ferrara,2026-06-03,PERO,71,79,accrescimento frutti
+Bologna e Ferrara,2026-06-03,PESCO,71,89,da ingrossamento frutti a maturazione
+Bologna e Ferrara,2026-06-03,POMODORO_INDUSTRIA,0,73,pre-trapianto - allegagione terzo palco
+Bologna e Ferrara,2026-06-03,SOIA,14,16,3-5 foglie trilobate
+Bologna e Ferrara,2026-06-03,SUSINO,71,79,ingrossamento frutti
+Bologna e Ferrara,2026-06-03,VITE,71,75,da allegagione a mignolatura || da allegagione a sviluppo degli acini
+Bologna e Ferrara,2026-06-10,ACTINIDIA,71,79,ingrossamento frutti
+Bologna e Ferrara,2026-06-10,ALBICOCCO,71,89,da accrescimento frutti a maturazione
+Bologna e Ferrara,2026-06-10,CILIEGIO,81,89,maturazione
+Bologna e Ferrara,2026-06-10,KAKI,71,79,accrescimento frutti
+Bologna e Ferrara,2026-06-10,MAIS,30,59,da levata a spigatura – emissione pennacchio
+Bologna e Ferrara,2026-06-10,MELO,71,79,ingrossamento frutti
+Bologna e Ferrara,2026-06-10,NOCE,71,79,accrescimento frutto
+Bologna e Ferrara,2026-06-10,OLIVO,69,69,allegagione
+Bologna e Ferrara,2026-06-10,PERO,71,79,accrescimento frutti
+Bologna e Ferrara,2026-06-10,PESCO,71,89,da ingrossamento frutti a maturazione
+Bologna e Ferrara,2026-06-10,POMODORO_INDUSTRIA,71,74,allegagione 1°- 4° palco
+Bologna e Ferrara,2026-06-10,SOIA,14,16,3-5 foglie trilobate
+Bologna e Ferrara,2026-06-10,SUSINO,71,89,ingrossamento frutti - maturazione
+Bologna e Ferrara,2026-06-10,VITE,73,77,da mignolatura a pre-chiusura grappolo
+Bologna e Ferrara,2026-06-17,ACTINIDIA,71,79,ingrossamento frutti
+Bologna e Ferrara,2026-06-17,ALBICOCCO,71,89,da accrescimento frutti a maturazione
+Bologna e Ferrara,2026-06-17,CILIEGIO,81,89,maturazione
+Bologna e Ferrara,2026-06-17,KAKI,71,79,accrescimento frutti
+Bologna e Ferrara,2026-06-17,MAIS,51,59,spigatura – emissione pennacchio
+Bologna e Ferrara,2026-06-17,MELO,71,79,ingrossamento frutti
+Bologna e Ferrara,2026-06-17,NOCE,71,79,accrescimento frutto
+Bologna e Ferrara,2026-06-17,OLIVO,69,69,allegagione
+Bologna e Ferrara,2026-06-17,PERO,71,79,accrescimento frutti
+Bologna e Ferrara,2026-06-17,PESCO,71,89,da ingrossamento frutti a maturazione
+Bologna e Ferrara,2026-06-17,POMODORO_INDUSTRIA,71,83,allegagione 1°- 4° palco inizio invaiatura 1° palco || allegagione 1°- 4° palco
+Bologna e Ferrara,2026-06-17,SOIA,14,16,3-5 foglie trilobate
+Bologna e Ferrara,2026-06-17,SUSINO,71,89,ingrossamento frutti - maturazione
+Bologna e Ferrara,2026-06-17,VITE,77,79,chiusura grappolo
+Bologna e Ferrara,2026-06-24,ACTINIDIA,71,79,ingrossamento frutti
+Bologna e Ferrara,2026-06-24,ALBICOCCO,71,89,da accrescimento frutti a maturazione
+Bologna e Ferrara,2026-06-24,CILIEGIO,81,93,post-raccolta || maturazione
+Bologna e Ferrara,2026-06-24,KAKI,71,79,accrescimento frutti
+Bologna e Ferrara,2026-06-24,MAIS,51,59,emissione pennacchio
+Bologna e Ferrara,2026-06-24,MELO,71,79,ingrossamento frutti
+Bologna e Ferrara,2026-06-24,NOCE,71,79,accrescimento frutto
+Bologna e Ferrara,2026-06-24,OLIVO,71,79,accrescimento frutti
+Bologna e Ferrara,2026-06-24,PERO,71,79,accrescimento frutti
+Bologna e Ferrara,2026-06-24,PESCO,71,89,da ingrossamento frutti a maturazione
+Bologna e Ferrara,2026-06-24,POMODORO_INDUSTRIA,71,83,accrescimento - invaiatura 2° palco
+Bologna e Ferrara,2026-06-24,SOIA,10,61,sviluppo vegetativo-inizio fioritura
+Bologna e Ferrara,2026-06-24,SUSINO,71,89,ingrossamento frutti - maturazione
+Bologna e Ferrara,2026-06-24,VITE,77,79,chiusura grappolo
+Bologna e Ferrara,2026-07-01,ACTINIDIA,71,79,ingrossamento frutti
+Bologna e Ferrara,2026-07-01,ALBICOCCO,71,89,da accrescimento frutti a maturazione
+Bologna e Ferrara,2026-07-01,CILIEGIO,81,93,post-raccolta || maturazione
+Bologna e Ferrara,2026-07-01,KAKI,71,79,accrescimento frutti
+Bologna e Ferrara,2026-07-01,MAIS,51,59,emissione pennacchio
+Bologna e Ferrara,2026-07-01,MELO,71,79,ingrossamento frutti
+Bologna e Ferrara,2026-07-01,NOCE,71,79,accrescimento frutto
+Bologna e Ferrara,2026-07-01,OLIVO,71,79,accrescimento frutti
+Bologna e Ferrara,2026-07-01,PERO,71,79,accrescimento frutti
+Bologna e Ferrara,2026-07-01,PESCO,71,89,da ingrossamento frutti a maturazione
+Bologna e Ferrara,2026-07-01,POMODORO_INDUSTRIA,71,83,accrescimento - invaiatura ultimo palco delle cv precocissime
+Bologna e Ferrara,2026-07-01,SOIA,10,61,sviluppo vegetativo-inizio fioritura
+Bologna e Ferrara,2026-07-01,SUSINO,71,89,ingrossamento frutti - maturazione
+Bologna e Ferrara,2026-07-01,VITE,77,79,chiusura grappolo
+Bologna e Ferrara,2026-07-08,ACTINIDIA,71,79,ingrossamento frutti
+Bologna e Ferrara,2026-07-08,ALBICOCCO,71,89,da accrescimento frutti a maturazione
+Bologna e Ferrara,2026-07-08,CILIEGIO,91,93,post-raccolta
+Bologna e Ferrara,2026-07-08,KAKI,71,79,accrescimento frutti
+Bologna e Ferrara,2026-07-08,MAIS,73,75,maturazione lattea
+Bologna e Ferrara,2026-07-08,MELO,71,79,ingrossamento frutti
+Bologna e Ferrara,2026-07-08,NOCE,71,79,accrescimento frutto
+Bologna e Ferrara,2026-07-08,OLIVO,71,79,accrescimento frutti
+Bologna e Ferrara,2026-07-08,PERO,71,89,accrescimento frutti – maturazione cv precoci
+Bologna e Ferrara,2026-07-08,PESCO,71,89,da ingrossamento frutti a maturazione
+Bologna e Ferrara,2026-07-08,POMODORO_INDUSTRIA,71,83,accrescimento - invaiatura ultimo palco delle cv precocissime
+Bologna e Ferrara,2026-07-08,SOIA,60,75,da fioritura a formazione baccelli
+Bologna e Ferrara,2026-07-08,SUSINO,71,89,ingrossamento frutti - maturazione
+Bologna e Ferrara,2026-07-08,VITE,77,81,chiusura grappolo – inizio invaiatura varietà precoci || chiusura grappolo – inizio invaiatura le varietà precoci
+Bologna e Ferrara,2026-07-15,ACTINIDIA,71,79,ingrossamento frutti
+Bologna e Ferrara,2026-07-15,ALBICOCCO,81,93,da maturazione a post-raccolta
+Bologna e Ferrara,2026-07-15,CILIEGIO,91,93,post-raccolta
+Bologna e Ferrara,2026-07-15,KAKI,71,79,accrescimento frutti
+Bologna e Ferrara,2026-07-15,MAIS,73,85,maturazione lattea - cerosa
+Bologna e Ferrara,2026-07-15,MELO,71,79,ingrossamento frutti
+Bologna e Ferrara,2026-07-15,NOCE,71,79,accrescimento frutto
+Bologna e Ferrara,2026-07-15,OLIVO,71,79,accrescimento frutti
+Bologna e Ferrara,2026-07-15,PERO,71,89,accrescimento frutti – maturazione cv precoci
+Bologna e Ferrara,2026-07-15,PESCO,71,89,da ingrossamento frutti a maturazione
+Bologna e Ferrara,2026-07-15,POMODORO_INDUSTRIA,81,89,invaiatura – maturazione cv precocissime
+Bologna e Ferrara,2026-07-15,SOIA,69,75,formazione baccelli
+Bologna e Ferrara,2026-07-15,SUSINO,71,89,ingrossamento frutti - maturazione
+Bologna e Ferrara,2026-07-15,VITE,77,81,chiusura grappolo – inizio invaiatura
+Bologna e Ferrara,2026-07-22,ACTINIDIA,71,79,ingrossamento frutti
+Bologna e Ferrara,2026-07-22,ALBICOCCO,81,93,da maturazione a post-raccolta
+Bologna e Ferrara,2026-07-22,CILIEGIO,91,93,post-raccolta
+Bologna e Ferrara,2026-07-22,KAKI,71,79,accrescimento frutti
+Bologna e Ferrara,2026-07-22,MAIS,73,85,maturazione lattea - cerosa
+Bologna e Ferrara,2026-07-22,MELO,71,89,da ingrossamento frutti a maturazione || ingrossamento frutti a maturazione
+Bologna e Ferrara,2026-07-22,NOCE,75,79,indurimento guscio
+Bologna e Ferrara,2026-07-22,OLIVO,71,79,accrescimento frutti
+Bologna e Ferrara,2026-07-22,PERO,71,89,accrescimento frutti – maturazione cv precoci
+Bologna e Ferrara,2026-07-22,PESCO,71,89,da ingrossamento frutti a maturazione
+Bologna e Ferrara,2026-07-22,POMODORO_INDUSTRIA,81,89,invaiatura – maturazione cv precoci
+Bologna e Ferrara,2026-07-22,SOIA,69,75,formazione baccelli
+Bologna e Ferrara,2026-07-22,SUSINO,71,89,ingrossamento frutti - maturazione
+Bologna e Ferrara,2026-07-22,VITE,81,83,invaiatura
+Bologna e Ferrara,2026-07-29,ACTINIDIA,71,79,ingrossamento frutti
+Bologna e Ferrara,2026-07-29,KAKI,71,79,accrescimento frutti
+Bologna e Ferrara,2026-07-29,MELO,71,89,da ingrossamento frutti a maturazione || ingrossamento frutti a maturazione
+Bologna e Ferrara,2026-07-29,NOCE,75,79,indurimento guscio
+Bologna e Ferrara,2026-07-29,OLIVO,71,79,accrescimento frutti
+Bologna e Ferrara,2026-07-29,PERO,71,89,accrescimento frutti – maturazione || accrescimento frutti – maturazione cv precoci
+Bologna e Ferrara,2026-07-29,PESCO,71,89,da ingrossamento frutti a maturazione
+Bologna e Ferrara,2026-07-29,POMODORO_INDUSTRIA,81,89,invaiatura – maturazione cv precoci
+Bologna e Ferrara,2026-07-29,SOIA,69,79,da formazione baccelli a ingrossamento semi
+Bologna e Ferrara,2026-07-29,SUSINO,71,89,ingrossamento frutti - maturazione
+Bologna e Ferrara,2026-07-29,VITE,81,83,invaiatura
+Bologna e Ferrara,2026-08-05,ACTINIDIA,71,79,ingrossamento frutti
+Bologna e Ferrara,2026-08-05,KAKI,71,79,accrescimento frutti
+Bologna e Ferrara,2026-08-05,MELO,71,89,da ingrossamento frutti a maturazione || ingrossamento frutti a maturazione
+Bologna e Ferrara,2026-08-05,NOCE,75,79,indurimento guscio
+Bologna e Ferrara,2026-08-05,OLIVO,71,79,accrescimento frutti
+Bologna e Ferrara,2026-08-05,PERO,71,89,accrescimento frutti – maturazione || accrescimento frutti – maturazione cv precoci
+Bologna e Ferrara,2026-08-05,PESCO,71,89,da ingrossamento frutti a maturazione
+Bologna e Ferrara,2026-08-05,POMODORO_INDUSTRIA,81,89,invaiatura – maturazione cv precoci
+Bologna e Ferrara,2026-08-05,SOIA,69,79,da formazione baccelli a ingrossamento semi
+Bologna e Ferrara,2026-08-05,SUSINO,71,89,ingrossamento frutti - maturazione
+Bologna e Ferrara,2026-08-05,VITE,81,83,invaiatura
+Bologna e Ferrara,2026-08-19,ACTINIDIA,71,79,ingrossamento frutti
+Bologna e Ferrara,2026-08-19,KAKI,71,79,accrescimento frutti
+Bologna e Ferrara,2026-08-19,MELO,71,89,da ingrossamento frutti a maturazione || ingrossamento frutti a maturazione
+Bologna e Ferrara,2026-08-19,NOCE,81,87,maturazione gheriglio
+Bologna e Ferrara,2026-08-19,OLIVO,71,79,accrescimento frutti
+Bologna e Ferrara,2026-08-19,PERO,71,89,accrescimento frutti – maturazione
+Bologna e Ferrara,2026-08-19,PESCO,81,93,da maturazione a post-raccolta
+Bologna e Ferrara,2026-08-19,POMODORO_INDUSTRIA,81,89,invaiatura – maturazione
+Bologna e Ferrara,2026-08-19,SOIA,75,79,ingrossamento semi
+Bologna e Ferrara,2026-08-19,SUSINO,71,89,ingrossamento frutti - maturazione
+Bologna e Ferrara,2026-08-19,VITE,85,89,maturazione-raccolta
+"Forli-Cesena, Ravenna, Rimini",2026-02-04,ACTINIDIA,0,0,gemma ferma
+"Forli-Cesena, Ravenna, Rimini",2026-02-04,ALBICOCCO,0,51,da gemma ferma a rigonfiamento gemme
+"Forli-Cesena, Ravenna, Rimini",2026-02-04,PESCO,0,3,da gemma ferma a inizio rottura gemma a legno
+"Forli-Cesena, Ravenna, Rimini",2026-02-04,SUSINO_CINO_GIAPPONESE,0,51,da gemma ferma a rigonfiamento gemme
+"Forli-Cesena, Ravenna, Rimini",2026-02-18,ACTINIDIA,0,0,gemma ferma
+"Forli-Cesena, Ravenna, Rimini",2026-02-18,ALBICOCCO,51,57,da gemma gonfia a bottone rosso
+"Forli-Cesena, Ravenna, Rimini",2026-02-18,MAIS,0,0,pre-semina
+"Forli-Cesena, Ravenna, Rimini",2026-02-18,MELO,0,51,da gemma ferma ad inizio rigonfiamento gemme
+"Forli-Cesena, Ravenna, Rimini",2026-02-18,PERO,0,51,da gemma ferma ad inizio rigonfiamento gemme
+"Forli-Cesena, Ravenna, Rimini",2026-02-18,PESCO,51,57,da gemma gonfia a bottone rosa
+"Forli-Cesena, Ravenna, Rimini",2026-02-18,SUSINO_CINO_GIAPPONESE,56,56,bottone verde
+"Forli-Cesena, Ravenna, Rimini",2026-02-18,VITE,0,0,gemma ferma
+"Forli-Cesena, Ravenna, Rimini",2026-02-25,ACTINIDIA,0,3,gemma ferma (cv verdi); rigonfiamento gemme (cv gialle)
+"Forli-Cesena, Ravenna, Rimini",2026-02-25,ALBICOCCO,57,69,da bottone rosso a fioritura
+"Forli-Cesena, Ravenna, Rimini",2026-02-25,CILIEGIO,51,51,rigonfiamento gemme
+"Forli-Cesena, Ravenna, Rimini",2026-02-25,MAIS,0,0,pre-semina
+"Forli-Cesena, Ravenna, Rimini",2026-02-25,MELO,51,52,rigonfiamento gemme
+"Forli-Cesena, Ravenna, Rimini",2026-02-25,PERO,51,52,rigonfiamento gemme
+"Forli-Cesena, Ravenna, Rimini",2026-02-25,PESCO,53,57,da rottura gemme a bottone rosa
+"Forli-Cesena, Ravenna, Rimini",2026-02-25,SUSINO_CINO_GIAPPONESE,56,59,da bottone verde a bottone bianco
+"Forli-Cesena, Ravenna, Rimini",2026-02-25,SUSINO_EUROPEO,51,51,rigonfiamento gemme
+"Forli-Cesena, Ravenna, Rimini",2026-02-25,VITE,0,0,gemma ferma
+"Forli-Cesena, Ravenna, Rimini",2026-03-04,ACTINIDIA,0,5,gemma ferma (cv verdi); gemma cotonosa (cv gialle)
+"Forli-Cesena, Ravenna, Rimini",2026-03-04,ALBICOCCO,57,69,da bottone rosso a fioritura
+"Forli-Cesena, Ravenna, Rimini",2026-03-04,CILIEGIO,51,53,da rigonfiamento gemme a rottura gemme
+"Forli-Cesena, Ravenna, Rimini",2026-03-04,KAKI,0,3,da gemma ferma a gemma ingrossata
+"Forli-Cesena, Ravenna, Rimini",2026-03-04,MAIS,0,0,pre-semina
+"Forli-Cesena, Ravenna, Rimini",2026-03-04,MELO,51,53,da rigonfiamento gemme a punte verdi
+"Forli-Cesena, Ravenna, Rimini",2026-03-04,OLIVO,0,9,da riposo vegetativo a ripresa vegetativa
+"Forli-Cesena, Ravenna, Rimini",2026-03-04,PERO,51,53,da rigonfiamento gemme a rottura gemme
+"Forli-Cesena, Ravenna, Rimini",2026-03-04,PESCO,57,69,da bottone rosa a fioritura
+"Forli-Cesena, Ravenna, Rimini",2026-03-04,SUSINO_CINO_GIAPPONESE,57,61,da bottone bianco ad inizio fioritura
+"Forli-Cesena, Ravenna, Rimini",2026-03-04,SUSINO_EUROPEO,51,53,da rigonfiamento a rottura gemme
+"Forli-Cesena, Ravenna, Rimini",2026-03-04,VITE,0,1,da gemma ferma ad inizio rigonfiamento gemme
+"Forli-Cesena, Ravenna, Rimini",2026-03-11,ACTINIDIA,1,5,ingrossamento gemme (cv verdi); gemma cotonosa (cv gialle)
+"Forli-Cesena, Ravenna, Rimini",2026-03-11,ALBICOCCO,60,69,da fioritura a caduta petali
+"Forli-Cesena, Ravenna, Rimini",2026-03-11,CILIEGIO,53,53,rottura gemme
+"Forli-Cesena, Ravenna, Rimini",2026-03-11,KAKI,1,3,gemma ingrossata
+"Forli-Cesena, Ravenna, Rimini",2026-03-11,MAIS,0,0,pre-semina
+"Forli-Cesena, Ravenna, Rimini",2026-03-11,MELO,53,54,da punte verdi ad orecchiette di topo
+"Forli-Cesena, Ravenna, Rimini",2026-03-11,OLIVO,0,9,da riposo vegetativo a ripresa vegetativa
+"Forli-Cesena, Ravenna, Rimini",2026-03-11,PERO,53,55,da rottura gemme a mazzetti affioranti
+"Forli-Cesena, Ravenna, Rimini",2026-03-11,PESCO,60,69,fioritura
+"Forli-Cesena, Ravenna, Rimini",2026-03-11,POMODORO_INDUSTRIA,0,13,pre-trapianto
+"Forli-Cesena, Ravenna, Rimini",2026-03-11,SUSINO_CINO_GIAPPONESE,60,69,fioritura
+"Forli-Cesena, Ravenna, Rimini",2026-03-11,SUSINO_EUROPEO,56,56,bottone verde
+"Forli-Cesena, Ravenna, Rimini",2026-03-11,VITE,1,5,da rigonfiamento gemme a gemma cotonosa
+"Forli-Cesena, Ravenna, Rimini",2026-03-18,ACTINIDIA,1,7,ingrossamento gemme (cv verdi); inizio germogliamento (cv gialle)
+"Forli-Cesena, Ravenna, Rimini",2026-03-18,ALBICOCCO,60,69,da fioritura a caduta petali
+"Forli-Cesena, Ravenna, Rimini",2026-03-18,CILIEGIO,56,59,da bottone verde a bottone bianco
+"Forli-Cesena, Ravenna, Rimini",2026-03-18,KAKI,7,9,da punta verde ad inizio germogliamento
+"Forli-Cesena, Ravenna, Rimini",2026-03-18,MAIS,0,0,pre-semina
+"Forli-Cesena, Ravenna, Rimini",2026-03-18,MELO,54,55,da orecchiette di topo a comparsa dei mazzetti fiorali
+"Forli-Cesena, Ravenna, Rimini",2026-03-18,OLIVO,1,9,ripresa vegetativa
+"Forli-Cesena, Ravenna, Rimini",2026-03-18,PERO,55,61,da comparsa mazzetti fiorali ad inizio fioritura
+"Forli-Cesena, Ravenna, Rimini",2026-03-18,PESCO,60,69,da fioritura a caduta petali
+"Forli-Cesena, Ravenna, Rimini",2026-03-18,POMODORO_INDUSTRIA,0,13,pre-trapianto
+"Forli-Cesena, Ravenna, Rimini",2026-03-18,SUSINO_CINO_GIAPPONESE,60,69,da fioritura ad inizio caduta petali
+"Forli-Cesena, Ravenna, Rimini",2026-03-18,SUSINO_EUROPEO,56,59,da bottone verde a bottone bianco
+"Forli-Cesena, Ravenna, Rimini",2026-03-18,VITE,1,5,da rigonfiamento gemme a gemma cotonosa
+"Forli-Cesena, Ravenna, Rimini",2026-03-25,ACTINIDIA,7,7,inizio germogliamento
+"Forli-Cesena, Ravenna, Rimini",2026-03-25,ALBICOCCO,67,73,da caduta petali a scamiciatura
+"Forli-Cesena, Ravenna, Rimini",2026-03-25,CILIEGIO,57,61,da bottone bianco ad inizio fioritura
+"Forli-Cesena, Ravenna, Rimini",2026-03-25,GIRASOLE,0,0,pre-semina
+"Forli-Cesena, Ravenna, Rimini",2026-03-25,KAKI,7,9,germogliamento || inizio germogliamento
+"Forli-Cesena, Ravenna, Rimini",2026-03-25,MAIS,0,0,da pre-semina a semina
+"Forli-Cesena, Ravenna, Rimini",2026-03-25,MELO,55,61,da mazzetti affioranti a inizio fioritura
+"Forli-Cesena, Ravenna, Rimini",2026-03-25,OLIVO,1,9,ripresa vegetativa
+"Forli-Cesena, Ravenna, Rimini",2026-03-25,PERO,55,69,da mazzetti divaricati a fioritura || da comparsa mazzetti fiorali ad inizio fioritura
+"Forli-Cesena, Ravenna, Rimini",2026-03-25,PESCO,60,71,da fioritura ad allegagione
+"Forli-Cesena, Ravenna, Rimini",2026-03-25,POMODORO_INDUSTRIA,0,13,pre-trapianto
+"Forli-Cesena, Ravenna, Rimini",2026-03-25,SUSINO_CINO_GIAPPONESE,60,71,da fioritura ad allegagione
+"Forli-Cesena, Ravenna, Rimini",2026-03-25,SUSINO_EUROPEO,57,61,da bottone bianco a inizio fioritura
+"Forli-Cesena, Ravenna, Rimini",2026-03-25,VITE,5,7,da gemma cotonosa ad inizio germogliamento
+"Forli-Cesena, Ravenna, Rimini",2026-04-01,ACTINIDIA,7,7,inizio germogliamento
+"Forli-Cesena, Ravenna, Rimini",2026-04-01,ALBICOCCO,72,73,scamiciatura
+"Forli-Cesena, Ravenna, Rimini",2026-04-01,CILIEGIO,60,69,fioritura
+"Forli-Cesena, Ravenna, Rimini",2026-04-01,GIRASOLE,0,0,pre-semina
+"Forli-Cesena, Ravenna, Rimini",2026-04-01,KAKI,7,9,germogliamento || inizio germogliamento
+"Forli-Cesena, Ravenna, Rimini",2026-04-01,MAIS,0,8,da pre-semina a pre-emergenza
+"Forli-Cesena, Ravenna, Rimini",2026-04-01,MELO,57,69,da bottoni rosa a fioritura
+"Forli-Cesena, Ravenna, Rimini",2026-04-01,NOCE,7,7,inizio germogliamento
+"Forli-Cesena, Ravenna, Rimini",2026-04-01,OLIVO,1,9,ripresa vegetativa
+"Forli-Cesena, Ravenna, Rimini",2026-04-01,PERO,60,69,fioritura
+"Forli-Cesena, Ravenna, Rimini",2026-04-01,PESCO,71,71,allegagione
+"Forli-Cesena, Ravenna, Rimini",2026-04-01,POMODORO_INDUSTRIA,0,13,pre-trapianto
+"Forli-Cesena, Ravenna, Rimini",2026-04-01,SOIA,0,0,pre-semina
+"Forli-Cesena, Ravenna, Rimini",2026-04-01,SUSINO_CINO_GIAPPONESE,60,71,da caduta petali ad allegagione || da fioritura ad allegagione
+"Forli-Cesena, Ravenna, Rimini",2026-04-01,SUSINO_EUROPEO,57,69,da fioritura a caduta petali || da bottone bianco a inizio fioritura
+"Forli-Cesena, Ravenna, Rimini",2026-04-01,VITE,5,7,da gemma cotonosa ad inizio germogliamento
+"Forli-Cesena, Ravenna, Rimini",2026-04-08,ACTINIDIA,7,9,germogliamento
+"Forli-Cesena, Ravenna, Rimini",2026-04-08,ALBICOCCO,71,79,da scamiciatura ad accrescimento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-04-08,CILIEGIO,60,69,da fioritura a caduta petali
+"Forli-Cesena, Ravenna, Rimini",2026-04-08,GIRASOLE,0,0,da pre-semina a semina
+"Forli-Cesena, Ravenna, Rimini",2026-04-08,KAKI,7,55,da germogliamento a comparsa bottoni fiorali || inizio germogliamento
+"Forli-Cesena, Ravenna, Rimini",2026-04-08,MAIS,0,8,da pre-semina a pre-emergenza
+"Forli-Cesena, Ravenna, Rimini",2026-04-08,MELO,60,69,da fioritura a caduta petali
+"Forli-Cesena, Ravenna, Rimini",2026-04-08,NOCE,7,7,inizio germogliamento
+"Forli-Cesena, Ravenna, Rimini",2026-04-08,OLIVO,1,9,ripresa vegetativa
+"Forli-Cesena, Ravenna, Rimini",2026-04-08,PERO,67,71,da caduta petali ad inizio allegagione
+"Forli-Cesena, Ravenna, Rimini",2026-04-08,PESCO,71,79,da scamiciatura a ingrossamento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-04-08,POMODORO_INDUSTRIA,0,15,da pre-trapianto a trapianto || pre-trapianto
+"Forli-Cesena, Ravenna, Rimini",2026-04-08,SOIA,0,0,pre-semina
+"Forli-Cesena, Ravenna, Rimini",2026-04-08,SUSINO,67,73,da caduta petali a scamiciatura
+"Forli-Cesena, Ravenna, Rimini",2026-04-08,VITE,11,53,da prime foglie distese a grappolini visibili
+"Forli-Cesena, Ravenna, Rimini",2026-04-15,ACTINIDIA,7,55,da germogliamento a comparsa bottoni fiorali
+"Forli-Cesena, Ravenna, Rimini",2026-04-15,ALBICOCCO,71,79,accrescimento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-04-15,CILIEGIO,67,79,da caduta petali ad accrescimento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-04-15,GIRASOLE,0,0,da pre-semina a semina
+"Forli-Cesena, Ravenna, Rimini",2026-04-15,KAKI,7,55,da germogliamento a comparsa bottoni fiorali
+"Forli-Cesena, Ravenna, Rimini",2026-04-15,MAIS,0,9,emergenza || da pre-emergenza ad emergenza
+"Forli-Cesena, Ravenna, Rimini",2026-04-15,MELO,60,71,da caduta petali ad allegagione || da fioritura ad allegagione
+"Forli-Cesena, Ravenna, Rimini",2026-04-15,NOCE,7,59,da germogliamento ad emissione amenti
+"Forli-Cesena, Ravenna, Rimini",2026-04-15,OLIVO,1,9,ripresa vegetativa
+"Forli-Cesena, Ravenna, Rimini",2026-04-15,PERO,71,71,allegagione
+"Forli-Cesena, Ravenna, Rimini",2026-04-15,PESCO,71,79,da scamiciatura ad ingrossamento frutti || da scamiciatura a ingrossamento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-04-15,POMODORO_INDUSTRIA,0,15,da pre-trapianto a trapianto
+"Forli-Cesena, Ravenna, Rimini",2026-04-15,SOIA,0,0,pre-semina
+"Forli-Cesena, Ravenna, Rimini",2026-04-15,SUSINO,67,72,da caduta petali ad inizio ingrossamento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-04-15,VITE,11,53,da prime foglie distese a grappolini visibili
+"Forli-Cesena, Ravenna, Rimini",2026-04-22,ACTINIDIA,7,55,comparsa bottoni fiorali || da germogliamento a comparsa bottoni fiorali
+"Forli-Cesena, Ravenna, Rimini",2026-04-22,ALBICOCCO,71,79,da accrescimento frutti ad indurimento nocciolo
+"Forli-Cesena, Ravenna, Rimini",2026-04-22,CILIEGIO,71,79,accrescimento frutti || ad accrescimento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-04-22,GIRASOLE,0,9,da semina ad emergenza
+"Forli-Cesena, Ravenna, Rimini",2026-04-22,KAKI,51,55,comparsa bottoni fiorali
+"Forli-Cesena, Ravenna, Rimini",2026-04-22,MAIS,9,13,da emergenza a 2-3 foglie
+"Forli-Cesena, Ravenna, Rimini",2026-04-22,MELO,71,79,da allegagione ad ingrossamento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-04-22,NOCE,7,61,da emissione amenti ad inizio fioritura || da germogliamento ad emissione amenti
+"Forli-Cesena, Ravenna, Rimini",2026-04-22,OLIVO,1,52,da ripresa vegetativa ad inizio mignolatura
+"Forli-Cesena, Ravenna, Rimini",2026-04-22,PERO,71,79,accrescimento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-04-22,PESCO,71,79,ingrossamento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-04-22,POMODORO_INDUSTRIA,0,15,da pre-trapianto a trapianto
+"Forli-Cesena, Ravenna, Rimini",2026-04-22,SOIA,0,0,da pre-semina a semina
+"Forli-Cesena, Ravenna, Rimini",2026-04-22,SUSINO,71,79,ingrossamento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-04-22,VITE,11,55,da sviluppo foglie a grappolini separati
+"Forli-Cesena, Ravenna, Rimini",2026-04-29,ACTINIDIA,55,61,da bottoni fiorali ad inizio fioritura
+"Forli-Cesena, Ravenna, Rimini",2026-04-29,ALBICOCCO,71,79,da accrescimento frutti ad indurimento nocciolo
+"Forli-Cesena, Ravenna, Rimini",2026-04-29,CILIEGIO,71,85,da accrescimento frutti ad invaiatura || ad accrescimento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-04-29,GIRASOLE,0,10,da pre-emergenza a cotiledoni
+"Forli-Cesena, Ravenna, Rimini",2026-04-29,KAKI,55,59,bottoni fiorali
+"Forli-Cesena, Ravenna, Rimini",2026-04-29,MAIS,9,15,da emergenza a 2-5 foglie
+"Forli-Cesena, Ravenna, Rimini",2026-04-29,MELO,71,79,ingrossamento frutti || da allegagione ad ingrossamento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-04-29,NOCE,60,69,fioritura
+"Forli-Cesena, Ravenna, Rimini",2026-04-29,OLIVO,50,57,mignolatura
+"Forli-Cesena, Ravenna, Rimini",2026-04-29,PERO,71,79,accrescimento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-04-29,PESCO,71,79,ingrossamento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-04-29,POMODORO_INDUSTRIA,0,15,da pre-trapianto a trapianto
+"Forli-Cesena, Ravenna, Rimini",2026-04-29,SOIA,0,9,da semina a emergenza
+"Forli-Cesena, Ravenna, Rimini",2026-04-29,SUSINO,71,79,ingrossamento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-04-29,VITE,53,55,da grappolini visibili a grappoli separati
+"Forli-Cesena, Ravenna, Rimini",2026-05-06,ACTINIDIA,55,69,da bottone bianco a fioritura || da bottoni fiorali ad inizio fioritura da bottone bianco a fioritura
+"Forli-Cesena, Ravenna, Rimini",2026-05-06,ALBICOCCO,75,77,indurimento nocciolo
+"Forli-Cesena, Ravenna, Rimini",2026-05-06,CILIEGIO,71,85,da accrescimento frutti ad invaiatura
+"Forli-Cesena, Ravenna, Rimini",2026-05-06,GIRASOLE,10,14,da cotiledoni a 2-4 foglie
+"Forli-Cesena, Ravenna, Rimini",2026-05-06,KAKI,55,61,da bottoni fiorali ad inizio fioritura
+"Forli-Cesena, Ravenna, Rimini",2026-05-06,MAIS,13,19,3-10 foglie
+"Forli-Cesena, Ravenna, Rimini",2026-05-06,MELO,71,79,ingrossamento frutti || da allegagione ad ingrossamento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-05-06,NOCE,67,69,da fine fioritura ad allegagione
+"Forli-Cesena, Ravenna, Rimini",2026-05-06,OLIVO,50,57,mignolatura
+"Forli-Cesena, Ravenna, Rimini",2026-05-06,PERO,71,79,accrescimento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-05-06,PESCO,71,79,ingrossamento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-05-06,POMODORO_INDUSTRIA,0,61,da pre-trapianto a inizio fioritura primo palco varietà precocissime
+"Forli-Cesena, Ravenna, Rimini",2026-05-06,SOIA,0,11,da semina a prime foglie vere
+"Forli-Cesena, Ravenna, Rimini",2026-05-06,SUSINO,71,79,ingrossamento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-05-06,VITE,55,57,da grappoli separati ad inizio bottoni fiorali separati
+"Forli-Cesena, Ravenna, Rimini",2026-05-13,ACTINIDIA,60,79,da fioritura ad ingrossamento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-05-13,ALBICOCCO,75,81,da indurimento nocciolo ad inizio maturazione
+"Forli-Cesena, Ravenna, Rimini",2026-05-13,CILIEGIO,71,89,da accrescimento frutti a maturazione
+"Forli-Cesena, Ravenna, Rimini",2026-05-13,GIRASOLE,10,16,da cotiledoni a 2-6 foglie
+"Forli-Cesena, Ravenna, Rimini",2026-05-13,KAKI,55,69,da bottoni fiorali a fioritura
+"Forli-Cesena, Ravenna, Rimini",2026-05-13,MAIS,16,19,6-12 foglie
+"Forli-Cesena, Ravenna, Rimini",2026-05-13,MELO,71,79,ingrossamento frutti || da allegagione ad ingrossamento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-05-13,NOCE,69,69,allegagione
+"Forli-Cesena, Ravenna, Rimini",2026-05-13,OLIVO,50,57,mignolatura
+"Forli-Cesena, Ravenna, Rimini",2026-05-13,PERO,71,79,accrescimento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-05-13,PESCO,71,79,ingrossamento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-05-13,POMODORO_INDUSTRIA,0,62,da pre-trapianto a fioritura secondo palco
+"Forli-Cesena, Ravenna, Rimini",2026-05-13,SOIA,0,11,da pre-semina a prime foglie vere || da semina a prime foglie vere
+"Forli-Cesena, Ravenna, Rimini",2026-05-13,SUSINO,71,79,ingrossamento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-05-13,VITE,55,61,da grappoli separati ad inizio fioritura
+"Forli-Cesena, Ravenna, Rimini",2026-05-20,ACTINIDIA,67,79,da caduta petali ad ingrossamento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-05-20,ALBICOCCO,71,89,da accrescimento frutti a maturazione
+"Forli-Cesena, Ravenna, Rimini",2026-05-20,CILIEGIO,71,89,da accrescimento frutti a maturazione
+"Forli-Cesena, Ravenna, Rimini",2026-05-20,GIRASOLE,10,16,da cotiledoni a 4-6 foglie
+"Forli-Cesena, Ravenna, Rimini",2026-05-20,KAKI,55,69,da bottoni fiorali a fioritura
+"Forli-Cesena, Ravenna, Rimini",2026-05-20,MAIS,18,19,8-12 foglie
+"Forli-Cesena, Ravenna, Rimini",2026-05-20,MELO,71,79,ingrossamento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-05-20,NOCE,71,79,accrescimento frutto
+"Forli-Cesena, Ravenna, Rimini",2026-05-20,OLIVO,50,61,da mignolatura ad inizio fioritura
+"Forli-Cesena, Ravenna, Rimini",2026-05-20,PERO,71,79,accrescimento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-05-20,PESCO,71,79,da ingrossamento frutti ad indurimento nocciolo
+"Forli-Cesena, Ravenna, Rimini",2026-05-20,POMODORO_INDUSTRIA,0,72,da pre-trapianto ad allegagione secondo palco
+"Forli-Cesena, Ravenna, Rimini",2026-05-20,SOIA,11,13,da prime foglie vere a 2° foglia trilobata
+"Forli-Cesena, Ravenna, Rimini",2026-05-20,SUSINO,71,79,ingrossamento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-05-20,VITE,55,69,da grappoli separati a fioritura
+"Forli-Cesena, Ravenna, Rimini",2026-05-27,ACTINIDIA,69,79,da allegagione ad ingrossamento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-05-27,ALBICOCCO,71,89,da accrescimento frutti a maturazione
+"Forli-Cesena, Ravenna, Rimini",2026-05-27,CILIEGIO,81,89,da invaiatura frutti a maturazione
+"Forli-Cesena, Ravenna, Rimini",2026-05-27,KAKI,67,79,da caduta petali ad accrescimento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-05-27,MAIS,18,39,da 8 foglie a levata
+"Forli-Cesena, Ravenna, Rimini",2026-05-27,MELO,71,79,ingrossamento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-05-27,NOCE,71,79,accrescimento frutto
+"Forli-Cesena, Ravenna, Rimini",2026-05-27,OLIVO,60,69,fioritura
+"Forli-Cesena, Ravenna, Rimini",2026-05-27,PERO,71,79,accrescimento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-05-27,PESCO,71,79,da ingrossamento frutti ad indurimento nocciolo
+"Forli-Cesena, Ravenna, Rimini",2026-05-27,POMODORO_INDUSTRIA,0,73,da pre-trapianto ad allegagione terzo palco
+"Forli-Cesena, Ravenna, Rimini",2026-05-27,SOIA,13,15,2-4 foglie trilobate
+"Forli-Cesena, Ravenna, Rimini",2026-05-27,SUSINO,71,79,ingrossamento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-05-27,VITE,60,71,da fioritura ad allegagione
+"Forli-Cesena, Ravenna, Rimini",2026-06-03,ACTINIDIA,69,79,da allegagione ad ingrossamento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-06-03,ALBICOCCO,71,89,da accrescimento frutti a maturazione
+"Forli-Cesena, Ravenna, Rimini",2026-06-03,CILIEGIO,81,89,maturazione
+"Forli-Cesena, Ravenna, Rimini",2026-06-03,KAKI,71,79,accrescimento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-06-03,MAIS,18,39,da 8 foglie a levata
+"Forli-Cesena, Ravenna, Rimini",2026-06-03,MELO,71,79,ingrossamento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-06-03,NOCE,71,79,accrescimento frutto
+"Forli-Cesena, Ravenna, Rimini",2026-06-03,OLIVO,69,69,allegagione
+"Forli-Cesena, Ravenna, Rimini",2026-06-03,PERO,71,79,accrescimento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-06-03,PESCO,71,89,da ingrossamento frutti a maturazione || da ingrossamento frutti ad indurimento nocciolo
+"Forli-Cesena, Ravenna, Rimini",2026-06-03,POMODORO_INDUSTRIA,0,73,da pre-trapianto ad allegagione terzo palco
+"Forli-Cesena, Ravenna, Rimini",2026-06-03,SOIA,14,16,3-5 foglie trilobate
+"Forli-Cesena, Ravenna, Rimini",2026-06-03,SUSINO,71,79,ingrossamento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-06-03,VITE,71,75,da allegagione a sviluppo degli acini
+"Forli-Cesena, Ravenna, Rimini",2026-06-10,ACTINIDIA,71,79,ad ingrossamento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-06-10,ALBICOCCO,71,89,da accrescimento frutti a maturazione
+"Forli-Cesena, Ravenna, Rimini",2026-06-10,CILIEGIO,81,89,maturazione
+"Forli-Cesena, Ravenna, Rimini",2026-06-10,KAKI,71,79,accrescimento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-06-10,MAIS,30,59,da levata ad emissione pennacchio
+"Forli-Cesena, Ravenna, Rimini",2026-06-10,MELO,71,79,ingrossamento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-06-10,NOCE,71,79,accrescimento frutto
+"Forli-Cesena, Ravenna, Rimini",2026-06-10,OLIVO,69,69,allegagione
+"Forli-Cesena, Ravenna, Rimini",2026-06-10,PERO,71,79,accrescimento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-06-10,PESCO,71,89,da ingrossamento frutti a maturazione
+"Forli-Cesena, Ravenna, Rimini",2026-06-10,POMODORO_INDUSTRIA,71,74,allegagione 1°- 4° palco
+"Forli-Cesena, Ravenna, Rimini",2026-06-10,SOIA,14,16,3-5 foglie trilobate
+"Forli-Cesena, Ravenna, Rimini",2026-06-10,SUSINO,71,89,da ingrossamento frutti a maturazione
+"Forli-Cesena, Ravenna, Rimini",2026-06-10,VITE,73,77,da sviluppo acini a pre-chiusura grappolo
+"Forli-Cesena, Ravenna, Rimini",2026-06-17,ACTINIDIA,71,79,ingrossamento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-06-17,ALBICOCCO,71,89,da accrescimento frutti a maturazione
+"Forli-Cesena, Ravenna, Rimini",2026-06-17,CILIEGIO,81,89,maturazione
+"Forli-Cesena, Ravenna, Rimini",2026-06-17,KAKI,71,79,accrescimento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-06-17,MAIS,51,59,da spigatura ad emissione pennacchio
+"Forli-Cesena, Ravenna, Rimini",2026-06-17,MELO,71,79,ingrossamento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-06-17,NOCE,71,79,accrescimento frutto
+"Forli-Cesena, Ravenna, Rimini",2026-06-17,OLIVO,69,79,da allegagione ad accrescimento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-06-17,PERO,71,79,accrescimento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-06-17,PESCO,71,89,da ingrossamento frutti a maturazione
+"Forli-Cesena, Ravenna, Rimini",2026-06-17,POMODORO_INDUSTRIA,71,83,da allegagione 1°- 4° palco a inizio invaiatura 1° palco
+"Forli-Cesena, Ravenna, Rimini",2026-06-17,SOIA,14,16,3-5 foglie trilobate
+"Forli-Cesena, Ravenna, Rimini",2026-06-17,SUSINO,71,89,da ingrossamento frutti a maturazione
+"Forli-Cesena, Ravenna, Rimini",2026-06-17,VITE,77,79,da pre-chiusura a chiusura grappolo
+"Forli-Cesena, Ravenna, Rimini",2026-06-24,ACTINIDIA,71,79,ingrossamento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-06-24,ALBICOCCO,71,89,da accrescimento frutti a maturazione
+"Forli-Cesena, Ravenna, Rimini",2026-06-24,CILIEGIO,91,93,post-raccolta
+"Forli-Cesena, Ravenna, Rimini",2026-06-24,KAKI,71,79,accrescimento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-06-24,MAIS,51,59,emissione pennacchio
+"Forli-Cesena, Ravenna, Rimini",2026-06-24,MELO,71,79,ingrossamento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-06-24,NOCE,71,79,accrescimento frutto
+"Forli-Cesena, Ravenna, Rimini",2026-06-24,OLIVO,71,79,accrescimento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-06-24,PERO,71,79,accrescimento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-06-24,PESCO,71,89,da ingrossamento frutti a maturazione
+"Forli-Cesena, Ravenna, Rimini",2026-06-24,POMODORO_INDUSTRIA,71,83,accrescimento - invaiatura 2° palco
+"Forli-Cesena, Ravenna, Rimini",2026-06-24,SOIA,10,61,sviluppo vegetativo-inizio fioritura
+"Forli-Cesena, Ravenna, Rimini",2026-06-24,SUSINO,71,89,da ingrossamento frutti a maturazione
+"Forli-Cesena, Ravenna, Rimini",2026-06-24,VITE,77,79,chiusura grappolo
+"Forli-Cesena, Ravenna, Rimini",2026-07-01,ACTINIDIA,71,79,ingrossamento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-07-01,ALBICOCCO,71,89,da accrescimento frutti a maturazione
+"Forli-Cesena, Ravenna, Rimini",2026-07-01,CILIEGIO,91,93,post-raccolta
+"Forli-Cesena, Ravenna, Rimini",2026-07-01,KAKI,71,79,accrescimento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-07-01,MAIS,51,59,emissione pennacchio
+"Forli-Cesena, Ravenna, Rimini",2026-07-01,MELO,71,79,ingrossamento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-07-01,NOCE,71,79,accrescimento frutto
+"Forli-Cesena, Ravenna, Rimini",2026-07-01,OLIVO,71,79,accrescimento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-07-01,PERO,71,79,accrescimento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-07-01,PESCO,71,89,da ingrossamento frutti a maturazione
+"Forli-Cesena, Ravenna, Rimini",2026-07-01,POMODORO_INDUSTRIA,71,83,accrescimento - invaiatura ultimo palco delle cv precocissime
+"Forli-Cesena, Ravenna, Rimini",2026-07-01,SOIA,10,61,da sviluppo vegetativo-inizio fioritura
+"Forli-Cesena, Ravenna, Rimini",2026-07-01,SUSINO,71,89,da ingrossamento frutti a maturazione
+"Forli-Cesena, Ravenna, Rimini",2026-07-01,VITE,77,79,chiusura grappolo
+"Forli-Cesena, Ravenna, Rimini",2026-07-08,ACTINIDIA,71,79,ingrossamento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-07-08,ALBICOCCO,71,89,da accrescimento frutti a maturazione
+"Forli-Cesena, Ravenna, Rimini",2026-07-08,CILIEGIO,91,93,post-raccolta
+"Forli-Cesena, Ravenna, Rimini",2026-07-08,KAKI,71,79,accrescimento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-07-08,MAIS,73,85,maturazione lattea-cerosa || maturazione lattea
+"Forli-Cesena, Ravenna, Rimini",2026-07-08,MELO,71,79,ingrossamento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-07-08,NOCE,71,79,accrescimento frutto
+"Forli-Cesena, Ravenna, Rimini",2026-07-08,OLIVO,71,79,accrescimento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-07-08,PERO,71,89,da accrescimento frutti a maturazione
+"Forli-Cesena, Ravenna, Rimini",2026-07-08,PESCO,71,89,da ingrossamento frutti a maturazione
+"Forli-Cesena, Ravenna, Rimini",2026-07-08,POMODORO_INDUSTRIA,71,83,accrescimento - invaiatura ultimo palco delle cv precocissime
+"Forli-Cesena, Ravenna, Rimini",2026-07-08,SOIA,60,75,da fioritura a formazione baccelli
+"Forli-Cesena, Ravenna, Rimini",2026-07-08,SUSINO,71,89,da ingrossamento frutti a maturazione
+"Forli-Cesena, Ravenna, Rimini",2026-07-08,VITE,77,81,da chiusura grappolo ad inizio invaiatura
+"Forli-Cesena, Ravenna, Rimini",2026-07-15,ACTINIDIA,71,79,ingrossamento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-07-15,ALBICOCCO,81,93,da maturazione a post-raccolta
+"Forli-Cesena, Ravenna, Rimini",2026-07-15,CILIEGIO,91,93,post-raccolta
+"Forli-Cesena, Ravenna, Rimini",2026-07-15,KAKI,71,79,accrescimento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-07-15,MAIS,73,85,maturazione lattea-cerosa
+"Forli-Cesena, Ravenna, Rimini",2026-07-15,MELO,71,79,ingrossamento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-07-15,NOCE,71,79,accrescimento frutto
+"Forli-Cesena, Ravenna, Rimini",2026-07-15,OLIVO,71,79,accrescimento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-07-15,PERO,71,89,da accrescimento frutti a maturazione
+"Forli-Cesena, Ravenna, Rimini",2026-07-15,PESCO,71,89,da ingrossamento frutti a maturazione
+"Forli-Cesena, Ravenna, Rimini",2026-07-15,POMODORO_INDUSTRIA,81,89,invaiatura – maturazione cv precocissime
+"Forli-Cesena, Ravenna, Rimini",2026-07-15,SOIA,69,75,formazione baccelli
+"Forli-Cesena, Ravenna, Rimini",2026-07-15,SUSINO,71,89,da ingrossamento frutti a maturazione
+"Forli-Cesena, Ravenna, Rimini",2026-07-15,VITE,77,83,da chiusura grappolo ad invaiatura || da chiusura grappolo ad inizio invaiatura
+"Forli-Cesena, Ravenna, Rimini",2026-07-22,ACTINIDIA,71,79,ingrossamento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-07-22,ALBICOCCO,81,93,da maturazione a post-raccolta
+"Forli-Cesena, Ravenna, Rimini",2026-07-22,KAKI,71,79,accrescimento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-07-22,MAIS,73,85,maturazione lattea-cerosa
+"Forli-Cesena, Ravenna, Rimini",2026-07-22,MELO,71,79,ingrossamento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-07-22,NOCE,75,79,indurimento guscio
+"Forli-Cesena, Ravenna, Rimini",2026-07-22,OLIVO,71,79,accrescimento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-07-22,PERO,71,89,da accrescimento frutti a maturazione
+"Forli-Cesena, Ravenna, Rimini",2026-07-22,PESCO,71,89,da ingrossamento frutti a maturazione
+"Forli-Cesena, Ravenna, Rimini",2026-07-22,POMODORO_INDUSTRIA,81,89,invaiatura – maturazione cv precoci
+"Forli-Cesena, Ravenna, Rimini",2026-07-22,SOIA,69,75,formazione baccelli
+"Forli-Cesena, Ravenna, Rimini",2026-07-22,SUSINO,71,89,da ingrossamento frutti a maturazione
+"Forli-Cesena, Ravenna, Rimini",2026-07-22,VITE,81,83,invaiatura
+"Forli-Cesena, Ravenna, Rimini",2026-07-29,ACTINIDIA,71,79,ingrossamento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-07-29,KAKI,71,79,accrescimento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-07-29,MELO,71,89,da ingrossamento frutti a maturazione
+"Forli-Cesena, Ravenna, Rimini",2026-07-29,NOCE,75,79,indurimento guscio
+"Forli-Cesena, Ravenna, Rimini",2026-07-29,OLIVO,71,79,accrescimento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-07-29,PERO,71,89,da accrescimento frutti a maturazione
+"Forli-Cesena, Ravenna, Rimini",2026-07-29,PESCO,71,89,da ingrossamento frutti a maturazione
+"Forli-Cesena, Ravenna, Rimini",2026-07-29,POMODORO_INDUSTRIA,81,89,invaiatura – maturazione cv precoci
+"Forli-Cesena, Ravenna, Rimini",2026-07-29,SOIA,69,79,da formazione baccelli a ingrossamento semi
+"Forli-Cesena, Ravenna, Rimini",2026-07-29,SUSINO,71,89,da ingrossamento frutti a maturazione
+"Forli-Cesena, Ravenna, Rimini",2026-07-29,VITE,81,83,invaiatura
+"Forli-Cesena, Ravenna, Rimini",2026-08-05,ACTINIDIA,71,79,ingrossamento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-08-05,KAKI,71,79,accrescimento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-08-05,MELO,71,89,da ingrossamento frutti a maturazione
+"Forli-Cesena, Ravenna, Rimini",2026-08-05,NOCE,75,79,indurimento guscio
+"Forli-Cesena, Ravenna, Rimini",2026-08-05,OLIVO,71,79,accrescimento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-08-05,PERO,71,89,da accrescimento frutti a maturazione
+"Forli-Cesena, Ravenna, Rimini",2026-08-05,PESCO,71,89,da ingrossamento frutti a maturazione
+"Forli-Cesena, Ravenna, Rimini",2026-08-05,POMODORO_INDUSTRIA,71,89,da allegagione a maturazione
+"Forli-Cesena, Ravenna, Rimini",2026-08-05,SOIA,69,79,da formazione baccelli a ingrossamento semi
+"Forli-Cesena, Ravenna, Rimini",2026-08-05,SUSINO,71,89,da ingrossamento frutti a maturazione
+"Forli-Cesena, Ravenna, Rimini",2026-08-05,VITE,81,89,da invaiatura a maturazione
+"Forli-Cesena, Ravenna, Rimini",2026-08-19,ACTINIDIA,71,79,ingrossamento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-08-19,ALBICOCCO,91,93,post-raccolta
+"Forli-Cesena, Ravenna, Rimini",2026-08-19,KAKI,71,79,accrescimento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-08-19,MELO,71,89,da ingrossamento frutti a maturazione
+"Forli-Cesena, Ravenna, Rimini",2026-08-19,NOCE,81,87,maturazione gheriglio
+"Forli-Cesena, Ravenna, Rimini",2026-08-19,OLIVO,71,79,accrescimento frutti
+"Forli-Cesena, Ravenna, Rimini",2026-08-19,PERO,71,89,da accrescimento frutti a maturazione
+"Forli-Cesena, Ravenna, Rimini",2026-08-19,PESCO,81,93,da maturazione a post-raccolta
+"Forli-Cesena, Ravenna, Rimini",2026-08-19,POMODORO_INDUSTRIA,71,89,da allegagione a maturazione
+"Forli-Cesena, Ravenna, Rimini",2026-08-19,SOIA,69,79,da formazione baccelli a ingrossamento semi
+"Forli-Cesena, Ravenna, Rimini",2026-08-19,SUSINO,81,93,da maturazione a post-raccolta
+"Forli-Cesena, Ravenna, Rimini",2026-08-19,VITE,85,89,maturazione
+Modena,2026-02-03,ALBICOCCO,0,57,da gemma ferma a inizio bottone rosso || da gemma ferma a bottone rosso
+Modena,2026-02-03,MELO,0,0,gemma ferma
+Modena,2026-02-03,PERO,0,0,gemma ferma
+Modena,2026-02-03,PESCO,0,3,da gemma ferma a inizio rottura gemma a legno || gemma ferma-inizio rottura gemma a legno
+Modena,2026-02-03,SUSINO_CINO_GIAPPONESE,0,51,da gemma ferma a rigonfiamento gemme
+Modena,2026-02-17,ALBICOCCO,51,57,rigonfiamento gemma- bottone rosso || da gemma gonfia-bottone rosso
+Modena,2026-02-17,CILIEGIO,51,51,inizio rigonfiamento gemma
+Modena,2026-02-17,MAIS,0,0,pre-semina
+Modena,2026-02-17,MELO,0,51,gemma ferma-inizio rigonfiamento gemma
+Modena,2026-02-17,PERO,0,51,gemma ferma- inizio rigonfiamento gemma
+Modena,2026-02-17,PESCO,3,9,rottura gemma a legno
+Modena,2026-02-17,SUSINO_CINO_GIAPPONESE,51,56,rigonfiamento gemme-bottone verde
+Modena,2026-02-17,SUSINO_EUROPEO,51,51,inizio rigonfiamento gemma
+Modena,2026-02-17,VITE,0,0,gemma ferma
+Modena,2026-02-24,ALBICOCCO,57,61,bottone rosso-inizio fioritura
+Modena,2026-02-24,CILIEGIO,51,51,rigonfiamento gemma
+Modena,2026-02-24,MAIS,0,0,pre-semina
+Modena,2026-02-24,MELO,0,52,gemma ferma- rigonfiamento gemma
+Modena,2026-02-24,PERO,51,53,rigonfiamento gemma-rottura gemma
+Modena,2026-02-24,PESCO,3,57,rottura gemma a legno-bottone rosa
+Modena,2026-02-24,SUSINO_CINO_GIAPPONESE,56,59,bottone verde-bottone bianco
+Modena,2026-02-24,SUSINO_EUROPEO,51,51,rigonfiamento gemma
+Modena,2026-02-24,VITE,0,3,gemma ferma-rigonfiamento gemma
+Modena,2026-03-03,ALBICOCCO,57,69,bottone rosso- fioritura || bottone rosso-inizio fioritura
+Modena,2026-03-03,CILIEGIO,51,53,rigonfiamento gemma-rottura gemma
+Modena,2026-03-03,MAIS,0,0,pre-semina
+Modena,2026-03-03,MELO,51,53,rigonfiamento gemma-punte verdi
+Modena,2026-03-03,PERO,53,55,rottura gemma-inizio comparsa mazzetti affioranti
+Modena,2026-03-03,PESCO,57,61,bottone rosa-inizio fioritura || bottone rosa-inizia fioritura
+Modena,2026-03-03,SUSINO_CINO_GIAPPONESE,56,61,bottone verde-inizio fioritura
+Modena,2026-03-03,SUSINO_EUROPEO,51,51,rigonfiamento gemma
+Modena,2026-03-03,VITE,0,3,rigonfiamento gemma (pianto)
+Modena,2026-03-10,ALBICOCCO,60,69,fioritura-caduta petali
+Modena,2026-03-10,CILIEGIO,53,53,rottura gemma
+Modena,2026-03-10,KAKI,1,3,ingrossamento gemma
+Modena,2026-03-10,MAIS,0,0,pre-semina
+Modena,2026-03-10,MELO,53,54,punte verdi-orecchiette di topo
+Modena,2026-03-10,OLIVO,0,9,da riposo vegetativo a ripresa vegetativa
+Modena,2026-03-10,PERO,53,56,rottura gemma- mazzetti divaricati
+Modena,2026-03-10,PESCO,60,69,inizio fioritura-fioritura
+Modena,2026-03-10,SUSINO_CINO_GIAPPONESE,60,69,inizio fioritura-fioritura
+Modena,2026-03-10,SUSINO_EUROPEO,53,56,rottura gemma - bottone verde || rottura gemma -bottone
+Modena,2026-03-10,VITE,1,5,rigonfiamento gemma-gemma cotonosa
+Modena,2026-03-17,ALBICOCCO,67,69,fine fioritura- completa caduta petali || fine fioritura-caduta petali
+Modena,2026-03-17,CILIEGIO,56,59,bottone verde-bottone bianco
+Modena,2026-03-17,KAKI,7,9,punta verde-inizio germogliamento
+Modena,2026-03-17,MAIS,0,0,pre-semina-semina
+Modena,2026-03-17,MELO,51,55,punte verdi-comparsa bottoni fiorali
+Modena,2026-03-17,OLIVO,1,9,ripresa vegetativa
+Modena,2026-03-17,PERO,56,61,mazzetti divaricati-inizio fioritura
+Modena,2026-03-17,PESCO,60,69,fioritura-inizio caduta petali
+Modena,2026-03-17,SUSINO_CINO_GIAPPONESE,60,69,fioritura-caduta petali
+Modena,2026-03-17,SUSINO_EUROPEO,56,59,bottone verde-bottone bianco
+Modena,2026-03-17,VITE,1,5,rigonfiamento gemma-gemma cotonosa
+Modena,2026-03-24,ALBICOCCO,67,73,caduta petali-scamiciatura
+Modena,2026-03-24,CILIEGIO,57,69,bottone bianco- fioritura
+Modena,2026-03-24,GIRASOLE,0,0,pre semina || pre-semina
+Modena,2026-03-24,KAKI,7,9,germogliamento
+Modena,2026-03-24,MAIS,0,0,pre-semina-semina
+Modena,2026-03-24,MELO,55,57,mazzetti affioranti-bottone rosa
+Modena,2026-03-24,OLIVO,1,9,ripresa vegetativa
+Modena,2026-03-24,PERO,56,69,mazzetti divaricati-fioritura
+Modena,2026-03-24,PESCO,60,69,fioritura-caduta petali || fioritura-inizio caduta petali
+Modena,2026-03-24,POMODORO,0,13,pre-trapianto
+Modena,2026-03-24,SUSINO_CINO_GIAPPONESE,67,71,caduta petali-allegagione
+Modena,2026-03-24,SUSINO_EUROPEO,57,69,bottone bianco-fioritura
+Modena,2026-03-24,VITE,5,8,gemma cotonosa-germogliamento
+Modena,2026-03-31,ALBICOCCO,71,79,scamiciatura-ingrossamento frutti
+Modena,2026-03-31,CILIEGIO,60,69,fioritura-inizio caduta petali
+Modena,2026-03-31,GIRASOLE,0,0,pre semina || pre-semina
+Modena,2026-03-31,KAKI,7,9,germogliamento
+Modena,2026-03-31,MAIS,0,8,presemina - pre-emergenza
+Modena,2026-03-31,MELO,57,69,bottone rosa- fioritura
+Modena,2026-03-31,OLIVO,1,9,ripresa vegetativa
+Modena,2026-03-31,PERO,60,69,fioritura-inizio caduta petali
+Modena,2026-03-31,PESCO,67,71,caduta petali-allegagione
+Modena,2026-03-31,POMODORO_INDUSTRIA,0,13,pre trapianto || pre-trapianto
+Modena,2026-03-31,SOIA,0,0,Pre-semina
+Modena,2026-03-31,SUSINO_CINO_GIAPPONESE,67,71,caduta petali-allegagione
+Modena,2026-03-31,SUSINO_EUROPEO,60,69,fioritura
+Modena,2026-03-31,VITE,7,12,germogliamento- prime foglie distese
+Modena,2026-04-07,ALBICOCCO,71,79,ingrossamento frutti
+Modena,2026-04-07,CILIEGIO,67,71,caduta petali-allegagione
+Modena,2026-04-07,GIRASOLE,0,0,pre semina-semina || pre-semina-semina
+Modena,2026-04-07,KAKI,7,55,germogliamento – comparsa abbozzi fiorali
+Modena,2026-04-07,MAIS,0,8,presemina - pre-emergenza || semina - pre-emergenza
+Modena,2026-04-07,MELO,60,69,fioritura- caduta petali
+Modena,2026-04-07,OLIVO,1,9,ripresa vegetativa
+Modena,2026-04-07,PERO,67,71,caduta petali-allegagione
+Modena,2026-04-07,PESCO,71,73,allegagione-scamiciatura
+Modena,2026-04-07,POMODORO_INDUSTRIA,0,15,pre trapianto || pre-trapianto-trapianto
+Modena,2026-04-07,SOIA,0,0,Pre-semina
+Modena,2026-04-07,SUSINO,67,72,caduta petali -inizio scamiciatura
+Modena,2026-04-07,VITE,7,55,germogliamento - prima comparsa grappolini || germogliamento - prima comparsa grappolini grappolini
+Modena,2026-04-14,ALBICOCCO,71,79,accrescimento frutti
+Modena,2026-04-14,CILIEGIO,67,79,caduta petali-ingrossamento frutti
+Modena,2026-04-14,GIRASOLE,0,8,semina-pre emergenza
+Modena,2026-04-14,KAKI,51,55,presenza abbozzi fiorali
+Modena,2026-04-14,MAIS,0,9,pre-emergenza -emergenza
+Modena,2026-04-14,MELO,67,71,fine fioritura-allegagione
+Modena,2026-04-14,OLIVO,31,37,accrescimento germogli apicali e laterali || accrescimento germogli
+Modena,2026-04-14,PERO,71,79,allegagione-ingrossamento frutti
+Modena,2026-04-14,PESCO,71,73,fine allegagione-scamiciatura || allegagione-scamiciatura
+Modena,2026-04-14,POMODORO_INDUSTRIA,0,15,pre trapianto || pre-trapianto-trapianto
+Modena,2026-04-14,SOIA,0,0,Pre-semina
+Modena,2026-04-14,SUSINO,67,79,caduta petali -ingrossamento frutti
+Modena,2026-04-14,VITE,11,55,prime foglie distese-grappoli separati
+Modena,2026-04-21,ALBICOCCO,71,79,accrescimento frutti
+Modena,2026-04-21,CILIEGIO,71,79,ingrossamento frutti
+Modena,2026-04-21,GIRASOLE,0,9,pre-emergenza-emergenza || emergenza
+Modena,2026-04-21,KAKI,51,55,presenza abbozzi fiorali
+Modena,2026-04-21,MAIS,9,14,emergenza-2-4 foglie || emergenza-2 foglie
+Modena,2026-04-21,MELO,71,79,allegagione-accrescimento frutti
+Modena,2026-04-21,OLIVO,50,52,inizio mignolatura
+Modena,2026-04-21,PERO,71,79,ingrossamento frutti
+Modena,2026-04-21,PESCO,71,79,ingrossamento frutti
+Modena,2026-04-21,POMODORO_INDUSTRIA,0,15,pre trapianto-trapianto || pre-trapianto-trapianto
+Modena,2026-04-21,SOIA,0,0,pre-semina-semina
+Modena,2026-04-21,SUSINO,71,79,ingrossamento frutti
+Modena,2026-04-21,VITE,11,55,foglie distese-grappoli separati
+Modena,2026-04-28,ALBICOCCO,71,79,accrescimento frutti-indurimento nocciolo
+Modena,2026-04-28,CILIEGIO,71,81,ingrossamento frutti-inizio invaiatura cv.precoci
+Modena,2026-04-28,GIRASOLE,9,12,emergenza-cotiledoni || emergenza-2 foglie
+Modena,2026-04-28,KAKI,51,55,presenza abbozzi fiorali
+Modena,2026-04-28,MAIS,12,14,2-4 foglie
+Modena,2026-04-28,MELO,71,79,accrescimento frutti
+Modena,2026-04-28,OLIVO,50,57,mignolatura || inizio mignolatura
+Modena,2026-04-28,PERO,71,79,ingrossamento frutti
+Modena,2026-04-28,PESCO,71,79,ingrossamento frutti
+Modena,2026-04-28,POMODORO_INDUSTRIA,0,15,pre trapianto-trapianto || pre-trapianto-trapianto
+Modena,2026-04-28,SOIA,0,8,pre-semina-pre-emergenza || pre-semina-semina
+Modena,2026-04-28,SUSINO,71,79,ingrossamento frutti
+Modena,2026-04-28,VITE,11,57,grappoli separati – inizio bottoni fiorali separati || foglie distese-grappoli separati
+Modena,2026-05-05,ALBICOCCO,71,79,accrescimento frutti (indurimento nocciolo)
+Modena,2026-05-05,CILIEGIO,71,81,ingrossamento frutti-inizio maturazione cv.precocissime
+Modena,2026-05-05,GIRASOLE,9,12,emergenza-prime foglie || emergenza-2 foglie
+Modena,2026-05-05,KAKI,55,59,bottone fiorale
+Modena,2026-05-05,MAIS,12,14,2-4 foglie
+Modena,2026-05-05,MELO,71,79,accrescimento frutti
+Modena,2026-05-05,OLIVO,50,57,mignolatura
+Modena,2026-05-05,PERO,71,79,ingrossamento frutti
+Modena,2026-05-05,PESCO,71,79,ingrossamento frutti
+Modena,2026-05-05,POMODORO_INDUSTRIA,0,15,pre trapianto-trapianto || pre-trapianto-trapianto
+Modena,2026-05-05,SOIA,0,9,semina-emergenza
+Modena,2026-05-05,SUSINO,71,79,ingrossamento frutti
+Modena,2026-05-05,VITE,55,57,grappoli separati – inizio bottoni fiorali separati
+Modena,2026-05-12,ALBICOCCO,75,81,indurimento nocciolo- inizio maturazione cv.precoci
+Modena,2026-05-12,CILIEGIO,71,89,ingrossamento frutti- maturazione cv.precoci || ingrossamento frutti-inizio maturazione cv.precoci
+Modena,2026-05-12,GIRASOLE,9,14,2-4 foglie || emergenza-2 foglie
+Modena,2026-05-12,KAKI,55,61,bottone fiorale-inizio fioritura
+Modena,2026-05-12,MAIS,14,18,4-8 foglie
+Modena,2026-05-12,MELO,71,79,accrescimento frutti
+Modena,2026-05-12,OLIVO,50,57,mignolatura
+Modena,2026-05-12,PERO,71,79,ingrossamento frutti
+Modena,2026-05-12,PESCO,71,79,ingrossamento frutti
+Modena,2026-05-12,POMODORO_INDUSTRIA,0,71,pre trapianto-allegagione primo palco - fioritura secondo palco || pre-trapianto-allegagione primo palco fioritura secondo palco
+Modena,2026-05-12,SOIA,9,13,emergenza-2/3foglie || emergenza-prime foglie
+Modena,2026-05-12,SUSINO,71,79,ingrossamento frutti
+Modena,2026-05-12,VITE,55,61,bottoni fiorali separati-inizio fioritura || grappoli separati – inizio bottoni fiorali separati
+Modena,2026-05-19,ALBICOCCO,71,89,accrescimento-maturazione cv.precoci
+Modena,2026-05-19,CILIEGIO,81,89,invaiatura- maturazione cv.precoci
+Modena,2026-05-19,GIRASOLE,14,16,4-6 foglie
+Modena,2026-05-19,KAKI,60,69,inizio fioritura-fioritura
+Modena,2026-05-19,MAIS,16,18,6-8 foglie
+Modena,2026-05-19,MELO,71,79,accrescimento frutti
+Modena,2026-05-19,OLIVO,50,57,mignolatura
+Modena,2026-05-19,PERO,71,79,ingrossamento frutti
+Modena,2026-05-19,PESCO,71,79,inizio indurimento nocciolo- ingrossamento frutti || inizio indurimento nocciolo- ingrossamento frutti ingrossamento frutti
+Modena,2026-05-19,POMODORO_INDUSTRIA,0,72,pre trapianto-allegagione secondo palco - fioritura terzo paco
+Modena,2026-05-19,SOIA,11,13,prime foglie vere a 2° foglia trilobata
+Modena,2026-05-19,SUSINO,71,79,ingrossamento frutti
+Modena,2026-05-19,VITE,60,61,inizio fioritura
+Modena,2026-05-26,ALBICOCCO,71,89,accrescimento-maturazione cv.precoci
+Modena,2026-05-26,CILIEGIO,81,89,invaiatura- maturazione cv.medio precoci
+Modena,2026-05-26,GIRASOLE,14,16,4-6 foglie
+Modena,2026-05-26,KAKI,69,69,allegagione
+Modena,2026-05-26,MAIS,16,39,8 foglie-levata || 6-8 foglie-levata
+Modena,2026-05-26,MELO,71,79,accrescimento frutti
+Modena,2026-05-26,OLIVO,60,69,fioritura
+Modena,2026-05-26,PERO,71,79,ingrossamento frutti
+Modena,2026-05-26,PESCO,71,79,indurimento nocciolo- ingrossamento frutti || inizio indurimento nocciolo- ingrossamento frutti
+Modena,2026-05-26,POMODORO_INDUSTRIA,0,73,pre-trapianto – allegagione 3° palco
+Modena,2026-05-26,SOIA,11,13,prime foglie vere a 2° foglia trilobata
+Modena,2026-05-26,SUSINO,71,79,ingrossamento frutti
+Modena,2026-05-26,VITE,60,71,fioritura -allegagione
+Modena,2026-06-03,ALBICOCCO,71,89,accrescimento-maturazione
+Modena,2026-06-03,CILIEGIO,81,89,maturazione
+Modena,2026-06-03,KAKI,71,79,accrescimento frutti
+Modena,2026-06-03,MAIS,18,39,8 foglie-levata || da 8 foglie a levata
+Modena,2026-06-03,MELO,71,79,accrescimento frutti
+Modena,2026-06-03,OLIVO,60,69,fioritura -allegagione
+Modena,2026-06-03,PERO,71,79,ingrossamento frutti
+Modena,2026-06-03,PESCO,71,79,indurimento nocciolo- ingrossamento frutti || inizio indurimento nocciolo- ingrossamento frutti
+Modena,2026-06-03,POMODORO_INDUSTRIA,0,73,pre-trapianto – allegagione 3° palco
+Modena,2026-06-03,SOIA,14,16,3-5° foglia trilobata
+Modena,2026-06-03,SUSINO,71,79,ingrossamento frutti
+Modena,2026-06-03,VITE,71,73,allegagione-mignolatura
+Modena,2026-06-09,ALBICOCCO,71,89,accrescimento-maturazione
+Modena,2026-06-09,CILIEGIO,81,89,maturazione
+Modena,2026-06-09,KAKI,71,79,accrescimento frutti
+Modena,2026-06-09,MAIS,30,59,levata-spigatura
+Modena,2026-06-09,MELO,71,79,accrescimento frutti
+Modena,2026-06-09,OLIVO,69,69,allegagione
+Modena,2026-06-09,PERO,71,79,ingrossamento frutti
+Modena,2026-06-09,PESCO,71,79,ingrossamento frutti
+Modena,2026-06-09,POMODORO_INDUSTRIA,13,74,termine trapianto – allegagione 4° palco || fine trapianto – allegagione 4° palco
+Modena,2026-06-09,SOIA,15,59,4-6° foglia trilobata-chiusura interfila
+Modena,2026-06-09,SUSINO,71,89,ingrossamento frutti-maturazione || ingrossamento frutti-inizio maturazione
+Modena,2026-06-09,VITE,77,77,pre chiusura grappolo
+Modena,2026-06-16,ALBICOCCO,71,89,accrescimento-maturazione
+Modena,2026-06-16,CILIEGIO,81,89,maturazione
+Modena,2026-06-16,KAKI,71,79,accrescimento frutti
+Modena,2026-06-16,MAIS,51,59,emissione pennacchio
+Modena,2026-06-16,MELO,71,79,accrescimento frutti
+Modena,2026-06-16,OLIVO,69,69,allegagione
+Modena,2026-06-16,PERO,71,79,ingrossamento frutti
+Modena,2026-06-16,PESCO,71,89,ingrossamento frutti-maturazione
+Modena,2026-06-16,POMODORO_INDUSTRIA,13,83,termine trapianto – invaiatura primo palco || termine trapianto – invaiatura primo palco fine trapianto
+Modena,2026-06-16,SOIA,17,59,6° foglia trilobata-chiusura interfila
+Modena,2026-06-16,SUSINO,71,89,ingrossamento frutti-maturazione || ingrossamento frutti-inizio maturazione
+Modena,2026-06-16,VITE,77,79,chiusura grappolo
+Modena,2026-06-23,ALBICOCCO,71,89,accrescimento-maturazione
+Modena,2026-06-23,CILIEGIO,89,89,termine raccolta
+Modena,2026-06-23,KAKI,71,79,accrescimento frutti
+Modena,2026-06-23,MAIS,51,59,emissione pennacchio
+Modena,2026-06-23,MELO,71,79,accrescimento frutti
+Modena,2026-06-23,OLIVO,71,79,accrescimento frutti
+Modena,2026-06-23,PERO,71,79,ingrossamento frutti
+Modena,2026-06-23,PESCO,71,89,ingrossamento frutti-maturazione
+Modena,2026-06-23,POMODORO_INDUSTRIA,71,83,accrescimento- invaiatura secondo palco || t accrescimento invaiatura secondo palco
+Modena,2026-06-23,SOIA,17,59,6° foglia trilobata-chiusura interfila
+Modena,2026-06-23,SUSINO,71,89,ingrossamento frutti-maturazione || ingrossamento frutti-inizio maturazione
+Modena,2026-06-23,VITE,77,79,chiusura grappolo
+Modena,2026-06-30,ALBICOCCO,71,89,accrescimento-maturazione
+Modena,2026-06-30,CILIEGIO,89,93,termine raccolta || post raccolta
+Modena,2026-06-30,KAKI,71,79,accrescimento frutti
+Modena,2026-06-30,MAIS,51,59,emissione pennacchio
+Modena,2026-06-30,MELO,71,79,accrescimento frutti
+Modena,2026-06-30,OLIVO,69,79,allegagione || accrescimento frutti
+Modena,2026-06-30,PERO,71,79,ingrossamento frutti
+Modena,2026-06-30,PESCO,71,89,ingrossamento frutti-maturazione
+Modena,2026-06-30,POMODORO_INDUSTRIA,71,83,accrescimento- invaiatura ultimo palco
+Modena,2026-06-30,SOIA,60,61,inizio fioritura
+Modena,2026-06-30,SUSINO,71,89,ingrossamento frutti-maturazione
+Modena,2026-06-30,VITE,77,79,chiusura grappolo
+Modena,2026-07-07,ALBICOCCO,71,89,accrescimento-maturazione
+Modena,2026-07-07,CILIEGIO,89,93,termine raccolta || post raccolta
+Modena,2026-07-07,KAKI,71,79,accrescimento frutti
+Modena,2026-07-07,MAIS,51,85,maturazione cerosa || emissione pennacchio
+Modena,2026-07-07,MELO,71,79,accrescimento frutti
+Modena,2026-07-07,OLIVO,69,79,allegagione || accrescimento frutti
+Modena,2026-07-07,PERO,71,79,ingrossamento frutti
+Modena,2026-07-07,PESCO,71,89,ingrossamento frutti-maturazione
+Modena,2026-07-07,POMODORO_INDUSTRIA,71,83,accrescimento- invaiatura ultimo palco
+Modena,2026-07-07,SOIA,60,75,fioritura-formazione baccelli
+Modena,2026-07-07,SUSINO,71,89,ingrossamento frutti-maturazione
+Modena,2026-07-07,VITE,77,81,chiusura grappolo-inizio invaiatura || chiusura grappolo
+Modena,2026-07-14,ALBICOCCO,81,89,maturazione
+Modena,2026-07-14,CILIEGIO,91,93,post raccolta
+Modena,2026-07-14,KAKI,71,79,accrescimento frutti
+Modena,2026-07-14,MAIS,83,85,maturazione cerosa
+Modena,2026-07-14,MELO,71,79,accrescimento frutti
+Modena,2026-07-14,OLIVO,71,79,accrescimento frutto
+Modena,2026-07-14,PERO,71,89,ingrossamento frutti-maturazione || ingrossamento frutti
+Modena,2026-07-14,PESCO,71,89,ingrossamento frutti-maturazione
+Modena,2026-07-14,POMODORO_INDUSTRIA,71,89,accrescimento- maturazione
+Modena,2026-07-14,SOIA,69,75,formazione baccelli
+Modena,2026-07-14,SUSINO,71,89,ingrossamento frutti-maturazione
+Modena,2026-07-14,VITE,77,81,chiusura grappolo-inizio invaiatura
+Modena,2026-07-21,ALBICOCCO,81,89,maturazione
+Modena,2026-07-21,CILIEGIO,91,93,post raccolta
+Modena,2026-07-21,KAKI,71,79,accrescimento frutti
+Modena,2026-07-21,MAIS,83,85,maturazione cerosa
+Modena,2026-07-21,MELO,71,79,accrescimento frutti
+Modena,2026-07-21,OLIVO,71,79,accrescimento frutto
+Modena,2026-07-21,PERO,71,89,ingrossamento frutti-maturazione || ingrossamento frutti
+Modena,2026-07-21,PESCO,71,89,ingrossamento frutti-maturazione
+Modena,2026-07-21,POMODORO_INDUSTRIA,71,89,accrescimento- maturazione
+Modena,2026-07-21,SOIA,69,79,formazione baccelli-riempimento semi || formazione baccelli
+Modena,2026-07-21,SUSINO,71,89,ingrossamento frutti-maturazione
+Modena,2026-07-21,VITE,81,83,invaiatura
+Modena,2026-07-28,CILIEGIO,91,93,post raccolta
+Modena,2026-07-28,KAKI,71,79,accrescimento frutti
+Modena,2026-07-28,MAIS,83,85,maturazione cerosa
+Modena,2026-07-28,MELO,71,89,accrescimento frutti-maturazione
+Modena,2026-07-28,OLIVO,71,79,accrescimento frutto
+Modena,2026-07-28,PERO,71,89,ingrossamento frutti-maturazione || ingrossamento frutti
+Modena,2026-07-28,PESCO,71,89,ingrossamento frutti-maturazione
+Modena,2026-07-28,POMODORO_INDUSTRIA,71,89,accrescimento- maturazione
+Modena,2026-07-28,SOIA,69,79,formazione baccelli-riempimento semi || formazione baccelli
+Modena,2026-07-28,SUSINO,71,89,ingrossamento frutti-maturazione
+Modena,2026-07-28,VITE,81,83,invaiatura
+Modena,2026-08-04,KAKI,71,79,accrescimento frutti
+Modena,2026-08-04,MAIS,83,85,maturazione cerosa
+Modena,2026-08-04,MELO,71,89,accrescimento frutti-maturazione
+Modena,2026-08-04,OLIVO,71,79,accrescimento frutto
+Modena,2026-08-04,PERO,71,89,ingrossamento frutti-maturazione || ingrossamento frutti
+Modena,2026-08-04,PESCO,71,89,ingrossamento frutti-maturazione
+Modena,2026-08-04,POMODORO_INDUSTRIA,71,89,accrescimento- maturazione
+Modena,2026-08-04,SOIA,69,79,formazione baccelli-riempimento semi || formazione baccelli
+Modena,2026-08-04,SUSINO,71,89,ingrossamento frutti-maturazione
+Modena,2026-08-04,VITE,81,83,invaiatura
+Modena,2026-08-18,KAKI,71,79,accrescimento frutti
+Modena,2026-08-18,MELO,71,89,accrescimento frutti-maturazione
+Modena,2026-08-18,OLIVO,71,79,accrescimento frutto
+Modena,2026-08-18,PERO,71,89,ingrossamento frutti-maturazione || ingrossamento frutti
+Modena,2026-08-18,PESCO,71,89,ingrossamento frutti-maturazione
+Modena,2026-08-18,POMODORO_INDUSTRIA,71,89,accrescimento- maturazione
+Modena,2026-08-18,SOIA,69,79,riempimento semi || formazione baccelli
+Modena,2026-08-18,SUSINO,71,89,ingrossamento frutti-maturazione
+Modena,2026-08-18,VITE,85,89,maturazione
+Parma,2026-02-06,ALBICOCCO,0,51,da gemma ferma a inizio rigonfiamento gemme
+Parma,2026-02-06,MELO,0,0,gemma ferma
+Parma,2026-02-06,PERO,0,0,gemma ferma
+Parma,2026-02-06,PESCO,0,51,da gemma ferma a inizio rigonfiamento gemme
+Parma,2026-02-06,SUSINO_EUROPEO,0,0,gemma ferma
+Parma,2026-02-06,VITE,0,0,gemma ferma
+Parma,2026-02-20,ALBICOCCO,51,57,da rigonfiamento gemme a inizio bottone rosso
+Parma,2026-02-20,MELO,0,51,da gemma ferma ad inizio rigonfiamento gemme
+Parma,2026-02-20,PERO,0,51,da gemma ferma ad inizio rigonfiamento gemme
+Parma,2026-02-20,PESCO,1,3,da gemma gonfia ad inizio rottura gemme a legno
+Parma,2026-02-20,SUSINO_EUROPEO,0,0,gemma ferma
+Parma,2026-02-20,VITE,0,0,gemma ferma
+Parma,2026-02-27,ALBICOCCO,57,61,da bottone rosso a inizio fioritura
+Parma,2026-02-27,CILIEGIO,51,51,rigonfiamento gemme
+Parma,2026-02-27,MAIS,0,0,pre-semina
+Parma,2026-02-27,MELO,0,52,da gemma ferma a rigonfiamento gemme
+Parma,2026-02-27,PERO,51,52,rigonfiamento gemme
+Parma,2026-02-27,PESCO,3,57,rottura gemme a legno - bottone rosa
+Parma,2026-02-27,POMODORO,0,13,pre-trapianto
+Parma,2026-02-27,SUSINO_EUROPEO,51,51,inizio rigonfiamento gemme
+Parma,2026-02-27,VITE,0,1,da gemma ferma a inizio rigonfiamento gemma
+Parma,2026-03-06,ALBICOCCO,57,69,da bottone rosso a fioritura
+Parma,2026-03-06,CILIEGIO,53,57,da bottoni rosa a inizio apertura gemme
+Parma,2026-03-06,MAIS,0,0,pre-semina
+Parma,2026-03-06,MELO,51,53,da rigonfiamento gemme a punte verdi
+Parma,2026-03-06,PERO,51,55,da gemma gonfia a comparsa mazzetti fiorali
+Parma,2026-03-06,PESCO,57,61,da bottone rosa a inizio fioritura
+Parma,2026-03-06,POMODORO,0,13,pre-trapianto
+Parma,2026-03-06,POMODORO_INDUSTRIA,0,13,pre-trapianto
+Parma,2026-03-06,SUSINO_EUROPEO,51,53,da rigonfiamento gemme a inizio rottura gemme
+Parma,2026-03-06,VITE,0,5,da gemma ferma a inizio gemma cotonosa – inizio pianto
+Parma,2026-03-13,ALBICOCCO,60,69,fioritura
+Parma,2026-03-13,CILIEGIO,53,57,da bottoni rosa ad apertura gemme
+Parma,2026-03-13,MAIS,0,0,pre-semina
+Parma,2026-03-13,MELO,51,53,da rigonfiamento gemme a punte verdi
+Parma,2026-03-13,PERO,53,55,da apertura gemme a comparsa mazzetti fiorali
+Parma,2026-03-13,PESCO,57,69,da bottone rosa a fioritura
+Parma,2026-03-13,POMODORO_INDUSTRIA,0,13,pre-trapianto
+Parma,2026-03-13,SUSINO_EUROPEO,53,56,da rottura gemme a bottone verde
+Parma,2026-03-13,VITE,0,5,da gemma ferma a gemma cotonosa – pianto
+Parma,2026-03-20,ALBICOCCO,67,69,da fine fioritura a caduta petali
+Parma,2026-03-20,CILIEGIO,56,61,da bottone verde ad inizio fioritura
+Parma,2026-03-20,MAIS,0,0,pre-semina
+Parma,2026-03-20,MELO,53,55,da punte verdi a mazzetti affioranti
+Parma,2026-03-20,OLIVO,1,3,inizio ripresa vegetativa
+Parma,2026-03-20,PERO,55,56,da comparsa mazzetti fiorali a mazzetti divaricati
+Parma,2026-03-20,PESCO,60,69,fioritura
+Parma,2026-03-20,POMODORO_INDUSTRIA,0,13,pre-trapianto
+Parma,2026-03-20,SUSINO_EUROPEO,56,61,da bottone verde a inizio fioritura
+Parma,2026-03-20,VITE,0,7,da gemma cotonosa a inizio apertura gemme – pianto
+Parma,2026-03-27,ALBICOCCO,71,71,allegagione
+Parma,2026-03-27,CILIEGIO,57,69,da bottone bianco a fioritura
+Parma,2026-03-27,GIRASOLE,0,0,pre-semina
+Parma,2026-03-27,MAIS,0,0,da pre-semina a semina
+Parma,2026-03-27,MELO,55,57,da mazzetti affioranti a bottone rosa
+Parma,2026-03-27,OLIVO,1,9,ripresa vegetativa
+Parma,2026-03-27,PERO,56,69,da mazzetti divaricati a fioritura
+Parma,2026-03-27,PESCO,60,69,da fioritura a caduta petali
+Parma,2026-03-27,POMODORO_INDUSTRIA,0,13,pre-trapianto
+Parma,2026-03-27,SUSINO_EUROPEO,57,69,da bottone bianco a fioritura
+Parma,2026-03-27,VITE,5,8,da gemma cotonosa ad apertura gemme
+Parma,2026-04-03,ALBICOCCO,71,73,da scamiciatura a inizio accrescimento frutto
+Parma,2026-04-03,CILIEGIO,60,69,fioritura
+Parma,2026-04-03,GIRASOLE,0,0,pre-semina
+Parma,2026-04-03,MAIS,0,0,da pre-semina a semina
+Parma,2026-04-03,MELO,57,69,da bottone rosa a fioritura
+Parma,2026-04-03,OLIVO,1,9,ripresa vegetativa
+Parma,2026-04-03,PERO,60,71,da fioritura a inizio allegagione
+Parma,2026-04-03,PESCO,67,71,da caduta petali ad allegagione
+Parma,2026-04-03,POMODORO_INDUSTRIA,0,15,pre-trapianto - trapianto || pre-trapianto
+Parma,2026-04-03,SUSINO_EUROPEO,60,69,da fioritura a caduta petali
+Parma,2026-04-03,VITE,5,12,da gemma cotonosa a prime foglie distese
+Parma,2026-04-10,ALBICOCCO,71,79,accrescimento frutto
+Parma,2026-04-10,CILIEGIO,60,71,da fioritura ad allegagione
+Parma,2026-04-10,GIRASOLE,0,0,pre-semina - semina
+Parma,2026-04-10,MAIS,0,8,da pre-semina a pre-emergenza
+Parma,2026-04-10,MELO,60,69,fioritura
+Parma,2026-04-10,OLIVO,1,9,ripresa vegetativa
+Parma,2026-04-10,PERO,60,71,da fioritura ad allegagione
+Parma,2026-04-10,PESCO,71,73,da scamiciatura ad inizio sviluppo frutti
+Parma,2026-04-10,POMODORO_INDUSTRIA,0,15,pre-trapianto - trapianto
+Parma,2026-04-10,SUSINO,67,73,da caduta petali a scamiciatura
+Parma,2026-04-10,VITE,11,53,da prime foglie distese a grappoli visibili
+Parma,2026-04-17,ALBICOCCO,71,79,accrescimento frutto
+Parma,2026-04-17,CILIEGIO,71,79,da allegagione ad accrescimento frutto
+Parma,2026-04-17,GIRASOLE,0,9,semina - emergenza
+Parma,2026-04-17,MAIS,0,9,da pre-semina a emergenza
+Parma,2026-04-17,MELO,60,71,da fioritura ad allegagione
+Parma,2026-04-17,OLIVO,1,9,ripresa vegetativa
+Parma,2026-04-17,PERO,71,79,da allegagione ad accrescimento frutto
+Parma,2026-04-17,PESCO,71,73,da scamiciatura ad inizio sviluppo frutti
+Parma,2026-04-17,POMODORO_INDUSTRIA,0,15,pre-trapianto - trapianto
+Parma,2026-04-17,SOIA,0,0,Pre-semina
+Parma,2026-04-17,SUSINO,71,79,da scamiciatura ad accrescimento frutto
+Parma,2026-04-17,VITE,53,55,da grappoli visibili a grappoli separati
+Parma,2026-04-24,ALBICOCCO,71,79,accrescimento frutto || accrescimento
+Parma,2026-04-24,CILIEGIO,71,79,accrescimento frutto
+Parma,2026-04-24,GIRASOLE,0,9,semina - emergenza
+Parma,2026-04-24,MAIS,0,13,da pre-emergenza a 2/3 foglie
+Parma,2026-04-24,MELO,71,72,da allegagione a inizio ingrossamento frutti
+Parma,2026-04-24,OLIVO,50,52,inizio mignolatura
+Parma,2026-04-24,PERO,71,79,accrescimento frutto
+Parma,2026-04-24,PESCO,71,79,ingrossamento frutto
+Parma,2026-04-24,POMODORO_INDUSTRIA,0,15,pre-trapianto – trapianto
+Parma,2026-04-24,SOIA,0,0,da pre-semina a semina
+Parma,2026-04-24,SUSINO,71,79,ingrossamento frutto
+Parma,2026-04-24,VITE,53,55,da grappoli visibili a grappoli separati
+Parma,2026-04-30,ALBICOCCO,71,79,da accrescimento frutti a indurimento nocciolo
+Parma,2026-04-30,CILIEGIO,71,81,da accrescimento frutti a inizio invaiatura
+Parma,2026-04-30,GIRASOLE,0,10,da pre-emergenza a cotiledoni
+Parma,2026-04-30,MAIS,0,15,da pre-emergenza a 5 foglie
+Parma,2026-04-30,MELO,71,79,ingrossamento frutti
+Parma,2026-04-30,OLIVO,50,57,mignolatura
+Parma,2026-04-30,PERO,71,79,accrescimento frutto
+Parma,2026-04-30,PESCO,71,79,ingrossamento frutto
+Parma,2026-04-30,POMODORO_INDUSTRIA,0,61,pre-trapianto – inizio fioritura 1° palco || pre-trapianto – sviluppo fogliare
+Parma,2026-04-30,SOIA,0,8,da pre-semina a pre-emergenza
+Parma,2026-04-30,SUSINO,71,79,ingrossamento frutto
+Parma,2026-04-30,VITE,55,57,da grappoli separati a bottoni fiorali separati
+Parma,2026-05-08,ALBICOCCO,75,77,indurimento nocciolo
+Parma,2026-05-08,CILIEGIO,71,85,da accrescimento frutti a invaiatura
+Parma,2026-05-08,GIRASOLE,9,14,da emergenza a 2-4 foglie
+Parma,2026-05-08,MAIS,9,16,da emergenza a 6 foglie
+Parma,2026-05-08,MELO,71,79,ingrossamento frutti
+Parma,2026-05-08,OLIVO,50,57,mignolatura
+Parma,2026-05-08,PERO,71,79,accrescimento frutto
+Parma,2026-05-08,PESCO,71,79,ingrossamento frutto
+Parma,2026-05-08,POMODORO_INDUSTRIA,0,71,pre-trapianto – allegagione 1° palco/fioritura 2° palco || pre-trapianto – inizio fioritura 1° palco
+Parma,2026-05-08,SOIA,0,9,da pre-semina a emergenza
+Parma,2026-05-08,SUSINO,71,79,ingrossamento frutto
+Parma,2026-05-08,VITE,55,57,da grappoli separati a bottoni fiorali separati
+Parma,2026-05-15,ALBICOCCO,75,77,indurimento nocciolo
+Parma,2026-05-15,CILIEGIO,71,81,da accrescimento frutti a inizio maturazione
+Parma,2026-05-15,GIRASOLE,9,16,da emergenza a 4-6 foglie
+Parma,2026-05-15,MAIS,11,17,1-7 foglie
+Parma,2026-05-15,MELO,71,79,ingrossamento frutti
+Parma,2026-05-15,OLIVO,50,61,da mignolatura a inizio fioritura
+Parma,2026-05-15,PERO,71,79,accrescimento frutti
+Parma,2026-05-15,PESCO,71,79,ingrossamento frutti
+Parma,2026-05-15,POMODORO_INDUSTRIA,0,72,pre-trapianto – allegagione 2° palco/fioritura 3° palco || pre-trapianto – inizio fioritura 2° palco
+Parma,2026-05-15,SOIA,0,12,da pre-emergenza a prima foglia trifogliata
+Parma,2026-05-15,SUSINO,71,79,ingrossamento frutti
+Parma,2026-05-15,VITE,57,61,da bottoni fiorali separati a inizio fioritura
+Parma,2026-05-22,ALBICOCCO,71,81,da accrescimento frutti a inizio maturazione
+Parma,2026-05-22,CILIEGIO,81,89,da invaiatura a maturazione
+Parma,2026-05-22,GIRASOLE,12,18,2-8 foglie
+Parma,2026-05-22,MAIS,12,18,2-8 foglie
+Parma,2026-05-22,MELO,71,79,ingrossamento frutti
+Parma,2026-05-22,OLIVO,60,69,fioritura
+Parma,2026-05-22,PERO,71,79,accrescimento frutti
+Parma,2026-05-22,PESCO,71,79,ingrossamento frutti
+Parma,2026-05-22,POMODORO_INDUSTRIA,0,73,pre-trapianto – allegagione 3° palco || pre-trapianto – allegagione 2° palco
+Parma,2026-05-22,SOIA,9,13,da emergenza a seconda foglia trifogliata
+Parma,2026-05-22,SUSINO,71,79,ingrossamento frutti
+Parma,2026-05-22,VITE,60,69,fioritura
+Parma,2026-05-29,ALBICOCCO,71,89,da accrescimento frutti a maturazione
+Parma,2026-05-29,CILIEGIO,81,89,da invaiatura a maturazione
+Parma,2026-05-29,GIRASOLE,14,39,da 4 foglie ad inizio allungamento stelo || 4-10 foglie
+Parma,2026-05-29,MAIS,14,39,da 4 foglie a levata
+Parma,2026-05-29,MELO,71,79,ingrossamento frutti
+Parma,2026-05-29,OLIVO,68,69,fine fioritura - allegagione
+Parma,2026-05-29,PERO,71,79,accrescimento frutti
+Parma,2026-05-29,PESCO,71,79,da ingrossamento frutto a indurimento nocciolo
+Parma,2026-05-29,POMODORO_INDUSTRIA,0,73,pre-trapianto – allegagione 3° palco || pre-trapianto – allegagione 2° palco
+Parma,2026-05-29,SOIA,11,13,1-3 foglie
+Parma,2026-05-29,SUSINO,71,79,ingrossamento frutti
+Parma,2026-05-29,VITE,60,71,fioritura - allegagione
+Parma,2026-06-05,ALBICOCCO,71,89,da accrescimento frutti a maturazione
+Parma,2026-06-05,CILIEGIO,81,89,maturazione
+Parma,2026-06-05,MAIS,16,39,da 6 foglie a levata
+Parma,2026-06-05,MELO,71,79,ingrossamento frutti
+Parma,2026-06-05,OLIVO,69,71,allegagione – inizio accrescimento frutti
+Parma,2026-06-05,PERO,71,79,accrescimento frutti
+Parma,2026-06-05,PESCO,71,79,da ingrossamento frutto a indurimento nocciolo
+Parma,2026-06-05,POMODORO_INDUSTRIA,0,74,pre-trapianto – allegagione 4° palco || fioritura 1° palco - allegagione 3° palco
+Parma,2026-06-05,SOIA,12,14,2-4 foglie
+Parma,2026-06-05,SUSINO,71,79,ingrossamento frutti
+Parma,2026-06-05,VITE,71,75,allegagione – sviluppo acini
+Parma,2026-06-12,ALBICOCCO,71,89,da accrescimento frutti a maturazione
+Parma,2026-06-12,CILIEGIO,81,89,maturazione
+Parma,2026-06-12,MAIS,30,39,levata
+Parma,2026-06-12,MELO,71,79,ingrossamento frutti
+Parma,2026-06-12,OLIVO,71,79,accrescimento drupe
+Parma,2026-06-12,PERO,71,79,accrescimento frutti
+Parma,2026-06-12,PESCO,71,79,da ingrossamento frutto a indurimento nocciolo
+Parma,2026-06-12,POMODORO_INDUSTRIA,61,83,fioritura 1° palco – inizio invaiatura primo palco || allegagione 1° palco - allegagione 4° palco
+Parma,2026-06-12,SOIA,14,61,da 4 foglie a inizio fioritura
+Parma,2026-06-12,SUSINO,71,79,ingrossamento frutti
+Parma,2026-06-12,VITE,73,77,da mignolatura a pre-chiusura grappolo
+Parma,2026-06-19,ALBICOCCO,71,89,da accrescimento frutti a maturazione
+Parma,2026-06-19,CILIEGIO,81,89,maturazione
+Parma,2026-06-19,MAIS,30,59,levata – emissione pennacchio
+Parma,2026-06-19,MELO,71,79,ingrossamento frutti
+Parma,2026-06-19,OLIVO,71,79,accrescimento drupe
+Parma,2026-06-19,PERO,71,79,accrescimento frutti
+Parma,2026-06-19,PESCO,71,81,da ingrossamento frutto a inizio maturazione || da ingrossamento frutto a indurimento nocciolo
+Parma,2026-06-19,POMODORO_INDUSTRIA,71,83,da inizio allegagione 1° palco ad inizio invaiatura secondo palco || da allegagione 2° palco a invaiatura 1° palco
+Parma,2026-06-19,SOIA,14,61,da 4 foglie a inizio fioritura
+Parma,2026-06-19,SUSINO,71,79,ingrossamento frutti
+Parma,2026-06-19,VITE,77,79,da pre-chiusura a chiusura grappolo
+Parma,2026-06-26,ALBICOCCO,71,89,da accrescimento frutti a maturazione
+Parma,2026-06-26,CILIEGIO,91,93,post-raccolta
+Parma,2026-06-26,MAIS,51,65,emissione pennacchio – comparsa sete
+Parma,2026-06-26,MELO,71,79,ingrossamento frutti
+Parma,2026-06-26,OLIVO,71,79,accrescimento drupe
+Parma,2026-06-26,PERO,71,79,accrescimento frutti
+Parma,2026-06-26,PESCO,71,81,da ingrossamento frutto a inizio maturazione
+Parma,2026-06-26,POMODORO_INDUSTRIA,72,83,da allegagione 2° palco a invaiatura secondo palco || da allegagione 2° palco a inizio invaiatura 2° palco
+Parma,2026-06-26,SOIA,10,69,da sviluppo vegetativo a fioritura
+Parma,2026-06-26,SUSINO,71,79,ingrossamento frutti
+Parma,2026-06-26,VITE,77,79,chiusura grappolo
+Parma,2026-07-03,ALBICOCCO,71,89,da accrescimento frutti a maturazione
+Parma,2026-07-03,CILIEGIO,91,93,post-raccolta
+Parma,2026-07-03,MAIS,51,69,emissione pennacchio – senescenza sete
+Parma,2026-07-03,MELO,71,79,ingrossamento frutti
+Parma,2026-07-03,OLIVO,71,79,accrescimento drupe
+Parma,2026-07-03,PERO,71,79,accrescimento frutti
+Parma,2026-07-03,PESCO,71,89,da ingrossamento frutto a maturazione
+Parma,2026-07-03,POMODORO_INDUSTRIA,71,83,da allegagione 1° palco a invaiatura 3° palco || da allegagione 2° palco a inizio invaiatura 3° palco
+Parma,2026-07-03,SOIA,10,69,da sviluppo vegetativo a fioritura
+Parma,2026-07-03,SUSINO,71,81,da ingrossamento frutti a inizio maturazione
+Parma,2026-07-03,VITE,77,79,chiusura grappolo
+Parma,2026-07-10,ALBICOCCO,71,89,da accrescimento frutti a maturazione
+Parma,2026-07-10,CILIEGIO,91,93,post-raccolta
+Parma,2026-07-10,MAIS,67,75,da senescenza sete a maturazione lattea
+Parma,2026-07-10,MELO,71,79,ingrossamento frutti
+Parma,2026-07-10,OLIVO,71,79,accrescimento drupe
+Parma,2026-07-10,PERO,71,79,accrescimento frutti
+Parma,2026-07-10,PESCO,71,89,da ingrossamento frutto a maturazione
+Parma,2026-07-10,POMODORO_INDUSTRIA,10,89,da sviluppo vegetativo a invaiatura ultimo palco/maturazione || da sviluppo vegetativo a inizio invaiatura ultimo palco/maturazione
+Parma,2026-07-10,SOIA,60,75,da fioritura a formazione baccelli
+Parma,2026-07-10,SUSINO,71,89,da ingrossamento frutti a maturazione
+Parma,2026-07-10,VITE,77,81,chiusura grappolo – inizio invaiatura varietà precoci
+Parma,2026-07-17,ALBICOCCO,81,93,da maturazione a post-raccolta
+Parma,2026-07-17,CILIEGIO,91,93,post-raccolta
+Parma,2026-07-17,MAIS,73,85,da maturazione lattea a cerosa
+Parma,2026-07-17,MELO,71,79,ingrossamento frutti
+Parma,2026-07-17,OLIVO,71,79,da accrescimento drupe a inizio indurimento nocciolo
+Parma,2026-07-17,PERO,71,79,accrescimento frutti
+Parma,2026-07-17,PESCO,71,89,da ingrossamento frutto a maturazione
+Parma,2026-07-17,POMODORO_INDUSTRIA,10,89,da sviluppo vegetativo a maturazione
+Parma,2026-07-17,SOIA,69,75,formazione baccelli
+Parma,2026-07-17,SUSINO,71,89,da ingrossamento frutti a maturazione
+Parma,2026-07-17,VITE,77,81,chiusura grappolo – inizio invaiatura
+Parma,2026-07-24,ALBICOCCO,81,93,da maturazione a post-raccolta
+Parma,2026-07-24,CILIEGIO,91,93,post-raccolta
+Parma,2026-07-24,MAIS,73,85,da maturazione lattea a cerosa
+Parma,2026-07-24,MELO,71,79,ingrossamento frutti
+Parma,2026-07-24,OLIVO,71,79,da accrescimento drupe a inizio indurimento nocciolo
+Parma,2026-07-24,PERO,71,81,da accrescimento frutti a inizio maturazione
+Parma,2026-07-24,PESCO,71,89,da ingrossamento frutto a maturazione
+Parma,2026-07-24,POMODORO_INDUSTRIA,10,89,da sviluppo vegetativo a maturazione
+Parma,2026-07-24,SOIA,69,75,formazione baccelli
+Parma,2026-07-24,SUSINO,71,89,da ingrossamento frutti a maturazione
+Parma,2026-07-24,VITE,77,83,da chiusura grappolo a invaiatura
+Parma,2026-07-31,ALBICOCCO,81,93,da maturazione a post-raccolta
+Parma,2026-07-31,MELO,71,81,da ingrossamento frutti a inizio maturazione
+Parma,2026-07-31,OLIVO,75,75,indurimento nocciolo
+Parma,2026-07-31,PERO,71,89,da accrescimento frutti a maturazione
+Parma,2026-07-31,PESCO,71,89,da ingrossamento frutto a maturazione
+Parma,2026-07-31,POMODORO_INDUSTRIA,71,89,da allegagione a maturazione
+Parma,2026-07-31,SOIA,69,79,da formazione baccelli a ingrossamento semi
+Parma,2026-07-31,SUSINO,71,89,da ingrossamento frutti a maturazione
+Parma,2026-07-31,VITE,81,85,da invaiatura a inizio maturazione
+Parma,2026-08-07,MELO,71,89,da ingrossamento frutti a maturazione
+Parma,2026-08-07,OLIVO,75,75,indurimento nocciolo
+Parma,2026-08-07,PERO,71,89,da accrescimento frutti a maturazione
+Parma,2026-08-07,PESCO,71,89,da ingrossamento frutto a maturazione
+Parma,2026-08-07,POMODORO_INDUSTRIA,71,89,da allegagione a maturazione
+Parma,2026-08-07,SOIA,69,79,da formazione baccelli a ingrossamento semi
+Parma,2026-08-07,SUSINO,71,89,da ingrossamento frutti a maturazione
+Parma,2026-08-07,VITE,81,89,da invaiatura a maturazione
+Parma,2026-08-21,MELO,71,89,da ingrossamento frutti a maturazione
+Parma,2026-08-21,OLIVO,75,75,indurimento nocciolo
+Parma,2026-08-21,PERO,71,89,da accrescimento frutti a maturazione
+Parma,2026-08-21,PESCO,81,89,maturazione
+Parma,2026-08-21,POMODORO_INDUSTRIA,71,89,da allegagione a maturazione
+Parma,2026-08-21,SOIA,75,79,ingrossamento semi
+Parma,2026-08-21,SUSINO,71,89,da ingrossamento frutti a maturazione
+Parma,2026-08-21,VITE,85,89,maturazione - raccolta
+Piacenza,2026-02-06,ALBICOCCO,0,51,da gemma ferma a inizio rigonfiamento gemme
+Piacenza,2026-02-06,MELO,0,0,gemma ferma
+Piacenza,2026-02-06,PERO,0,0,gemma ferma
+Piacenza,2026-02-06,PESCO,0,51,da gemma ferma a inizio rigonfiamento gemme
+Piacenza,2026-02-06,SUSINO_EUROPEO,0,0,gemma ferma
+Piacenza,2026-02-06,VITE,0,0,gemma ferma
+Piacenza,2026-02-20,ALBICOCCO,51,57,da rigonfiamento gemme a inizio bottone rosso
+Piacenza,2026-02-20,MELO,0,51,da gemma ferma a inizio rigonfiamento gemme
+Piacenza,2026-02-20,PERO,0,51,da gemma ferma a inizio rigonfiamento gemme
+Piacenza,2026-02-20,PESCO,1,3,da gemma gonfia a inizio rottura gemme a legno
+Piacenza,2026-02-20,SUSINO_EUROPEO,0,0,gemma ferma
+Piacenza,2026-02-20,VITE,0,0,gemma ferma
+Piacenza,2026-02-27,ALBICOCCO,57,61,da bottone rosso a inizio fioritura
+Piacenza,2026-02-27,CILIEGIO,51,51,rigonfiamento gemme
+Piacenza,2026-02-27,MAIS,0,0,pre-semina
+Piacenza,2026-02-27,MELO,0,52,da gemma ferma a rigonfiamento gemme
+Piacenza,2026-02-27,PERO,51,52,rigonfiamento gemme
+Piacenza,2026-02-27,PESCO,3,57,rottura gemme a legno - bottone rosa
+Piacenza,2026-02-27,POMODORO,0,13,pre-trapianto
+Piacenza,2026-02-27,SUSINO_EUROPEO,51,51,inizio rigonfiamento gemme
+Piacenza,2026-02-27,VITE,0,1,da gemma ferma a inizio rigonfiamento gemme
+Piacenza,2026-03-06,ALBICOCCO,57,69,da bottone rosso a fioritura
+Piacenza,2026-03-06,CILIEGIO,53,57,da bottone rosa a inizio apertura gemme
+Piacenza,2026-03-06,MAIS,0,0,pre-semina
+Piacenza,2026-03-06,MELO,51,53,da rigonfiamento gemme a punte verdi
+Piacenza,2026-03-06,PERO,51,55,da gemma gonfia a comparsa mazzetti fiorali
+Piacenza,2026-03-06,PESCO,57,61,da bottone rosa a inizio fioritura
+Piacenza,2026-03-06,POMODORO,0,13,pre-trapianto
+Piacenza,2026-03-06,POMODORO_INDUSTRIA,0,13,pre-trapianto
+Piacenza,2026-03-06,SUSINO_EUROPEO,51,53,da rigonfiamento a inizio rottura gemme
+Piacenza,2026-03-06,VITE,0,5,da gemma ferma a inizio gemma cotonosa – inizio pianto
+Piacenza,2026-03-13,ALBICOCCO,60,69,fioritura
+Piacenza,2026-03-13,CILIEGIO,53,57,da bottone rosa ad apertura gemme
+Piacenza,2026-03-13,MAIS,0,0,pre-semina
+Piacenza,2026-03-13,MELO,51,53,da rigonfiamento gemme a punte verdi
+Piacenza,2026-03-13,PERO,53,55,da apertura gemme a comparsa mazzetti fiorali
+Piacenza,2026-03-13,PESCO,57,69,da bottone rosa a fioritura
+Piacenza,2026-03-13,POMODORO_INDUSTRIA,0,13,pre-trapianto
+Piacenza,2026-03-13,SUSINO_EUROPEO,53,56,da rottura gemme a bottone verde
+Piacenza,2026-03-13,VITE,0,5,da gemma ferma a gemma cotonosa – pianto
+Piacenza,2026-03-20,ALBICOCCO,67,69,da fine fioritura a caduta petali
+Piacenza,2026-03-20,CILIEGIO,56,61,da bottone verde a inizio fioritura
+Piacenza,2026-03-20,MAIS,0,0,pre-semina
+Piacenza,2026-03-20,MELO,53,56,da punte verdi a mazzetti affioranti || da comparsa mazzetti fiorali a mazzetti divaricati
+Piacenza,2026-03-20,OLIVO,1,3,inizio ripresa vegetativa
+Piacenza,2026-03-20,PERO,55,56,da comparsa mazzetti fiorali a mazzetti divaricati
+Piacenza,2026-03-20,PESCO,60,69,fioritura
+Piacenza,2026-03-20,POMODORO_INDUSTRIA,0,13,pre-trapianto
+Piacenza,2026-03-20,SUSINO_EUROPEO,56,61,da bottone verde a inizio fioritura
+Piacenza,2026-03-20,VITE,0,7,da gemma cotonosa a inizio apertura gemme – pianto
+Piacenza,2026-03-27,ALBICOCCO,71,71,allegagione
+Piacenza,2026-03-27,CILIEGIO,57,69,da bottone bianco a fioritura
+Piacenza,2026-03-27,GIRASOLE,0,0,pre-semina
+Piacenza,2026-03-27,MAIS,0,0,da pre-semina a semina
+Piacenza,2026-03-27,MELO,55,57,da mazzetti affioranti a bottone rosa
+Piacenza,2026-03-27,OLIVO,1,9,ripresa vegetativa
+Piacenza,2026-03-27,PERO,56,69,da mazzetti divaricati a fioritura
+Piacenza,2026-03-27,PESCO,60,69,da fioritura a caduta petali
+Piacenza,2026-03-27,POMODORO_INDUSTRIA,0,13,pre-trapianto
+Piacenza,2026-03-27,SUSINO_EUROPEO,57,69,da bottone bianco a fioritura
+Piacenza,2026-03-27,VITE,5,8,da gemma cotonosa ad apertura gemme
+Piacenza,2026-04-03,ALBICOCCO,71,73,da scamiciatura a inizio accrescimento frutto
+Piacenza,2026-04-03,CILIEGIO,60,69,fioritura
+Piacenza,2026-04-03,GIRASOLE,0,0,pre-semina
+Piacenza,2026-04-03,MAIS,0,0,da pre-semina a semina
+Piacenza,2026-04-03,MELO,57,69,da bottone rosa a fioritura
+Piacenza,2026-04-03,OLIVO,1,9,ripresa vegetativa
+Piacenza,2026-04-03,PERO,60,71,da fioritura a inizio allegagione
+Piacenza,2026-04-03,PESCO,67,71,da caduta petali ad allegagione
+Piacenza,2026-04-03,POMODORO_INDUSTRIA,0,15,pre-trapianto - trapianto || pre-trapianto
+Piacenza,2026-04-03,SUSINO_EUROPEO,60,69,da fioritura a caduta petali
+Piacenza,2026-04-03,VITE,5,12,da gemma cotonosa a prime foglie distese
+Piacenza,2026-04-10,ALBICOCCO,71,79,accrescimento frutto
+Piacenza,2026-04-10,CILIEGIO,60,71,da fioritura ad allegagione
+Piacenza,2026-04-10,GIRASOLE,0,0,pre-semina - semina
+Piacenza,2026-04-10,MAIS,0,8,da pre-semina a pre-emergenza
+Piacenza,2026-04-10,MELO,60,69,fioritura
+Piacenza,2026-04-10,OLIVO,1,9,ripresa vegetativa
+Piacenza,2026-04-10,PERO,60,71,da fioritura ad allegagione
+Piacenza,2026-04-10,PESCO,71,73,da scamiciatura a inizio ingrossamento frutti
+Piacenza,2026-04-10,POMODORO_INDUSTRIA,0,15,pre-trapianto - trapianto
+Piacenza,2026-04-10,SUSINO,67,73,da caduta petali a scamiciatura
+Piacenza,2026-04-10,VITE,11,53,da prime foglie distese a grappoli visibili
+Piacenza,2026-04-17,ALBICOCCO,71,79,accrescimento frutto
+Piacenza,2026-04-17,CILIEGIO,71,72,da allegagione a inizio accrescimento frutto
+Piacenza,2026-04-17,GIRASOLE,0,9,semina - emergenza
+Piacenza,2026-04-17,MAIS,0,9,da pre-semina a emergenza
+Piacenza,2026-04-17,MELO,60,71,da fioritura ad allegagione
+Piacenza,2026-04-17,OLIVO,1,9,ripresa vegetativa
+Piacenza,2026-04-17,PERO,71,79,da allegagione ad accrescimento frutto
+Piacenza,2026-04-17,PESCO,71,73,da scamiciatura a inizio ingrossamento frutti
+Piacenza,2026-04-17,POMODORO_INDUSTRIA,0,15,pre-trapianto - trapianto
+Piacenza,2026-04-17,SOIA,0,0,Pre-semina
+Piacenza,2026-04-17,SUSINO,71,73,da scamiciatura a inizio ingrossamento frutto
+Piacenza,2026-04-17,VITE,53,55,da grappoli visibili a grappoli separati
+Piacenza,2026-04-24,ALBICOCCO,71,79,da accrescimento frutto a indurimento nocciolo
+Piacenza,2026-04-24,CILIEGIO,71,79,accrescimento frutti
+Piacenza,2026-04-24,GIRASOLE,0,9,semina - emergenza
+Piacenza,2026-04-24,MAIS,0,13,da semina a 2/3 foglie
+Piacenza,2026-04-24,MELO,71,72,da allegagione a inizio ingrossamento frutti
+Piacenza,2026-04-24,OLIVO,50,52,inizio mignolatura
+Piacenza,2026-04-24,PERO,71,79,accrescimento frutto
+Piacenza,2026-04-24,PESCO,71,79,ingrossamento frutto
+Piacenza,2026-04-24,POMODORO_INDUSTRIA,0,15,pre-trapianto - trapianto
+Piacenza,2026-04-24,SOIA,0,0,da pre-semina a semina
+Piacenza,2026-04-24,SUSINO,71,79,ingrossamento frutto
+Piacenza,2026-04-24,VITE,53,55,da grappoli visibili a grappoli separati
+Piacenza,2026-04-30,ALBICOCCO,71,79,da accrescimento frutto a indurimento nocciolo
+Piacenza,2026-04-30,CILIEGIO,71,81,da accrescimento frutti a inizio invaiatura
+Piacenza,2026-04-30,GIRASOLE,0,10,da pre-emergenza a cotiledoni
+Piacenza,2026-04-30,MAIS,0,15,da pre-emergenza a 5 foglie
+Piacenza,2026-04-30,MELO,71,79,ingrossamento frutti
+Piacenza,2026-04-30,OLIVO,50,57,mignolatura
+Piacenza,2026-04-30,PERO,71,79,accrescimento frutto
+Piacenza,2026-04-30,PESCO,71,79,ingrossamento frutto
+Piacenza,2026-04-30,POMODORO_INDUSTRIA,0,61,pre-trapianto – inizio fioritura 1° palco || pre-trapianto – sviluppo fogliare
+Piacenza,2026-04-30,SOIA,0,8,da pre-semina a pre-emergenza
+Piacenza,2026-04-30,SUSINO,71,79,ingrossamento frutto
+Piacenza,2026-04-30,VITE,55,57,da grappoli separati a bottoni fiorali separati
+Piacenza,2026-05-08,ALBICOCCO,75,77,indurimento nocciolo
+Piacenza,2026-05-08,CILIEGIO,71,85,da accrescimento frutti a invaiatura
+Piacenza,2026-05-08,GIRASOLE,9,14,da emergenza a 2/4 foglie
+Piacenza,2026-05-08,MAIS,9,17,da emergenza a 7 foglie
+Piacenza,2026-05-08,MELO,71,79,ingrossamento frutti
+Piacenza,2026-05-08,OLIVO,50,57,mignolatura
+Piacenza,2026-05-08,PERO,71,79,accrescimento frutto
+Piacenza,2026-05-08,PESCO,71,79,ingrossamento frutto
+Piacenza,2026-05-08,POMODORO_INDUSTRIA,0,71,pre-trapianto – allegagione 1° palco/fioritura 2° palco || pre-trapianto – inizio fioritura 1° palco
+Piacenza,2026-05-08,SOIA,0,9,da pre-semina a emergenza
+Piacenza,2026-05-08,SUSINO,71,79,ingrossamento frutti
+Piacenza,2026-05-08,VITE,55,57,da grappoli separati a bottoni fiorali separati
+Piacenza,2026-05-15,ALBICOCCO,75,77,indurimento nocciolo
+Piacenza,2026-05-15,CILIEGIO,71,89,da accrescimento frutti a maturazione
+Piacenza,2026-05-15,GIRASOLE,9,16,da emergenza a 4/6 foglie
+Piacenza,2026-05-15,MAIS,13,19,da 3 a 10 foglie
+Piacenza,2026-05-15,MELO,71,79,ingrossamento frutti
+Piacenza,2026-05-15,OLIVO,50,61,da mignolatura a inizi fioritura
+Piacenza,2026-05-15,PERO,71,79,accrescimento frutto
+Piacenza,2026-05-15,PESCO,71,79,ingrossamento frutto
+Piacenza,2026-05-15,POMODORO_INDUSTRIA,0,72,pre-trapianto – allegagione 2° palco/fioritura 3° palco || pre-trapianto – inizio fioritura 2° palco
+Piacenza,2026-05-15,SOIA,0,12,da pre-emergenza a prima foglia trifogliata
+Piacenza,2026-05-15,SUSINO,71,79,ingrossamento frutti
+Piacenza,2026-05-15,VITE,57,61,da bottoni fiorali separati a inizio fioritura
+Piacenza,2026-05-22,ALBICOCCO,71,81,da accrescimento frutti a inizio maturazione
+Piacenza,2026-05-22,CILIEGIO,81,89,da invaiatura a maturazione
+Piacenza,2026-05-22,GIRASOLE,12,18,2/8 foglie
+Piacenza,2026-05-22,MAIS,14,19,da 4 a 10 foglie
+Piacenza,2026-05-22,MELO,71,79,ingrossamento frutti
+Piacenza,2026-05-22,OLIVO,60,69,fioritura
+Piacenza,2026-05-22,PERO,71,79,accrescimento frutto
+Piacenza,2026-05-22,PESCO,71,79,ingrossamento frutto
+Piacenza,2026-05-22,POMODORO_INDUSTRIA,0,73,pre-trapianto – allegagione 3° palco || pre-trapianto – allegagione 2° palco
+Piacenza,2026-05-22,SOIA,9,13,da emergenza a seconda foglia trifogliata
+Piacenza,2026-05-22,SUSINO,71,79,ingrossamento frutti
+Piacenza,2026-05-22,VITE,60,69,fioritura
+Piacenza,2026-05-29,ALBICOCCO,71,89,da accrescimento frutti a maturazione
+Piacenza,2026-05-29,CILIEGIO,81,89,da invaiatura a maturazione
+Piacenza,2026-05-29,GIRASOLE,14,39,da 4 foglie ad inizio allungamento stelo || 4/10 foglie
+Piacenza,2026-05-29,MAIS,16,39,da 6 foglie a levata
+Piacenza,2026-05-29,MELO,71,79,ingrossamento frutti
+Piacenza,2026-05-29,OLIVO,68,69,fine fioritura - allegagione
+Piacenza,2026-05-29,PERO,71,79,accrescimento frutto
+Piacenza,2026-05-29,PESCO,71,79,da ingrossamento frutto a indurimento nocciolo
+Piacenza,2026-05-29,POMODORO_INDUSTRIA,0,73,pre-trapianto – allegagione 3° palco || pre-trapianto – allegagione 2° palco
+Piacenza,2026-05-29,SOIA,11,13,1-3 foglie
+Piacenza,2026-05-29,SUSINO,67,79,ingrossamento frutti || fine fioritura - allegagione
+Piacenza,2026-05-29,VITE,60,71,fioritura - allegagione
+Piacenza,2026-06-05,ALBICOCCO,71,89,da accrescimento frutti a maturazione
+Piacenza,2026-06-05,CILIEGIO,81,89,maturazione
+Piacenza,2026-06-05,MAIS,18,39,da 8 foglie a levata
+Piacenza,2026-06-05,MELO,71,79,ingrossamento frutti
+Piacenza,2026-06-05,OLIVO,69,71,allegagione – inizio accrescimento frutti
+Piacenza,2026-06-05,PERO,71,79,accrescimento frutto
+Piacenza,2026-06-05,PESCO,71,79,da ingrossamento frutto a indurimento nocciolo
+Piacenza,2026-06-05,POMODORO_INDUSTRIA,0,74,pre-trapianto – allegagione 4° palco || fioritura primo palco – allegagione 3° palco
+Piacenza,2026-06-05,SOIA,12,14,2-4 foglie
+Piacenza,2026-06-05,SUSINO,67,79,ingrossamento frutti || fine fioritura - allegagione
+Piacenza,2026-06-05,VITE,71,75,allegagione – sviluppo acini
+Piacenza,2026-06-12,ALBICOCCO,71,89,da accrescimento frutti a maturazione
+Piacenza,2026-06-12,CILIEGIO,81,89,maturazione
+Piacenza,2026-06-12,MAIS,30,39,levata
+Piacenza,2026-06-12,MELO,71,79,ingrossamento frutti
+Piacenza,2026-06-12,OLIVO,71,79,accrescimento drupe
+Piacenza,2026-06-12,PERO,71,79,accrescimento frutto
+Piacenza,2026-06-12,PESCO,71,79,da ingrossamento frutto a indurimento nocciolo
+Piacenza,2026-06-12,POMODORO_INDUSTRIA,61,83,fioritura 1° palco – inizio invaiatura 1° palco || allegagione 1° palco - allegagione 4° palco
+Piacenza,2026-06-12,SOIA,14,61,da 4 foglie a inizio fioritura
+Piacenza,2026-06-12,SUSINO,71,79,ingrossamento frutti
+Piacenza,2026-06-12,VITE,73,77,da mignolatura a pre-chiusura grappolo
+Piacenza,2026-06-19,ALBICOCCO,71,89,da accrescimento frutti a maturazione
+Piacenza,2026-06-19,CILIEGIO,81,89,maturazione
+Piacenza,2026-06-19,MAIS,30,59,levata – emissione pennacchio
+Piacenza,2026-06-19,MELO,71,79,ingrossamento frutti
+Piacenza,2026-06-19,OLIVO,71,79,accrescimento drupe
+Piacenza,2026-06-19,PERO,71,79,accrescimento frutto
+Piacenza,2026-06-19,PESCO,71,81,da ingrossamento frutti a inizio maturazione
+Piacenza,2026-06-19,POMODORO_INDUSTRIA,71,83,da inizio allegagione 1° palco ad inizio invaiatura 2° palco || da allegagione 2° palco a invaiatura 1° palco
+Piacenza,2026-06-19,SOIA,14,61,da 4 foglie a inizio fioritura
+Piacenza,2026-06-19,SUSINO,71,79,ingrossamento frutti
+Piacenza,2026-06-19,VITE,77,79,da pre-chiusura a chiusura grappolo
+Piacenza,2026-06-26,ALBICOCCO,71,89,da accrescimento frutti a maturazione
+Piacenza,2026-06-26,CILIEGIO,91,93,post-raccolta
+Piacenza,2026-06-26,MAIS,51,65,emissione pennacchio – comparsa sete
+Piacenza,2026-06-26,MELO,71,79,ingrossamento frutti
+Piacenza,2026-06-26,OLIVO,71,79,accrescimento drupe
+Piacenza,2026-06-26,PERO,71,79,accrescimento frutto
+Piacenza,2026-06-26,PESCO,71,89,da ingrossamento frutti a maturazione
+Piacenza,2026-06-26,POMODORO_INDUSTRIA,72,83,da allegagione 2° palco ad invaiatura 2° palco || da allegagione 2° palco a inizio invaiatura 2° palco
+Piacenza,2026-06-26,SOIA,10,69,da sviluppo vegetativo a fioritura
+Piacenza,2026-06-26,SUSINO,71,79,ingrossamento frutti
+Piacenza,2026-06-26,VITE,77,79,chiusura grappolo
+Piacenza,2026-07-03,ALBICOCCO,71,89,da accrescimento frutti a maturazione
+Piacenza,2026-07-03,CILIEGIO,91,93,post-raccolta
+Piacenza,2026-07-03,MAIS,51,69,emissione pennacchio – senescenza sete
+Piacenza,2026-07-03,MELO,71,79,ingrossamento frutti
+Piacenza,2026-07-03,OLIVO,71,79,accrescimento drupe
+Piacenza,2026-07-03,PERO,71,79,accrescimento frutto
+Piacenza,2026-07-03,PESCO,71,89,da ingrossamento frutti a maturazione
+Piacenza,2026-07-03,POMODORO_INDUSTRIA,10,83,da sviluppo vegetativo ad invaiatura 3° palco || da sviluppo vegetativo ad invaiatura 2° palco
+Piacenza,2026-07-03,SOIA,10,69,da sviluppo vegetativo a fioritura
+Piacenza,2026-07-03,SUSINO,71,81,ingrossamento frutti – inizio maturazione
+Piacenza,2026-07-03,VITE,77,79,chiusura grappolo
+Piacenza,2026-07-10,ALBICOCCO,71,89,da accrescimento frutti a maturazione
+Piacenza,2026-07-10,CILIEGIO,91,93,post-raccolta
+Piacenza,2026-07-10,MAIS,67,75,da senescenza sete a maturazione lattea
+Piacenza,2026-07-10,MELO,71,79,ingrossamento frutti
+Piacenza,2026-07-10,OLIVO,71,79,accrescimento drupe
+Piacenza,2026-07-10,PERO,71,79,accrescimento frutto
+Piacenza,2026-07-10,PESCO,71,89,da ingrossamento frutti a maturazione
+Piacenza,2026-07-10,POMODORO_INDUSTRIA,10,89,da sviluppo vegetativo ad invaiatura ultimo palco/maturazione
+Piacenza,2026-07-10,SOIA,60,75,da fioritura a formazione baccelli
+Piacenza,2026-07-10,SUSINO,71,89,ingrossamento frutti – maturazione
+Piacenza,2026-07-10,VITE,77,81,chiusura grappolo – inizio invaiatura varietà precoci
+Piacenza,2026-07-17,ALBICOCCO,81,93,da maturazione a post-raccolta
+Piacenza,2026-07-17,CILIEGIO,91,93,post-raccolta
+Piacenza,2026-07-17,MAIS,73,85,maturazione lattea - cerosa
+Piacenza,2026-07-17,MELO,71,79,ingrossamento frutti
+Piacenza,2026-07-17,OLIVO,71,79,da accrescimento drupe a inizio indurimento nocciolo
+Piacenza,2026-07-17,PERO,71,79,accrescimento frutto
+Piacenza,2026-07-17,PESCO,71,89,da ingrossamento frutti a maturazione
+Piacenza,2026-07-17,POMODORO_INDUSTRIA,10,89,da sviluppo vegetativo a maturazione
+Piacenza,2026-07-17,SOIA,69,75,formazione baccelli
+Piacenza,2026-07-17,SUSINO,71,89,ingrossamento frutti – maturazione
+Piacenza,2026-07-17,VITE,77,81,chiusura grappolo – inizio invaiatura
+Piacenza,2026-07-24,ALBICOCCO,81,93,da maturazione a post-raccolta
+Piacenza,2026-07-24,CILIEGIO,91,93,post-raccolta
+Piacenza,2026-07-24,MAIS,73,85,maturazione lattea - cerosa
+Piacenza,2026-07-24,MELO,71,79,ingrossamento frutti
+Piacenza,2026-07-24,OLIVO,71,79,da accrescimento drupe a inizio indurimento nocciolo
+Piacenza,2026-07-24,PERO,71,81,accrescimento frutti – inizio maturazione
+Piacenza,2026-07-24,PESCO,71,89,da ingrossamento frutti a maturazione
+Piacenza,2026-07-24,POMODORO_INDUSTRIA,10,89,da sviluppo vegetativo a maturazione
+Piacenza,2026-07-24,SOIA,69,75,formazione baccelli
+Piacenza,2026-07-24,SUSINO,71,89,ingrossamento frutti – maturazione
+Piacenza,2026-07-24,VITE,77,83,da chiusura grappolo a invaiatura
+Piacenza,2026-07-31,ALBICOCCO,81,93,da maturazione a post-raccolta
+Piacenza,2026-07-31,MELO,71,81,ingrossamento frutti ad inizio maturazione
+Piacenza,2026-07-31,OLIVO,75,75,indurimento nocciolo
+Piacenza,2026-07-31,PERO,71,89,accrescimento frutti – maturazione
+Piacenza,2026-07-31,PESCO,71,89,da ingrossamento frutti a maturazione
+Piacenza,2026-07-31,POMODORO_INDUSTRIA,71,89,da allegagione a maturazione
+Piacenza,2026-07-31,SOIA,69,79,da formazione baccelli a ingrossamento semi
+Piacenza,2026-07-31,SUSINO,71,89,ingrossamento frutti – maturazione
+Piacenza,2026-07-31,VITE,81,85,da invaiatura a inizio maturazione
+Piacenza,2026-08-07,MELO,71,89,ingrossamento frutti a maturazione
+Piacenza,2026-08-07,OLIVO,75,75,indurimento nocciolo
+Piacenza,2026-08-07,PERO,71,89,accrescimento frutti – maturazione
+Piacenza,2026-08-07,PESCO,71,89,da ingrossamento frutti a maturazione
+Piacenza,2026-08-07,POMODORO_INDUSTRIA,71,89,da allegagione a maturazione
+Piacenza,2026-08-07,SOIA,69,79,da formazione baccelli a ingrossamento semi
+Piacenza,2026-08-07,SUSINO,71,89,ingrossamento frutti – maturazione
+Piacenza,2026-08-07,VITE,81,89,da invaiatura a maturazione
+Piacenza,2026-08-21,FAGIOLINO,10,89,da sviluppo vegetativo a raccolta
+Piacenza,2026-08-21,MELO,71,89,da ingrossamento frutti a maturazione
+Piacenza,2026-08-21,OLIVO,75,75,indurimento nocciolo
+Piacenza,2026-08-21,PERO,71,89,accrescimento frutti – maturazione
+Piacenza,2026-08-21,PESCO,81,89,maturazione
+Piacenza,2026-08-21,POMODORO_INDUSTRIA,71,89,da allegagione a maturazione
+Piacenza,2026-08-21,SOIA,75,79,ingrossamento semi
+Piacenza,2026-08-21,SUSINO,71,89,ingrossamento frutti – maturazione
+Piacenza,2026-08-21,VITE,85,89,maturazione - raccolta
+Reggio Emilia,2026-02-05,MELO,0,0,gemma ferma
+Reggio Emilia,2026-02-05,PERO,0,0,gemma ferma
+Reggio Emilia,2026-02-18,MAIS,0,0,pre-semina
+Reggio Emilia,2026-02-18,MELO,0,51,gemma ferma-inizio rigonfiamento gemma
+Reggio Emilia,2026-02-18,PERO,0,51,gemma ferma- inizio rigonfiamento gemma
+Reggio Emilia,2026-02-18,VITE,0,0,gemma ferma
+Reggio Emilia,2026-02-26,MAIS,0,0,pre-semina
+Reggio Emilia,2026-02-26,MELO,0,52,gemma ferma- rigonfiamento gemma
+Reggio Emilia,2026-02-26,PERO,51,53,rigonfiamento gemma-rottura gemma
+Reggio Emilia,2026-02-26,VITE,0,3,gemma ferma-rigonfiamento gemma (inizio pianto)
+Reggio Emilia,2026-03-05,MAIS,0,0,pre-semina
+Reggio Emilia,2026-03-05,MELO,51,53,rigonfiamento gemma-punte verdi
+Reggio Emilia,2026-03-05,PERO,53,55,rottura gemma-inizio comparsa mazzetti affioranti
+Reggio Emilia,2026-03-05,VITE,0,3,rigonfiamento gemma (pianto)
+Reggio Emilia,2026-03-12,MAIS,0,0,pre-semina
+Reggio Emilia,2026-03-12,MELO,53,54,punte verdi-orecchiette di topo
+Reggio Emilia,2026-03-12,OLIVO,0,9,da riposo vegetativo a ripresa vegetativa
+Reggio Emilia,2026-03-12,PERO,53,56,rottura gemma- mazzetti divaricati
+Reggio Emilia,2026-03-12,VITE,0,3,gemma ferma-rigonfiamento gemma
+Reggio Emilia,2026-03-19,MAIS,0,0,pre-semina-semina
+Reggio Emilia,2026-03-19,MELO,51,55,punte verdi-comparsa bottoni fiorali
+Reggio Emilia,2026-03-19,OLIVO,1,9,ripresa vegetativa
+Reggio Emilia,2026-03-19,PERO,56,61,mazzetti divaricati-inizio fioritura
+Reggio Emilia,2026-03-19,VITE,1,8,rigonfiamento gemma-rottura gemma
+Reggio Emilia,2026-03-26,GIRASOLE,0,0,pre semina || pre-semina
+Reggio Emilia,2026-03-26,MAIS,0,0,pre-semina-semina
+Reggio Emilia,2026-03-26,MELO,55,57,mazzetti affioranti-bottone rosa
+Reggio Emilia,2026-03-26,OLIVO,1,9,ripresa vegetativa
+Reggio Emilia,2026-03-26,PERO,56,69,mazzetti divaricati-fioritura
+Reggio Emilia,2026-03-26,POMODORO,0,13,pre-trapianto
+Reggio Emilia,2026-03-26,VITE,5,8,gemma cotonosa-germogliamento
+Reggio Emilia,2026-04-02,GIRASOLE,0,0,pre semina-semina || pre-semina
+Reggio Emilia,2026-04-02,MAIS,0,8,presemina - pre-emergenza
+Reggio Emilia,2026-04-02,MELO,57,69,bottone rosa- fioritura
+Reggio Emilia,2026-04-02,OLIVO,1,9,ripresa vegetativa
+Reggio Emilia,2026-04-02,PERO,60,69,fioritura-inizio caduta petali
+Reggio Emilia,2026-04-02,POMODORO_INDUSTRIA,0,13,pre trapianto || pre-trapianto
+Reggio Emilia,2026-04-02,SOIA,0,0,Pre-semina
+Reggio Emilia,2026-04-02,VITE,5,8,gemma cotonosa - germogliamento
+Reggio Emilia,2026-04-09,GIRASOLE,0,0,pre semina-semina || pre-semina-semina
+Reggio Emilia,2026-04-09,MAIS,0,8,presemina - pre-emergenza || semina - pre-emergenza
+Reggio Emilia,2026-04-09,MELO,60,69,fioritura- caduta petali
+Reggio Emilia,2026-04-09,OLIVO,1,9,ripresa vegetativa
+Reggio Emilia,2026-04-09,PERO,67,71,caduta petali-allegagione
+Reggio Emilia,2026-04-09,POMODORO_INDUSTRIA,0,15,pre trapianto-trapianto || pre-trapianto-trapianto
+Reggio Emilia,2026-04-09,SOIA,0,0,Pre-semina
+Reggio Emilia,2026-04-09,VITE,7,12,germogliamento – prime foglie distese
+Reggio Emilia,2026-04-16,GIRASOLE,0,8,semina-pre emergenza
+Reggio Emilia,2026-04-16,MAIS,0,9,pre-emergenza -emergenza
+Reggio Emilia,2026-04-16,MELO,67,71,fine fioritura-allegagione
+Reggio Emilia,2026-04-16,OLIVO,31,37,accrescimento germogli apicali e laterali || accrescimento germogli
+Reggio Emilia,2026-04-16,PERO,71,79,allegagione-ingrossamento frutti
+Reggio Emilia,2026-04-16,POMODORO_INDUSTRIA,0,15,pre trapianto-trapianto || pre-trapianto-trapianto
+Reggio Emilia,2026-04-16,SOIA,0,0,Pre-semina
+Reggio Emilia,2026-04-16,VITE,11,53,prime foglie distese-grappoli visibili
+Reggio Emilia,2026-04-23,GIRASOLE,0,9,pre-emergenza-emergenza || emergenza
+Reggio Emilia,2026-04-23,MAIS,9,14,emergenza-2-4 foglie || emergenza-2 foglie
+Reggio Emilia,2026-04-23,MELO,71,79,allegagione-accrescimento frutti
+Reggio Emilia,2026-04-23,OLIVO,50,52,inizio mignolatura
+Reggio Emilia,2026-04-23,PERO,71,79,ingrossamento frutti
+Reggio Emilia,2026-04-23,POMODORO_INDUSTRIA,0,15,pre trapianto-trapianto || pre-trapianto-trapianto
+Reggio Emilia,2026-04-23,SOIA,0,0,pre-semina-semina
+Reggio Emilia,2026-04-23,VITE,11,53,foglie distese-grappoli visibili
+Reggio Emilia,2026-04-30,GIRASOLE,9,12,emergenza-cotiledoni || emergenza-2 foglie
+Reggio Emilia,2026-04-30,MAIS,12,14,2-4 foglie
+Reggio Emilia,2026-04-30,MELO,71,79,accrescimento frutti
+Reggio Emilia,2026-04-30,OLIVO,50,57,mignolatura || inizio mignolatura
+Reggio Emilia,2026-04-30,PERO,71,79,ingrossamento frutti
+Reggio Emilia,2026-04-30,POMODORO_INDUSTRIA,0,15,pre trapianto-trapianto || pre-trapianto-trapianto
+Reggio Emilia,2026-04-30,SOIA,0,8,pre-semina-pre-emergenza || pre-semina-semina
+Reggio Emilia,2026-04-30,VITE,55,55,grappoli in distensione
+Reggio Emilia,2026-05-07,GIRASOLE,9,12,emergenza-prime foglie || emergenza-2 foglie
+Reggio Emilia,2026-05-07,MAIS,12,16,2-4 foglie || 2-6 foglie
+Reggio Emilia,2026-05-07,MELO,71,79,accrescimento frutti
+Reggio Emilia,2026-05-07,OLIVO,50,57,mignolatura
+Reggio Emilia,2026-05-07,PERO,71,79,ingrossamento frutti
+Reggio Emilia,2026-05-07,POMODORO_INDUSTRIA,0,15,pre trapianto-trapianto || pre-trapianto-trapianto
+Reggio Emilia,2026-05-07,SOIA,0,9,semina-emergenza
+Reggio Emilia,2026-05-07,VITE,55,57,grappoli separati – inizio bottoni fiorali separati
+Reggio Emilia,2026-05-14,GIRASOLE,9,14,2-4 foglie || emergenza-2 foglie
+Reggio Emilia,2026-05-14,MAIS,14,18,4-8 foglie
+Reggio Emilia,2026-05-14,MELO,71,79,accrescimento frutti
+Reggio Emilia,2026-05-14,OLIVO,50,57,mignolatura
+Reggio Emilia,2026-05-14,PERO,71,79,ingrossamento frutti
+Reggio Emilia,2026-05-14,POMODORO_INDUSTRIA,0,71,pre trapianto-allegagione primo palco - fioritura secondo palco || pre-trapianto-allegagione primo palco fioritura secondo palco
+Reggio Emilia,2026-05-14,SOIA,9,13,emergenza-2/3foglie || emergenza-prime foglie
+Reggio Emilia,2026-05-14,VITE,57,61,bottoni fiorali separati-inizio fioritura
+Reggio Emilia,2026-05-21,GIRASOLE,14,16,4-6 foglie
+Reggio Emilia,2026-05-21,MAIS,16,18,6-8 foglie
+Reggio Emilia,2026-05-21,MELO,71,79,accrescimento frutti
+Reggio Emilia,2026-05-21,OLIVO,50,57,mignolatura
+Reggio Emilia,2026-05-21,PERO,71,79,ingrossamento frutti
+Reggio Emilia,2026-05-21,POMODORO_INDUSTRIA,0,72,pre trapianto-allegagione secondo palco - fioritura terzo paco
+Reggio Emilia,2026-05-21,SOIA,11,13,prime foglie vere a 2° foglia trilobata
+Reggio Emilia,2026-05-21,VITE,57,69,bottoni fiorali separati- fioritura
+Reggio Emilia,2026-05-28,GIRASOLE,14,16,4-6 foglie
+Reggio Emilia,2026-05-28,MAIS,16,39,8 foglie-levata || 6-8 foglie-levata
+Reggio Emilia,2026-05-28,MELO,71,79,accrescimento frutti
+Reggio Emilia,2026-05-28,OLIVO,60,69,fioritura
+Reggio Emilia,2026-05-28,PERO,71,79,ingrossamento frutti
+Reggio Emilia,2026-05-28,POMODORO_INDUSTRIA,0,73,pre-trapianto – allegagione 3° palco
+Reggio Emilia,2026-05-28,SOIA,11,13,prime foglie vere a 2° foglia trilobata
+Reggio Emilia,2026-05-28,VITE,60,71,fioritura - allegagione
+Reggio Emilia,2026-06-04,MAIS,18,39,8 foglie-levata || da 8 foglie a levata
+Reggio Emilia,2026-06-04,MELO,71,79,accrescimento frutti
+Reggio Emilia,2026-06-04,OLIVO,60,69,fioritura -allegagione
+Reggio Emilia,2026-06-04,PERO,71,79,ingrossamento frutti
+Reggio Emilia,2026-06-04,POMODORO_INDUSTRIA,0,73,pre-trapianto – allegagione 3° palco
+Reggio Emilia,2026-06-04,SOIA,14,16,3-5° foglia trilobata
+Reggio Emilia,2026-06-04,VITE,71,75,allegagione-acino dimensione pisello
+Reggio Emilia,2026-06-11,MAIS,30,59,levata-spigatura
+Reggio Emilia,2026-06-11,MELO,71,79,accrescimento frutti
+Reggio Emilia,2026-06-11,OLIVO,69,69,allegagione
+Reggio Emilia,2026-06-11,PERO,71,79,ingrossamento frutti
+Reggio Emilia,2026-06-11,POMODORO_INDUSTRIA,13,74,termine trapianti – allegagione 4° palco || fine trapianto – allegagione 4° palco
+Reggio Emilia,2026-06-11,SOIA,15,59,4-6° foglia trilobata-chiusura interfila
+Reggio Emilia,2026-06-11,VITE,77,77,pre chiusura grappolo
+Reggio Emilia,2026-06-18,MAIS,51,59,emissione pennacchio
+Reggio Emilia,2026-06-18,MELO,71,79,accrescimento frutti
+Reggio Emilia,2026-06-18,OLIVO,69,69,allegagione
+Reggio Emilia,2026-06-18,PERO,71,79,ingrossamento frutti
+Reggio Emilia,2026-06-18,POMODORO_INDUSTRIA,13,83,termine trapianto – invaiatura primo palco || termine trapianto – invaiatura primo palco fine trapianto
+Reggio Emilia,2026-06-18,SOIA,17,59,6° foglia trilobata-chiusura interfila
+Reggio Emilia,2026-06-18,VITE,77,79,chiusura grappolo
+Reggio Emilia,2026-06-25,MAIS,51,59,emissione pennacchio
+Reggio Emilia,2026-06-25,MELO,71,79,accrescimento frutti
+Reggio Emilia,2026-06-25,OLIVO,71,79,accrescimento frutti
+Reggio Emilia,2026-06-25,PERO,71,79,ingrossamento frutti
+Reggio Emilia,2026-06-25,POMODORO_INDUSTRIA,71,83,accrescimento- invaiatura secondo palco || t accrescimento invaiatura secondo palco
+Reggio Emilia,2026-06-25,SOIA,17,59,6° foglia trilobata-chiusura interfila
+Reggio Emilia,2026-06-25,VITE,77,79,chiusura grappolo
+Reggio Emilia,2026-07-02,MAIS,51,59,emissione pennacchio
+Reggio Emilia,2026-07-02,MELO,71,79,accrescimento frutti
+Reggio Emilia,2026-07-02,OLIVO,69,79,allegagione || accrescimento frutti
+Reggio Emilia,2026-07-02,PERO,71,79,ingrossamento frutti
+Reggio Emilia,2026-07-02,POMODORO_INDUSTRIA,71,83,accrescimento- invaiatura ultimo palco
+Reggio Emilia,2026-07-02,SOIA,60,61,inizio fioritura
+Reggio Emilia,2026-07-02,VITE,77,79,chiusura grappolo
+Reggio Emilia,2026-07-09,MAIS,73,75,maturazione lattea
+Reggio Emilia,2026-07-09,MELO,71,79,accrescimento frutti
+Reggio Emilia,2026-07-09,OLIVO,69,79,allegagione || accrescimento frutti
+Reggio Emilia,2026-07-09,PERO,71,79,ingrossamento frutti
+Reggio Emilia,2026-07-09,POMODORO_INDUSTRIA,71,83,accrescimento- invaiatura ultimo palco cv.precocissime || accrescimento- invaiatura ultimo palco
+Reggio Emilia,2026-07-09,SOIA,60,75,fioritura-formazione baccelli
+Reggio Emilia,2026-07-09,VITE,77,81,chiusura grappolo-inizio invaiatura
+Reggio Emilia,2026-07-16,MAIS,83,85,maturazione cerosa
+Reggio Emilia,2026-07-16,MELO,71,79,accrescimento frutti
+Reggio Emilia,2026-07-16,OLIVO,71,79,accrescimento frutto
+Reggio Emilia,2026-07-16,PERO,71,89,ingrossamento frutti-maturazione || ingrossamento frutti
+Reggio Emilia,2026-07-16,POMODORO_INDUSTRIA,71,89,accrescimento- maturazione
+Reggio Emilia,2026-07-16,SOIA,69,75,formazione baccelli
+Reggio Emilia,2026-07-16,VITE,77,81,chiusura grappolo-inizio invaiatura
+Reggio Emilia,2026-07-23,MAIS,83,85,maturazione cerosa
+Reggio Emilia,2026-07-23,MELO,71,79,accrescimento frutti
+Reggio Emilia,2026-07-23,OLIVO,71,79,accrescimento frutto
+Reggio Emilia,2026-07-23,PERO,71,89,ingrossamento frutti-maturazione || ingrossamento frutti
+Reggio Emilia,2026-07-23,POMODORO_INDUSTRIA,71,89,accrescimento- maturazione(cv.precoci) || accrescimento- maturazione
+Reggio Emilia,2026-07-23,SOIA,69,79,formazione baccelli-riempimento semi || formazione baccelli
+Reggio Emilia,2026-07-23,VITE,77,83,chiusura grappolo-invaiatura
+Reggio Emilia,2026-07-30,MAIS,83,85,maturazione cerosa
+Reggio Emilia,2026-07-30,MELO,71,89,accrescimento frutti-maturazione
+Reggio Emilia,2026-07-30,OLIVO,71,79,accrescimento frutto
+Reggio Emilia,2026-07-30,PERO,71,89,ingrossamento frutti-maturazione || ingrossamento frutti
+Reggio Emilia,2026-07-30,POMODORO_INDUSTRIA,71,89,accrescimento- maturazione
+Reggio Emilia,2026-07-30,SOIA,69,79,formazione baccelli-riempimento semi || formazione baccelli
+Reggio Emilia,2026-07-30,VITE,81,83,invaiatura
+Reggio Emilia,2026-08-06,MAIS,83,85,maturazione cerosa
+Reggio Emilia,2026-08-06,MELO,71,89,accrescimento frutti-maturazione
+Reggio Emilia,2026-08-06,OLIVO,71,79,accrescimento frutto
+Reggio Emilia,2026-08-06,PERO,71,89,ingrossamento frutti-maturazione || ingrossamento frutti
+Reggio Emilia,2026-08-06,POMODORO_INDUSTRIA,71,89,accrescimento- maturazione
+Reggio Emilia,2026-08-06,SOIA,69,79,formazione baccelli-riempimento semi || formazione baccelli
+Reggio Emilia,2026-08-06,VITE,81,85,invaiatura-inizio maturazione || invaiatura
+Reggio Emilia,2026-08-20,MELO,71,89,accrescimento frutti-maturazione
+Reggio Emilia,2026-08-20,OLIVO,71,79,accrescimento frutto
+Reggio Emilia,2026-08-20,PERO,71,89,ingrossamento frutti-maturazione || ingrossamento frutti
+Reggio Emilia,2026-08-20,POMODORO_INDUSTRIA,71,89,accrescimento- maturazione
+Reggio Emilia,2026-08-20,SOIA,69,79,riempimento semi || formazione baccelli
+Reggio Emilia,2026-08-20,VITE,85,89,maturazione

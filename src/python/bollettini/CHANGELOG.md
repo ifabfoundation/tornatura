@@ -4,6 +4,52 @@ Registro delle modifiche per il team backend.
 
 ---
 
+## [2026-09-25] - v2.1.0: fase fenologica di ogni coltura dai bollettini ER
+
+### In breve, per chi legge solo questo
+Nuovo modulo `modules/fenologia/` e nuovo endpoint `GET /v1/bollettini/fenologia?lat&lng&date`:
+per ogni coltura della zona del punto, la "Fase fenologica" scritta nell'ultimo bollettino di
+produzione integrata (validita' 14 giorni) e il suo intervallo **BBCH**. Estrattore
+**deterministico**, senza LLM. Lo scheduler costruisce l'archivio `data/fenologia.sqlite` come
+passo 2b della pipeline (idempotente; un suo errore finisce nel log e **non** cambia l'esito
+della pipeline). **Nessuna dipendenza nuova, lockfile invariato**, report e prompt intatti.
+Lo usa `landscape` (`/v1/landscape/pest-season`); nota: `docs/decisioni/2026-09_finestra-stagionale.md`.
+
+### Come funziona
+- `testo.py`: testo del PDF con **pypdfium2** (arriva con docling, 4.30.0 nel lock). Toglie i
+  caratteri **barrati** (revisioni di Word rimaste nel PDF), rimette il **trattino a fine riga**
+  (pdfium lo segna con `\x02`), ricostruisce le righe vuote fra paragrafi dallo spazio verticale.
+- `regole.py`: le regole R1-R9 dell'esperimento `esperimenti/cimice_landscape/fenologia/`
+  (intestazione di coltura, una fase per sezione, continuazioni, vocabolario, coerenza
+  coltura-termini, pulizia di titoli ed etichette incollati).
+- `bbch.py`: dizionario dicitura -> BBCH per gruppo di colture (Meier 2001).
+- `archivio.py`: SQLite + interrogazione per zona e data; `verifica.py`: non-regressione.
+
+### Verifica
+```
+python -m bollettini.modules.fenologia.verifica <cartella PDF ER 2026>
+dizionario: 630/630 diciture con l'intervallo atteso
+estrazione: 165 bollettini, 5142/5142 righe attese, 0 in piu'
+```
+Le tabelle attese (`modules/fenologia/attese/`) vengono da una verifica a mano: tre letture
+testuali, lettura geometrica di ogni riga, due letture visive alla cieca; dizionario tradotto
+alla cieca da due lettori e tre arbitri.
+
+### Revisione avversaria (25/09/2026), corretto prima del merge
+- l'archivio legge solo la cartella piatta del downloader (la chiave e' il nome del file: con
+  copie omonime in sottocartelle la cache non si stabilizzava);
+- un PDF in errore non resta in cache: si riprova al giro dopo (l'errore puo' essere passeggero);
+- `last_bulletin` segue la stessa regola dell'anno delle colture.
+
+### Trappole
+- pypdfium2 non e' fra i requisiti diretti: dichiararlo avrebbe richiesto di rigenerare il lock,
+  che il 25/09 cambiava 58 pacchetti (torch, docling-core, opencv 4 -> 5). Chi aggiorna docling
+  rilancia `verifica` prima del rilascio.
+- Il bollettino 6 del 18/03/2026 di Bologna e Ferrara (e due righe nel 7 e nell'11) ha le
+  revisioni di Word visibili: Docling e Poppler leggono il testo cancellato insieme al nuovo.
+
+---
+
 ## [2026-08-26] - MELO in Emilia-Romagna + tre fix di fedelta' del contenuto
 
 ### Overview per il team
