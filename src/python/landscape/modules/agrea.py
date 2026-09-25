@@ -123,7 +123,7 @@ def seminatural(lat: float, lng: float, radius_m: float) -> Dict[str, Any]:
     """Quota di elementi semi-naturali nel buffer: bosco piu' siepi e margini.
 
     E' la variabile che la letteratura indica come driver per Halyomorpha halys
-    (Tamherini et al. 2023, scala migliore 3 km) e per Drosophila suzukii
+    (Tamburini et al. 2023, scala migliore 3 km) e per Drosophila suzukii
     (Santoiemma et al. 2018), e che iColt non contiene affatto.
 
     Gli elementi caratteristici sono 902.542 poligoni regionali per il 2,5% degli
@@ -303,13 +303,18 @@ def parcels_geojson(
         # `harvest_code` permette al client di riconoscere la coltura del campo
         # dell'utente senza una seconda chiamata. Si ripete per feature ma e' una
         # stringa corta e gzip la comprime bene.
+        # `declared` e' la specie come sta nel dato: serve al join con le tabelle
+        # ospiti degli organismi (pests.annotate_features), che il server fa quando
+        # /parcels riceve `pest=`. E' una stringa corta e gzip la comprime bene.
         out = out.assign(
             icolt_class=out["cls"].map(display_name),
+            declared=out["cls"].astype(str),
             harvest_code=out["cls"].map(SPECIE_A_HARVEST),
             ha=out["ha_in_buffer"].round(2),
         )[
             [
                 "icolt_class",
+                "declared",
                 "harvest_code",
                 "family",
                 "ha",

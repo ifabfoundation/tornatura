@@ -2,18 +2,21 @@ LANDSCAPE (paesaggio agricolo) - Package di produzione
 ======================================================
 
 Nome:      landscape
-Versione:  2.1.0
-Data:      2026-08-20
+Versione:  2.2.0
+Data:      2026-09-24
 Servizio:  API del paesaggio agricolo e dei confini dichiarati
 
 Contenuto
 ---------
 [OK] api.py                     API FastAPI (health, coverage, composition, parcels,
-                                pieces, parcel-at)
+                                pieces, parcel-at, pests, pest-habitat)
 [OK] paths.py                   path statici (iColt nel pex) e runtime (AGREA sul volume, log)
 [OK] modules/config.py          classi, famiglie, mappatura colture, costanti, soglie
 [OK] modules/landscape.py       sorgente iColt + combinazione delle due sorgenti
 [OK] modules/agrea.py           sorgente AGREA, ai due livelli di granularita'
+[OK] modules/pests.py           habitat di un organismo nel paesaggio (calcolo unico per tutti)
+[OK] data/pests/halyha/         cimice asiatica: hosts.csv (312 specie AGREA -> livello, dalle
+                                evidenze) + meta.json (nome, serbatoi, testi, fonti, versione)
 [OK] data/icolt2026_er.parquet  layer ARPAE iColt 2026 (~34 MB, EPSG:4326, nel pex)
 [OK] BUILD                      target Pants (due pex_binary: api, updater)
 [OK] updater.py                 scarica AGREA dalla fonte e prepara i parquet sul volume

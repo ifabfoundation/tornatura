@@ -8,6 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from landscape.modules import agrea, config
 from landscape.modules import landscape as landscape_service
+from landscape.modules import pests
 from landscape.modules.landscape import DatasetUnavailable
 
 logger = logging.getLogger("landscape_api")
@@ -82,8 +83,13 @@ def parcels_by_location(
         config.DEFAULT_RADIUS_M, ge=config.MIN_RADIUS_M, le=config.MAX_GEOMETRY_RADIUS_M
     ),
     crop: Optional[str] = Query(None),
+    pest: Optional[str] = Query(None),
 ) -> Dict[str, Any]:
     """Geometrie delle particelle nel buffer, per il disegno sulla mappa.
+
+    Con `pest=<codice>` ogni feature dichiarata porta anche `host_level`, il livello
+    ospite di quella specie per l'organismo: e' il server a fare il join con la
+    tabella, il client si limita a colorare. Un codice sconosciuto e' un 404.
 
     Restituisce le particelle RITAGLIATE sul buffer (quindi la superficie
     disegnata coincide con quella dichiarata da /composition), il poligono del
@@ -115,6 +121,12 @@ def parcels_by_location(
                     # "contiene anche altre colture".
                     base["aggregated_classes"] = {}
                     base["crop"] = agrea.resolve_crop(crop)
+                    if pest:
+                        try:
+                            pests.annotate_features(base["parcels"]["features"], pest)
+                            base["pest"] = pests.summary(pests.get_meta(pest))
+                        except pests.PestUnknown:
+                            raise HTTPException(status_code=404, detail="Unknown pest")
                     return base
             except agrea.AgreaUnavailable as exc:
                 logger.warning("agrea non disponibile: %s", exc)
@@ -192,6 +204,68 @@ def parcel_at_point(
     except agrea.AgreaUnavailable as exc:
         logger.info("suggerimento non disponibile: %s", exc)
         return {"found": False, "reason": "dati dichiarativi non disponibili"}
+    except DatasetUnavailable as exc:
+        logger.error("dataset unavailable: %s", exc)
+        raise HTTPException(status_code=500, detail="Landscape dataset not available")
+
+
+@app.get("/v1/landscape/pests")
+def pests_for_crop(crop: Optional[str] = Query(None)) -> Dict[str, Any]:
+    """Gli organismi di cui il servizio sa descrivere l'habitat, per una coltura.
+
+    Ogni organismo e' una cartella in `data/pests/`: la cimice asiatica e' la prima.
+    `applies_to_harvests` null significa "tutte le colture". Il frontend usa questa
+    lista per decidere quali sezioni disegnare nella pagina del paesaggio.
+    """
+    return {"pests": pests.list_pests(crop)}
+
+
+@app.get("/v1/landscape/pest-habitat")
+def pest_habitat(
+    lat: float = Query(..., ge=-90, le=90),
+    lng: float = Query(..., ge=-180, le=180),
+    radius_m: int = Query(
+        config.DEFAULT_RADIUS_M, ge=config.MIN_RADIUS_M, le=config.MAX_RADIUS_M
+    ),
+    crop: Optional[str] = Query(None),
+    pest: str = Query(config.PEST_DEFAULT),
+    ring: Optional[str] = Query(
+        None,
+        description="Contorno del campo, 'lng,lat;lng,lat;...' (max 200 vertici): "
+        "serve per le distanze bordo a bordo. Senza, si usa l'appezzamento "
+        "dichiarato che contiene il punto, o il punto stesso.",
+    ),
+) -> Dict[str, Any]:
+    """Quanto il paesaggio dichiarato intorno al campo ospita un organismo.
+
+    Tre misure, decise da un esperimento e non a tavolino (vedi
+    `docs/decisioni/2026-09_paesaggio-organismi.md`): % di superficie per livello
+    ospite (separando frutteti ed erbacee), serbatoi semi-naturali, distanza in
+    CLASSI dal frutteto ospite e dalla siepe o bosco piu' vicini. Niente indice di
+    connettivita': misurato ridondante con la percentuale.
+
+    `available: false` NON e' un errore: significa che i dati dichiarativi non
+    sono sul volume o che nel raggio non c'e' nulla di dichiarato, e la pagina non
+    mostra la sezione. Fuori copertura e' un 404 come per gli altri endpoint.
+    """
+    try:
+        if not landscape_service.is_covered(lat, lng):
+            raise HTTPException(
+                status_code=404, detail="Location outside data coverage"
+            )
+        try:
+            return pests.habitat(lat, lng, radius_m, crop, ring, pest)
+        except pests.PestUnknown:
+            raise HTTPException(status_code=404, detail="Unknown pest")
+        except ValueError as exc:
+            raise HTTPException(status_code=422, detail=f"Invalid ring: {exc}")
+        except agrea.AgreaUnavailable as exc:
+            logger.info("habitat non disponibile: %s", exc)
+            return {
+                "available": False,
+                "reason": "dati dichiarativi non disponibili",
+                "pest": pests.summary(pests.get_meta(pest)),
+            }
     except DatasetUnavailable as exc:
         logger.error("dataset unavailable: %s", exc)
         raise HTTPException(status_code=500, detail="Landscape dataset not available")

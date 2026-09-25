@@ -118,6 +118,8 @@ type LandscapeResponse = {
 };
 
 type LandscapeParcelsResponse = {
+  /** Presente quando la richiesta aveva `pest=`. */
+  pest?: LandscapePestSummary;
   location?: { lat: number; lng: number };
   radius_m?: number;
   dataset?: { source?: string; year?: number; region?: string };
@@ -140,7 +142,16 @@ type LandscapeParcelsResponse = {
     type: "FeatureCollection";
     features: Array<{
       type: "Feature";
-      properties: { icolt_class?: string; ha?: number; is_crop?: boolean; family?: string };
+      properties: {
+        icolt_class?: string;
+        /** La specie come sta nel dato dichiarativo: chiave del join con le tabelle ospiti. */
+        declared?: string;
+        ha?: number;
+        is_crop?: boolean;
+        family?: string;
+        /** Presente solo con `pest=`: livello ospite della specie per quell'organismo. */
+        host_level?: string;
+      };
       geometry: Geometry;
     }>;
   };
@@ -222,6 +233,70 @@ type LandscapeParcelSuggestion = {
   };
 };
 
+/** Un organismo di cui il servizio sa descrivere l'habitat (una cartella in data/pests). */
+type LandscapePestSummary = {
+  code: string;
+  label?: string;
+  scientific_name?: string;
+  eppo_code?: string;
+  hosts_version?: string;
+  /** null = tutte le colture. */
+  applies_to_harvests?: string[] | null;
+};
+
+type LandscapePestShare = {
+  label?: string;
+  ha?: number;
+  pct_of_buffer?: number;
+  pct_of_declared?: number;
+  parcels?: number;
+};
+
+/** Distanza al piu' vicino: SOLO come classe, mai in metri (anonimato). */
+type LandscapeDistanceClass = {
+  class?: string;
+  label?: string;
+  label_target?: string;
+};
+
+/**
+ * Quanto il paesaggio dichiarato intorno al campo ospita un organismo.
+ * `available: false` NON e' un errore: la sezione non si mostra.
+ */
+type LandscapePestHabitat = {
+  available: boolean;
+  reason?: string;
+  pest?: LandscapePestSummary;
+  location?: { lat: number; lng: number };
+  radius_m?: number;
+  source?: string;
+  year?: number;
+  hosts_version?: string;
+  buffer_ha?: number;
+  declared_ha?: number;
+  declared_pct_of_buffer?: number;
+  agri_ha?: number;
+  levels?: Record<string, LandscapePestShare>;
+  hosts?: LandscapePestShare & { by_family?: Record<string, LandscapePestShare> };
+  top_hosts?: Array<{
+    species: string;
+    declared?: string;
+    level: string;
+    family?: string;
+    ha: number;
+    pct_of_declared?: number;
+    parcels: number;
+  }>;
+  min_parcels_per_row?: number;
+  reservoirs?: LandscapeSeminatural & { label?: string };
+  nearest?: Record<string, LandscapeDistanceClass>;
+  nearest_origin?: "ring" | "declared_parcel" | "centroid";
+  field?: { species?: string; level?: string } | null;
+  texts?: Record<string, string>;
+  limits?: string[];
+  sources?: Array<{ id: string; citation: string; url?: string }>;
+};
+
 const MODEL_API_BASE = (process.env.REACT_APP_MODELAPIS_SERVER_URL ?? "").replace(/\/$/, "");
 
 type ModelApiErrorPayload = {
@@ -249,6 +324,7 @@ const MODEL_API_ERROR_MAP: Record<string, string> = {
     "Il campo selezionato è fuori dall'area coperta dai dati sul paesaggio agricolo (attualmente la sola Emilia-Romagna).",
   "Landscape dataset not available":
     "I dati sul paesaggio agricolo non sono al momento disponibili.",
+  "Unknown pest": "Organismo non riconosciuto dal servizio del paesaggio.",
 };
 
 function mapModelApiError(detail: string | undefined, status: number) {
@@ -360,12 +436,50 @@ export async function fetchLandscapeParcels(
   lng: number,
   radiusM: number,
   crop?: string,
+  pest?: string,
 ) {
   return fetchJson<LandscapeParcelsResponse>("/v1/landscape/parcels", {
     lat,
     lng,
     radius_m: radiusM,
     ...(crop ? { crop } : {}),
+    ...(pest ? { pest } : {}),
+  });
+}
+
+/** Gli organismi pertinenti a una coltura: decide quali sezioni disegnare. */
+export async function fetchLandscapePests(crop?: string) {
+  return fetchJson<{ pests: LandscapePestSummary[] }>("/v1/landscape/pests", {
+    ...(crop ? { crop } : {}),
+  });
+}
+
+/**
+ * Contorno del campo nel formato compatto del servizio: "lng,lat;lng,lat;...".
+ * Sei decimali sono 11 cm: sufficienti per una distanza pubblicata in classi.
+ */
+export function ringParam(ring: number[][] | null | undefined): string | undefined {
+  if (!ring || ring.length < 4) {
+    return undefined;
+  }
+  return ring.map(([lng, lat]) => `${lng.toFixed(6)},${lat.toFixed(6)}`).join(";");
+}
+
+export async function fetchLandscapePestHabitat(
+  lat: number,
+  lng: number,
+  radiusM: number,
+  pest: string,
+  crop?: string,
+  ring?: string,
+) {
+  return fetchJson<LandscapePestHabitat>("/v1/landscape/pest-habitat", {
+    lat,
+    lng,
+    radius_m: radiusM,
+    pest,
+    ...(crop ? { crop } : {}),
+    ...(ring ? { ring } : {}),
   });
 }
 
@@ -395,4 +509,8 @@ export type {
   LandscapeParcelSuggestion,
   LandscapePiece,
   LandscapePiecesResponse,
+  LandscapePestSummary,
+  LandscapePestShare,
+  LandscapePestHabitat,
+  LandscapeDistanceClass,
 };

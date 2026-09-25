@@ -1,6 +1,6 @@
 import React from "react";
 import mapboxgl from "mapbox-gl";
-import type { FilterSpecification } from "mapbox-gl";
+import type { ExpressionSpecification, FilterSpecification } from "mapbox-gl";
 import * as turf from "@turf/turf";
 
 /**
@@ -57,6 +57,37 @@ const COLORE_PER_FAMIGLIA: any = [
   COLORE_ALTRO,
 ];
 
+/**
+ * Modalita' "ospiti di un organismo": la mappa ricolora gli appezzamenti per livello
+ * ospite (`host_level`, che il servizio aggiunge alle feature quando /parcels riceve
+ * `pest=`). E' ESCLUSIVA rispetto alle famiglie e alla coltura dell'utente, cosi' i
+ * colori in uso restano tre piu' il campo: dentro il vincolo dei quattro misurato.
+ * Niente quinto colore: il magenta della coltura passa alle colture con danno
+ * documentato, il giallo delle erbacee alle altre piante ospiti, il grigio al resto.
+ */
+const COLORE_PER_LIVELLO_OSPITE: ExpressionSpecification = [
+  "match",
+  ["get", "host_level"],
+  "principale",
+  COLORE_COLTURA,
+  "secondario",
+  COLORE_ERBACEE,
+  COLORE_ALTRO,
+];
+
+export const LEGENDA_OSPITI: Array<{ level: string; label: string; color: string }> = [
+  { level: "principale", label: "Colture con danno documentato", color: COLORE_COLTURA },
+  { level: "secondario", label: "Altre piante ospiti", color: COLORE_ERBACEE },
+  { level: "altro", label: "Non ospiti e non classificabili", color: COLORE_ALTRO },
+];
+
+const ETICHETTA_LIVELLO: Record<string, string> = {
+  principale: "coltura con danno documentato",
+  secondario: "altra pianta ospite",
+  non_ospite: "non ospite",
+  non_classificabile: "non classificabile",
+};
+
 export const LEGENDA_FAMIGLIE: Array<{ family: string; label: string; color: string }> = [
   { family: "permanenti", label: "Frutteti e vigneti", color: COLORE_PERMANENTI },
   { family: "erbacee", label: "Seminativi e prati", color: COLORE_ERBACEE },
@@ -80,7 +111,7 @@ type ParcelsFC = {
   type: "FeatureCollection";
   features: Array<{
     type: "Feature";
-    properties: { icolt_class?: string; ha?: number; is_crop?: boolean };
+    properties: { icolt_class?: string; ha?: number; is_crop?: boolean; host_level?: string };
     geometry: any;
   }>;
 };
@@ -98,6 +129,10 @@ export type MapLandscapeCropsProps = {
   /** Famiglie di uso del suolo accese: una famiglia spenta non si disegna. */
   enabledFamilies: string[];
   showCrop: boolean;
+  /** Acceso: colora per livello ospite dell'organismo (richiede feature con `host_level`). */
+  hostMode?: boolean;
+  /** Nome dell'organismo, per il popup ("ospite della cimice asiatica"). */
+  hostModeLabel?: string;
 };
 
 const vuoto: ParcelsFC = { type: "FeatureCollection", features: [] };
@@ -119,6 +154,8 @@ export default function MapLandscapeCrops({
   datasetLabel,
   enabledFamilies,
   showCrop,
+  hostMode = false,
+  hostModeLabel,
 }: MapLandscapeCropsProps) {
   const mapContainerRef = React.useRef<HTMLDivElement>(null);
   const mapRef = React.useRef<any>(null);
@@ -130,6 +167,8 @@ export default function MapLandscapeCrops({
   aggregatedRef.current = aggregatedClasses;
   const datasetRef = React.useRef(datasetLabel);
   datasetRef.current = datasetLabel;
+  const hostModeRef = React.useRef({ on: hostMode, label: hostModeLabel });
+  hostModeRef.current = { on: hostMode, label: hostModeLabel };
 
   // --- inizializzazione: una volta sola, non dipende dai dati -----------------
   React.useEffect(() => {
@@ -228,6 +267,15 @@ export default function MapLandscapeCrops({
               contenuto,
             )}. Il dato non distingue la singola coltura.</div>`
           : "";
+        const livello = f.properties?.host_level
+          ? String(f.properties.host_level)
+          : null;
+        const rigaOspite =
+          livello && hostModeRef.current.on
+            ? `<div class="font-s mt-1">${esc(
+                hostModeRef.current.label ?? "Organismo",
+              )}: ${esc(ETICHETTA_LIVELLO[livello] ?? livello)}</div>`
+            : "";
         popupRef.current
           .setLngLat(e.lngLat)
           .setHTML(
@@ -237,6 +285,7 @@ export default function MapLandscapeCrops({
                  maximumFractionDigits: 2,
                })} ha nel raggio</div>
                ${nota}
+               ${rigaOspite}
                <div class="font-s opacity-05 mt-1">${esc(datasetRef.current)}</div>
              </div>`,
           )
@@ -314,6 +363,21 @@ export default function MapLandscapeCrops({
       map.setLayoutProperty(id, "visibility", on ? "visible" : "none");
     // Le famiglie spente escono dal filtro: un solo layer serve tutte le voci
     // della legenda, senza duplicare la sorgente per ogni famiglia.
+    if (hostMode) {
+      // Modalita' ospiti: tutti gli appezzamenti, colorati per livello; la coltura
+      // dell'utente si spegne perche' il suo colore ora dice "danno documentato".
+      map.setFilter(LYR_AGRI, null);
+      map.setFilter(LYR_AGRI_LINE, null);
+      map.setPaintProperty(LYR_AGRI, "fill-color", COLORE_PER_LIVELLO_OSPITE);
+      map.setPaintProperty(LYR_AGRI_LINE, "line-color", COLORE_PER_LIVELLO_OSPITE);
+      set(LYR_AGRI, true);
+      set(LYR_AGRI_LINE, true);
+      set(LYR_COLTURA, false);
+      set(LYR_COLTURA_LINE, false);
+      return;
+    }
+    map.setPaintProperty(LYR_AGRI, "fill-color", COLORE_PER_FAMIGLIA);
+    map.setPaintProperty(LYR_AGRI_LINE, "line-color", COLORE_PER_FAMIGLIA);
     const filtroFamiglie: FilterSpecification = [
       "in",
       ["get", "family"],
@@ -325,7 +389,7 @@ export default function MapLandscapeCrops({
     set(LYR_AGRI_LINE, enabledFamilies.length > 0);
     set(LYR_COLTURA, showCrop);
     set(LYR_COLTURA_LINE, showCrop);
-  }, [mapLoaded, enabledFamilies, showCrop]);
+  }, [mapLoaded, enabledFamilies, showCrop, hostMode]);
 
   return (
     <div className="map-observations-wrapper">
