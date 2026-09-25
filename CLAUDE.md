@@ -58,6 +58,39 @@ Branch `release/x.y.z`; il commit di rilascio aggiorna solo `image_tags` in `src
 sole immagini toccate e deploy manuale. Una PR che cambia `core` e `web` richiede **due** immagini;
 una che cambia solo il frontend, una. Scriverlo nella descrizione della PR.
 
+Procedura seguita per landscape 2.2.0 e web 0.2.20260925 (25/09/2026), passo per passo:
+
+1. **Il frontend ha la configurazione dentro.** Vite scrive nel bundle, a build time, i valori del
+   `.env` di `src/typescript/web/` (blocco `define` in `vite.config.ts`); il target
+   `src/typescript/web:artifacts` include `.env` apposta, anche se git lo ignora. Le variabili
+   `REACT_APP_*` nel compose del server **non hanno effetto** (nginx serve file statici). Quindi:
+   un'immagine web per ambiente, `0.2.YYYYMMDD` per staging e `0.2.YYYYMMDD-PROD` per produzione,
+   ognuna costruita col `.env` del suo ambiente. **Mai** costruire un'immagine da rilasciare col
+   `.env` di sviluppo (punta a localhost): si costruisce in un `git worktree` pulito del branch di
+   rilascio, con il `.env` dell'ambiente copiato dentro e tolto subito dopo.
+2. **I valori giusti si leggono dall'immagine che gira**, non si ricordano: dal bundle in
+   `/usr/share/nginx/html/assets/*.js` del container web dell'ambiente (server core, auth, realm,
+   client id, storage, server modelli, token Mapbox). Dopo la build, gli indirizzi del bundle nuovo
+   devono coincidere uno per uno con quelli del bundle in uso, e il token Mapbox deve essere lo
+   stesso.
+3. **Prima di toccare lo staging, confrontare i testi** del bundle in uso con quelli nuovi: lo
+   staging puo' contenere lavoro non ancora in `main` (il 25/09 conteneva una sezione di
+   amministrazione). In quel caso lo staging web non si sovrascrive.
+4. **I servizi modello** (landscape, bollettini, peronospora) sono una sola immagine per staging e
+   produzione: la configurazione arriva dal volume e dal compose.
+5. **Sul server**: copia datata del compose dell'ambiente, cambio delle sole righe `image:`, poi
+   `docker compose config --quiet` e `docker compose up -d --no-deps <servizi>`. `--no-deps` evita di
+   rilanciare gli `*_initiator` (l'updater di landscape riscarica AGREA, 1,3 GB).
+6. **Verifica**: gli endpoint del servizio con i numeri attesi del CHANGELOG; una risposta che non
+   doveva cambiare (es. `/composition` a 3 e 5 km) identica a prima del rilascio; il sito risponde e
+   serve il bundle nuovo; nessun errore nei log.
+7. **Per tornare indietro**: rimettere la copia datata del compose e rifare `up -d --no-deps`; le
+   immagini precedenti restano sul server.
+
+Se le immagini non sono state pubblicate su Docker Hub ma copiate sul server
+(`docker save | ssh ... docker load`), un `docker compose pull` fallisce per quei tag finche' chi ha
+l'accesso a Docker Hub non le pubblica dallo stesso commit.
+
 ## Regole di lavoro
 
 1. Mai commit diretti su `main`: branch `feat/…`, `fix/…`, `docs/…` e PR. Mai push senza l'accordo
