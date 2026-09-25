@@ -1,0 +1,631 @@
+coltura,dicitura,bbch_min,bbch_max,verifica
+ACTINIDIA,ad ingrossamento frutti,71,79,due_letture_concordi
+ACTINIDIA,comparsa bottoni fiorali,51,55,due_letture_concordi
+ACTINIDIA,da allegagione a ingrossamento frutti,69,79,due_letture_concordi
+ACTINIDIA,da allegagione ad ingrossamento frutti,69,79,due_letture_concordi
+ACTINIDIA,da bottone bianco a fioritura,57,69,due_letture_concordi
+ACTINIDIA,da bottoni fiorali ad inizio fioritura,55,61,due_letture_concordi
+ACTINIDIA,da bottoni fiorali ad inizio fioritura da bottone bianco a fioritura,55,69,due_letture_concordi
+ACTINIDIA,da caduta petali ad ingrossamento frutti,67,79,due_letture_concordi
+ACTINIDIA,da comparsa bottoni fiorali a inizio fioritura,51,61,due_letture_concordi
+ACTINIDIA,da fioritura ad allegagione,60,69,arbitrato
+ACTINIDIA,da fioritura ad ingrossamento frutti,60,79,due_letture_concordi
+ACTINIDIA,da germogliamento a comparsa bottoni fiorali,7,55,due_letture_concordi
+ACTINIDIA,fioritura,60,69,due_letture_concordi
+ACTINIDIA,gemma ferma,0,0,due_letture_concordi
+ACTINIDIA,gemma ferma (cv verdi); gemma cotonosa (cv gialle),0,5,due_letture_concordi
+ACTINIDIA,gemma ferma (cv verdi); rigonfiamento gemme (cv gialle),0,3,due_letture_concordi
+ACTINIDIA,germogliamento,7,9,due_letture_concordi
+ACTINIDIA,ingrossamento frutti,71,79,due_letture_concordi
+ACTINIDIA,ingrossamento gemme (cv verdi); gemma cotonosa (cv gialle),1,5,due_letture_concordi
+ACTINIDIA,ingrossamento gemme (cv verdi); inizio germogliamento (cv gialle),1,7,due_letture_concordi
+ACTINIDIA,inizio germogliamento,7,7,due_letture_concordi
+ACTINIDIA,inizio germogliamento (cv verdi); 5 – 7 cm (cv gialle),7,33,due_letture_concordi
+ACTINIDIA,verde: germogliamento; giallo: comparsa bottoni fiorali,7,55,due_letture_concordi
+ALBICOCCO,accrescimento,71,79,due_letture_concordi
+ALBICOCCO,accrescimento frutti,71,79,due_letture_concordi
+ALBICOCCO,accrescimento frutti (indurimento nocciolo),71,79,due_letture_concordi
+ALBICOCCO,accrescimento frutti – indurimento nocciolo,71,79,due_letture_concordi
+ALBICOCCO,accrescimento frutto,71,79,due_letture_concordi
+ALBICOCCO,accrescimento – maturazione,71,89,due_letture_concordi
+ALBICOCCO,accrescimento – maturazione cv.precoci,71,89,due_letture_concordi
+ALBICOCCO,allegagione,71,71,due_letture_concordi
+ALBICOCCO,bottone rosso – fioritura,57,69,due_letture_concordi
+ALBICOCCO,bottone rosso – inizio fioritura,57,61,due_letture_concordi
+ALBICOCCO,caduta petali – scamiciatura,67,73,due_letture_concordi
+ALBICOCCO,da accrescimento frutti a indurimento nocciolo,71,79,due_letture_concordi
+ALBICOCCO,da accrescimento frutti a inizio maturazione,71,81,due_letture_concordi
+ALBICOCCO,da accrescimento frutti a maturazione,71,89,due_letture_concordi
+ALBICOCCO,da accrescimento frutti ad indurimento nocciolo,71,79,due_letture_concordi
+ALBICOCCO,da accrescimento frutto a indurimento nocciolo,71,79,due_letture_concordi
+ALBICOCCO,da bottone rosso a fioritura,57,69,due_letture_concordi
+ALBICOCCO,da bottone rosso a inizio fioritura,57,61,due_letture_concordi
+ALBICOCCO,da caduta petali a scamiciatura,67,73,due_letture_concordi
+ALBICOCCO,da caduta petali ad scamiciatura,67,73,due_letture_concordi
+ALBICOCCO,da fine fioritura a caduta petali,67,69,due_letture_concordi
+ALBICOCCO,da fioritura a caduta petali,60,69,due_letture_concordi
+ALBICOCCO,da gemma ferma a bottone rosso,0,57,due_letture_concordi
+ALBICOCCO,da gemma ferma a inizio bottone rosso,0,57,due_letture_concordi
+ALBICOCCO,da gemma ferma a inizio rigonfiamento gemme,0,51,due_letture_concordi
+ALBICOCCO,da gemma ferma a rigonfiamento gemme,0,51,due_letture_concordi
+ALBICOCCO,da gemma gonfia a bottone rosso,51,57,due_letture_concordi
+ALBICOCCO,da gemma gonfia – bottone rosso,51,57,due_letture_concordi
+ALBICOCCO,da indurimento nocciolo a inizio maturazione,75,81,due_letture_concordi
+ALBICOCCO,da indurimento nocciolo a maturazione,75,89,due_letture_concordi
+ALBICOCCO,da indurimento nocciolo ad inizio maturazione,75,81,due_letture_concordi
+ALBICOCCO,da maturazione a post – raccolta,81,93,due_letture_concordi
+ALBICOCCO,da rigonfiamento gemme a inizio bottone rosso,51,57,due_letture_concordi
+ALBICOCCO,da scamiciatura a inizio accrescimento frutto,71,73,due_letture_concordi
+ALBICOCCO,da scamiciatura ad accrescimento frutti,71,79,due_letture_concordi
+ALBICOCCO,fine fioritura – caduta petali,67,69,due_letture_concordi
+ALBICOCCO,fine fioritura – completa caduta petali,67,69,due_letture_concordi
+ALBICOCCO,fioritura,60,69,due_letture_concordi
+ALBICOCCO,fioritura – caduta petali,60,69,due_letture_concordi
+ALBICOCCO,indurimento nocciolo,75,77,due_letture_concordi
+ALBICOCCO,indurimento nocciolo – inizio maturazione cv.precoci,75,81,due_letture_concordi
+ALBICOCCO,ingrossamento frutti,71,79,due_letture_concordi
+ALBICOCCO,maturazione,81,89,due_letture_concordi
+ALBICOCCO,post – raccolta,91,93,due_letture_concordi
+ALBICOCCO,rigonfiamento gemma – bottone rosso,51,57,due_letture_concordi
+ALBICOCCO,scamiciatura,72,73,due_letture_concordi
+ALBICOCCO,scamiciatura – ingrossamento frutti,71,79,due_letture_concordi
+CILIEGIO,accrescimento frutti,71,79,due_letture_concordi
+CILIEGIO,accrescimento frutti – inizio maturazione cv. precocissime,71,81,due_letture_concordi
+CILIEGIO,accrescimento frutto,71,79,due_letture_concordi
+CILIEGIO,ad accrescimento frutti,71,79,due_letture_concordi
+CILIEGIO,bottone bianco – fioritura,57,69,due_letture_concordi
+CILIEGIO,bottone verde – bottone bianco,56,59,due_letture_concordi
+CILIEGIO,caduta petali,67,69,due_letture_concordi
+CILIEGIO,caduta petali – allegagione,67,71,due_letture_concordi
+CILIEGIO,caduta petali – ingrossamento frutti,67,79,due_letture_concordi
+CILIEGIO,da accrescimento frutti a inizio invaiatura,71,81,due_letture_concordi
+CILIEGIO,da accrescimento frutti a inizio maturazione,71,81,due_letture_concordi
+CILIEGIO,da accrescimento frutti a invaiatura,71,85,due_letture_concordi
+CILIEGIO,da accrescimento frutti a maturazione,71,89,due_letture_concordi
+CILIEGIO,da accrescimento frutti ad invaiatura,71,85,due_letture_concordi
+CILIEGIO,da allegagione a inizio accrescimento frutto,71,72,due_letture_concordi
+CILIEGIO,da allegagione ad accrescimento frutto,71,79,due_letture_concordi
+CILIEGIO,da bottone bianco a fioritura,57,69,due_letture_concordi
+CILIEGIO,da bottone bianco ad inizio fioritura,57,61,due_letture_concordi
+CILIEGIO,da bottone bianco fioritura,57,69,due_letture_concordi
+CILIEGIO,da bottone rosa a inizio apertura gemme,53,57,decisione_documentata
+CILIEGIO,da bottone rosa ad apertura gemme,53,57,arbitrato
+CILIEGIO,da bottone verde a bottone bianco,56,59,due_letture_concordi
+CILIEGIO,da bottone verde a inizio fioritura,56,61,due_letture_concordi
+CILIEGIO,da bottone verde ad inizio fioritura,56,61,due_letture_concordi
+CILIEGIO,da bottoni rosa a inizio apertura gemme,53,57,decisione_documentata
+CILIEGIO,da bottoni rosa ad apertura gemme,53,57,arbitrato
+CILIEGIO,da caduta petali a ingrossamento frutti,67,79,due_letture_concordi
+CILIEGIO,da caduta petali a scamiciatura accrescimento frutti,67,79,due_letture_concordi
+CILIEGIO,da caduta petali ad accrescimento frutti,67,79,due_letture_concordi
+CILIEGIO,da fioritura a caduta petali,60,69,due_letture_concordi
+CILIEGIO,da fioritura ad allegagione,60,71,due_letture_concordi
+CILIEGIO,da gemma gonfia a bottone bianco,51,59,due_letture_concordi
+CILIEGIO,da invaiatura a maturazione,81,89,due_letture_concordi
+CILIEGIO,da invaiatura frutti a maturazione,81,89,due_letture_concordi
+CILIEGIO,da invaiatura maturazione,81,89,due_letture_concordi
+CILIEGIO,da rigonfiamento gemme a inizio rottura gemme le varietà precoci,51,53,due_letture_concordi
+CILIEGIO,da rigonfiamento gemme a rottura gemme,51,53,due_letture_concordi
+CILIEGIO,fioritura,60,69,due_letture_concordi
+CILIEGIO,fioritura – inizio caduta petali,60,69,due_letture_concordi
+CILIEGIO,ingrossamento frutti,71,79,due_letture_concordi
+CILIEGIO,ingrossamento frutti – inizio invaiatura cv.precoci,71,81,due_letture_concordi
+CILIEGIO,ingrossamento frutti – inizio maturazione cv.precoci,71,81,due_letture_concordi
+CILIEGIO,ingrossamento frutti – inizio maturazione cv.precocissime,71,81,due_letture_concordi
+CILIEGIO,ingrossamento frutti – maturazione cv.precoci,71,89,due_letture_concordi
+CILIEGIO,inizio rigonfiamento gemma,51,51,due_letture_concordi
+CILIEGIO,invaiatura – maturazione cv.medio precoci,81,89,due_letture_concordi
+CILIEGIO,invaiatura – maturazione cv.precoci,81,89,due_letture_concordi
+CILIEGIO,maturazione,81,89,due_letture_concordi
+CILIEGIO,post raccolta,91,93,due_letture_concordi
+CILIEGIO,post – raccolta,91,93,due_letture_concordi
+CILIEGIO,rigonfiamento gemma,51,51,due_letture_concordi
+CILIEGIO,rigonfiamento gemma – rottura gemma,51,53,due_letture_concordi
+CILIEGIO,rigonfiamento gemme,51,51,due_letture_concordi
+CILIEGIO,rottura gemma,53,53,due_letture_concordi
+CILIEGIO,rottura gemme,53,53,due_letture_concordi
+CILIEGIO,termine raccolta,89,89,due_letture_concordi
+FAGIOLINO,da sviluppo vegetativo a raccolta,10,89,due_letture_concordi
+GIRASOLE,2 – 4 foglie,12,14,due_letture_concordi
+GIRASOLE,2 – 8 foglie,12,18,due_letture_concordi
+GIRASOLE,2/6 foglie,12,16,due_letture_concordi
+GIRASOLE,2/8 foglie,12,18,due_letture_concordi
+GIRASOLE,4 – 10 foglie,14,19,due_letture_concordi
+GIRASOLE,4 – 6 foglie,14,16,due_letture_concordi
+GIRASOLE,4/10 foglie,14,19,due_letture_concordi
+GIRASOLE,4/6 foglie,14,16,due_letture_concordi
+GIRASOLE,da 4 foglie ad inizio allungamento stelo,14,39,due_letture_concordi
+GIRASOLE,da cotiledoni a 2 – 4 foglie,10,14,due_letture_concordi
+GIRASOLE,da cotiledoni a 2 – 6 foglie,10,16,due_letture_concordi
+GIRASOLE,da cotiledoni a 2/4 foglie,10,14,due_letture_concordi
+GIRASOLE,da cotiledoni a 4 – 6 foglie,10,16,due_letture_concordi
+GIRASOLE,da emergenza a 2 – 4 foglie,9,14,due_letture_concordi
+GIRASOLE,da emergenza a 2/4 foglie,9,14,due_letture_concordi
+GIRASOLE,da emergenza a 4 – 6 foglie,9,16,due_letture_concordi
+GIRASOLE,da emergenza a 4/6 foglie,9,16,due_letture_concordi
+GIRASOLE,da pre – emergenza a cotiledoni,0,10,due_letture_concordi
+GIRASOLE,da pre – semina a semina,0,0,due_letture_concordi
+GIRASOLE,da semina a emergenza,0,9,due_letture_concordi
+GIRASOLE,da semina ad emergenza,0,9,due_letture_concordi
+GIRASOLE,emergenza,9,9,due_letture_concordi
+GIRASOLE,emergenza – 2 foglie,9,12,due_letture_concordi
+GIRASOLE,emergenza – cotiledoni,9,10,due_letture_concordi
+GIRASOLE,emergenza – prime foglie,9,12,due_letture_concordi
+GIRASOLE,pre semina,0,0,due_letture_concordi
+GIRASOLE,pre semina – semina,0,0,due_letture_concordi
+GIRASOLE,pre – emergenza – emergenza,0,9,due_letture_concordi
+GIRASOLE,pre – semina,0,0,due_letture_concordi
+GIRASOLE,pre – semina – semina,0,0,due_letture_concordi
+GIRASOLE,presemina,0,0,due_letture_concordi
+GIRASOLE,semina – emergenza,0,9,due_letture_concordi
+GIRASOLE,semina – pre emergenza,0,8,due_letture_concordi
+KAKI,accrescimento frutti,71,79,due_letture_concordi
+KAKI,allegagione,69,69,arbitrato
+KAKI,bottone fiorale,55,59,due_letture_concordi
+KAKI,bottone fiorale – inizio fioritura,55,61,due_letture_concordi
+KAKI,bottoni fiorali,55,59,due_letture_concordi
+KAKI,comparsa abbozzi fiorali,51,55,due_letture_concordi
+KAKI,comparsa bottoni fiorali,51,55,due_letture_concordi
+KAKI,da abbozzi fiorali a fioritura,51,69,due_letture_concordi
+KAKI,da bottoni fiorali a fioritura,55,69,due_letture_concordi
+KAKI,da bottoni fiorali ad inizio fioritura,55,61,due_letture_concordi
+KAKI,da caduta petali ad accrescimento frutti,67,79,due_letture_concordi
+KAKI,da fioritura a caduta petali,60,69,due_letture_concordi
+KAKI,da gemma ferma a gemma ingrossata,0,3,due_letture_concordi
+KAKI,da germogliamento a comparsa abbozzi fiorali,7,55,due_letture_concordi
+KAKI,da germogliamento a comparsa bottoni fiorali,7,55,due_letture_concordi
+KAKI,da punta verde ad inizio germogliamento,7,9,due_letture_concordi
+KAKI,fioritura,60,69,due_letture_concordi
+KAKI,gemma ingrossata,1,3,due_letture_concordi
+KAKI,germogliamento,7,9,due_letture_concordi
+KAKI,germogliamento – comparsa abbozzi fiorali,7,55,due_letture_concordi
+KAKI,ingrossamento gemma,1,3,due_letture_concordi
+KAKI,inizio fioritura – fioritura,60,69,due_letture_concordi
+KAKI,inizio germogliamento,7,7,due_letture_concordi
+KAKI,presenza abbozzi fiorali,51,55,due_letture_concordi
+KAKI,punta verde – inizio germogliamento,7,9,due_letture_concordi
+MAIS,1 – 7 foglie,11,17,due_letture_concordi
+MAIS,2 – 4 foglie,12,14,due_letture_concordi
+MAIS,2 – 6 foglie,12,16,due_letture_concordi
+MAIS,2 – 8 foglie,12,18,due_letture_concordi
+MAIS,2/5 foglie,12,15,due_letture_concordi
+MAIS,3 – 10 foglie,13,19,due_letture_concordi
+MAIS,4 – 8 foglie,14,18,due_letture_concordi
+MAIS,5/10 foglie,15,19,due_letture_concordi
+MAIS,6 – 12 foglie,16,19,due_letture_concordi
+MAIS,6 – 8 foglie,16,18,due_letture_concordi
+MAIS,6 – 8 foglie – levata,16,39,due_letture_concordi
+MAIS,6/10 foglie,16,19,due_letture_concordi
+MAIS,8 foglie – levata,18,39,due_letture_concordi
+MAIS,8 – 12 foglie,18,19,due_letture_concordi
+MAIS,da 3 a 10 foglie,13,19,due_letture_concordi
+MAIS,da 4 a 10 foglie,14,19,due_letture_concordi
+MAIS,da 4 foglie a levata,14,39,due_letture_concordi
+MAIS,da 6 foglie a levata,16,39,due_letture_concordi
+MAIS,da 8 foglie a levata,18,39,due_letture_concordi
+MAIS,da emergenza a 2 – 3 foglie,9,13,due_letture_concordi
+MAIS,da emergenza a 2 – 5 foglie,9,15,due_letture_concordi
+MAIS,da emergenza a 2/3 foglie,9,13,due_letture_concordi
+MAIS,da emergenza a 6 foglie,9,16,due_letture_concordi
+MAIS,da emergenza a 7 foglie,9,17,due_letture_concordi
+MAIS,da levata a spigatura – emissione pennacchio,30,59,due_letture_concordi
+MAIS,da levata ad emissione pennacchio,30,59,due_letture_concordi
+MAIS,da maturazione lattea a cerosa,73,85,due_letture_concordi
+MAIS,da pre – emergenza a 2/3 foglie,0,13,due_letture_concordi
+MAIS,da pre – emergenza a 5 foglie,0,15,due_letture_concordi
+MAIS,da pre – emergenza a emergenza,0,9,due_letture_concordi
+MAIS,da pre – emergenza ad emergenza,0,9,due_letture_concordi
+MAIS,da pre – semina a emergenza,0,9,due_letture_concordi
+MAIS,da pre – semina a pre – emergenza,0,8,due_letture_concordi
+MAIS,da pre – semina a semina,0,0,due_letture_concordi
+MAIS,da presemina a pre – emergenza,0,8,due_letture_concordi
+MAIS,da presemina a semina,0,0,due_letture_concordi
+MAIS,da semina a 2/3 foglie,0,13,due_letture_concordi
+MAIS,da senescenza sete a maturazione lattea,67,75,due_letture_concordi
+MAIS,da spigatura ad emissione pennacchio,51,59,due_letture_concordi
+MAIS,emergenza,9,9,due_letture_concordi
+MAIS,emergenza – 2 foglie,9,12,due_letture_concordi
+MAIS,emergenza – 2 – 4 foglie,9,14,due_letture_concordi
+MAIS,emissione pennacchio,51,59,due_letture_concordi
+MAIS,emissione pennacchio – comparsa sete,51,65,due_letture_concordi
+MAIS,emissione pennacchio – senescenza sete,51,69,due_letture_concordi
+MAIS,levata,30,39,due_letture_concordi
+MAIS,levata – emissione pennacchio,30,59,due_letture_concordi
+MAIS,levata – spigatura,30,59,due_letture_concordi
+MAIS,maturazione cerosa,83,85,due_letture_concordi
+MAIS,maturazione lattea,73,75,due_letture_concordi
+MAIS,maturazione lattea – cerosa,73,85,due_letture_concordi
+MAIS,pre – emergenza,0,8,due_letture_concordi
+MAIS,pre – emergenza – emergenza,0,9,due_letture_concordi
+MAIS,pre – semina,0,0,due_letture_concordi
+MAIS,pre – semina – semina,0,0,due_letture_concordi
+MAIS,presemina – pre – emergenza,0,8,due_letture_concordi
+MAIS,semina – pre – emergenza,0,8,due_letture_concordi
+MAIS,spigatura – emissione pennacchio,51,59,due_letture_concordi
+MELO,accrescimento frutti,71,79,due_letture_concordi
+MELO,accrescimento frutti – maturazione,71,89,due_letture_concordi
+MELO,allegagione – accrescimento frutti,71,79,due_letture_concordi
+MELO,bottone rosa – fioritura,57,69,due_letture_concordi
+MELO,caduta petali ad allegagione,67,71,due_letture_concordi
+MELO,da allegagione a inizio ingrossamento frutti,71,72,due_letture_concordi
+MELO,da allegagione ad ingrossamento frutti,71,79,due_letture_concordi
+MELO,da bottone rosa a fioritura,57,69,due_letture_concordi
+MELO,da bottoni rosa a fioritura,57,69,due_letture_concordi
+MELO,da caduta petali ad allegagione,67,71,due_letture_concordi
+MELO,da comparsa mazzetti fiorali a mazzetti divaricati,55,56,due_letture_concordi
+MELO,da fioritura a caduta petali,60,69,due_letture_concordi
+MELO,da fioritura ad allegagione,60,71,due_letture_concordi
+MELO,da gemma ferma a inizio rigonfiamento gemme,0,51,due_letture_concordi
+MELO,da gemma ferma a rigonfiamento gemme,0,52,due_letture_concordi
+MELO,da gemma ferma ad inizio rigonfiamento gemme,0,51,due_letture_concordi
+MELO,da ingrossamento frutti a frutto noce,71,79,due_letture_concordi
+MELO,da ingrossamento frutti a inizio maturazione,71,81,due_letture_concordi
+MELO,da ingrossamento frutti a maturazione,71,89,due_letture_concordi
+MELO,da mazzetti affioranti a bottone rosa,55,57,due_letture_concordi
+MELO,da mazzetti affioranti a inizio fioritura,55,61,due_letture_concordi
+MELO,da orecchiette di topo a comparsa dei mazzetti fiorali,54,55,due_letture_concordi
+MELO,da punte verdi a comparsa mazzetti,53,55,due_letture_concordi
+MELO,da punte verdi a mazzetti affioranti,53,55,due_letture_concordi
+MELO,da punte verdi a orecchiette di topo,53,54,due_letture_concordi
+MELO,da punte verdi ad orecchiette di topo,53,54,due_letture_concordi
+MELO,da rigonfiamento gemme a punte verdi,51,53,due_letture_concordi
+MELO,fine fioritura – allegagione,67,71,due_letture_concordi
+MELO,fioritura,60,69,due_letture_concordi
+MELO,fioritura – caduta petali,60,69,due_letture_concordi
+MELO,gemma ferma,0,0,due_letture_concordi
+MELO,gemma ferma – inizio rigonfiamento gemma,0,51,due_letture_concordi
+MELO,gemma ferma – rigonfiamento gemma,0,52,due_letture_concordi
+MELO,ingrossamento frutti,71,79,due_letture_concordi
+MELO,ingrossamento frutti a maturazione,71,89,due_letture_concordi
+MELO,ingrossamento frutti ad inizio maturazione,71,81,due_letture_concordi
+MELO,mazzetti affioranti – bottone rosa,55,57,due_letture_concordi
+MELO,punte verdi – comparsa bottoni fiorali,51,55,due_letture_concordi
+MELO,punte verdi – orecchiette di topo,53,54,due_letture_concordi
+MELO,rigonfiamento gemma – punte verdi,51,53,due_letture_concordi
+MELO,rigonfiamento gemme,51,52,due_letture_concordi
+NOCE,accrescimento frutto,71,79,due_letture_concordi
+NOCE,allegagione,69,69,arbitrato
+NOCE,da emissione amenti ad inizio fioritura,51,61,due_letture_concordi
+NOCE,da fine fioritura ad allegagione,67,69,arbitrato
+NOCE,da germogliamento a emissione degli amenti,7,59,due_letture_concordi
+NOCE,da germogliamento ad emissione amenti,7,59,due_letture_concordi
+NOCE,fioritura,60,69,due_letture_concordi
+NOCE,indurimento guscio,75,79,due_letture_concordi
+NOCE,inizio germogliamento,7,7,due_letture_concordi
+NOCE,maturazione gheriglio,81,87,due_letture_concordi
+OLIVO,accrescimento drupe,71,79,due_letture_concordi
+OLIVO,accrescimento frutti,71,79,due_letture_concordi
+OLIVO,accrescimento frutto,71,79,due_letture_concordi
+OLIVO,accrescimento germogli,31,37,due_letture_concordi
+OLIVO,accrescimento germogli apicali e laterali,31,37,due_letture_concordi
+OLIVO,allegagione,69,69,arbitrato
+OLIVO,allegagione – inizio accrescimento frutti,69,71,due_letture_concordi
+OLIVO,da accrescimento drupe a inizio indurimento nocciolo,71,79,due_letture_concordi
+OLIVO,da allegagione ad accrescimento frutti,69,79,due_letture_concordi
+OLIVO,da mignolatura a inizi fioritura,50,61,due_letture_concordi
+OLIVO,da mignolatura a inizio fioritura,50,61,due_letture_concordi
+OLIVO,da mignolatura ad inizio fioritura,50,61,due_letture_concordi
+OLIVO,da riposo vegetativo a ripresa vegetativa,0,9,due_letture_concordi
+OLIVO,da ripresa vegetativa a inizio mignolatura,1,52,due_letture_concordi
+OLIVO,da ripresa vegetativa ad inizio mignolatura,1,52,due_letture_concordi
+OLIVO,fine fioritura – allegagione,68,69,arbitrato
+OLIVO,fioritura,60,69,due_letture_concordi
+OLIVO,fioritura – allegagione,60,69,arbitrato
+OLIVO,indurimento nocciolo,75,75,due_letture_concordi
+OLIVO,inizio mignolatura,50,52,due_letture_concordi
+OLIVO,inizio ripresa vegetativa,1,3,due_letture_concordi
+OLIVO,mignolatura,50,57,due_letture_concordi
+OLIVO,mignolatura – fioritura,50,69,due_letture_concordi
+OLIVO,ripresa vegetativa,1,9,due_letture_concordi
+PERO,accrescimento frutti,71,79,due_letture_concordi
+PERO,accrescimento frutti – inizio maturazione,71,81,due_letture_concordi
+PERO,accrescimento frutti – maturazione,71,89,due_letture_concordi
+PERO,accrescimento frutti – maturazione cv precoci,71,89,due_letture_concordi
+PERO,accrescimento frutto,71,79,due_letture_concordi
+PERO,allegagione,71,71,due_letture_concordi
+PERO,allegagione – ingrossamento frutti,71,79,due_letture_concordi
+PERO,caduta petali – allegagione,67,71,due_letture_concordi
+PERO,da accrescimento frutti a inizio maturazione,71,81,due_letture_concordi
+PERO,da accrescimento frutti a maturazione,71,89,due_letture_concordi
+PERO,da allegagione a accrescimento frutti,71,79,due_letture_concordi
+PERO,da allegagione ad accrescimento frutto,71,79,due_letture_concordi
+PERO,da apertura gemme a comparsa mazzetti fiorali,53,55,due_letture_concordi
+PERO,da caduta petali a inizio allegagione,67,71,due_letture_concordi
+PERO,da caduta petali ad inizio allegagione,67,71,due_letture_concordi
+PERO,da comparsa mazzetti fiorali a mazzetti divaricati,55,56,due_letture_concordi
+PERO,da comparsa mazzetti fiorali ad inizio fioritura,55,61,due_letture_concordi
+PERO,da fioritura a inizio allegagione,60,71,due_letture_concordi
+PERO,da fioritura ad allegagione,60,71,due_letture_concordi
+PERO,da gemma ferma a inizio rigonfiamento gemme,0,51,due_letture_concordi
+PERO,da gemma ferma ad inizio rigonfiamento gemme,0,51,due_letture_concordi
+PERO,da gemma gonfia a comparsa mazzetti fiorali,51,55,due_letture_concordi
+PERO,da ingrossamento gemme a rottura gemme,51,53,due_letture_concordi
+PERO,da mazzetti divaricati a fioritura,56,69,due_letture_concordi
+PERO,da rigonfiamento gemme a rottura gemme,51,53,due_letture_concordi
+PERO,da rottura gemme a comparsa mazzetti,53,55,due_letture_concordi
+PERO,da rottura gemme a mazzetti affioranti,53,55,due_letture_concordi
+PERO,fioritura,60,69,due_letture_concordi
+PERO,fioritura – inizio caduta petali,60,69,due_letture_concordi
+PERO,gemma ferma,0,0,due_letture_concordi
+PERO,gemma ferma – inizio rigonfiamento gemma,0,51,due_letture_concordi
+PERO,ingrossamento frutti,71,79,due_letture_concordi
+PERO,ingrossamento frutti – maturazione,71,89,due_letture_concordi
+PERO,ingrossamento gemme,51,52,due_letture_concordi
+PERO,mazzetti divaricati – fioritura,56,69,due_letture_concordi
+PERO,mazzetti divaricati – inizio fioritura,56,61,due_letture_concordi
+PERO,rigonfiamento gemma – rottura gemma,51,53,due_letture_concordi
+PERO,rigonfiamento gemme,51,52,due_letture_concordi
+PERO,rottura gemma – inizio comparsa mazzetti affioranti,53,55,due_letture_concordi
+PERO,rottura gemma – mazzetti divaricati,53,56,due_letture_concordi
+PESCO,allegagione,71,71,due_letture_concordi
+PESCO,allegagione – scamiciatura,71,73,due_letture_concordi
+PESCO,bottone rosa – inizia fioritura,57,61,due_letture_concordi
+PESCO,bottone rosa – inizio fioritura,57,61,due_letture_concordi
+PESCO,caduta petali – allegagione,67,71,due_letture_concordi
+PESCO,da bottone rosa a fioritura,57,69,due_letture_concordi
+PESCO,da bottone rosa a inizio fioritura,57,61,due_letture_concordi
+PESCO,da caduta petali ad allegagione,67,71,due_letture_concordi
+PESCO,da fioritura a caduta petali,60,69,due_letture_concordi
+PESCO,da fioritura a inizio caduta petali,60,69,due_letture_concordi
+PESCO,da fioritura ad allegagione,60,71,due_letture_concordi
+PESCO,da gemma ferma a inizio rigonfiamento gemme,0,51,due_letture_concordi
+PESCO,da gemma ferma a inizio rottura gemma a legno,0,3,due_letture_concordi
+PESCO,da gemma gonfia a bottone rosa,51,57,due_letture_concordi
+PESCO,da gemma gonfia a inizio rottura gemme a legno,1,3,due_letture_concordi
+PESCO,da gemma gonfia ad inizio rottura gemme a legno,1,3,due_letture_concordi
+PESCO,da ingrossamento frutti a indurimento nocciolo,71,79,due_letture_concordi
+PESCO,da ingrossamento frutti a inizio maturazione,71,81,due_letture_concordi
+PESCO,da ingrossamento frutti a maturazione,71,89,due_letture_concordi
+PESCO,da ingrossamento frutti ad indurimento nocciolo,71,79,due_letture_concordi
+PESCO,da ingrossamento frutto a indurimento nocciolo,71,79,due_letture_concordi
+PESCO,da ingrossamento frutto a inizio maturazione,71,81,due_letture_concordi
+PESCO,da ingrossamento frutto a maturazione,71,89,due_letture_concordi
+PESCO,da maturazione a post – raccolta,81,93,due_letture_concordi
+PESCO,da rottura gemma a legno a bottone rosa,3,57,due_letture_concordi
+PESCO,da rottura gemme a bottone rosa,53,57,due_letture_concordi
+PESCO,da scamiciatura a ingrossamento frutti,71,79,due_letture_concordi
+PESCO,da scamiciatura a inizio ingrossamento frutti,71,73,due_letture_concordi
+PESCO,da scamiciatura ad ingrossamento frutti,71,79,due_letture_concordi
+PESCO,da scamiciatura ad inizio sviluppo frutti,71,73,due_letture_concordi
+PESCO,fine allegagione – scamiciatura,71,73,due_letture_concordi
+PESCO,fioritura,60,69,due_letture_concordi
+PESCO,fioritura – caduta petali,60,69,due_letture_concordi
+PESCO,fioritura – inizio caduta petali,60,69,due_letture_concordi
+PESCO,gemma ferma – inizio rottura gemma a legno,0,3,due_letture_concordi
+PESCO,indurimento nocciolo – ingrossamento frutti,71,79,due_letture_concordi
+PESCO,ingrossamento frutti,71,79,due_letture_concordi
+PESCO,ingrossamento frutti – maturazione,71,89,due_letture_concordi
+PESCO,ingrossamento frutto,71,79,due_letture_concordi
+PESCO,inizio fioritura – fioritura,60,69,due_letture_concordi
+PESCO,inizio indurimento nocciolo – ingrossamento frutti,71,79,due_letture_concordi
+PESCO,inizio indurimento nocciolo – ingrossamento frutti ingrossamento frutti,71,79,due_letture_concordi
+PESCO,maturazione,81,89,due_letture_concordi
+PESCO,rottura gemma a legno,3,9,due_letture_concordi
+PESCO,rottura gemma a legno – bottone rosa,3,57,due_letture_concordi
+PESCO,rottura gemme a legno – bottone rosa,3,57,due_letture_concordi
+POMODORO,pre – trapianto,0,13,due_letture_concordi
+POMODORO_INDUSTRIA,accrescimento – invaiatura 2° palco,71,83,due_letture_concordi
+POMODORO_INDUSTRIA,accrescimento – invaiatura secondo palco,71,83,due_letture_concordi
+POMODORO_INDUSTRIA,accrescimento – invaiatura ultimo palco,71,83,due_letture_concordi
+POMODORO_INDUSTRIA,accrescimento – invaiatura ultimo palco cv.precocissime,71,83,due_letture_concordi
+POMODORO_INDUSTRIA,accrescimento – invaiatura ultimo palco delle cv precocissime,71,83,due_letture_concordi
+POMODORO_INDUSTRIA,accrescimento – maturazione,71,89,due_letture_concordi
+POMODORO_INDUSTRIA,accrescimento – maturazione(cv.precoci),71,89,due_letture_concordi
+POMODORO_INDUSTRIA,allegagione 1° palco – allegagione 4° palco,71,74,due_letture_concordi
+POMODORO_INDUSTRIA,allegagione 1° – 4° palco,71,74,due_letture_concordi
+POMODORO_INDUSTRIA,allegagione 1° – 4° palco inizio invaiatura 1° palco,71,83,due_letture_concordi
+POMODORO_INDUSTRIA,da allegagione 1° palco a invaiatura 3° palco,71,83,due_letture_concordi
+POMODORO_INDUSTRIA,da allegagione 1° – 4° palco a inizio invaiatura 1° palco,71,83,due_letture_concordi
+POMODORO_INDUSTRIA,da allegagione 2° palco a inizio invaiatura 2° palco,72,83,due_letture_concordi
+POMODORO_INDUSTRIA,da allegagione 2° palco a inizio invaiatura 3° palco,72,83,due_letture_concordi
+POMODORO_INDUSTRIA,da allegagione 2° palco a invaiatura 1° palco,72,83,due_letture_concordi
+POMODORO_INDUSTRIA,da allegagione 2° palco a invaiatura secondo palco,72,83,due_letture_concordi
+POMODORO_INDUSTRIA,da allegagione 2° palco ad invaiatura 2° palco,72,83,due_letture_concordi
+POMODORO_INDUSTRIA,da allegagione a maturazione,71,89,due_letture_concordi
+POMODORO_INDUSTRIA,da inizio allegagione 1° palco ad inizio invaiatura 2° palco,71,83,due_letture_concordi
+POMODORO_INDUSTRIA,da inizio allegagione 1° palco ad inizio invaiatura secondo palco,71,83,due_letture_concordi
+POMODORO_INDUSTRIA,da pre – trapianto a fioritura secondo palco,0,62,due_letture_concordi
+POMODORO_INDUSTRIA,da pre – trapianto a inizio fioritura primo palco varietà precocissime,0,61,due_letture_concordi
+POMODORO_INDUSTRIA,da pre – trapianto a trapianto,0,15,due_letture_concordi
+POMODORO_INDUSTRIA,da pre – trapianto ad allegagione secondo palco,0,72,due_letture_concordi
+POMODORO_INDUSTRIA,da pre – trapianto ad allegagione terzo palco,0,73,due_letture_concordi
+POMODORO_INDUSTRIA,da sviluppo vegetativo a inizio invaiatura ultimo palco/maturazione,10,89,due_letture_concordi
+POMODORO_INDUSTRIA,da sviluppo vegetativo a invaiatura ultimo palco/maturazione,10,89,due_letture_concordi
+POMODORO_INDUSTRIA,da sviluppo vegetativo a maturazione,10,89,due_letture_concordi
+POMODORO_INDUSTRIA,da sviluppo vegetativo ad invaiatura 2° palco,10,83,due_letture_concordi
+POMODORO_INDUSTRIA,da sviluppo vegetativo ad invaiatura 3° palco,10,83,due_letture_concordi
+POMODORO_INDUSTRIA,da sviluppo vegetativo ad invaiatura ultimo palco/maturazione,10,89,due_letture_concordi
+POMODORO_INDUSTRIA,fine trapianto – allegagione 4° palco,13,74,due_letture_concordi
+POMODORO_INDUSTRIA,fioritura 1° palco – allegagione 3° palco,61,73,due_letture_concordi
+POMODORO_INDUSTRIA,fioritura 1° palco – inizio invaiatura 1° palco,61,83,due_letture_concordi
+POMODORO_INDUSTRIA,fioritura 1° palco – inizio invaiatura primo palco,61,83,due_letture_concordi
+POMODORO_INDUSTRIA,fioritura primo palco – allegagione 3° palco,61,73,due_letture_concordi
+POMODORO_INDUSTRIA,invaiatura – maturazione,81,89,due_letture_concordi
+POMODORO_INDUSTRIA,invaiatura – maturazione cv precoci,81,89,due_letture_concordi
+POMODORO_INDUSTRIA,invaiatura – maturazione cv precocissime,81,89,due_letture_concordi
+POMODORO_INDUSTRIA,pre trapianto,0,13,due_letture_concordi
+POMODORO_INDUSTRIA,pre trapianto – allegagione primo palco – fioritura secondo palco,0,71,decisione_documentata
+POMODORO_INDUSTRIA,pre trapianto – allegagione secondo palco – fioritura terzo paco,0,72,arbitrato
+POMODORO_INDUSTRIA,pre trapianto – trapianto,0,15,due_letture_concordi
+POMODORO_INDUSTRIA,pre – trapianto,0,13,due_letture_concordi
+POMODORO_INDUSTRIA,pre – trapianto – allegagione 1° palco/fioritura 2° palco,0,71,arbitrato
+POMODORO_INDUSTRIA,pre – trapianto – allegagione 2° palco,0,72,arbitrato
+POMODORO_INDUSTRIA,pre – trapianto – allegagione 2° palco/fioritura 3° palco,0,72,arbitrato
+POMODORO_INDUSTRIA,pre – trapianto – allegagione 3° palco,0,73,arbitrato
+POMODORO_INDUSTRIA,pre – trapianto – allegagione 4° palco,0,74,arbitrato
+POMODORO_INDUSTRIA,pre – trapianto – allegagione primo palco fioritura secondo palco,0,71,arbitrato
+POMODORO_INDUSTRIA,pre – trapianto – allegagione primo palco – fioritura secondo palco,0,71,arbitrato
+POMODORO_INDUSTRIA,pre – trapianto – allegagione terzo palco,0,73,arbitrato
+POMODORO_INDUSTRIA,pre – trapianto – inizio fioritura 1° palco,0,61,due_letture_concordi
+POMODORO_INDUSTRIA,pre – trapianto – inizio fioritura 2° palco,0,62,due_letture_concordi
+POMODORO_INDUSTRIA,pre – trapianto – sviluppo fogliare,0,19,due_letture_concordi
+POMODORO_INDUSTRIA,pre – trapianto – trapianto,0,15,due_letture_concordi
+POMODORO_INDUSTRIA,t accrescimento invaiatura secondo palco,71,83,due_letture_concordi
+POMODORO_INDUSTRIA,termine trapianti – allegagione 4° palco,13,74,arbitrato
+POMODORO_INDUSTRIA,termine trapianto – allegagione 4° palco,13,74,arbitrato
+POMODORO_INDUSTRIA,termine trapianto – invaiatura primo palco,13,83,due_letture_concordi
+POMODORO_INDUSTRIA,termine trapianto – invaiatura primo palco fine trapianto,13,83,due_letture_concordi
+SOIA,1 – 3 foglie,11,13,due_letture_concordi
+SOIA,2 – 4 foglie,12,14,due_letture_concordi
+SOIA,2 – 4 foglie trilobate,13,15,due_letture_concordi
+SOIA,3 – 5 foglie trilobate,14,16,due_letture_concordi
+SOIA,3 – 5° foglia trilobata,14,16,due_letture_concordi
+SOIA,4 – 6° foglia trilobata – chiusura interfila,15,59,due_letture_concordi
+SOIA,6° foglia trilobata – chiusura interfila,17,59,due_letture_concordi
+SOIA,da 4 foglie a inizio fioritura,14,61,due_letture_concordi
+SOIA,da emergenza a prime foglie vere,9,11,due_letture_concordi
+SOIA,da emergenza a seconda foglia trifogliata,9,13,due_letture_concordi
+SOIA,da fioritura a formazione baccelli,60,75,due_letture_concordi
+SOIA,da formazione baccelli a ingrossamento semi,69,79,due_letture_concordi
+SOIA,da pre – emergenza a prima foglia trifogliata,0,12,due_letture_concordi
+SOIA,da pre – semina a emergenza,0,9,due_letture_concordi
+SOIA,da pre – semina a pre – emergenza,0,8,due_letture_concordi
+SOIA,da pre – semina a prime foglie vere,0,11,due_letture_concordi
+SOIA,da pre – semina a semina,0,0,due_letture_concordi
+SOIA,da prime foglie vere a 2° foglia trilobata,11,13,due_letture_concordi
+SOIA,da semina a emergenza,0,9,due_letture_concordi
+SOIA,da semina a prime foglie vere,0,11,due_letture_concordi
+SOIA,da sviluppo vegetativo a fioritura,10,69,due_letture_concordi
+SOIA,da sviluppo vegetativo – inizio fioritura,10,61,due_letture_concordi
+SOIA,emergenza – 2/3foglie,9,13,due_letture_concordi
+SOIA,emergenza – prime foglie,9,12,due_letture_concordi
+SOIA,fioritura – formazione baccelli,60,75,due_letture_concordi
+SOIA,formazione baccelli,69,75,due_letture_concordi
+SOIA,formazione baccelli – riempimento semi,69,79,due_letture_concordi
+SOIA,ingrossamento semi,75,79,due_letture_concordi
+SOIA,inizio fioritura,60,61,due_letture_concordi
+SOIA,pre – semina,0,0,due_letture_concordi
+SOIA,pre – semina a semina,0,0,due_letture_concordi
+SOIA,pre – semina – pre – emergenza,0,8,due_letture_concordi
+SOIA,pre – semina – semina,0,0,due_letture_concordi
+SOIA,prime foglie vere a 2° foglia trilobata,11,13,due_letture_concordi
+SOIA,riempimento semi,75,79,due_letture_concordi
+SOIA,semina – emergenza,0,9,due_letture_concordi
+SOIA,sviluppo vegetativo – inizio fioritura,10,61,due_letture_concordi
+SUSINO,caduta petali – ingrossamento frutti,67,79,due_letture_concordi
+SUSINO,caduta petali – inizio scamiciatura,67,72,due_letture_concordi
+SUSINO,da caduta petali a inizio ingrossamento frutti,67,72,due_letture_concordi
+SUSINO,da caduta petali a scamiciatura,67,73,due_letture_concordi
+SUSINO,da caduta petali ad inizio ingrossamento frutti,67,72,due_letture_concordi
+SUSINO,da ingrossamento frutti a inizio maturazione,71,81,due_letture_concordi
+SUSINO,da ingrossamento frutti a maturazione,71,89,due_letture_concordi
+SUSINO,da maturazione a post – raccolta,81,93,due_letture_concordi
+SUSINO,da scamiciatura a inizio ingrossamento frutto,71,73,due_letture_concordi
+SUSINO,da scamiciatura ad accrescimento frutto,71,79,due_letture_concordi
+SUSINO,fine fioritura – allegagione,67,71,due_letture_concordi
+SUSINO,ingrossamento frutti,71,79,due_letture_concordi
+SUSINO,ingrossamento frutti – inizio maturazione,71,81,due_letture_concordi
+SUSINO,ingrossamento frutti – maturazione,71,89,due_letture_concordi
+SUSINO,ingrossamento frutto,71,79,due_letture_concordi
+SUSINO_CINO_GIAPPONESE,allegagione,71,71,due_letture_concordi
+SUSINO_CINO_GIAPPONESE,bottone verde,56,56,due_letture_concordi
+SUSINO_CINO_GIAPPONESE,bottone verde – bottone bianco,56,59,due_letture_concordi
+SUSINO_CINO_GIAPPONESE,bottone verde – inizio fioritura,56,61,due_letture_concordi
+SUSINO_CINO_GIAPPONESE,caduta petali – allegagione,67,71,due_letture_concordi
+SUSINO_CINO_GIAPPONESE,da bottone bianco a inizio fioritura,57,61,due_letture_concordi
+SUSINO_CINO_GIAPPONESE,da bottone bianco ad inizio fioritura,57,61,due_letture_concordi
+SUSINO_CINO_GIAPPONESE,da bottone verde a bottone bianco,56,59,due_letture_concordi
+SUSINO_CINO_GIAPPONESE,da caduta petali ad allegagione,67,71,due_letture_concordi
+SUSINO_CINO_GIAPPONESE,da fioritura a inizio caduta petali,60,69,due_letture_concordi
+SUSINO_CINO_GIAPPONESE,da fioritura ad allegagione,60,71,due_letture_concordi
+SUSINO_CINO_GIAPPONESE,da fioritura ad inizio caduta petali,60,69,due_letture_concordi
+SUSINO_CINO_GIAPPONESE,da gemma ferma a rigonfiamento gemme,0,51,due_letture_concordi
+SUSINO_CINO_GIAPPONESE,da gemma gonfia a bottone verde,51,56,due_letture_concordi
+SUSINO_CINO_GIAPPONESE,fioritura,60,69,due_letture_concordi
+SUSINO_CINO_GIAPPONESE,fioritura – caduta petali,60,69,due_letture_concordi
+SUSINO_CINO_GIAPPONESE,inizio fioritura – fioritura,60,69,due_letture_concordi
+SUSINO_CINO_GIAPPONESE,rigonfiamento gemme – bottone verde,51,56,due_letture_concordi
+SUSINO_EUROPEO,bottone bianco – fioritura,57,69,due_letture_concordi
+SUSINO_EUROPEO,bottone verde,56,56,due_letture_concordi
+SUSINO_EUROPEO,bottone verde – bottone bianco,56,59,due_letture_concordi
+SUSINO_EUROPEO,da bottone bianco a fioritura,57,69,due_letture_concordi
+SUSINO_EUROPEO,da bottone bianco a inizio fioritura,57,61,due_letture_concordi
+SUSINO_EUROPEO,da bottone verde a bottone bianco,56,59,due_letture_concordi
+SUSINO_EUROPEO,da bottone verde a inizio fioritura,56,61,due_letture_concordi
+SUSINO_EUROPEO,da fioritura a caduta petali,60,69,due_letture_concordi
+SUSINO_EUROPEO,da rigonfiamento a inizio rottura gemme,51,53,due_letture_concordi
+SUSINO_EUROPEO,da rigonfiamento a rottura gemme,51,53,due_letture_concordi
+SUSINO_EUROPEO,da rigonfiamento gemme a inizio rottura gemme,51,53,due_letture_concordi
+SUSINO_EUROPEO,da rottura gemme a bottone bianco,53,59,due_letture_concordi
+SUSINO_EUROPEO,da rottura gemme a bottone verde,53,56,due_letture_concordi
+SUSINO_EUROPEO,fioritura,60,69,due_letture_concordi
+SUSINO_EUROPEO,gemma ferma,0,0,due_letture_concordi
+SUSINO_EUROPEO,inizio rigonfiamento gemma,51,51,due_letture_concordi
+SUSINO_EUROPEO,inizio rigonfiamento gemme,51,51,due_letture_concordi
+SUSINO_EUROPEO,rigonfiamento gemma,51,51,due_letture_concordi
+SUSINO_EUROPEO,rigonfiamento gemme,51,51,due_letture_concordi
+SUSINO_EUROPEO,rottura gemma – bottone,53,53,due_letture_concordi
+SUSINO_EUROPEO,rottura gemma – bottone verde,53,56,due_letture_concordi
+VITE,allegagione – acino dimensione pisello,71,75,due_letture_concordi
+VITE,allegagione – mignolatura,71,73,due_letture_concordi
+VITE,allegagione – sviluppo acini,71,75,arbitrato
+VITE,bottoni fiorali separati – fioritura,57,69,due_letture_concordi
+VITE,bottoni fiorali separati – inizio fioritura,57,61,due_letture_concordi
+VITE,chiusura grappolo,77,79,due_letture_concordi
+VITE,chiusura grappolo – inizio invaiatura,77,81,due_letture_concordi
+VITE,chiusura grappolo – inizio invaiatura le varietà precoci,77,81,due_letture_concordi
+VITE,chiusura grappolo – inizio invaiatura varietà precoci,77,81,due_letture_concordi
+VITE,chiusura grappolo – invaiatura,77,83,due_letture_concordi
+VITE,da allegagione a mignolatura,71,73,due_letture_concordi
+VITE,da allegagione a sviluppo degli acini,71,75,decisione_documentata
+VITE,da bottoni fiorali separati a inizio fioritura,57,61,due_letture_concordi
+VITE,da chiusura grappolo a invaiatura,77,83,due_letture_concordi
+VITE,da chiusura grappolo ad inizio invaiatura,77,81,due_letture_concordi
+VITE,da chiusura grappolo ad invaiatura,77,83,due_letture_concordi
+VITE,da fioritura ad allegagione,60,71,due_letture_concordi
+VITE,da gemma cotonosa a inizio apertura gemme – pianto,0,7,due_letture_concordi
+VITE,da gemma cotonosa a inizio germogliamento,5,7,due_letture_concordi
+VITE,da gemma cotonosa a prime foglie distese,5,12,due_letture_concordi
+VITE,da gemma cotonosa ad apertura gemme,5,8,due_letture_concordi
+VITE,da gemma cotonosa ad inizio germogliamento,5,7,due_letture_concordi
+VITE,da gemma ferma a gemma cotonosa,0,5,due_letture_concordi
+VITE,da gemma ferma a gemma cotonosa – pianto,0,5,due_letture_concordi
+VITE,da gemma ferma a inizio gemma cotonosa – inizio pianto,0,5,due_letture_concordi
+VITE,da gemma ferma a inizio rigonfiamento gemma,0,1,due_letture_concordi
+VITE,da gemma ferma a inizio rigonfiamento gemme,0,1,due_letture_concordi
+VITE,da gemma ferma ad inizio rigonfiamento gemme,0,1,due_letture_concordi
+VITE,da grappoli separati a bottoni fiorali separati,55,57,due_letture_concordi
+VITE,da grappoli separati a fioritura,55,69,due_letture_concordi
+VITE,da grappoli separati ad inizio bottoni fiorali separati,55,57,due_letture_concordi
+VITE,da grappoli separati ad inizio fioritura,55,61,due_letture_concordi
+VITE,da grappoli visibili a grappoli separati,53,55,due_letture_concordi
+VITE,da grappolini visibili a grappoli separati,53,55,due_letture_concordi
+VITE,da grappolini visibili a racimoli separati,53,55,due_letture_concordi
+VITE,da inizio germogliamento a grappolini visibili,7,53,due_letture_concordi
+VITE,da invaiatura a inizio maturazione,81,85,due_letture_concordi
+VITE,da invaiatura a maturazione,81,89,due_letture_concordi
+VITE,da mignolatura a pre – chiusura grappolo,73,77,due_letture_concordi
+VITE,da pre – chiusura a chiusura grappolo,77,79,due_letture_concordi
+VITE,da prime foglie distese a grappoli visibili,11,53,due_letture_concordi
+VITE,da prime foglie distese a grappolini visibili,11,53,due_letture_concordi
+VITE,da racimoli separati a inizio bottoni fiorali separati,55,57,due_letture_concordi
+VITE,da rigonfiamento gemma a gemma cotonosa,1,5,due_letture_concordi
+VITE,da rigonfiamento gemme a gemma cotonosa,1,5,due_letture_concordi
+VITE,da sviluppo acini a pre – chiusura grappolo,73,77,due_letture_concordi
+VITE,da sviluppo foglie a grappolini separati,11,55,due_letture_concordi
+VITE,da sviluppo foglie a grappolini visibili,11,53,due_letture_concordi
+VITE,fioritura,60,69,due_letture_concordi
+VITE,fioritura – allegagione,60,71,due_letture_concordi
+VITE,foglie distese – grappoli separati,11,55,due_letture_concordi
+VITE,foglie distese – grappoli visibili,11,53,due_letture_concordi
+VITE,gemma cotonosa – germogliamento,5,8,due_letture_concordi
+VITE,gemma ferma,0,0,due_letture_concordi
+VITE,gemma ferma – rigonfiamento gemma,0,3,due_letture_concordi
+VITE,gemma ferma – rigonfiamento gemma (inizio pianto),0,3,due_letture_concordi
+VITE,germogliamento – prima comparsa grappolini,7,53,due_letture_concordi
+VITE,germogliamento – prima comparsa grappolini grappolini,7,55,due_letture_concordi
+VITE,germogliamento – prime foglie distese,7,12,due_letture_concordi
+VITE,grappoli in distensione,55,55,due_letture_concordi
+VITE,grappoli separati – inizio bottoni fiorali separati,55,57,due_letture_concordi
+VITE,inizio fioritura,60,61,due_letture_concordi
+VITE,invaiatura,81,83,due_letture_concordi
+VITE,invaiatura – inizio maturazione,81,85,due_letture_concordi
+VITE,maturazione,85,89,due_letture_concordi
+VITE,maturazione – raccolta,85,89,due_letture_concordi
+VITE,pre chiusura grappolo,77,77,due_letture_concordi
+VITE,prime foglie distese – grappoli separati,11,55,due_letture_concordi
+VITE,prime foglie distese – grappoli visibili,11,53,due_letture_concordi
+VITE,racimoli separati,55,55,due_letture_concordi
+VITE,rigonfiamento gemma (pianto),0,3,due_letture_concordi
+VITE,rigonfiamento gemma – gemma cotonosa,1,5,due_letture_concordi
+VITE,rigonfiamento gemma – rottura gemma,1,8,due_letture_concordi

@@ -37,6 +37,7 @@ GET /v1/landscape/pieces?lat=&lng=&radius_m=
 GET /v1/landscape/parcel-at?lat=&lng=
 GET /v1/landscape/pests?crop=
 GET /v1/landscape/pest-habitat?lat=&lng=&radius_m=&crop=&pest=halyha&ring=
+GET /v1/landscape/pest-season?lat=&lng=&radius_m=&pest=halyha&date=
 ```
 
 `radius_m`: default 3000, ammessi 500–20000 per `composition` e `pest-habitat`, fino a 10000 per
@@ -54,6 +55,11 @@ distanza in classi dal frutteto ospite e dalla siepe o bosco piu' vicini. Ogni o
 una cartella in `data/pests/<codice>/`; la cimice asiatica e' la prima. `ring` e' il contorno
 del campo (`lng,lat;...`) per le distanze bordo a bordo; senza, si usa l'appezzamento
 dichiarato che contiene il punto.
+
+`pest-season` dice quali di quegli ospiti sono **oggi** nella fase che l'organismo attacca (o ci
+arrivano nelle prossime settimane) e da che parte stanno: fase dal servizio bollettini, o dal
+calendario 2026 se non risponde (`source` lo dichiara), finestra dell'organismo con le fonti in
+`meta.json`. Regole in `modules/season.py`.
 
 ## Principio guida
 

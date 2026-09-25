@@ -2,7 +2,8 @@ import { Fragment } from "react";
 import { Col, Row } from "react-bootstrap";
 import TableCozy, { TableColumn, TableOptions } from "./TableCozy";
 import InfoPopover from "./InfoPopover";
-import type { LandscapePestHabitat } from "../services/model-api";
+import PestSeasonBlock from "./PestSeasonBlock";
+import type { LandscapePestHabitat, LandscapePestSeason } from "../services/model-api";
 
 /**
  * Sezione "quanto il paesaggio ospita un organismo" nella pagina del paesaggio.
@@ -49,9 +50,11 @@ type Props = {
   data: LandscapePestHabitat;
   /** Raggio in km, per i testi ("entro 3 km"). */
   km: number;
+  /** Finestra stagionale (/v1/landscape/pest-season), se l'organismo ne ha una. */
+  season?: LandscapePestSeason | null;
 };
 
-export default function PestHabitatSection({ data, km }: Props) {
+export default function PestHabitatSection({ data, km, season }: Props) {
   if (!data.available) {
     return null;
   }
@@ -140,6 +143,9 @@ export default function PestHabitatSection({ data, km }: Props) {
           </div>
         </Col>
       </Row>
+
+      {/* --- la finestra stagionale: chi e' nella fase che l'organismo attacca - */}
+      {season?.available && <PestSeasonBlock data={season} km={km} />}
 
       {/* --- le distanze, in fasce ------------------------------------------ */}
       {Object.keys(vicini).length > 0 && (

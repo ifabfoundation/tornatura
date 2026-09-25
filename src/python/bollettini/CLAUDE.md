@@ -64,9 +64,28 @@ Exit code: `0` nuovi dati · `1` niente di nuovo · `2` errore.
 ```
 GET /v1/bollettini/culture/{coltura}/location?lat=<lat>&lng=<lng>
 GET /v1/bollettini/health
+GET /v1/bollettini/fenologia?lat=<lat>&lng=<lng>&date=<AAAA-MM-GG>
 ```
 Restituisce il report della coltura per la provincia che contiene il punto. Copre **Emilia-Romagna
 e Campania** (usa `province_italia.shp`).
+
+## Fenologia (dal 2026-09-25, `modules/fenologia/`)
+Fase fenologica di ogni coltura ER dai bollettini, **senza LLM**, con intervallo BBCH:
+`GET /v1/bollettini/fenologia?lat&lng&date`. Archivio `data/fenologia.sqlite`, costruito dal passo
+2b di `run_pipeline.py` (a mano: `python -m bollettini.modules.fenologia.archivio [--forza]`).
+Prima di toccare regole, dizionario o docling: `python -m bollettini.modules.fenologia.verifica
+<cartella PDF>` deve dire 630/630 e 5142/5142. Trappole:
+- **pypdfium2 arriva con docling**, non e' un requisito diretto (import con `# pants: no-infer-dep`,
+  motivo nel `BUILD` del modulo): non rigenerare il lock solo per dichiararlo.
+- **Revisioni di Word visibili nei PDF** (testo cancellato ancora stampato e barrato): Docling e
+  Poppler lo leggono insieme al nuovo. `testo.py` lo toglie dalla geometria (linea sottile dello
+  stesso colore a meta' riga). Vale anche per i chunk dei report: il bollettino 6 del 18/03/2026
+  di Bologna e Ferrara ne e' pieno.
+- **Trattino a fine riga**: Docling e Poppler lo tolgono ("pre-seminasemina"); pdfium lo segna con
+  `\x02` e unisce le righe: va rimesso il trattino e la riga va spezzata.
+- Le regole sono verificate sul 2026: `fasi_al` usa solo i bollettini dell'anno richiesto.
+- Le finestre di suscettibilita' di un organismo NON stanno qui: stanno in `landscape`
+  (`data/pests/<codice>/meta.json`). Qui solo lo stadio della coltura.
 
 ## Regioni e colture
 - **Emilia-Romagna (6):** VITE, PERO, PESCO, MELO, MAIS, BARBABIETOLA.

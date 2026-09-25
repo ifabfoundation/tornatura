@@ -1,0 +1,84 @@
+{
+ "_nota": "specie AGREA (cls) -> colture dei bollettini ER, in ordine di preferenza. Il susino AGREA non distingue europeo e cino-giapponese: unione delle sezioni. Il pomodoro prende la sezione da industria e, se manca, quella generica. Generata da esperimenti/cimice_landscape/fenologia/esporta_per_app.py.",
+ "unione": [
+  "SUSINO"
+ ],
+ "prima_disponibile": [
+  "POMODORO",
+  "POMODORINO",
+  "FAGIOLO"
+ ],
+ "specie": {
+  "PERO": [
+   "PERO"
+  ],
+  "MELO": [
+   "MELO"
+  ],
+  "PESCO": [
+   "PESCO"
+  ],
+  "PESCO NETTARINA": [
+   "PESCO"
+  ],
+  "ALBICOCCO": [
+   "ALBICOCCO"
+  ],
+  "CILIEGIO": [
+   "CILIEGIO"
+  ],
+  "CILIEGIO ACIDO": [
+   "CILIEGIO"
+  ],
+  "SUSINO": [
+   "SUSINO",
+   "SUSINO_EUROPEO",
+   "SUSINO_CINO_GIAPPONESE"
+  ],
+  "ACTINIDIA (KIWI)": [
+   "ACTINIDIA"
+  ],
+  "LOTO (KAKI) (COMPRESO IL CACO MELA)": [
+   "KAKI"
+  ],
+  "NOCE": [
+   "NOCE"
+  ],
+  "OLIVO": [
+   "OLIVO"
+  ],
+  "VITE": [
+   "VITE"
+  ],
+  "SOIA": [
+   "SOIA"
+  ],
+  "GRANTURCO (MAIS)": [
+   "MAIS"
+  ],
+  "POMODORO": [
+   "POMODORO_INDUSTRIA",
+   "POMODORO"
+  ],
+  "POMODORINO": [
+   "POMODORO_INDUSTRIA",
+   "POMODORO"
+  ],
+  "GIRASOLE": [
+   "GIRASOLE"
+  ],
+  "FAGIOLINO": [
+   "FAGIOLINO"
+  ],
+  "FAGIOLO": [
+   "FAGIOLINO",
+   "FAGIOLO"
+  ],
+  "PEPERONE": [
+   "PEPERONE"
+  ],
+  "MELANZANA": [
+   "MELANZANA"
+  ]
+ }
+}

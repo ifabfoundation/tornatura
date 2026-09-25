@@ -54,18 +54,20 @@ circa l'**80%**, non il 100%. In pianura, dove esistono entrambe, quel disaccord
 ```
 src/python/landscape/
 ├── api.py                  # FastAPI: health, coverage, composition, parcels,
-│                           #   pieces, parcel-at, pests, pest-habitat
+│                           #   pieces, parcel-at, pests, pest-habitat, pest-season
 ├── paths.py                # iColt statico nel pex; AGREA e log sul volume
 ├── updater.py              # CLI: prepara i dati AGREA sul volume
 ├── BUILD                   # target Pants (due pex_binary: api, updater)
 ├── data/
 │   ├── icolt2026_er.parquet # layer iColt 2026 (EPSG:4326, particelle > 0,5 ha)
-│   └── pests/<codice>/      # un organismo = una cartella: hosts.csv + meta.json
+│   ├── pests/<codice>/      # un organismo = una cartella: hosts.csv + meta.json
+│   └── phenology/           # specie AGREA -> colture dei bollettini, zone, calendario 2026
 └── modules/
     ├── config.py           # classi, famiglie, mappatura colture, soglie
     ├── landscape.py        # sorgente iColt + combinazione delle due
     ├── agrea.py            # sorgente AGREA, ai due livelli di granularità
     ├── pests.py            # habitat di un organismo nel paesaggio (calcolo unico)
+    ├── season.py           # finestra stagionale: fase degli ospiti dai bollettini
     └── agrea_prepare.py    # dall'archivio pubblico ai tre GeoParquet
 ```
 
@@ -294,7 +296,27 @@ rigenera `hosts.csv`; `hosts_version` nella risposta dice quale tabella e' in us
    e' un 422. Non viene conservato.
 5. Soia e mais sono `principale` (danno documentato da piu' fonti) ma ospiti solo in
    maturazione: `by_family` separa erbacee e frutteti proprio per questo, e la finestra
-   fenologica e' il passo successivo, non un difetto da correggere nella tabella.
+   stagionale (`/pest-season`, sotto) dice quando lo sono. Non si corregge nella tabella.
+
+## Finestra stagionale (`modules/season.py`, `data/phenology/`)
+
+`/pest-season` dice quali ospiti sono **oggi** nella fase che l'organismo attacca. La fase della
+coltura la da' il servizio **bollettini** (`/v1/bollettini/fenologia`, estrazione verificata a mano
+su 5.142 righe); la **finestra** sta con l'organismo (`meta.json`, `season.windows`, con le fonti);
+la corrispondenza specie AGREA -> coltura del bollettino e' generica
+(`data/phenology/agrea_bollettini.json`). Nota: `docs/decisioni/2026-09_finestra-stagionale.md`.
+
+**Trappole.**
+1. La chiamata ai bollettini passa dalla rete dei container: in produzione `bollettini-api`, in
+   staging va impostata `LANDSCAPE_BOLLETTINI_API_URL=http://bollettini-api-staging:8080`
+   (altrimenti si usa sempre il calendario, in silenzio salvo un warning nel log).
+2. Il calendario di riserva e' del 2026 e si applica alla stessa data dell'anno: dal 2027 va
+   rigenerato con `esperimenti/cimice_landscape/fenologia/esporta_per_app.py` (o accettato come
+   "anno prima", che la risposta dichiara con `source: calendar_2026`).
+3. Fuori stagione (fasi con piu' di 14 giorni) quasi tutto e' "fase non disponibile": la pagina
+   lo dice con un messaggio e non mostra numeri a zero.
+4. `concluso` e' finale: una coltura tolta dal bollettino dopo la raccolta resta conclusa; senza
+   questa regola i frutteti raccolti passerebbero a "fase non disponibile".
 
 ## Verifica di non-regressione
 
@@ -318,3 +340,7 @@ Organismi: `GET /v1/landscape/pest-habitat?lat=44.80951&lng=11.75644&radius_m=30
 deve dare ospiti 63,2% del dichiarato, principali 58,6%, serbatoi 2,7%, frutteto con
 danno documentato piu' vicino "entro 100 m", pero 268 ha fra le prime specie. Con il
 volume vuoto `available: false`, senza errore.
+
+Stagione: `GET /v1/landscape/pest-season?lat=44.80951&lng=11.75644&radius_m=3000&pest=halyha&date=2026-06-10`
+deve dare nella fase che attacca 35,5%, in arrivo 32,4%, non ancora 25,1%; con il servizio
+bollettini spento la stessa risposta con `source: calendar_2026`.

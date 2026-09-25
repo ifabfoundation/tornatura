@@ -21,6 +21,7 @@ Exit code: `0` = nuovi dati · `1` = niente di nuovo · `2` = errore.
 ```
 GET /v1/bollettini/culture/{coltura}/location?lat=<lat>&lng=<lng>
 GET /v1/bollettini/health
+GET /v1/bollettini/fenologia?lat=<lat>&lng=<lng>&date=<AAAA-MM-GG>&crops=<PERO,MELO,...>
 ```
 Restituisce il report della coltura per la provincia che contiene il punto (Emilia-Romagna e Campania).
 
