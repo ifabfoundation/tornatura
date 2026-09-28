@@ -29,6 +29,14 @@ import { DetectionTypeDetail } from "./features/detection-types/pages/detection-
 import { FieldModelPeronospora } from "./features/fields/pages/field-model-peronospora";
 import { FieldModelBollettini } from "./features/fields/pages/field-model-bollettini";
 import { FieldLandscape } from "./features/fields/pages/field-landscape";
+import { HarvestTypesList } from "./features/harvest-types/pages/harvest-types-list";
+import { HarvestTypeNew } from "./features/harvest-types/pages/harvest-type-new";
+import { HarvestTypeDetail } from "./features/harvest-types/pages/harvest-type-detail";
+import { ObservationTypesList } from "./features/observation-types/pages/observation-types-list";
+import { ObservationTypeNew } from "./features/observation-types/pages/observation-type-new";
+import { ObservationTypeDetail } from "./features/observation-types/pages/observation-type-detail";
+import { BbchScalesList } from "./features/bbch-scales/pages/bbch-scales-list";
+import { BbchScaleDetail } from "./features/bbch-scales/pages/bbch-scale-detail";
 
 
 
@@ -76,6 +84,38 @@ const routesInitials: RouteObject[] = [
           {
             path: "feedbacks",
             element: <FeedbackTable />
+          },
+          {
+            path: "harvest-types",
+            element: <HarvestTypesList />
+          },
+          {
+            path: "harvest-types/new",
+            element: <HarvestTypeNew />
+          },
+          {
+            path: "harvest-types/:harvestTypeId",
+            element: <HarvestTypeDetail />
+          },
+          {
+            path: "observation-types",
+            element: <ObservationTypesList />
+          },
+          {
+            path: "observation-types/new",
+            element: <ObservationTypeNew />
+          },
+          {
+            path: "observation-types/:observationTypeId",
+            element: <ObservationTypeDetail />
+          },
+          {
+            path: "bbch-scales",
+            element: <BbchScalesList />
+          },
+          {
+            path: "bbch-scales/:harvestCode",
+            element: <BbchScaleDetail />
           },
           {
             path: "profile",
@@ -256,6 +296,6 @@ const routesInitials: RouteObject[] = [
 
 
 export function AppRoutes() {
-  let routes = useRoutes(routesInitials);
+  const routes = useRoutes(routesInitials);
   return routes;
 }

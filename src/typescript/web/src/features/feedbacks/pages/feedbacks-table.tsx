@@ -2,9 +2,10 @@ import React from "react";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { headerbarActions } from "../../headerbar/state/headerbar-slice";
 import TableCozy, { TableColumn, TableOptions } from "../../../components/TableCozy";
+import { AdminPagination } from "../../../components/AdminPagination";
 import { feedbacksSelectors } from "../state/feedbacks-slice";
 import { userSelectors } from "../../users/state/user-slice";
-import { Container, Row, Col } from "react-bootstrap";
+import "../../catalog-admin.css";
 
 
 
@@ -12,10 +13,12 @@ export function FeedbackTable() {
   const dispatch = useAppDispatch();
   const users = useAppSelector(userSelectors.selectAllUsers);
   const feedbacks = useAppSelector(feedbacksSelectors.selectAllFeedbacks);
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const [pageSize, setPageSize] = React.useState(10);
 
   React.useEffect(() => {
     dispatch(headerbarActions.setTitle({ title: "Feedback", subtitle: "Vista amministrazione" }));
-  }, []);
+  }, [dispatch]);
 
   const options: TableOptions = {
     defaultSortCol: "creationTime",
@@ -67,19 +70,32 @@ export function FeedbackTable() {
       "creationTimeRaw": f.creationTime,
     };
   } );
+  const paginatedData = data.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
   return (
-    <div>
-      <section className="soft pb-3">
-        <div className="">
-          <Container fluid className="px-0">
-            <Row>
-              <Col xl={12} className="mt-0" style={{ overflowX: "auto" }}>
-                <TableCozy columns={columns} data={data} options={options} />
-              </Col>
-            </Row>
-          </Container>
+    <div className="catalog-page">
+      <header className="catalog-page__intro">
+        <div>
+          <p className="catalog-page__eyebrow">Amministrazione</p>
+          <h2>Feedback</h2>
+          <p>Consulta le segnalazioni inviate dagli utenti, con autore e data di ricezione.</p>
         </div>
+      </header>
+      <section className="catalog-page__table mt-4">
+        <div className="catalog-page__table-scroll">
+          <TableCozy columns={columns} data={paginatedData} options={options} />
+        </div>
+        <AdminPagination
+          currentPage={currentPage}
+          pageSize={pageSize}
+          pageSizeOptions={[10, 25, 50]}
+          totalItems={data.length}
+          onPageChange={setCurrentPage}
+          onPageSizeChange={(size) => {
+            setPageSize(size);
+            setCurrentPage(1);
+          }}
+        />
       </section>
     </div>
   );

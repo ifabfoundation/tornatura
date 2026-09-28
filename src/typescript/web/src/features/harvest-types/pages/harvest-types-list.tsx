@@ -5,6 +5,7 @@ import TableCozy, { TableColumn, TableOptions } from "../../../components/TableC
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { headerbarActions } from "../../headerbar/state/headerbar-slice";
 import { harvestTypesActions, harvestTypesSelectors } from "../state/harvest-types-slice";
+import "../../catalog-admin.css";
 
 function formatDateTime(value?: number) {
   if (!value) {
@@ -87,22 +88,18 @@ export function HarvestTypesList() {
   }));
 
   return (
-    <>
-      <section className="pb-3">
-        <Container fluid className="px-0">
-          <Row className="mb-4">
-            <Col xl={12} className="d-flex justify-content-end">
-              <button
-                className="trnt_btn primary"
-                onClick={() => navigate("/admin/harvest-types/new")}
-              >
-                Nuova coltura
-              </button>
-            </Col>
-          </Row>
-        </Container>
-      </section>
-      <section className="soft pb-3">
+    <div className="catalog-page">
+      <header className="catalog-page__intro">
+        <div>
+          <p className="catalog-page__eyebrow">Configurazione</p>
+          <h2>Registro delle colture</h2>
+          <p>Gestisci i codici disponibili per i campi, l’ordine di visualizzazione e lo stato.</p>
+        </div>
+        <button className="trnt_btn primary catalog-page__action" onClick={() => navigate("/admin/harvest-types/new")}>
+          Nuova coltura
+        </button>
+      </header>
+      <section className="catalog-page__table mt-4">
         <Container fluid className="px-0">
           <Row>
             <Col xl={12} style={{ overflowX: "auto" }}>
@@ -111,6 +108,6 @@ export function HarvestTypesList() {
           </Row>
         </Container>
       </section>
-    </>
+    </div>
   );
 }

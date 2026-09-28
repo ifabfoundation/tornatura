@@ -1,5 +1,4 @@
 import React from "react";
-import { Col, Container, Row } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import {
   HarvestTypeCreatePayload,
@@ -19,20 +18,14 @@ export function HarvestTypeNew() {
   }, [dispatch]);
 
   const handleSubmit = async (payload: HarvestTypeCreatePayload | HarvestTypeUpdatePayload) => {
-    await dispatch(harvestTypesActions.addHarvestTypeAction(payload as HarvestTypeCreatePayload));
+    await dispatch(harvestTypesActions.addHarvestTypeAction(payload as HarvestTypeCreatePayload)).unwrap();
     await dispatch(harvestTypesActions.fetchHarvestTypesAction({ includeInactive: true }));
     navigate("/admin/harvest-types");
   };
 
   return (
-    <section className="soft pb-3">
-      <Container fluid className="px-0">
-        <Row className="mb-4">
-          <Col xl={12}>
-            <HarvestTypeForm onSubmit={handleSubmit} />
-          </Col>
-        </Row>
-      </Container>
-    </section>
+    <div className="catalog-page catalog-page--form">
+      <HarvestTypeForm onSubmit={handleSubmit} />
+    </div>
   );
 }

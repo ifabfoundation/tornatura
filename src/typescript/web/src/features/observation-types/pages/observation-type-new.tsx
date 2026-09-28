@@ -1,5 +1,4 @@
 import React from "react";
-import { Col, Container, Row } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import {
   ObservationTypeCreatePayload,
@@ -30,20 +29,14 @@ export function ObservationTypeNew() {
   ) => {
     await dispatch(
       observationTypesActions.addObservationTypeAction(payload as ObservationTypeCreatePayload),
-    );
+    ).unwrap();
     await dispatch(observationTypesActions.fetchObservationTypesAction({ page: 1, limit: 1000 }));
     navigate("/admin/observation-types");
   };
 
   return (
-    <section className="soft pb-3">
-      <Container fluid className="px-0">
-        <Row className="mb-4">
-          <Col xl={12}>
-            <ObservationTypeForm harvestTypes={harvestTypes} onSubmit={handleSubmit} />
-          </Col>
-        </Row>
-      </Container>
-    </section>
+    <div className="catalog-page catalog-page--form">
+      <ObservationTypeForm harvestTypes={harvestTypes} onSubmit={handleSubmit} />
+    </div>
   );
 }

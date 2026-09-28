@@ -21,12 +21,17 @@ const initialState = companiesAdapter.getInitialState<AuxState>({
   currentRequestId: "",
 });
 
+type CompaniesPageParams = {
+  page?: number;
+  limit?: number;
+};
+
 export const fetchCompanies = createAsyncThunk(
   "companies/fetchCompanies",
-  async () => {
+  async ({ page = 1, limit = 25 }: CompaniesPageParams = {}) => {
     const apiConfig = await getCoreApiConfiguration();
     const organizationsApi = new OrganizationsApi(apiConfig);
-    const companies = organizationsApi.listOrganization(1, 250).then((response) => {
+    const companies = organizationsApi.listOrganization(page, limit).then((response) => {
       return response.data;
     });
     return companies;
@@ -92,7 +97,7 @@ const companiesSlice = createSlice({
     builder.addCase(fetchCompanies.fulfilled, (state, action) => {
       state.status = "succeeded";
       state.total = action.payload.total;
-      companiesAdapter.upsertMany(state, action.payload.data as Organization[]);
+      companiesAdapter.setAll(state, action.payload.data as Organization[]);
     });
     builder.addCase(fetchCompanies.rejected, (state, action) => {
       state.status = "failed";
@@ -120,6 +125,8 @@ const selectors = companiesAdapter.getSelectors<RootState>(
 export const companiesSelectors = {
   selectAllCompanies: selectors.selectAll,
   selectCompanybyId: selectors.selectById,
+  selectCompaniesTotal: (state: RootState) => state.companies.total,
+  selectCompaniesStatus: (state: RootState) => state.companies.status,
 };
 
 export const companiesActions = {

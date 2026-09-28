@@ -40,6 +40,43 @@ class HarvestType(Document):
         return str(self.id)
 
 
+class BbchStage(EmbeddedDocument):
+    code = StringField(required=True)
+    name = StringField(required=True)
+    thumbnail = StringField(null=True)
+    icon = StringField(null=True)
+    sortOrder = IntField(default=0)
+
+
+class BbchGroup(EmbeddedDocument):
+    code = StringField(required=True)
+    name = StringField(required=True)
+    icon = StringField(null=True)
+    sortOrder = IntField(default=0)
+    stages = ListField(EmbeddedDocumentField(BbchStage), default=[])
+
+
+class BbchScale(Document):
+    """BBCH catalogue assigned to a harvest type.
+
+    A scale can either own groups or reference another harvest code. Duplicating a
+    referenced scale materializes the effective groups and clears the reference.
+    """
+    harvestCode = StringField(required=True, unique=True)
+    sourceHarvestCode = StringField(null=True)
+    groups = ListField(EmbeddedDocumentField(BbchGroup), default=[])
+    creationTime = IntField()
+    lastUpdateTime = IntField()
+
+    meta = {
+        'ordering': ['harvestCode'],
+        'indexes': ['harvestCode', 'sourceHarvestCode'],
+    }
+
+    def __str__(self):
+        return str(self.id)
+
+
 class ObservationPoint(EmbeddedDocument):
     position = EmbeddedDocumentField(Point, required=True)
     data = EmbeddedDocumentField(ObservationData, required=True)

@@ -1,11 +1,14 @@
 import React from "react";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
-import { companiesSelectors } from "../state/companies-slice";
+import { companiesActions, companiesSelectors } from "../state/companies-slice";
 import { headerbarActions } from "../../headerbar/state/headerbar-slice";
 import TableCozy, { TableColumn, TableOptions } from "../../../components/TableCozy";
-import { Col, Container, Row } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import Icon from "../../../components/Icon";
+import { AdminPagination } from "../../../components/AdminPagination";
+import { Organization, OrganizationsApi } from "@tornatura/coreapis";
+import { getCoreApiConfiguration } from "../../../services/utils";
+import "../../catalog-admin.css";
 
 function escapeCsvValue(value: unknown) {
   const normalizedValue = String(value ?? "");
@@ -17,6 +20,10 @@ export function CompanyTable() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const companies = useAppSelector(companiesSelectors.selectAllCompanies);
+  const totalCompanies = useAppSelector(companiesSelectors.selectCompaniesTotal);
+  const companiesStatus = useAppSelector(companiesSelectors.selectCompaniesStatus);
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const [pageSize, setPageSize] = React.useState(25);
 
   const formatDateTime = (value?: number) => {
     if (!value) {
@@ -34,7 +41,11 @@ export function CompanyTable() {
 
   React.useEffect(() => {
     dispatch(headerbarActions.setTitle({ title: "Aziende", subtitle: "Vista amministrazione" }));
-  }, []);
+  }, [dispatch]);
+
+  React.useEffect(() => {
+    dispatch(companiesActions.fetchCompaniesAction({ page: currentPage, limit: pageSize }));
+  }, [currentPage, dispatch, pageSize]);
 
   const options: TableOptions = {
     defaultSortCol: "creationTime",
@@ -100,15 +111,39 @@ export function CompanyTable() {
     };
   });
 
-  const handleCsvDownload = () => {
+  const handleCsvDownload = async () => {
+    const apiConfig = await getCoreApiConfiguration();
+    const organizationsApi = new OrganizationsApi(apiConfig);
+    const firstResponse = await organizationsApi.listOrganization(1, 1000);
+    const exportCompanies = [...(firstResponse.data.data as Organization[])];
+    const exportPageCount = Math.ceil(firstResponse.data.total / 1000);
+
+    for (let page = 2; page <= exportPageCount; page += 1) {
+      const response = await organizationsApi.listOrganization(page, 1000);
+      exportCompanies.push(...(response.data.data as Organization[]));
+    }
+
+    const exportData = exportCompanies.map((company) => ({
+      orgId: company.orgId,
+      name: company.name,
+      piva: company.piva,
+      email: company.contacts?.email ?? "",
+      phone: company.contacts?.phone ?? "",
+      creationTime: formatDateTime(company.creationTime),
+      creationTimeRaw: company.creationTime ?? 0,
+    }));
     const csvHeaders = columns
       .filter((column) => column.type === "text")
       .map((column) => ({ id: column.id, headerText: column.headerText }));
-    const sortedData = [...data].sort((left, right) => right.creationTimeRaw - left.creationTimeRaw);
+    const sortedData = exportData.sort((left, right) => right.creationTimeRaw - left.creationTimeRaw);
     const csvRows = [
       csvHeaders.map((column) => escapeCsvValue(column.headerText)).join(","),
-      ...sortedData.map((row: any) =>
-        csvHeaders.map((column) => escapeCsvValue(row[column.id] ?? "")).join(","),
+      ...sortedData.map((row) =>
+        csvHeaders
+          .map((column) =>
+            escapeCsvValue((row as Record<string, unknown>)[column.id] ?? ""),
+          )
+          .join(","),
       ),
     ];
     const csvContent = `\uFEFF${csvRows.join("\n")}`;
@@ -125,29 +160,42 @@ export function CompanyTable() {
   };
 
   return (
-    <div>
-      <section className="soft pb-3">
-        <div className="">
-          <Container fluid className="px-0">
-            <Row className="mb-3">
-              <Col xl={12} className="d-flex justify-content-end">
-                <button
-                  type="button"
-                  className="trnt_btn narrow-x slim-y outlined ps-1 type-rounded"
-                  onClick={handleCsvDownload}
-                >
-                  <Icon iconName={"download"} color={"black"} />
-                  CSV
-                </button>
-              </Col>
-            </Row>
-            <Row>
-              <Col xl={12} className="mt-0" style={{ overflowX: "auto" }}>
-                <TableCozy columns={columns} data={data} options={options} />
-              </Col>
-            </Row>
-          </Container>
+    <div className="catalog-page">
+      <header className="catalog-page__intro">
+        <div>
+          <p className="catalog-page__eyebrow">Amministrazione</p>
+          <h2>Aziende</h2>
+          <p>Consulta le aziende registrate, i contatti e la data di attivazione.</p>
         </div>
+        <button
+          type="button"
+          className="trnt_btn outlined catalog-page__export"
+          onClick={handleCsvDownload}
+        >
+          <Icon iconName="download" color="black" />
+          Esporta CSV
+        </button>
+      </header>
+      <section className="catalog-page__table mt-4">
+        <div className="catalog-page__table-scroll">
+          {companiesStatus === "pending" ? (
+            <p className="catalog-form__hint catalog-page__loading">Caricamento aziende…</p>
+          ) : (
+            <TableCozy columns={columns} data={data} options={options} />
+          )}
+        </div>
+        <AdminPagination
+          currentPage={currentPage}
+          pageSize={pageSize}
+          pageSizeOptions={[25, 50, 100]}
+          totalItems={totalCompanies}
+          disabled={companiesStatus === "pending"}
+          onPageChange={setCurrentPage}
+          onPageSizeChange={(size) => {
+            setPageSize(size);
+            setCurrentPage(1);
+          }}
+        />
       </section>
     </div>
   );

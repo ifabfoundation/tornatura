@@ -4,6 +4,9 @@ from minio import Minio
 from core import config
 from werkzeug.utils import secure_filename
 
+BBCH_THUMBNAIL_MAX_BYTES = 5 * 1024 * 1024
+BBCH_THUMBNAIL_CONTENT_TYPES = {"image/jpeg", "image/png", "image/webp", "image/gif"}
+
 class FileServices:
 
     def _get_minio_client(self):
@@ -44,6 +47,34 @@ class FileServices:
             file_size
         )
 
+        return file_name
+
+    def upload_bbch_thumbnail(self, file: UploadFile):
+        """Upload a BBCH image to the existing public/bbchs object location."""
+        if file.content_type not in BBCH_THUMBNAIL_CONTENT_TYPES:
+            raise ValueError("Unsupported thumbnail format")
+
+        file_name = secure_filename(file.filename or "")
+        if not file_name:
+            raise ValueError("Invalid thumbnail filename")
+
+        file_size = file.file.seek(0, 2)
+        file.file.seek(0)
+        if file_size <= 0 or file_size > BBCH_THUMBNAIL_MAX_BYTES:
+            raise ValueError("Thumbnail must be between 1 byte and 5 MB")
+
+        minio_client = self._get_minio_client()
+        bucket_name = "public"
+        if not minio_client.bucket_exists(bucket_name):
+            minio_client.make_bucket(bucket_name)
+
+        minio_client.put_object(
+            bucket_name,
+            f"bbchs/{file_name}",
+            file.file,
+            file_size,
+            content_type=file.content_type,
+        )
         return file_name
 
     def get_file_url(self, org_id: str, category: str, file_name: str):
