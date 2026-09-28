@@ -352,31 +352,33 @@ export function FieldLandscape() {
 
                 <Row className="mb-3">
                   <Col>
-                    <p className="font-m-600 mb-1">Perché è importante?</p>
-                    <p className="font-m mb-2">
-                      Conoscere cosa viene coltivato vicino al tuo campo può aiutarti a
-                      individuare potenziali aree di rischio per la diffusione di parassiti e
-                      malattie, soprattutto quando la stessa coltura è molto presente nel
-                      territorio, e a interpretare meglio ciò che accade nel tuo appezzamento.
-                    </p>
+                    {/* Chiuso di base: chi torna sulla pagina non deve rileggerlo ogni volta. */}
+                    <details className="mb-2">
+                      <summary className="font-m-600" style={{ cursor: "pointer" }}>
+                        Perché è importante?
+                      </summary>
+                      <p className="font-m mt-2 mb-2">
+                        Conoscere cosa viene coltivato vicino al tuo campo può aiutarti a
+                        individuare potenziali aree di rischio per la diffusione di parassiti e
+                        malattie, soprattutto quando la stessa coltura è molto presente nel
+                        territorio, e a interpretare meglio ciò che accade nel tuo appezzamento.
+                      </p>
+                      <p className="font-m mb-0">
+                        Quanto una coltura è concentrata nel paesaggio dice quanta risorsa
+                        continua è disponibile per gli organismi che vivono su quella coltura. È
+                        un elemento di consapevolezza, non una previsione: il dato non dice se e
+                        quanto quella concentrazione si traduca in pressione sul tuo campo, che
+                        dipende dall&apos;organismo, da quanto si sposta e dalla stagione.
+                      </p>
+                    </details>
                     <p className="font-m-600 mb-1">Esplora la mappa</p>
-                    <p className="font-m mb-2">
+                    <p className="font-m mb-0">
                       Clicca su un appezzamento per scoprire quale coltura è dichiarata e quanto
-                      è presente nel territorio circostante. Cambia il raggio tra 3, 5 e 10 km
+                      è presente nel territorio circostante. Cambia il raggio da 500&nbsp;m a 10&nbsp;km
                       per osservare il tuo vicinato agricolo a diverse scale. Il cerchio
                       tratteggiato indica l&apos;area considerata: tutti i valori e le
                       percentuali mostrati nella pagina sono calcolati al suo interno.
                     </p>
-                    {geo?.map_min_ha != null && geo.map_pct_of_area != null && (
-                      <p className="font-s mb-0">
-                        <em>
-                          La mappa visualizza gli appezzamenti superiori a{" "}
-                          {geo.map_min_ha.toLocaleString("it-IT")} ha, che rappresentano il{" "}
-                          {geo.map_pct_of_area.toFixed(0)}% della superficie agricola. I calcoli
-                          percentuali includono comunque tutti gli appezzamenti.
-                        </em>
-                      </p>
-                    )}
                   </Col>
                 </Row>
 
@@ -493,10 +495,9 @@ export function FieldLandscape() {
                     restano calcolate su tutti. Riduci il raggio per vederli tutti.
                   </div>
                 )}
-              </section>
 
-              {/* --- la tua coltura nel paesaggio -------------------------- */}
-              <section className="soft bg-white">
+                {/* --- la tua coltura: una riga sotto la mappa, non un riquadro a parte --- */}
+                <div className="mt-3">
                 {oss?.status === "suppressed" && (
                   <div className="alert alert-warning font-s">
                     Questo campo e&apos; fuori dall&apos;area cartografata da{" "}
@@ -529,27 +530,20 @@ export function FieldLandscape() {
                 crop.pct_of_agri != null &&
                 crop.ha != null ? (
                   crop.ha > 0 ? (
-                    <Fragment>
-                      <p className="font-m mb-2">
-                        Entro {km} km <strong>{formatHarvestName(crop.harvest)}</strong> occupa{" "}
-                        <strong>{formatHa(crop.ha)}</strong>, cioè il{" "}
-                        <strong>{crop.pct_of_agri.toFixed(1)}%</strong> dei{" "}
-                        {formatHa(data?.agri_ha)} di superficie agricola che iColt cartografa
-                        intorno al tuo campo.
-                      </p>
-                      <p className="font-m mb-0">
-                        Perché guardarlo: quanto una coltura è concentrata nel paesaggio dice
-                        quanta risorsa continua è disponibile per gli organismi che vivono su
-                        quella coltura. È un elemento di consapevolezza, non una previsione: il
-                        dato non dice se e quanto quella concentrazione si traduca in pressione
-                        sul tuo campo, che dipende dall&apos;organismo, da quanto si sposta e
-                        dalla stagione.
-                      </p>
-                    </Fragment>
+                    <p className="font-m mb-0">
+                      <strong>La tua coltura.</strong> Entro {etichettaRaggio(radiusM)}{" "}
+                      <strong>{formatHarvestName(crop.harvest)}</strong> occupa{" "}
+                      <strong>{formatHa(crop.ha)}</strong>, cioè il{" "}
+                      <strong>{crop.pct_of_agri.toLocaleString("it-IT", { maximumFractionDigits: 1 })}%</strong>{" "}
+                      della superficie agricola intorno al tuo campo ({formatHa(data?.agri_ha)}{" "}
+                      {daDichiarazioni ? "dichiarati nelle domande PAC" : "cartografati da iColt"}).
+                    </p>
                   ) : (
                     <p className="font-m mb-0">
-                      Entro {km} km non risultano altri appezzamenti di{" "}
-                      <strong>{formatHarvestName(crop.harvest)}</strong> nei dati satellitari.
+                      <strong>La tua coltura.</strong> Entro {etichettaRaggio(radiusM)} non
+                      risultano altri appezzamenti di{" "}
+                      <strong>{formatHarvestName(crop.harvest)}</strong>{" "}
+                      {daDichiarazioni ? "nelle dichiarazioni PAC" : "nei dati satellitari"}.
                     </p>
                   )
                 ) : null}
@@ -580,6 +574,7 @@ export function FieldLandscape() {
                     satellitari. Sulla mappa resta il contesto agricolo complessivo.
                   </p>
                 )}
+                </div>
               </section>
 
               {/* --- ambienti semi-naturali e controllo incrociato --------- */}
