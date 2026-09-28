@@ -36,7 +36,7 @@ il disegno a mano, e mentre lo si usa il click sui pezzi viene ignorato.
 | ruolo | **principale** | **controllo indipendente** |
 | granularità | 311 specie nominate | 16 classi |
 | copertura | anche collina e Appennino | pianura; cieca sopra 200 m o 15% di pendenza |
-| bosco, siepi | 179.460 + 34.460 ha | assenti |
+| bosco, siepi | 179.460 + 34.460 ha (un terzo del bosco reale: vedi "Zone semi-naturali") | assenti |
 | completezza | solo aziende che dichiarano | tutti i campi |
 | licenza | **non dichiarata** | CC BY 4.0 |
 | dove | volume `/data/landscape/agrea/` (~1,5 GB) | dentro il pex (34 MB) |
@@ -68,7 +68,9 @@ src/python/landscape/
     ├── agrea.py            # sorgente AGREA, ai due livelli di granularità
     ├── pests.py            # habitat di un organismo nel paesaggio (calcolo unico)
     ├── season.py           # finestra stagionale: fase degli ospiti dai bollettini
-    └── agrea_prepare.py    # dall'archivio pubblico ai tre GeoParquet
+    ├── seminaturale.py     # zone semi-naturali da tutte le fonti, ogni ettaro una volta
+    ├── seminaturale_prepare.py # Carta forestale, Uso del suolo, Copernicus -> volume
+    └── agrea_prepare.py    # dall'archivio pubblico ai GeoParquet AGREA
 ```
 
 ## Due granularità, due scopi
@@ -270,7 +272,8 @@ la diabrotica e' aggiungere una cartella. Nota di decisione:
 
 **Cosa si misura, deciso da un esperimento** (`esperimenti/cimice_landscape/`, 33 punti
 x 4 raggi): % di superficie per livello ospite sul dichiarato, separando frutteti ed
-erbacee; serbatoi semi-naturali (riusa `agrea.seminatural`); distanza bordo a bordo dal
+erbacee; serbatoi semi-naturali (le categorie di `seminaturale.seminatural` scelte in
+`meta.json`, piu' i rifugi invernali a parte); distanza bordo a bordo dal
 frutteto ospite e dalla siepe o bosco piu' vicini, **in classi**. **Cosa NON si misura**:
 l'indice di connettivita' a kernel e le metriche FRAGSTATS, ridondanti con la % (0,85-0,97
 e 0,67-0,94). La % a 500 m e a 3 km correlano solo 0,77: due scale, e per questo
@@ -318,6 +321,43 @@ la corrispondenza specie AGREA -> coltura del bollettino e' generica
 4. `concluso` e' finale: una coltura tolta dal bollettino dopo la raccolta resta conclusa; senza
    questa regola i frutteti raccolti passerebbero a "fase non disponibile".
 
+## Zone semi-naturali: tutte le fonti (`modules/seminaturale.py`)
+
+AGREA vede un terzo del bosco (172.959 ha dichiarati contro 598.593 della Carta forestale): i
+boschi pubblici, abbandonati o di chi non dichiara non ci sono. Il semi-naturale della pagina e i
+serbatoi degli organismi sommano quattro fonti in **ordine di priorita'**, e ogni ettaro
+appartiene alla prima che lo vede: AGREA (appezzamenti ed elementi con la loro forma) > Carta
+forestale regionale 2025 > Uso del suolo 2023 > Copernicus Small Woody Features 2021 (solo il
+residuo). Sei categorie (`config.SEMINATURAL_CATEGORIES`); le prime quattro fanno la quota
+"semi-naturale", impianti arborei ed edifici si mostrano a parte. Esperimento con tutti i numeri:
+`esperimenti/bosco_paesaggio/`; nota: `docs/decisioni/2026-09_zone-seminaturali.md`.
+
+**Il ritaglio fra le fonti lo fa l'updater**, una volta (`seminaturale_prepare.py`, cartella
+`seminaturale/` del volume): `strati_er.parquet` (CF e US gia' fuori da AGREA, EPSG:32632),
+`mappa_er.parquet` (gli stessi uniti a celle di 5 km, per la mappa), `swf_residuo_er.tif` (5 m,
+EPSG:3035). A richiesta si sommano superfici che non si toccano: 0,3-0,8 s a 3 km, 2,4 s al
+massimo a 10 km (Brisighella). Senza la cartella il semi-naturale e' il solo AGREA e `layers` lo
+dice.
+
+**Trappole.**
+1. L'updater va fatto **a riquadri**: con tutta la regione in memoria (1,7 milioni di
+   appezzamenti ed elementi con indice spaziale, piu' l'Uso del suolo) e' salito a 11 GB il
+   28/09/2026. Letto per finestra dai GeoParquet il picco e' 5,0 GB (misurato con `time -v`),
+   42 minuti in tutto, di cui ~25 per i 32 riquadri Copernicus.
+2. Gli elementi AGREA vanno sottratti **con la loro forma** (`agrea<anno>_elementi_forme_er.parquet`,
+   solo per l'updater): con il solo centroide 3.700 ha di siepi e boschetti dichiarati si
+   contavano anche come bosco della Carta forestale.
+3. Gli strati si salvano in **metri** e si leggono con il bbox in metri: una riproiezione
+   4326 -> 32632 andata e ritorno rende invalide alcune geometrie (TopologyException).
+4. Fuori regione il residuo Copernicus e' zero di proposito: li' AGREA, Carta forestale e Uso del
+   suolo non esistono e tutto sembrerebbe "non visto". Esclusi anche i pixel su vigneti, frutteti,
+   oliveti dell'Uso del suolo: i filari si confondono con le siepi.
+5. Sulla mappa i poligoni regionali (`source_label`) si disegnano **senza contorno**: sono tagliati
+   a celle di 5 km e il bordo della cella si vedrebbe.
+6. Carta forestale e Uso del suolo non hanno ETag: la versione e' data e dimensione (CF) o
+   l'edizione (US). Cambiare le tabelle delle classi in `config.py` rifa' il ritaglio da solo
+   (impronta delle regole nel manifest).
+
 ## Verifica di non-regressione
 
 ```
@@ -327,17 +367,22 @@ fonte             agrea
 superficie agri   2.338,4 ha in 2.810 appezzamenti
 la tua coltura    Pero 11,3%
 controllo iColt   13,3% (2,0 punti di scarto)
-semi-naturale     2,7%
+semi-naturale     3,9% (111 ha: bosco 5,5, arbusteti 2,2, siepi 38,8 di cui 24,6
+                  Copernicus, sponde 64,5)
 specie nominate   34
 ```
 
-Collina, dove iColt è cieca: Brisighella `olivo 11,8%`, semi-naturale `15,1%`
-(350,8 ha di bosco); Colli Bolognesi `vite 9,0%`, semi-naturale `15,0%`. Con un
-volume privo dei file AGREA la stessa chiamata deve tornare `fonte icolt` e 10
-classi, senza errori.
+Collina, dove iColt è cieca (punti dell'esperimento `esperimenti/bosco_paesaggio/`):
+Brisighella (44.2226, 11.7733) semi-naturale `36,3%` (758,8 ha di bosco, di cui 363 dichiarati);
+Colli Bolognesi (44.434, 11.178) `54,7%` (1.187 ha di bosco). Senza la cartella `seminaturale/`
+le stesse chiamate devono dare il solo AGREA con `layers.regional: false`: Ferrara 2,9%,
+Brisighella 15,9% (prima del 2.4.0 erano 2,7% e 15,5%: ora contano anche siepi e margini
+dichiarati come appezzamento e la tara dei pascoli arborati). Con un volume privo dei file AGREA
+la chiamata deve tornare `fonte icolt` e 10 classi, senza errori.
 
 Organismi: `GET /v1/landscape/pest-habitat?lat=44.80951&lng=11.75644&radius_m=3000&crop=pero&pest=halyha`
-deve dare ospiti 63,2% del dichiarato, principali 58,6%, serbatoi 2,7%, frutteto con
+deve dare ospiti 63,2% del dichiarato, principali 58,6%, serbatoi 4,2% (con gli impianti arborei;
+rifugi invernali 220 ha), frutteto con
 danno documentato piu' vicino "entro 100 m", pero 268 ha fra le prime specie. Con il
 volume vuoto `available: false`, senza errore.
 

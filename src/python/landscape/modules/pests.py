@@ -26,8 +26,9 @@ Cosa si calcola, e perche' proprio questo (misurato il 24/09/2026 su 33 punti pe
     (Tamburini et al. 2023, composizione in buffer con miglior raggio 3000 m;
     Forresi et al. 2024, 200 m). La % a 500 m e a 3 km correlano solo 0,77 fra
     loro: sono due scale diverse, e per questo il servizio ammette 500 m.
-  - i SERBATOI semi-naturali (bosco + siepi, boschetti, fasce, margini, fossi),
-    riusando `agrea.seminatural`.
+  - i SERBATOI semi-naturali, dalle categorie di `seminaturale.seminatural` (tutte le
+    fonti, ogni ettaro una volta) che l'organismo sceglie nel suo meta.json
+    (`reservoirs.categories`), e a parte i RIFUGI invernali (`reservoirs.wintering`).
   - la DISTANZA bordo a bordo dal campo al frutteto ospite e alla siepe o bosco
     piu' vicini, pubblicata SOLO IN CLASSI: porta informazione parzialmente diversa
     dalla % (correlazione -0,80) e l'effetto bordo vive nei primi 50-100 m
@@ -59,7 +60,7 @@ from typing import Any, Dict, List, Optional, Tuple
 import geopandas as gpd
 import pandas as pd
 from landscape import paths
-from landscape.modules import agrea, config
+from landscape.modules import agrea, config, seminaturale
 from shapely.geometry import Point, Polygon
 
 logger = logging.getLogger("landscape_pests")
@@ -313,11 +314,19 @@ def habitat(
                 }
             )
 
-    # Serbatoi semi-naturali: la stessa misura della pagina, con l'etichetta dell'organismo.
-    reservoirs = agrea.seminatural(lat, lng, radius_m)
-    reservoirs["label"] = meta.get("reservoirs", {}).get(
-        "label", "Serbatoi semi-naturali"
-    )
+    # Serbatoi semi-naturali: la stessa misura della pagina, ma con le categorie che
+    # l'organismo dichiara suoi serbatoi (per la cimice anche gli impianti arborei) e, a
+    # parte, i rifugi invernali (edifici e verde urbano).
+    res_cfg = meta.get("reservoirs", {})
+    reservoir_keys = res_cfg.get("categories", seminaturale.CORE)
+    reservoirs = seminaturale.seminatural(lat, lng, radius_m)
+    reservoirs.update(seminaturale.subtotal(reservoirs, reservoir_keys))
+    reservoirs["label"] = res_cfg.get("label", "Serbatoi semi-naturali")
+    if res_cfg.get("wintering"):
+        reservoirs["wintering"] = {
+            **seminaturale.subtotal(reservoirs, res_cfg["wintering"]),
+            "label": res_cfg.get("wintering_label", "Rifugi invernali"),
+        }
 
     # --- distanze bordo a bordo, dal campo, escludendo il campo stesso ---------
     metric = g.geometry.to_crs(config.METRIC_EPSG)
@@ -353,8 +362,6 @@ def habitat(
 
     patches = g[~exclude.values]
     d = metric[~exclude.values].distance(field_m)
-    res_cfg = meta.get("reservoirs", {})
-    reservoir_classes = {str(c).upper() for c in res_cfg.get("classes", ["BOSCO"])}
     nearest_cfg = meta.get(
         "nearest",
         {"host_orchard": {"levels": ["principale"], "families": ["permanente"]}},
@@ -369,11 +376,19 @@ def habitat(
             "label_target": spec.get("label", key),
         }
 
-    d_semi = [d[patches["cls"].astype(str).str.upper().isin(reservoir_classes).values]]
+    # Il serbatoio piu' vicino: appezzamenti AGREA delle categorie scelte, elementi AGREA e
+    # poligoni degli strati regionali (Carta forestale, Uso del suolo), che non toccano AGREA.
+    semi_ag = patches["family"].astype(str) == config.FAMILY_SEMINATURAL
+    cat_ag = seminaturale._categoria_agrea(patches["cls"]).where(semi_ag)
+    cat_ag = cat_ag.where(cat_ag.notna() | ~semi_ag, config.SEMINATURAL_AGREA_DEFAULT)
+    d_semi = [d[cat_ag.isin(reservoir_keys).values]]
     if res_cfg.get("elements", True) and agrea.elements_available():
         e = agrea._leggi(paths.AGREA_ELEMENTI_PARQUET, bbox)
         if not e.empty:
             d_semi.append(e.geometry.to_crs(config.METRIC_EPSG).distance(field_m))
+    strati = seminaturale.geometries(lat, lng, radius_m, reservoir_keys)
+    if not strati.empty:
+        d_semi.append(strati.distance(field_m))
     nearest["seminatural"] = {
         **distance_class(_min_or_nan(pd.concat(d_semi)) if d_semi else float("nan")),
         "label_target": res_cfg.get("nearest_label", "siepe, boschetto o bosco"),

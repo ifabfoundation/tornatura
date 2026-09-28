@@ -9,7 +9,7 @@ cartelle `weather/cache/` e `weather/temp_grib/` gitignorate); bollettini con
 Differenza di frequenza: peronospora scarica ogni giorno, questo UNA VOLTA
 L'ANNO, perche' AGREA pubblica una campagna per anno.
 
-Produce tre file in `paths.AGREA_DIR`:
+Produce quattro file in `paths.AGREA_DIR`:
 
   agrea<anno>_colture_er.parquet   layer del PAESAGGIO: superficie agricola
       dichiarata piu' il bosco, dissolta per appezzamento, poligoni >= 0,05 ha,
@@ -22,6 +22,8 @@ Produce tre file in `paths.AGREA_DIR`:
   agrea<anno>_elementi_er.parquet  elementi caratteristici del paesaggio (siepi,
       margini, fossi, maceri) come CENTROIDE piu' superficie: servono solo al
       numero aggregato e non si servono mai come geometria al client.
+  agrea<anno>_elementi_forme_er.parquet  gli stessi elementi con la forma, in
+      EPSG:32632: li legge solo l'updater del semi-naturale, per il ritaglio.
 
 Le due granularita' non sono un doppione: la prima risponde a "quanto pero c'e'
 intorno", la seconda a "qual e' esattamente il bordo di questo pezzo". Misurato a
@@ -286,22 +288,34 @@ def _lavora_provincia(zip_path: str, prov: str, anno: int, tmp: str, log=print):
     e = e[["cls", "ha", "geometry"]].reset_index(drop=True)
     e.to_parquet(os.path.join(tmp, f"elementi_{prov}.parquet"))
 
+    # 4) gli stessi elementi con la loro FORMA, in metri: servono solo all'updater del
+    # semi-naturale per ritagliare le altre fonti fuori dalle siepi e dai fossi gia' dichiarati
+    # (senza, 3.700 ha di siepi e boschetti dichiarati si contavano anche come bosco della Carta
+    # forestale). Non semplificati: sono strisce larghe pochi metri.
+    f = g[g.COD_MACRO == "780"][["cls", "ha", "geometry"]].reset_index(drop=True)
+    f.to_parquet(os.path.join(tmp, f"elemforme_{prov}.parquet"))
+
     log(
         f"    {prov}: {n0:,} record -> colture {len(m):,} ({m.ha.sum():,.0f} ha) · "
         f"pezzi {len(p):,} ({p.ha.sum():,.0f} ha, {scartati} scartati) · "
         f"elementi {len(e):,} ({e.ha.sum():,.0f} ha)  in {time.time()-t0:.0f}s"
     )
-    del g, m, p, e
+    del g, m, p, e, f
 
 
 def _unisci(
-    nome: str, tmp: str, dest_finale: str, log=print, pezzi: bool = False
+    nome: str,
+    tmp: str,
+    dest_finale: str,
+    log=print,
+    pezzi: bool = False,
+    crs: int = 4326,
 ) -> Dict:
     import glob
 
     files = sorted(glob.glob(os.path.join(tmp, f"{nome}_*.parquet")))
     d = gpd.GeoDataFrame(
-        pd.concat([gpd.read_parquet(f) for f in files], ignore_index=True), crs=4326
+        pd.concat([gpd.read_parquet(f) for f in files], ignore_index=True), crs=crs
     )
     # L'ordinamento Hilbert e' cio' che rende efficace l'indice bbox.
     d = d.iloc[d.geometry.hilbert_distance(level=16).argsort()].reset_index(drop=True)
@@ -350,6 +364,7 @@ def stato(anno: int) -> Dict:
         "colture": paths.AGREA_COLTURE_PARQUET.exists(),
         "parcelle": paths.AGREA_PARCELLE_PARQUET.exists(),
         "elementi": paths.AGREA_ELEMENTI_PARQUET.exists(),
+        "elementi_forme": paths.AGREA_ELEMENTI_FORME_PARQUET.exists(),
         "manifest": None,
     }
     if manifest.exists():
@@ -389,6 +404,7 @@ def aggiorna(
         paths.AGREA_COLTURE_PARQUET.exists()
         and paths.AGREA_PARCELLE_PARQUET.exists()
         and paths.AGREA_ELEMENTI_PARQUET.exists()
+        and paths.AGREA_ELEMENTI_FORME_PARQUET.exists()
     )
     if completo and not force and not da_cartella:
         log("verifico se gli archivi remoti sono cambiati...")
@@ -424,6 +440,13 @@ def aggiorna(
             "parcelle", tmp, str(paths.AGREA_PARCELLE_PARQUET), log=log, pezzi=True
         )
         info_e = _unisci("elementi", tmp, str(paths.AGREA_ELEMENTI_PARQUET), log=log)
+        info_f = _unisci(
+            "elemforme",
+            tmp,
+            str(paths.AGREA_ELEMENTI_FORME_PARQUET),
+            log=log,
+            crs=config.METRIC_EPSG,
+        )
 
     manifest_path.write_text(
         json.dumps(
@@ -434,6 +457,7 @@ def aggiorna(
                 "colture": info_c,
                 "parcelle": info_p,
                 "elementi": info_e,
+                "elementi_forme": info_f,
                 "prodotto_il": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
                 "fonte": f"{BASE_URL}/{anno}/",
             },
@@ -445,4 +469,5 @@ def aggiorna(
         "colture": info_c,
         "parcelle": info_p,
         "elementi": info_e,
+        "elementi_forme": info_f,
     }
