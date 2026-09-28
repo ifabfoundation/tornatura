@@ -26,8 +26,10 @@ const DEF_DISTANZA =
   "Distanza dal bordo del tuo campo al bordo dell'elemento piu' vicino, indicata per fasce e non in metri: " +
   "descrive il paesaggio, non il campo di un vicino. Il tuo campo e' escluso dal conteggio.";
 const DEF_SERBATOI =
-  "Bosco, siepi, boschetti, fasce e margini dichiarati nelle domande PAC: rifugi dove molti organismi svernano " +
-  "e da cui entrano nelle colture. La quota e' calcolata sull'intero cerchio.";
+  "Bosco, arbusteti e vegetazione spontanea, siepi e boschetti, sponde e fossi, impianti arborei: rifugi dove " +
+  "l'organismo si nutre e depone le uova e da cui entra nelle colture. Contati da tutte le fonti, ogni ettaro " +
+  "una volta: domande PAC, Carta forestale regionale 2025, Uso del suolo 2023, Copernicus. La quota è " +
+  "calcolata sull'intero cerchio.";
 
 function formatHa(ha?: number | null) {
   if (ha == null) {
@@ -65,6 +67,11 @@ export default function PestHabitatSection({ data, km, season }: Props) {
   const nonClass = livelli.non_classificabile;
   const famiglie = data.hosts?.by_family ?? {};
   const serbatoi = data.reservoirs;
+  // Le categorie che l'organismo conta come serbatoi, dalla piu' estesa; senza categorie
+  // (servizio senza gli strati regionali) resta la riga di prima.
+  const dettaglioSerbatoi = (serbatoi?.categories ?? [])
+    .filter((c) => (serbatoi?.keys ?? []).includes(c.key) && c.ha >= 0.5)
+    .sort((a, b) => b.ha - a.ha);
   const vicini = data.nearest ?? {};
   const titolo = testi.title ?? `${data.pest?.label ?? "Organismo"}: le piante ospiti intorno al tuo campo`;
 
@@ -139,8 +146,19 @@ export default function PestHabitatSection({ data, km, season }: Props) {
           </div>
           <div className="iiinfo-value font-l-600">{pct(serbatoi?.pct_of_buffer)}</div>
           <div className="font-s opacity-05">
-            bosco {formatHa(serbatoi?.bosco_ha)}, siepi e margini {formatHa(serbatoi?.elementi_ha)}
+            {dettaglioSerbatoi.length > 0
+              ? dettaglioSerbatoi
+                  // l'etichetta senza la parentesi: qui serve corta, il dettaglio sta nella sezione
+                  .map((c) => `${c.label.split(" (")[0].toLowerCase()} ${formatHa(c.ha)}`)
+                  .join(" · ")
+              : `bosco ${formatHa(serbatoi?.bosco_ha)}, siepi e margini ${formatHa(serbatoi?.elementi_ha)}`}
           </div>
+          {serbatoi?.wintering && (serbatoi.wintering.ha ?? 0) > 0 && (
+            <div className="font-s mt-1">
+              {serbatoi.wintering.label ?? "Rifugi invernali"}: {formatHa(serbatoi.wintering.ha)} (
+              {pct(serbatoi.wintering.pct_of_buffer)})
+            </div>
+          )}
         </Col>
       </Row>
 

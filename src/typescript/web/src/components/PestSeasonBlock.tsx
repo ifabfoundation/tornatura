@@ -106,6 +106,11 @@ export default function PestSeasonBlock({ data, km }: Props) {
   }
   const cl = data.classes;
   const settori = data.sectors ?? [];
+  // "la cimice asiatica" invece di un generico "l'organismo": il nome viene dal servizio.
+  const chi = data.pest?.label ? `la ${data.pest.label.toLowerCase()}` : "l'organismo";
+  // La rosa ha senso solo se c'e' qualcosa da disegnare: con zero ettari attivi e in arrivo
+  // (o spicchi tutti sotto i tre appezzamenti) resterebbe un cerchio vuoto senza spiegazione.
+  const rosaVuota = !settori.some((x) => x.shown && (x.active_ha ?? 0) + (x.arriving_ha ?? 0) > 0);
   // ettari attivi negli spicchi che mostrano i numeri (almeno tre appezzamenti)
   const mostrati = settori.reduce((a, s) => a + (s.shown ? (s.active_ha ?? 0) : 0), 0);
   const direzioni = (data.main_directions ?? [])
@@ -141,7 +146,7 @@ export default function PestSeasonBlock({ data, km }: Props) {
               )}: `
             : "Non ci sono bollettini recenti per questa zona: "}
           per il {pct(cl.no_phase.pct_of_hosts)} delle piante ospiti non c'è una fase degli ultimi{" "}
-          {data.validity_days ?? 14} giorni, e non si può dire se sono nella fase che l'organismo attacca. La
+          {data.validity_days ?? 14} giorni, e non si può dire se sono nella fase che {chi} attacca. La
           finestra stagionale torna appena riprendono i bollettini.
         </p>
       </div>
@@ -170,7 +175,7 @@ export default function PestSeasonBlock({ data, km }: Props) {
         In questo periodo
         <InfoPopover title="Finestra stagionale" text={DEF_FINESTRA} />
       </p>
-      <Row className="align-items-center">
+      <Row className="align-items-start">
         <Col md={4} className="iiinfo-col mb-2">
           <div className="iiinfo-label font-s-label">{cl.active.label ?? ETICHETTA.active}</div>
           <div className="iiinfo-value font-l-600">{pct(cl.active.pct_of_hosts)}</div>
@@ -188,29 +193,44 @@ export default function PestSeasonBlock({ data, km }: Props) {
           </div>
         </Col>
         <Col md={4} className="mb-2 d-flex align-items-center">
-          <Rosa sectors={settori} />
-          <div className="font-s ms-2">
-            <div className="d-flex align-items-center mb-1">
-              Da che parte
-              <InfoPopover title="Direzione" text={DEF_DIREZIONE} />
+          {rosaVuota ? (
+            <div className="font-s">
+              <div className="iiinfo-label font-s-label d-flex align-items-center">
+                Da che parte
+                <InfoPopover title="Direzione" text={DEF_DIREZIONE} />
+              </div>
+              <div className="opacity-05">
+                Oggi non c&apos;è una direzione da mostrare: nessuno spicchio intorno al campo ha ospiti
+                nella fase o in arrivo in almeno tre appezzamenti.
+              </div>
             </div>
-            <div>
-              <span className="legend-chip is-static font-s mb-1">
-                <span className="dot me-2" data-size="10" style={{ background: COLORE_COLTURA }} /> nella fase
-              </span>
-            </div>
-            <div>
-              <span className="legend-chip is-static font-s">
-                <span className="dot me-2" data-size="10" style={{ background: COLORE_IN_ARRIVO }} /> in arrivo
-              </span>
-            </div>
-          </div>
+          ) : (
+            <Fragment>
+              <Rosa sectors={settori} />
+              <div className="font-s ms-2">
+                <div className="d-flex align-items-center mb-1">
+                  Da che parte
+                  <InfoPopover title="Direzione" text={DEF_DIREZIONE} />
+                </div>
+                <div>
+                  <span className="legend-chip is-static font-s mb-1">
+                    <span className="dot me-2" data-size="10" style={{ background: COLORE_COLTURA }} /> nella fase
+                  </span>
+                </div>
+                <div>
+                  <span className="legend-chip is-static font-s">
+                    <span className="dot me-2" data-size="10" style={{ background: COLORE_IN_ARRIVO }} /> in arrivo
+                  </span>
+                </div>
+              </div>
+            </Fragment>
+          )}
         </Col>
       </Row>
       <p className="font-m mb-2">
         {cl.active.ha > 0 ? (
           <Fragment>
-            Oggi {formatHa(cl.active.ha)} di piante ospiti intorno al campo sono nella fase che l'organismo
+            Oggi {formatHa(cl.active.ha)} di piante ospiti intorno al campo sono nella fase che {chi}{" "}
             attacca
             {direzioni.length
               ? `, soprattutto a ${direzioni.join(" e a ")}`
@@ -220,7 +240,7 @@ export default function PestSeasonBlock({ data, km }: Props) {
             .
           </Fragment>
         ) : (
-          <Fragment>Oggi nessuna pianta ospite intorno al campo è nella fase che l'organismo attacca.</Fragment>
+          <Fragment>Oggi nessuna pianta ospite intorno al campo è nella fase che {chi} attacca.</Fragment>
         )}
         {cl.no_phase.pct_of_hosts > 0
           ? ` Per il ${pct(cl.no_phase.pct_of_hosts)} degli ospiti il bollettino non riporta una fase recente ` +

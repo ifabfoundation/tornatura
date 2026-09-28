@@ -57,13 +57,33 @@ type LandscapeClassShare = {
 /** La sorgente che ha prodotto i numeri principali. */
 type LandscapeSource = "agrea" | "icolt";
 
-/** Elementi semi-naturali nel buffer: bosco piu' siepi, margini e fossi. */
+/** Una categoria di zone semi-naturali, con gli ettari per fonte (ogni ettaro una volta). */
+export type LandscapeSeminaturalCategory = {
+  key: string;
+  label: string;
+  /** Entra nella quota "semi-naturale" della pagina. */
+  core: boolean;
+  ha: number;
+  pct_of_buffer: number;
+  /** agrea | cf2025 | us2023 | swf2021 -> ettari */
+  by_source?: Record<string, number>;
+};
+
+/** Zone semi-naturali nel buffer, da tutte le fonti (dichiarazioni PAC, carte regionali, Copernicus). */
 type LandscapeSeminatural = {
+  buffer_ha?: number;
+  /** Tutto il bosco, da tutte le fonti. */
   bosco_ha?: number;
+  /** Elementi del paesaggio dichiarati (siepi, margini, fossi), per centroide. */
   elementi_ha?: number;
   elementi_n?: number;
+  /** Somma delle categorie `core`. */
   ha?: number;
   pct_of_buffer?: number;
+  categories?: LandscapeSeminaturalCategory[];
+  /** Quali strati oltre AGREA erano disponibili: se falsi, i numeri sono solo AGREA. */
+  layers?: { regional?: boolean; swf?: boolean };
+  sources?: Array<{ id: string; citation: string }>;
   elementi_method?: string;
 };
 
@@ -288,7 +308,12 @@ type LandscapePestHabitat = {
     parcels: number;
   }>;
   min_parcels_per_row?: number;
-  reservoirs?: LandscapeSeminatural & { label?: string };
+  reservoirs?: LandscapeSeminatural & {
+    label?: string;
+    /** Le categorie che l'organismo conta come serbatoi (`ha` e `pct_of_buffer` sono la loro somma). */
+    keys?: string[];
+    wintering?: { keys?: string[]; ha?: number; pct_of_buffer?: number; label?: string };
+  };
   nearest?: Record<string, LandscapeDistanceClass>;
   nearest_origin?: "ring" | "declared_parcel" | "centroid";
   field?: { species?: string; level?: string } | null;

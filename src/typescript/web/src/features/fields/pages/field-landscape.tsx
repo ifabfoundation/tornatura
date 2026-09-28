@@ -46,6 +46,14 @@ const DEF_RAGGIO =
 const DEF_PAC =
   "La politica dell'Unione europea che sostiene il settore agricolo. Le domande PAC contengono informazioni dichiarate dagli agricoltori sulle superfici, le colture e alcuni elementi del paesaggio delle aziende agricole.";
 
+// Nomi brevi delle fonti del semi-naturale, per la colonna "Fonti".
+const NOME_FONTE: Record<string, string> = {
+  agrea: "PAC",
+  cf2025: "Carta forestale",
+  us2023: "Uso del suolo",
+  swf2021: "Copernicus",
+};
+
 /**
  * Pagina ufficiale della fonte, per anno. Gli indirizzi seguono lo schema che i due
  * enti usano da anni; il link e' un rimando, non un dato: se cambia, si aggiorna qui.
@@ -259,6 +267,26 @@ export function FieldLandscape() {
   const aggregato = crop?.reason === "aggregated_class";
   const oss = data?.observability;
   const semi = data?.seminatural;
+  const categorieSemi = semi?.categories ?? [];
+  const colonneSemi: TableColumn[] = [
+    { id: "ambiente", headerText: "Ambiente", type: "text", sortable: true, sortValueId: "ordine" },
+    { id: "ettari", headerText: "Ettari", type: "text", align: "right" },
+    { id: "quota", headerText: "% del cerchio", type: "text", sortable: true, sortValueId: "quotaValue", align: "right" },
+    { id: "fonti", headerText: "Fonti", type: "text" },
+  ];
+  const righeSemi = categorieSemi
+    .filter((c) => c.core)
+    .map((c, n) => ({
+      ambiente: c.label,
+      ordine: n,
+      ettari: formatHa(c.ha),
+      quota: `${c.pct_of_buffer.toLocaleString("it-IT", { maximumFractionDigits: 1 })}%`,
+      quotaValue: c.pct_of_buffer,
+      fonti: Object.keys(c.by_source ?? {})
+        .map((f) => NOME_FONTE[f] ?? f)
+        .join(", ") || "-",
+    }));
+  const altreSemi = categorieSemi.filter((c) => !c.core && c.ha >= 0.5);
   const cross = data?.crosscheck;
   const daDichiarazioni = data?.source === "agrea";
   const fonteUrl = sourceUrl(data?.source, data?.dataset?.year);
@@ -583,60 +611,85 @@ export function FieldLandscape() {
                   {semi && semi.pct_of_buffer != null && (
                     <Fragment>
                       <h2 className="mb-3">Ambienti semi-naturali</h2>
-                      <Row>
-                        <Col md={4} className="iiinfo-col mb-2">
-                          <div className="iiinfo-label font-s-label">
-                            Quota entro {km} km
-                          </div>
-                          <div className="iiinfo-value font-l-600">
-                            {semi.pct_of_buffer.toFixed(1)}%
-                          </div>
-                        </Col>
-                        <Col md={4} className="iiinfo-col mb-2">
-                          <div className="iiinfo-label font-s-label">Bosco</div>
-                          <div className="iiinfo-value font-l-600">
-                            {formatHa(semi.bosco_ha)}
-                          </div>
-                        </Col>
-                        <Col md={4} className="iiinfo-col mb-2">
-                          <div className="iiinfo-label font-s-label">
-                            Siepi, margini, fossi
-                          </div>
-                          <div className="iiinfo-value font-l-600">
-                            {formatHa(semi.elementi_ha)}
-                            {semi.elementi_n ? (
-                              <span className="font-s opacity-05">
-                                {" "}
-                                in {semi.elementi_n.toLocaleString("it-IT")} elementi
-                              </span>
-                            ) : null}
-                          </div>
-                        </Col>
-                      </Row>
-                      <p className="font-m-600 mt-3 mb-1">Perché sono importanti?</p>
-                      <p className="font-m mb-2">
-                        Boschi, siepi, filari, margini, fossi e maceri offrono rifugio, risorse e
-                        habitat a insetti utili e antagonisti naturali dei parassiti. La loro
-                        presenza e distribuzione nel paesaggio può quindi contribuire alla
-                        biodiversità e ai servizi naturali di controllo biologico a supporto
-                        delle colture.
-                      </p>
-                      <p className="font-m mb-2">
-                        I valori mostrati derivano dagli elementi dichiarati nelle domande{" "}
-                        <InfoPopover label="PAC" title="PAC – Politica Agricola Comune" text={DEF_PAC} />.
-                        Questi ambienti sono particolarmente interessanti perché molti degli
-                        elementi più piccoli, come siepi, fossi e margini, non sono
-                        rappresentati nella classificazione satellitare.
-                      </p>
-                      <p className="font-s mb-0">
-                        <em>
-                          La superficie degli elementi minori è attribuita al raggio in base
-                          alla posizione del loro centro, con uno scarto misurato dello 0–2%.
-                          Poiché questi elementi non sono rilevati dalla classificazione
-                          satellitare, non è disponibile una seconda misura indipendente con
-                          cui confrontare i valori.
-                        </em>
-                      </p>
+                      <details className="mb-3">
+                        <summary className="font-m-600" style={{ cursor: "pointer" }}>
+                          Perché sono importanti?
+                        </summary>
+                        <p className="font-m mt-2 mb-0">
+                          Boschi, arbusteti, siepi, filari, sponde, fossi e maceri offrono rifugio,
+                          risorse e habitat a insetti utili e antagonisti naturali dei parassiti.
+                          Sono anche il rifugio di alcuni parassiti, come la cimice asiatica, che
+                          da lì entra nelle colture. La loro presenza e distribuzione nel paesaggio
+                          aiuta a leggere cosa accade nel tuo campo.
+                        </p>
+                      </details>
+                      <div className="iiinfo-col mb-3">
+                        <div className="iiinfo-label font-s-label">
+                          Quota entro {etichettaRaggio(radiusM)}
+                        </div>
+                        <div className="iiinfo-value font-l-600">
+                          {semi.pct_of_buffer.toLocaleString("it-IT", {
+                            maximumFractionDigits: 1,
+                          })}
+                          %
+                        </div>
+                        <div className="font-s opacity-05">
+                          {formatHa(semi.ha)} di ambienti semi-naturali nel cerchio
+                        </div>
+                      </div>
+                      {righeSemi.length > 0 && (
+                        <div className="table-scroll mb-3">
+                          <TableCozy
+                            columns={colonneSemi}
+                            data={righeSemi}
+                            options={{ defaultSortCol: "ordine", defaultSortDir: "asc" }}
+                          />
+                        </div>
+                      )}
+                      {altreSemi.length > 0 && (
+                        <p className="font-m mb-2">
+                          Nel cerchio ci sono anche{" "}
+                          {altreSemi.map((c, n) => (
+                            <Fragment key={c.key}>
+                              {n > 0 ? " e " : ""}
+                              <strong>{formatHa(c.ha)}</strong> di {c.label.toLowerCase()}
+                            </Fragment>
+                          ))}
+                          : non entrano nella quota, ma sono rifugi per alcuni organismi.
+                        </p>
+                      )}
+                      <details className="mb-0">
+                        <summary className="font-m-600" style={{ cursor: "pointer" }}>
+                          Da dove vengono i numeri?
+                        </summary>
+                        {semi.layers?.regional ? (
+                          <p className="font-m mt-2 mb-2">
+                            Ogni ettaro è contato una sola volta, dalla prima fonte che lo vede:
+                            prima le domande{" "}
+                            <InfoPopover label="PAC" title="PAC – Politica Agricola Comune" text={DEF_PAC} />,
+                            poi, dove le domande non arrivano (boschi pubblici, terreni di chi non
+                            presenta la domanda), la Carta forestale regionale 2025 e l&apos;Uso del
+                            suolo 2023 della Regione, infine le siepi e gli alberi isolati visti dal
+                            satellite europeo Copernicus.
+                          </p>
+                        ) : (
+                          <p className="font-m mt-2 mb-2">
+                            I valori derivano dagli elementi dichiarati nelle domande{" "}
+                            <InfoPopover label="PAC" title="PAC – Politica Agricola Comune" text={DEF_PAC} />:
+                            i boschi e le siepi di chi non presenta la domanda non sono contati.
+                          </p>
+                        )}
+                        <p className="font-s mb-0">
+                          <em>
+                            La superficie delle siepi, dei margini e dei fossi dichiarati è
+                            attribuita al raggio in base alla posizione del loro centro, con uno
+                            scarto misurato dello 0–2%. Le carte regionali e Copernicus descrivono
+                            il territorio di qualche anno fa (2021–2025).
+                            {(semi.sources ?? []).length > 0 &&
+                              ` Fonti: ${(semi.sources ?? []).map((f) => f.citation).join("; ")}.`}
+                          </em>
+                        </p>
+                      </details>
                     </Fragment>
                   )}
 

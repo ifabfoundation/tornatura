@@ -99,6 +99,10 @@ export const LEGENDA_FAMIGLIE: Array<{ family: string; label: string; color: str
   { family: "altro", label: "Altro", color: COLORE_ALTRO },
 ];
 
+// I poligoni delle carte regionali (bosco e arbusteti fuori dalle dichiarazioni) arrivano gia'
+// uniti a celle di 5 km: si disegnano senza contorno, cosi' la cucitura fra le celle non si vede.
+const SENZA_CONTORNO: FilterSpecification = ["!", ["has", "source_label"]];
+
 const SRC_PARCELLE = "landscape-parcels";
 const SRC_CAMPO = "landscape-field";
 const SRC_BUFFER = "landscape-buffer";
@@ -111,7 +115,14 @@ type ParcelsFC = {
   type: "FeatureCollection";
   features: Array<{
     type: "Feature";
-    properties: { icolt_class?: string; ha?: number; is_crop?: boolean; host_level?: string };
+    properties: {
+      icolt_class?: string;
+      ha?: number;
+      is_crop?: boolean;
+      host_level?: string;
+      /** Le zone semi-naturali delle carte regionali dicono la loro fonte (non AGREA). */
+      source_label?: string;
+    };
     geometry: any;
   }>;
 };
@@ -202,6 +213,7 @@ export default function MapLandscapeCrops({
         id: LYR_AGRI_LINE,
         type: "line",
         source: SRC_PARCELLE,
+        filter: SENZA_CONTORNO,
         paint: {
           "line-color": COLORE_PER_FAMIGLIA,
           "line-width": 0.6,
@@ -286,7 +298,9 @@ export default function MapLandscapeCrops({
                })} ha nel raggio</div>
                ${nota}
                ${rigaOspite}
-               <div class="font-s opacity-05 mt-1">${esc(datasetRef.current)}</div>
+               <div class="font-s opacity-05 mt-1">${esc(
+                 f.properties?.source_label ? String(f.properties.source_label) : datasetRef.current,
+               )}</div>
              </div>`,
           )
           .addTo(map);
@@ -367,7 +381,7 @@ export default function MapLandscapeCrops({
       // Modalita' ospiti: tutti gli appezzamenti, colorati per livello; la coltura
       // dell'utente si spegne perche' il suo colore ora dice "danno documentato".
       map.setFilter(LYR_AGRI, null);
-      map.setFilter(LYR_AGRI_LINE, null);
+      map.setFilter(LYR_AGRI_LINE, SENZA_CONTORNO);
       map.setPaintProperty(LYR_AGRI, "fill-color", COLORE_PER_LIVELLO_OSPITE);
       map.setPaintProperty(LYR_AGRI_LINE, "line-color", COLORE_PER_LIVELLO_OSPITE);
       set(LYR_AGRI, true);
@@ -384,7 +398,7 @@ export default function MapLandscapeCrops({
       ["literal", enabledFamilies],
     ];
     map.setFilter(LYR_AGRI, filtroFamiglie);
-    map.setFilter(LYR_AGRI_LINE, filtroFamiglie);
+    map.setFilter(LYR_AGRI_LINE, ["all", SENZA_CONTORNO, filtroFamiglie]);
     set(LYR_AGRI, enabledFamilies.length > 0);
     set(LYR_AGRI_LINE, enabledFamilies.length > 0);
     set(LYR_COLTURA, showCrop);
