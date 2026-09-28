@@ -1,5 +1,4 @@
 import React from "react";
-import { Col, Container, Row } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import { ObservationTypeUpdatePayload } from "@tornatura/coreapis";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
@@ -44,7 +43,7 @@ export function ObservationTypeDetail() {
         observationTypeId,
         body: payload,
       }),
-    );
+    ).unwrap();
     await dispatch(observationTypesActions.fetchObservationTypesAction({ page: 1, limit: 1000 }));
     navigate("/admin/observation-types");
   };
@@ -54,18 +53,12 @@ export function ObservationTypeDetail() {
   }
 
   return (
-    <section className="soft pb-3">
-      <Container fluid className="px-0">
-        <Row className="mb-4">
-          <Col xl={12}>
-            <ObservationTypeForm
-              observationType={observationType}
-              harvestTypes={harvestTypes}
-              onSubmit={handleSubmit}
-            />
-          </Col>
-        </Row>
-      </Container>
-    </section>
+    <div className="catalog-page catalog-page--form">
+      <ObservationTypeForm
+        observationType={observationType}
+        harvestTypes={harvestTypes}
+        onSubmit={handleSubmit}
+      />
+    </div>
   );
 }

@@ -10,6 +10,7 @@ import {
   observationTypesActions,
   observationTypesSelectors,
 } from "../state/observation-types-slice";
+import "../../catalog-admin.css";
 
 export function ObservationTypesList() {
   const dispatch = useAppDispatch();
@@ -136,60 +137,41 @@ export function ObservationTypesList() {
           }}
         />
       )}
-      <section className="pb-3">
-        <Container fluid className="px-0">
-          <Row className="mb-4">
-            <Col md={3}>
-              <label>
-                Categoria
-                <select value={categoryFilter} onChange={(event) => setCategoryFilter(event.target.value)}>
-                  <option value="">Tutte</option>
-                  {categories.map((item) => (
-                    <option key={item} value={item}>
-                      {item}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            </Col>
-            <Col md={3}>
-              <label>
-                Tipologia
-                <select value={typologyFilter} onChange={(event) => setTypologyFilter(event.target.value)}>
-                  <option value="">Tutte</option>
-                  {typologies.map((item) => (
-                    <option key={item} value={item}>
-                      {item}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            </Col>
-            <Col md={3}>
-              <label>
-                Coltura supportata
-                <select value={harvestFilter} onChange={(event) => setHarvestFilter(event.target.value)}>
-                  <option value="">Tutte</option>
-                  {harvestTypes.map((item) => (
-                    <option key={item.id} value={item.code}>
-                      {item.label}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            </Col>
-            <Col md={3} className="d-flex justify-content-end align-items-end">
-              <button
-                className="trnt_btn primary"
-                onClick={() => navigate("/admin/observation-types/new")}
-              >
-                Nuovo tipo rilevamento
-              </button>
-            </Col>
-          </Row>
-        </Container>
-      </section>
-      <section className="soft pb-3">
+      <div className="catalog-page">
+        <header className="catalog-page__intro">
+          <div>
+            <p className="catalog-page__eyebrow">Configurazione</p>
+            <h2>Tipi di rilevamento</h2>
+            <p>Definisci metodi, scale di valutazione e colture a cui ogni rilevamento si applica.</p>
+          </div>
+          <button className="trnt_btn primary catalog-page__action" onClick={() => navigate("/admin/observation-types/new")}>
+            Nuovo rilevamento
+          </button>
+        </header>
+        <div className="catalog-page__filters">
+          <label>
+            Categoria
+            <select value={categoryFilter} onChange={(event) => setCategoryFilter(event.target.value)}>
+              <option value="">Tutte le categorie</option>
+              {categories.map((item) => <option key={item} value={item}>{item}</option>)}
+            </select>
+          </label>
+          <label>
+            Tipologia
+            <select value={typologyFilter} onChange={(event) => setTypologyFilter(event.target.value)}>
+              <option value="">Tutte le tipologie</option>
+              {typologies.map((item) => <option key={item} value={item}>{item}</option>)}
+            </select>
+          </label>
+          <label>
+            Coltura supportata
+            <select value={harvestFilter} onChange={(event) => setHarvestFilter(event.target.value)}>
+              <option value="">Tutte le colture</option>
+              {harvestTypes.map((item) => <option key={item.id} value={item.code}>{item.label}</option>)}
+            </select>
+          </label>
+        </div>
+        <section className="catalog-page__table">
         <Container fluid className="px-0">
           <Row>
             <Col xl={12} style={{ overflowX: "auto" }}>
@@ -197,7 +179,8 @@ export function ObservationTypesList() {
             </Col>
           </Row>
         </Container>
-      </section>
+        </section>
+      </div>
     </>
   );
 }

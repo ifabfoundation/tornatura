@@ -1,5 +1,4 @@
 import React from "react";
-import { Col, Container, Row } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import { HarvestTypeUpdatePayload } from "@tornatura/coreapis";
 import { HarvestTypeForm } from "../components/harvest-type-form";
@@ -34,7 +33,7 @@ export function HarvestTypeDetail() {
         harvestTypeId,
         body: payload,
       }),
-    );
+    ).unwrap();
     await dispatch(harvestTypesActions.fetchHarvestTypesAction({ includeInactive: true }));
     navigate("/admin/harvest-types");
   };
@@ -44,14 +43,8 @@ export function HarvestTypeDetail() {
   }
 
   return (
-    <section className="soft pb-3">
-      <Container fluid className="px-0">
-        <Row className="mb-4">
-          <Col xl={12}>
-            <HarvestTypeForm harvestType={harvestType} onSubmit={handleSubmit} />
-          </Col>
-        </Row>
-      </Container>
-    </section>
+    <div className="catalog-page catalog-page--form">
+      <HarvestTypeForm harvestType={harvestType} onSubmit={handleSubmit} />
+    </div>
   );
 }

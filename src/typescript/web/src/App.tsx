@@ -33,6 +33,7 @@ export function RouteApp() {
 
 export function AdminApp() {
   const dispatch = useAppDispatch();
+  const currentUser = useAppSelector(userSelectors.selectCurrentUser);
 
   React.useEffect(() => {
     let menuEntries: MenuItemEntry[] = [];
@@ -63,6 +64,18 @@ export function AdminApp() {
         type: 'single',
         familyItems: []
       },
+      {
+        id: "configuration",
+        icon: "cog",
+        text: "Configurazione",
+        path: "/admin/configuration",
+        type: "family",
+        familyItems: [
+          { text: "Colture", path: "/admin/harvest-types" },
+          { text: "Tipi di rilevamento", path: "/admin/observation-types" },
+          { text: "Scale BBCH", path: "/admin/bbch-scales" },
+        ],
+      },
     ];
 
     menuBottomEntries = [
@@ -80,6 +93,10 @@ export function AdminApp() {
     dispatch(SidebarActions.setMenuBottomEntriesAction(menuBottomEntries));
 
   }, []);
+
+  if (currentUser.accountType !== AccountTypeEnum.Admin) {
+    return <Navigate to="/m/companies" replace />;
+  }
 
   return <Outlet />;
 }
@@ -176,7 +193,7 @@ function App() {
 
       if (profile.accountType === AccountTypeEnum.Admin) {
         await dispatch(userActions.fetchUsersAction());
-        await dispatch(companiesActions.fetchCompaniesAction());
+        await dispatch(companiesActions.fetchCompaniesAction({ page: 1, limit: 25 }));
         await dispatch(feedbacksActions.fetchFeedbackAction());
       } else if (
         profile.accountType === AccountTypeEnum.Agronomist ||
@@ -186,7 +203,7 @@ function App() {
         await dispatch(harvestTypesActions.fetchHarvestTypesAction({ includeInactive: true }));
         await dispatch(observationTypesActions.fetchObservationTypesAction({}))
         if (profile.organizations) {
-          for (let org of profile.organizations) {
+          for (const org of profile.organizations) {
             await dispatch(companiesActions.getCompanyAction(org.id));
           }
         }

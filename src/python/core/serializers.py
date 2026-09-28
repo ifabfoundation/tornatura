@@ -174,6 +174,46 @@ class HarvestTypeUpdatePayload(BaseModel):
     active: Optional[bool] = None
     sortOrder: Optional[int] = None
 
+
+class BbchStage(BaseModel):
+    code: str
+    name: str
+    thumbnail: Optional[str] = None
+    icon: Optional[str] = None
+    sortOrder: int = 0
+
+
+class BbchGroup(BaseModel):
+    code: str
+    name: str
+    icon: Optional[str] = None
+    sortOrder: int = 0
+    stages: List[BbchStage] = []
+
+
+class BbchScale(BaseModel):
+    id: str
+    harvestCode: str
+    sourceHarvestCode: Optional[str] = None
+    groups: List[BbchGroup] = []
+    creationTime: int
+    lastUpdateTime: int
+
+
+class BbchScaleCreatePayload(BaseModel):
+    harvestCode: str
+    sourceHarvestCode: Optional[str] = None
+    groups: List[BbchGroup] = []
+
+
+class BbchScaleUpdatePayload(BaseModel):
+    sourceHarvestCode: Optional[str] = None
+    groups: Optional[List[BbchGroup]] = None
+
+
+class BbchScaleDuplicatePayload(BaseModel):
+    targetHarvestCode: str
+
 class AgriField(BaseModel):
     id: str
     name: str

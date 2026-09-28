@@ -5,7 +5,7 @@ from typing import Optional
 from fastapi import HTTPException, status
 
 from core.decorators import catch_api_exception
-from core.models import AgriFieldModel, HarvestType, ObservationType
+from core.models import AgriFieldModel, BbchScale, HarvestType, ObservationType
 from core.serializers import (
     HarvestType as HarvestTypeSerializer,
     HarvestTypeCreatePayload,
@@ -198,7 +198,13 @@ class HarvestTypeServices:
         observation_type_references = ObservationType.objects(
             supportedHarvestCodes=harvest_type.code
         ).count()
-        if agrifield_references or observation_type_references:
+        bbch_scale_references = BbchScale.objects(
+            __raw__={"$or": [
+                {"harvestCode": harvest_type.code},
+                {"sourceHarvestCode": harvest_type.code},
+            ]}
+        ).count()
+        if agrifield_references or observation_type_references or bbch_scale_references:
             raise HTTPException(
                 status_code=status.HTTP_409_CONFLICT,
                 detail={
@@ -207,6 +213,7 @@ class HarvestTypeServices:
                     "references": {
                         "agrifields": agrifield_references,
                         "observationTypes": observation_type_references,
+                        "bbchScales": bbch_scale_references,
                     },
                 },
             )

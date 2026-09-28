@@ -43,6 +43,7 @@ import { gpsStore } from "../../../providers/gps-providers";
 import { getCoreApiConfiguration } from "../../../services/utils";
 import doneIcon from "../../../assets/images/icon-large-done.svg";
 import { bbchs } from "./bbch";
+import { BbchScale, getBbchScale } from "../../bbch-scales/services/bbch-scales-api";
 // import { number, string } from "yup";
 import Stepper from "../../../components/Stepper";
 import { useIsMobile } from "../../../helpers/common";
@@ -1385,12 +1386,36 @@ function DetectionStepGuideGeneric({
 }
 
 function DetectionStepBbch({ field, onNextClick }: DetectionProps & { field: AgriField }) {
+  const [remoteScale, setRemoteScale] = React.useState<BbchScale | null>(null);
+  const [catalogChecked, setCatalogChecked] = React.useState(false);
+
+  React.useEffect(() => {
+    let active = true;
+    setCatalogChecked(false);
+    getBbchScale(field.harvest)
+      .then((scale) => {
+        if (active) setRemoteScale(scale);
+      })
+      .catch(() => {
+        if (active) setRemoteScale(null);
+      })
+      .finally(() => {
+        if (active) setCatalogChecked(true);
+      });
+    return () => {
+      active = false;
+    };
+  }, [field.harvest]);
+
   const handleBbchSelection = async (value: string) => {
     await onNextClick({ bbch: value });
   };
 
   const harvestBbch = bbchs[field.harvest];
-  if (!harvestBbch) {
+  if (!catalogChecked && !harvestBbch) {
+    return <div className="narrow-container my-5 text-center">Caricamento scala BBCH…</div>;
+  }
+  if (!remoteScale && !harvestBbch) {
     return (
       <div className="narrow-container my-5">
         <h3 className="mb-4 pb-2 text-center">
@@ -1405,13 +1430,34 @@ function DetectionStepBbch({ field, onNextClick }: DetectionProps & { field: Agr
   }
 
   let items: AccordionItem[] = [];
-  const options = harvestBbch.data;
-  const thumbnailBaseUrl = harvestBbch.baseUrl;
+  const options = harvestBbch?.data;
+  const thumbnailBaseUrl = harvestBbch?.baseUrl ?? `${process.env.REACT_APP_OBJECT_STORAGE_ENDPOINT}/public/bbchs/`;
 
-  // console.log("XXXX options", options);
-  // console.log("XXXX thumbnailBaseUrl", thumbnailBaseUrl);
-
-  items = Object.keys(options).map((key: string, index: number) => {
+  items = remoteScale ? remoteScale.groups
+    .slice()
+    .sort((a, b) => a.sortOrder - b.sortOrder)
+    .map((group, index) => ({
+      id: index.toString(),
+      title: group.name,
+      content: (
+        <Fragment>
+          {group.stages.slice().sort((a, b) => a.sortOrder - b.sortOrder).map((stage) => (
+            <CozyButton
+              key={stage.code}
+              content={stage.thumbnail ? (
+                <div className="d-flex align-items-center justify-content-start">
+                  <img src={thumbnailBaseUrl + stage.thumbnail} alt={stage.name} style={{ maxWidth: "40px", maxHeight: "40px", marginRight: "10px" }} />
+                  <span>{stage.name}</span>
+                </div>
+              ) : <span>{stage.name}</span>}
+              onClick={() => handleBbchSelection(stage.code)}
+              arrow={true}
+            />
+          ))}
+        </Fragment>
+      ),
+      icon: null,
+    })) : Object.keys(options).map((key: string, index: number) => {
     const bbchCategory = options[key];
     let iconNameAccItem = bbchCategory.icon ?? null;
     return {

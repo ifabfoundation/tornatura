@@ -184,7 +184,11 @@ export default function SideBar() {
         break;
       }
 
-      if (item.type === "family" && location.pathname.startsWith(item.path)) {
+      if (
+        item.type === "family" &&
+        (location.pathname.startsWith(item.path) ||
+          item.familyItems.some((subItem) => location.pathname.startsWith(subItem.path)))
+      ) {
         entry = item.id;
         setCurrentEntry(entry);
         break;

@@ -10,6 +10,7 @@ from core.api.v1.invitations import router as invitations_router
 from core.api.v1.harvest_types import router as harvest_types_router
 from core.api.v1.observation_types import router as observation_types_router
 from core.api.v1.forms import router as forms_router
+from core.api.v1.bbch_scales import router as bbch_scales_router
 
 
 router = APIRouter()
@@ -55,6 +56,12 @@ router.include_router(
     observation_types_router,
     prefix="/observation-types",
     tags=["ObservationTypes"]
+)
+
+router.include_router(
+    bbch_scales_router,
+    prefix="/bbch-scales",
+    tags=["BbchScales"]
 )
 
 

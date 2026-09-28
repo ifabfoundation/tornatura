@@ -5,6 +5,7 @@ import {
   ObservationTypeUpdatePayload,
   HarvestType,
 } from "@tornatura/coreapis";
+import "../../catalog-admin.css";
 
 type ObservationTypeFormValues = {
   typology: string;
@@ -57,6 +58,8 @@ export function ObservationTypeForm({
   const [values, setValues] = React.useState<ObservationTypeFormValues>(
     toInitialValues(observationType),
   );
+  const [submitting, setSubmitting] = React.useState(false);
+  const [error, setError] = React.useState("");
 
   React.useEffect(() => {
     setValues(toInitialValues(observationType));
@@ -64,29 +67,54 @@ export function ObservationTypeForm({
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    await onSubmit({
-      typology: values.typology.trim(),
-      method: values.method.trim(),
-      category: values.category.trim(),
-      locationAndScoreInstructions: values.locationAndScoreInstructions.trim(),
-      observationHint: values.observationHint.trim(),
-      observationType: values.observationType,
-      rangeMin: values.rangeMin === "" ? null : Number(values.rangeMin),
-      rangeMax: values.rangeMax === "" ? null : Number(values.rangeMax),
-      rangeLabels: splitCsv(values.rangeLabels),
-      counters: splitCsv(values.counters),
-      supportedHarvestCodes: values.supportedHarvestCodes,
-    });
+    setSubmitting(true);
+    setError("");
+    try {
+      await onSubmit({
+        typology: values.typology.trim(),
+        method: values.method.trim(),
+        category: values.category.trim(),
+        locationAndScoreInstructions: values.locationAndScoreInstructions.trim(),
+        observationHint: values.observationHint.trim(),
+        observationType: values.observationType,
+        rangeMin: values.rangeMin === "" ? null : Number(values.rangeMin),
+        rangeMax: values.rangeMax === "" ? null : Number(values.rangeMax),
+        rangeLabels: splitCsv(values.rangeLabels),
+        counters: splitCsv(values.counters),
+        supportedHarvestCodes: values.supportedHarvestCodes,
+      });
+    } catch {
+      setError("Salvataggio non riuscito. Controlla i dati e riprova.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
+  const isRange = values.observationType === "range";
+
   return (
-    <form onSubmit={handleSubmit} className="form-section">
+    <form onSubmit={handleSubmit} className="catalog-form">
+      <header className="catalog-form__header">
+        <p className="catalog-form__eyebrow">Catalogo rilevamenti</p>
+        <h2>{observationType ? "Modifica tipo di rilevamento" : "Nuovo tipo di rilevamento"}</h2>
+        <p className="catalog-form__lead">
+          Definisci cosa viene osservato, come viene valutato e per quali colture sarà disponibile.
+        </p>
+      </header>
+      <div className="catalog-form__panel">
+      <section className="catalog-form__section">
+        <div className="catalog-form__section-heading">
+          <h3>Identità del rilevamento</h3>
+          <p>Questi dati orientano la selezione di tipologia e metodo durante il rilievo.</p>
+        </div>
       <div className="row input-row">
         <div className="col-md-3">
           <label>
             Categoria
             <input
               value={values.category}
+              required
+              placeholder="es. Fungo"
               onChange={(event) => setValues((prev) => ({ ...prev, category: event.target.value }))}
             />
           </label>
@@ -96,6 +124,8 @@ export function ObservationTypeForm({
             Tipologia
             <input
               value={values.typology}
+              required
+              placeholder="es. Peronospora"
               onChange={(event) => setValues((prev) => ({ ...prev, typology: event.target.value }))}
             />
           </label>
@@ -105,6 +135,8 @@ export function ObservationTypeForm({
             Metodo
             <input
               value={values.method}
+              required
+              placeholder="es. Foglia"
               onChange={(event) => setValues((prev) => ({ ...prev, method: event.target.value }))}
             />
           </label>
@@ -124,13 +156,19 @@ export function ObservationTypeForm({
           </label>
         </div>
       </div>
-
+      </section>
+      <section className="catalog-form__section">
+        <div className="catalog-form__section-heading">
+          <h3>Guida per l’operatore</h3>
+          <p>Testi mostrati durante il flusso di rilevamento.</p>
+        </div>
       <div className="row input-row">
         <div className="col-md-6">
           <label>
             Istruzioni
-            <input
+            <textarea
               value={values.locationAndScoreInstructions}
+              required
               onChange={(event) =>
                 setValues((prev) => ({
                   ...prev,
@@ -143,7 +181,7 @@ export function ObservationTypeForm({
         <div className="col-md-6">
           <label>
             Hint osservazione
-            <input
+            <textarea
               value={values.observationHint}
               onChange={(event) =>
                 setValues((prev) => ({ ...prev, observationHint: event.target.value }))
@@ -152,9 +190,14 @@ export function ObservationTypeForm({
           </label>
         </div>
       </div>
-
+      </section>
+      <section className="catalog-form__section">
+        <div className="catalog-form__section-heading">
+          <h3>Scala di valutazione</h3>
+          <p>{isRange ? "Imposta l’intervallo e le etichette che aiutano a interpretarlo." : "Indica i contatori che l’operatore dovrà compilare."}</p>
+        </div>
       <div className="row input-row">
-        <div className="col-md-2">
+        <div className="col-md-2" hidden={!isRange}>
           <label>
             Range min
             <input
@@ -164,7 +207,7 @@ export function ObservationTypeForm({
             />
           </label>
         </div>
-        <div className="col-md-2">
+        <div className="col-md-2" hidden={!isRange}>
           <label>
             Range max
             <input
@@ -174,7 +217,7 @@ export function ObservationTypeForm({
             />
           </label>
         </div>
-        <div className="col-md-4">
+        <div className={isRange ? "col-md-8" : "d-none"}>
           <label>
             Etichette range
             <input
@@ -185,7 +228,7 @@ export function ObservationTypeForm({
             />
           </label>
         </div>
-        <div className="col-md-4">
+        <div className={isRange ? "d-none" : "col-md-12"}>
           <label>
             Counters
             <input
@@ -197,9 +240,14 @@ export function ObservationTypeForm({
           </label>
         </div>
       </div>
-
+      </section>
+      <section className="catalog-form__section">
+        <div className="catalog-form__section-heading">
+          <h3>Colture abilitate</h3>
+          <p>Seleziona tutte le colture a cui applicare questo rilevamento.</p>
+        </div>
       <div className="row input-row">
-        <div className="col-md-10">
+        <div className="col-md-12">
           <label>
             Colture supportate
             <select
@@ -222,11 +270,12 @@ export function ObservationTypeForm({
             </select>
           </label>
         </div>
-        <div className="col-md-2 d-flex align-items-end">
-          <button className="trnt_btn primary" type="submit">
-            Salva
-          </button>
-        </div>
+      </div>
+      </section>
+      {error && <div className="bbch-admin__message bbch-admin__message--error">{error}</div>}
+      <footer className="catalog-form__footer">
+        <button className="trnt_btn primary" type="submit" disabled={submitting}>{submitting ? "Salvataggio…" : "Salva rilevamento"}</button>
+      </footer>
       </div>
     </form>
   );

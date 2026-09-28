@@ -1,4 +1,4 @@
-openapi: 3.0.1
+openapi: 3.1.0
 info:
   title: FastAPI
   version: 0.1.0
@@ -433,8 +433,6 @@ paths:
       tags:
       - Organizations
       summary: Create Organization
-      description: Admins can create organizations. Agronomists can create managed
-        organizations and are automatically added with agronomist permissions.
       operationId: create_organization
       security:
       - SecurityChecker: []
@@ -523,6 +521,59 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+    put:
+      tags:
+      - Organizations
+      summary: Update Organization Info
+      operationId: update_organization
+      security:
+      - SecurityChecker: []
+      parameters:
+      - name: org_id
+        in: path
+        required: true
+        schema:
+          type: string
+          description: Organization ID
+          title: Org Id
+        description: Organization ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrganizationUpdatePayload'
+      responses:
+        '200':
+          description: Organization Info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organization'
+        '401':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /v1/organizations/{org_id}/stats:
     get:
       tags:
@@ -557,59 +608,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OrganizationStatsResponse'
-        '401':
-          description: Unauthorized to access this resource
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '403':
-          description: Unauthorized to access this resource
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '422':
-          description: Validation error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-    put:
-      tags:
-      - Organizations
-      summary: Update Organization Info
-      operationId: update_organization
-      security:
-      - SecurityChecker: []
-      parameters:
-      - name: org_id
-        in: path
-        required: true
-        schema:
-          type: string
-          description: Organization ID
-          title: Org Id
-        description: Organization ID
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/OrganizationUpdatePayload'
-      responses:
-        '200':
-          description: Organization Info
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Organization'
         '401':
           description: Unauthorized to access this resource
           content:
@@ -770,7 +768,9 @@ paths:
         in: query
         required: false
         schema:
-          type: string
+          anyOf:
+          - type: string
+          - type: 'null'
           description: Detection type ID
           title: Detection Type Id
         description: Detection type ID
@@ -950,6 +950,75 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
   /v1/organizations/{org_id}/agrifields/{agrifield_id}/detections/{detection_id}:
+    put:
+      tags:
+      - Detections
+      summary: Update Detection Time
+      operationId: update_detection_time
+      security:
+      - SecurityChecker: []
+      parameters:
+      - name: org_id
+        in: path
+        required: true
+        schema:
+          type: string
+          description: Organization ID
+          title: Org Id
+        description: Organization ID
+      - name: agrifield_id
+        in: path
+        required: true
+        schema:
+          type: string
+          description: Agriculture Field ID
+          title: Agrifield Id
+        description: Agriculture Field ID
+      - name: detection_id
+        in: path
+        required: true
+        schema:
+          type: string
+          description: Detection ID
+          title: Detection Id
+        description: Detection ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DetectionTimeUpdatePayload'
+      responses:
+        '200':
+          description: Detections whose time was corrected
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DetectionTimeUpdateResponse'
+        '401':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
     delete:
       tags:
       - Detections
@@ -1347,6 +1416,278 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /v1/harvest-types:
+    get:
+      tags:
+      - HarvestTypes
+      summary: List Harvest Types
+      operationId: list_harvest_types
+      security:
+      - SecurityChecker: []
+      parameters:
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          description: Page number
+          default: 1
+          title: Page
+        description: Page number
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 1000
+          minimum: 1
+          description: Items per page
+          default: 25
+          title: Limit
+        description: Items per page
+      - name: active
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          description: Filter by active state
+          title: Active
+        description: Filter by active state
+      - name: include_inactive
+        in: query
+        required: false
+        schema:
+          type: boolean
+          description: Include inactive harvest types
+          default: false
+          title: Include Inactive
+        description: Include inactive harvest types
+      responses:
+        '200':
+          description: List of harvest types
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedResponse'
+        '401':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    post:
+      tags:
+      - HarvestTypes
+      summary: Create Harvest Type
+      operationId: create_harvest_type
+      security:
+      - SecurityChecker: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HarvestTypeCreatePayload'
+      responses:
+        '200':
+          description: Harvest type detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HarvestType'
+        '401':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v1/harvest-types/{harvest_type_id}:
+    get:
+      tags:
+      - HarvestTypes
+      summary: Get Harvest Type
+      operationId: get_harvest_type
+      security:
+      - SecurityChecker: []
+      parameters:
+      - name: harvest_type_id
+        in: path
+        required: true
+        schema:
+          type: string
+          description: Harvest Type ID
+          title: Harvest Type Id
+        description: Harvest Type ID
+      responses:
+        '200':
+          description: Harvest type detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HarvestType'
+        '401':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      tags:
+      - HarvestTypes
+      summary: Update Harvest Type
+      operationId: update_harvest_type
+      security:
+      - SecurityChecker: []
+      parameters:
+      - name: harvest_type_id
+        in: path
+        required: true
+        schema:
+          type: string
+          description: Harvest Type ID
+          title: Harvest Type Id
+        description: Harvest Type ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HarvestTypeUpdatePayload'
+      responses:
+        '200':
+          description: Updated harvest type detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HarvestType'
+        '401':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      tags:
+      - HarvestTypes
+      summary: Delete Harvest Type
+      operationId: delete_harvest_type
+      security:
+      - SecurityChecker: []
+      parameters:
+      - name: harvest_type_id
+        in: path
+        required: true
+        schema:
+          type: string
+          description: Harvest Type ID
+          title: Harvest Type Id
+        description: Harvest Type ID
+      responses:
+        '200':
+          description: Deletion status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+        '401':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /v1/observation-types:
     get:
       tags:
@@ -1377,6 +1718,16 @@ paths:
           default: 25
           title: Limit
         description: Items per page
+      - name: harvest
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Filter by harvest code
+          title: Harvest
+        description: Filter by harvest code
       responses:
         '200':
           description: List of observation types
@@ -1572,6 +1923,331 @@ paths:
       responses:
         '200':
           description: Deletion status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+        '401':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v1/bbch-scales:
+    get:
+      tags:
+      - BbchScales
+      summary: List BBCH scales
+      operationId: list_bbch_scales
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/BbchScale'
+                type: array
+                title: Response List Bbch Scales
+        '401':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - SecurityChecker: []
+    post:
+      tags:
+      - BbchScales
+      summary: Create BBCH scale
+      operationId: create_bbch_scale
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BbchScaleCreatePayload'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BbchScale'
+        '401':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - SecurityChecker: []
+  /v1/bbch-scales/thumbnails/upload:
+    post:
+      tags:
+      - BbchScales
+      summary: Upload BBCH thumbnail
+      operationId: upload_bbch_thumbnail
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Body_upload_bbch_thumbnail'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileInfo'
+        '401':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - SecurityChecker: []
+  /v1/bbch-scales/{source_harvest_code}/duplicate:
+    post:
+      tags:
+      - BbchScales
+      summary: Duplicate and customize a BBCH scale
+      operationId: duplicate_bbch_scale
+      security:
+      - SecurityChecker: []
+      parameters:
+      - name: source_harvest_code
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Source Harvest Code
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BbchScaleDuplicatePayload'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BbchScale'
+        '401':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v1/bbch-scales/{harvest_code}:
+    get:
+      tags:
+      - BbchScales
+      summary: Get BBCH scale
+      operationId: get_bbch_scale
+      security:
+      - SecurityChecker: []
+      parameters:
+      - name: harvest_code
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Harvest Code
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BbchScale'
+        '401':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      tags:
+      - BbchScales
+      summary: Update BBCH scale
+      operationId: update_bbch_scale
+      security:
+      - SecurityChecker: []
+      parameters:
+      - name: harvest_code
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Harvest Code
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BbchScaleUpdatePayload'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BbchScale'
+        '401':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      tags:
+      - BbchScales
+      summary: Delete BBCH scale
+      operationId: delete_bbch_scale
+      security:
+      - SecurityChecker: []
+      parameters:
+      - name: harvest_code
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Harvest Code
+      responses:
+        '200':
+          description: Successful Response
           content:
             application/json:
               schema:
@@ -1943,8 +2619,7 @@ paths:
       tags:
       - Invitations
       summary: Create Invitation
-      description: 'Create a new invitation. The payload must include orgId and
-        the invitee joins that existing organization.
+      description: 'Create a new invitation
 
 
         Permissions:
@@ -2159,11 +2834,12 @@ paths:
         in: query
         required: false
         schema:
+          anyOf:
+          - type: string
+          - type: 'null'
           description: Filter by status
           default: pending
           title: Status
-          type: string
-          nullable: true
         description: Filter by status
       responses:
         '200':
@@ -2338,6 +3014,48 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /v1/forms/form-01/informativa-pmi/pdf:
+    post:
+      tags:
+      - Forms
+      summary: Render FORM_01 Informativa PMI as PDF
+      operationId: render_form_01_informativa_pmi_pdf
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FormTemplateRenderPayload'
+        required: true
+      responses:
+        '200':
+          description: Generated PDF document
+          content:
+            application/json:
+              schema: {}
+        '401':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Unauthorized to access this resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 components:
   schemas:
     AccountTypeEnum:
@@ -2374,7 +3092,9 @@ components:
           type: string
           title: Rotation
         year:
-          type: string
+          anyOf:
+          - type: string
+          - type: 'null'
           title: Year
         irrigation:
           type: string
@@ -2424,7 +3144,9 @@ components:
           title: Name
         description:
           type: string
+          maxLength: 500
           title: Description
+          default: ''
         map:
           items:
             $ref: '#/components/schemas/Point'
@@ -2446,7 +3168,9 @@ components:
           type: string
           title: Rotation
         year:
-          type: string
+          anyOf:
+          - type: string
+          - type: 'null'
           title: Year
         irrigation:
           type: string
@@ -2460,7 +3184,6 @@ components:
       type: object
       required:
       - name
-      - description
       - map
       - harvest
       - area
@@ -2471,6 +3194,149 @@ components:
       - grassing
       - weaving
       title: AgriFieldMutationPayload
+    BbchGroup:
+      properties:
+        code:
+          type: string
+          title: Code
+        name:
+          type: string
+          title: Name
+        icon:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Icon
+        sortOrder:
+          type: integer
+          title: Sortorder
+          default: 0
+        stages:
+          items:
+            $ref: '#/components/schemas/BbchStage'
+          type: array
+          title: Stages
+          default: []
+      type: object
+      required:
+      - code
+      - name
+      title: BbchGroup
+    BbchScale:
+      properties:
+        id:
+          type: string
+          title: Id
+        harvestCode:
+          type: string
+          title: Harvestcode
+        sourceHarvestCode:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Sourceharvestcode
+        groups:
+          items:
+            $ref: '#/components/schemas/BbchGroup'
+          type: array
+          title: Groups
+          default: []
+        creationTime:
+          type: integer
+          title: Creationtime
+        lastUpdateTime:
+          type: integer
+          title: Lastupdatetime
+      type: object
+      required:
+      - id
+      - harvestCode
+      - creationTime
+      - lastUpdateTime
+      title: BbchScale
+    BbchScaleCreatePayload:
+      properties:
+        harvestCode:
+          type: string
+          title: Harvestcode
+        sourceHarvestCode:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Sourceharvestcode
+        groups:
+          items:
+            $ref: '#/components/schemas/BbchGroup'
+          type: array
+          title: Groups
+          default: []
+      type: object
+      required:
+      - harvestCode
+      title: BbchScaleCreatePayload
+    BbchScaleDuplicatePayload:
+      properties:
+        targetHarvestCode:
+          type: string
+          title: Targetharvestcode
+      type: object
+      required:
+      - targetHarvestCode
+      title: BbchScaleDuplicatePayload
+    BbchScaleUpdatePayload:
+      properties:
+        sourceHarvestCode:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Sourceharvestcode
+        groups:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/BbchGroup'
+            type: array
+          - type: 'null'
+          title: Groups
+      type: object
+      title: BbchScaleUpdatePayload
+    BbchStage:
+      properties:
+        code:
+          type: string
+          title: Code
+        name:
+          type: string
+          title: Name
+        thumbnail:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Thumbnail
+        icon:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Icon
+        sortOrder:
+          type: integer
+          title: Sortorder
+          default: 0
+      type: object
+      required:
+      - code
+      - name
+      title: BbchStage
+    Body_upload_bbch_thumbnail:
+      properties:
+        file:
+          type: string
+          format: binary
+          title: File
+          description: BBCH thumbnail
+      type: object
+      required:
+      - file
+      title: Body_upload_bbch_thumbnail
     Body_upload_files:
       properties:
         files:
@@ -2545,6 +3411,70 @@ components:
       - creationTime
       - lastUpdateTime
       title: Detection
+    DetectionData:
+      properties:
+        bbch:
+          type: string
+          title: Bbch
+        notes:
+          type: string
+          title: Notes
+        treatment:
+          $ref: '#/components/schemas/ObservationTreatment'
+          default:
+            treatment: false
+            treatments: []
+            treatmentDate: ''
+            treatmentProduct: ''
+        photos:
+          items:
+            $ref: '#/components/schemas/DetectionPhoto'
+          type: array
+          title: Photos
+        points:
+          items:
+            $ref: '#/components/schemas/ObservationPoint-Output'
+          type: array
+          title: Points
+      type: object
+      required:
+      - bbch
+      - notes
+      - photos
+      - points
+      title: DetectionData
+    DetectionDataPayload:
+      properties:
+        bbch:
+          type: string
+          title: Bbch
+        notes:
+          type: string
+          title: Notes
+        treatment:
+          $ref: '#/components/schemas/ObservationTreatment'
+          default:
+            treatment: false
+            treatments: []
+            treatmentDate: ''
+            treatmentProduct: ''
+        photos:
+          items:
+            $ref: '#/components/schemas/DetectionPhotoPayload'
+          type: array
+          title: Photos
+        points:
+          items:
+            $ref: '#/components/schemas/ObservationPoint-Input'
+          type: array
+          title: Points
+      type: object
+      required:
+      - bbch
+      - notes
+      - photos
+      - points
+      title: DetectionDataPayload
     DetectionMutationPayload:
       properties:
         detectionTime:
@@ -2561,128 +3491,6 @@ components:
       - detectionTypeId
       - detectionData
       title: DetectionMutationPayload
-    MultiDetectionCreateResponse:
-      properties:
-        sessionId:
-          type: string
-          title: Sessionid
-        detections:
-          items:
-            $ref: '#/components/schemas/Detection'
-          type: array
-          title: Detections
-      type: object
-      required:
-      - sessionId
-      - detections
-      title: MultiDetectionCreateResponse
-    MultiDetectionEntryPayload:
-      properties:
-        detectionTypeId:
-          type: string
-          title: Detectiontypeid
-        notes:
-          type: string
-          title: Notes
-        photos:
-          items:
-            $ref: '#/components/schemas/DetectionPhotoPayload'
-          type: array
-          title: Photos
-        points:
-          items:
-            $ref: '#/components/schemas/ObservationPoint'
-          type: array
-          title: Points
-        done:
-          type: boolean
-          title: Done
-          default: false
-      type: object
-      required:
-      - detectionTypeId
-      - notes
-      - photos
-      - points
-      title: MultiDetectionEntryPayload
-    MultiDetectionMutationPayload:
-      properties:
-        detectionTime:
-          type: integer
-          title: Detectiontime
-        bbch:
-          type: string
-          title: Bbch
-        treatment:
-          $ref: '#/components/schemas/ObservationTreatment'
-        entries:
-          items:
-            $ref: '#/components/schemas/MultiDetectionEntryPayload'
-          type: array
-          title: Entries
-      type: object
-      required:
-      - detectionTime
-      - bbch
-      - treatment
-      - entries
-      title: MultiDetectionMutationPayload
-    DetectionData:
-      properties:
-        bbch:
-          type: string
-          title: Bbch
-        notes:
-          type: string
-          title: Notes
-        treatment:
-          $ref: '#/components/schemas/ObservationTreatment'
-        photos:
-          items:
-            $ref: '#/components/schemas/DetectionPhoto'
-          type: array
-          title: Photos
-        points:
-          items:
-            $ref: '#/components/schemas/ObservationPoint'
-          type: array
-          title: Points
-      type: object
-      required:
-      - bbch
-      - notes
-      - treatment
-      - photos
-      - points
-      title: DetectionData
-    DetectionDataPayload:
-      properties:
-        bbch:
-          type: string
-          title: Bbch
-        notes:
-          type: string
-          title: Notes
-        treatment:
-          $ref: '#/components/schemas/ObservationTreatment'
-        photos:
-          items:
-            $ref: '#/components/schemas/DetectionPhotoPayload'
-          type: array
-          title: Photos
-        points:
-          items:
-            $ref: '#/components/schemas/ObservationPoint'
-          type: array
-          title: Points
-      type: object
-      required:
-      - bbch
-      - notes
-      - treatment
-      - photos
-      - points
-      title: DetectionDataPayload
     DetectionPhoto:
       properties:
         caption:
@@ -2716,77 +3524,31 @@ components:
       required:
       - photo
       title: DetectionPhotoPayload
-    ObservationTreatment:
+    DetectionTimeUpdatePayload:
       properties:
-        treatment:
-          type: boolean
-          title: Treatment
-          default: false
-        treatments:
-          items:
-            $ref: '#/components/schemas/ObservationTreatmentEntry'
-          type: array
-          title: Treatments
-          default: []
-        treatmentDate:
-          type: string
-          title: Treatmentdate
-          default: ''
-        treatmentProduct:
-          type: string
-          title: Treatmentproduct
-          default: ''
-      type: object
-      title: ObservationTreatment
-    ObservationTreatmentEntry:
-      properties:
-        treatmentDate:
-          type: string
-          title: Treatmentdate
-          default: ''
-        treatmentProduct:
-          type: string
-          title: Treatmentproduct
-          default: ''
-      type: object
-      title: ObservationTreatmentEntry
-    ObservationCounter:
-      properties:
-        counterName:
-          type: string
-          title: Countername
-        counterValue:
-          type: number
-          title: Countervalue
+        detectionTime:
+          type: integer
+          title: Detectiontime
       type: object
       required:
-      - counterName
-      - counterValue
-      title: ObservationCounter
-    ObservationData:
+      - detectionTime
+      title: DetectionTimeUpdatePayload
+    DetectionTimeUpdateResponse:
       properties:
-        rangeValue:
-          type: number
-          title: Rangevalue
-          nullable: true
-        counters:
+        sessionId:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Sessionid
+        detections:
           items:
-            $ref: '#/components/schemas/ObservationCounter'
+            $ref: '#/components/schemas/Detection'
           type: array
-          title: Counters
-      type: object
-      title: ObservationData
-    ObservationPoint:
-      properties:
-        position:
-          $ref: '#/components/schemas/Point'
-        data:
-          $ref: '#/components/schemas/ObservationData'
+          title: Detections
       type: object
       required:
-      - position
-      - data
-      title: ObservationPoint
+      - detections
+      title: DetectionTimeUpdateResponse
     DetectionType:
       properties:
         id:
@@ -2820,160 +3582,12 @@ components:
     DetectionTypeUpdatePayload:
       properties:
         observationTypeId:
-          type: string
+          anyOf:
+          - type: string
+          - type: 'null'
           title: Observationtypeid
-          nullable: true
       type: object
       title: DetectionTypeUpdatePayload
-    ObservationType:
-      properties:
-        id:
-          type: string
-          title: Id
-        typology:
-          type: string
-          title: Typology
-        method:
-          type: string
-          title: Method
-        category:
-          type: string
-          title: Category
-        locationAndScoreInstructions:
-          type: string
-          title: Locationandscoreinstructions
-        observationHint:
-          type: string
-          title: Observationhint
-        observationType:
-          type: string
-          title: Observationtype
-        rangeMin:
-          type: number
-          title: Rangemin
-          nullable: true
-        rangeMax:
-          type: number
-          title: Rangemax
-          nullable: true
-        rangeLabels:
-          items:
-            type: string
-          type: array
-          title: Rangelabels
-        counters:
-          items:
-            type: string
-          type: array
-          title: Counters
-        creationTime:
-          type: integer
-          title: Creationtime
-      type: object
-      required:
-      - id
-      - typology
-      - method
-      - category
-      - locationAndScoreInstructions
-      - observationHint
-      - observationType
-      - creationTime
-      title: ObservationType
-    ObservationTypeCreatePayload:
-      properties:
-        typology:
-          type: string
-          title: Typology
-        method:
-          type: string
-          title: Method
-        category:
-          type: string
-          title: Category
-        locationAndScoreInstructions:
-          type: string
-          title: Locationandscoreinstructions
-        observationHint:
-          type: string
-          title: Observationhint
-        observationType:
-          type: string
-          title: Observationtype
-        rangeMin:
-          type: number
-          title: Rangemin
-          nullable: true
-        rangeMax:
-          type: number
-          title: Rangemax
-          nullable: true
-        rangeLabels:
-          items:
-            type: string
-          type: array
-          title: Rangelabels
-        counters:
-          items:
-            type: string
-          type: array
-          title: Counters
-      type: object
-      required:
-      - typology
-      - method
-      - category
-      - locationAndScoreInstructions
-      - observationType
-      title: ObservationTypeCreatePayload
-    ObservationTypeUpdatePayload:
-      properties:
-        typology:
-          type: string
-          title: Typology
-          nullable: true
-        method:
-          type: string
-          title: Method
-          nullable: true
-        category:
-          type: string
-          title: Category
-          nullable: true
-        locationAndScoreInstructions:
-          type: string
-          title: Locationandscoreinstructions
-          nullable: true
-        observationHint:
-          type: string
-          title: Observationhint
-          nullable: true
-        observationType:
-          type: string
-          title: Observationtype
-          nullable: true
-        rangeMin:
-          type: number
-          title: Rangemin
-          nullable: true
-        rangeMax:
-          type: number
-          title: Rangemax
-          nullable: true
-        rangeLabels:
-          items:
-            type: string
-          type: array
-          title: Rangelabels
-          nullable: true
-        counters:
-          items:
-            type: string
-          type: array
-          title: Counters
-          nullable: true
-      type: object
-      title: ObservationTypeUpdatePayload
     ErrorResponse:
       properties:
         status:
@@ -3054,6 +3668,95 @@ components:
       - category
       - name
       title: FileInfo
+    FormTemplateRenderPayload:
+      properties:
+        data:
+          additionalProperties:
+            type: string
+          type: object
+          title: Data
+      type: object
+      required:
+      - data
+      title: FormTemplateRenderPayload
+    HarvestType:
+      properties:
+        id:
+          type: string
+          title: Id
+        code:
+          type: string
+          title: Code
+        label:
+          type: string
+          title: Label
+        active:
+          type: boolean
+          title: Active
+          default: true
+        sortOrder:
+          type: integer
+          title: Sortorder
+          default: 0
+        creationTime:
+          type: integer
+          title: Creationtime
+        lastUpdateTime:
+          type: integer
+          title: Lastupdatetime
+      type: object
+      required:
+      - id
+      - code
+      - label
+      - creationTime
+      - lastUpdateTime
+      title: HarvestType
+    HarvestTypeCreatePayload:
+      properties:
+        code:
+          type: string
+          title: Code
+        label:
+          type: string
+          title: Label
+        active:
+          type: boolean
+          title: Active
+          default: true
+        sortOrder:
+          type: integer
+          title: Sortorder
+          default: 0
+      type: object
+      required:
+      - code
+      - label
+      title: HarvestTypeCreatePayload
+    HarvestTypeUpdatePayload:
+      properties:
+        code:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Code
+        label:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Label
+        active:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Active
+        sortOrder:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Sortorder
+      type: object
+      title: HarvestTypeUpdatePayload
     Invitation:
       properties:
         id:
@@ -3063,11 +3766,12 @@ components:
           type: string
           title: Email
         orgId:
-          title: Orgid
           type: string
+          title: Orgid
         organization:
-          $ref: '#/components/schemas/Organization'
-          nullable: true
+          anyOf:
+          - $ref: '#/components/schemas/Organization'
+          - type: 'null'
         inviterId:
           type: string
           title: Inviterid
@@ -3084,9 +3788,10 @@ components:
           type: integer
           title: Expiresat
         acceptedAt:
+          anyOf:
+          - type: integer
+          - type: 'null'
           title: Acceptedat
-          type: integer
-          nullable: true
         deleted:
           type: boolean
           title: Deleted
@@ -3131,8 +3836,8 @@ components:
           type: string
           title: Role
         orgId:
-          title: Orgid
           type: string
+          title: Orgid
       type: object
       required:
       - email
@@ -3175,37 +3880,368 @@ components:
       - expiresAt
       - creationTime
       title: InvitationPublic
-      description: Public invitation info (without sensitive data like full token in some contexts)
+      description: Public invitation info (without sensitive data like full token
+        in some contexts)
     InvitationValidateResponse:
       properties:
         valid:
           type: boolean
           title: Valid
         invitation:
-          $ref: '#/components/schemas/InvitationPublic'
-          nullable: true
+          anyOf:
+          - $ref: '#/components/schemas/InvitationPublic'
+          - type: 'null'
         error:
+          anyOf:
+          - type: string
+          - type: 'null'
           title: Error
-          type: string
-          nullable: true
       type: object
       required:
       - valid
       title: InvitationValidateResponse
       description: Response for token validation
-    Office:
+    MultiDetectionCreateResponse:
       properties:
-        state:
+        sessionId:
           type: string
-          title: State
-        city:
-          type: string
-          title: City
+          title: Sessionid
+        detections:
+          items:
+            $ref: '#/components/schemas/Detection'
+          type: array
+          title: Detections
       type: object
       required:
-      - state
-      - city
-      title: Office
+      - sessionId
+      - detections
+      title: MultiDetectionCreateResponse
+    MultiDetectionEntryPayload:
+      properties:
+        detectionTypeId:
+          type: string
+          title: Detectiontypeid
+        notes:
+          type: string
+          title: Notes
+        photos:
+          items:
+            $ref: '#/components/schemas/DetectionPhotoPayload'
+          type: array
+          title: Photos
+        points:
+          items:
+            $ref: '#/components/schemas/ObservationPoint-Input'
+          type: array
+          title: Points
+        done:
+          type: boolean
+          title: Done
+          default: false
+      type: object
+      required:
+      - detectionTypeId
+      - notes
+      - photos
+      - points
+      title: MultiDetectionEntryPayload
+    MultiDetectionMutationPayload:
+      properties:
+        detectionTime:
+          type: integer
+          title: Detectiontime
+        bbch:
+          type: string
+          title: Bbch
+        treatment:
+          $ref: '#/components/schemas/ObservationTreatment'
+          default:
+            treatment: false
+            treatments: []
+            treatmentDate: ''
+            treatmentProduct: ''
+        entries:
+          items:
+            $ref: '#/components/schemas/MultiDetectionEntryPayload'
+          type: array
+          title: Entries
+      type: object
+      required:
+      - detectionTime
+      - bbch
+      - entries
+      title: MultiDetectionMutationPayload
+    ObservationCounter:
+      properties:
+        counterName:
+          type: string
+          title: Countername
+        counterValue:
+          type: number
+          title: Countervalue
+      type: object
+      required:
+      - counterName
+      - counterValue
+      title: ObservationCounter
+    ObservationData:
+      properties:
+        rangeValue:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Rangevalue
+        counters:
+          items:
+            $ref: '#/components/schemas/ObservationCounter'
+          type: array
+          title: Counters
+          default: []
+      type: object
+      title: ObservationData
+    ObservationPoint-Input:
+      properties:
+        position:
+          $ref: '#/components/schemas/Point'
+        data:
+          $ref: '#/components/schemas/ObservationData'
+      type: object
+      required:
+      - position
+      - data
+      title: ObservationPoint
+    ObservationPoint-Output:
+      properties:
+        position:
+          $ref: '#/components/schemas/Point'
+        data:
+          $ref: '#/components/schemas/ObservationData'
+      type: object
+      required:
+      - position
+      - data
+      title: ObservationPoint
+    ObservationTreatment:
+      properties:
+        treatment:
+          type: boolean
+          title: Treatment
+          default: false
+        treatments:
+          items:
+            $ref: '#/components/schemas/ObservationTreatmentEntry'
+          type: array
+          title: Treatments
+          default: []
+        treatmentDate:
+          type: string
+          title: Treatmentdate
+          default: ''
+        treatmentProduct:
+          type: string
+          title: Treatmentproduct
+          default: ''
+      type: object
+      title: ObservationTreatment
+    ObservationTreatmentEntry:
+      properties:
+        treatmentDate:
+          type: string
+          title: Treatmentdate
+          default: ''
+        treatmentProduct:
+          type: string
+          title: Treatmentproduct
+          default: ''
+      type: object
+      title: ObservationTreatmentEntry
+    ObservationType:
+      properties:
+        id:
+          type: string
+          title: Id
+        typology:
+          type: string
+          title: Typology
+        method:
+          type: string
+          title: Method
+        category:
+          type: string
+          title: Category
+        locationAndScoreInstructions:
+          type: string
+          title: Locationandscoreinstructions
+        observationHint:
+          type: string
+          title: Observationhint
+        observationType:
+          type: string
+          title: Observationtype
+        rangeMin:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Rangemin
+        rangeMax:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Rangemax
+        rangeLabels:
+          items:
+            type: string
+          type: array
+          title: Rangelabels
+          default: []
+        counters:
+          items:
+            type: string
+          type: array
+          title: Counters
+          default: []
+        supportedHarvestCodes:
+          items:
+            type: string
+          type: array
+          title: Supportedharvestcodes
+          default: []
+        creationTime:
+          type: integer
+          title: Creationtime
+      type: object
+      required:
+      - id
+      - typology
+      - method
+      - category
+      - locationAndScoreInstructions
+      - observationHint
+      - observationType
+      - creationTime
+      title: ObservationType
+    ObservationTypeCreatePayload:
+      properties:
+        typology:
+          type: string
+          title: Typology
+        method:
+          type: string
+          title: Method
+        category:
+          type: string
+          title: Category
+        locationAndScoreInstructions:
+          type: string
+          title: Locationandscoreinstructions
+        observationHint:
+          type: string
+          title: Observationhint
+          default: Valuta l'intensità del sintomo
+        observationType:
+          type: string
+          title: Observationtype
+        rangeMin:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Rangemin
+        rangeMax:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Rangemax
+        rangeLabels:
+          items:
+            type: string
+          type: array
+          title: Rangelabels
+          default: []
+        counters:
+          items:
+            type: string
+          type: array
+          title: Counters
+          default: []
+        supportedHarvestCodes:
+          items:
+            type: string
+          type: array
+          title: Supportedharvestcodes
+          default: []
+      type: object
+      required:
+      - typology
+      - method
+      - category
+      - locationAndScoreInstructions
+      - observationType
+      title: ObservationTypeCreatePayload
+    ObservationTypeUpdatePayload:
+      properties:
+        typology:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Typology
+        method:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Method
+        category:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Category
+        locationAndScoreInstructions:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Locationandscoreinstructions
+        observationHint:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Observationhint
+        observationType:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Observationtype
+        rangeMin:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Rangemin
+        rangeMax:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Rangemax
+        rangeLabels:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Rangelabels
+        counters:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Counters
+        supportedHarvestCodes:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Supportedharvestcodes
+      type: object
+      title: ObservationTypeUpdatePayload
     Organization:
       properties:
         orgId:
@@ -3242,6 +4278,38 @@ components:
       - creationTime
       - lastUpdateTime
       title: Organization
+    OrganizationCreatePayload:
+      properties:
+        name:
+          type: string
+          title: Name
+        piva:
+          type: string
+          title: Piva
+        contacts:
+          $ref: '#/components/schemas/Contacts'
+        questionnaire:
+          type: object
+          title: Questionnaire
+      type: object
+      required:
+      - name
+      - piva
+      - contacts
+      - questionnaire
+      title: OrganizationCreatePayload
+    OrganizationMember:
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
+        role:
+          type: string
+          title: Role
+      type: object
+      required:
+      - user
+      - role
+      title: OrganizationMember
     OrganizationStatsAgrifield:
       properties:
         id:
@@ -3254,10 +4322,12 @@ components:
           anyOf:
           - type: string
           - type: 'null'
+          title: Harvest
         creationTime:
           anyOf:
           - type: integer
           - type: 'null'
+          title: Creationtime
         detectionCount:
           type: integer
           title: Detectioncount
@@ -3265,27 +4335,15 @@ components:
       required:
       - id
       - name
-      - harvest
-      - creationTime
       - detectionCount
       title: OrganizationStatsAgrifield
-    OrganizationStatsOrganization:
-      properties:
-        orgId:
-          type: string
-          title: Orgid
-        name:
-          type: string
-          title: Name
-      type: object
-      required:
-      - orgId
-      - name
-      title: OrganizationStatsOrganization
     OrganizationStatsResponse:
       properties:
         organization:
-          $ref: '#/components/schemas/OrganizationStatsOrganization'
+          additionalProperties:
+            type: string
+          type: object
+          title: Organization
         window:
           $ref: '#/components/schemas/OrganizationStatsWindow'
         agrifieldCount:
@@ -3338,58 +4396,30 @@ components:
       - startTimestampMs
       - endTimestampMs
       title: OrganizationStatsWindow
-    OrganizationMember:
-      properties:
-        user:
-          $ref: '#/components/schemas/User'
-        role:
-          type: string
-          title: Role
-      type: object
-      required:
-      - user
-      - role
-      title: OrganizationMember
-    OrganizationCreatePayload:
-      properties:
-        name:
-          type: string
-          title: Name
-        piva:
-          type: string
-          title: Piva
-        contacts:
-          $ref: '#/components/schemas/Contacts'
-        questionnaire:
-          type: object
-          additionalProperties: true
-          title: Questionnaire
-      type: object
-      required:
-      - name
-      - piva
-      - contacts
-      - questionnaire
-      title: OrganizationCreatePayload
     OrganizationUpdatePayload:
       properties:
         name:
+          anyOf:
+          - type: string
+          - type: 'null'
           title: Name
-          type: string
-          nullable: true
         piva:
+          anyOf:
+          - type: string
+          - type: 'null'
           title: Piva
-          type: string
-          nullable: true
         logo:
-          $ref: '#/components/schemas/FileInfo'
-          nullable: true
+          anyOf:
+          - $ref: '#/components/schemas/FileInfo'
+          - type: 'null'
         cover:
-          $ref: '#/components/schemas/FileInfo'
-          nullable: true
+          anyOf:
+          - $ref: '#/components/schemas/FileInfo'
+          - type: 'null'
         contacts:
-          $ref: '#/components/schemas/Contacts'
-          nullable: true
+          anyOf:
+          - $ref: '#/components/schemas/Contacts'
+          - type: 'null'
       type: object
       title: OrganizationUpdatePayload
     PaginatedResponse:
@@ -3511,12 +4541,14 @@ components:
           type: string
           title: Phone
         piva:
+          anyOf:
+          - type: string
+          - type: 'null'
           title: Piva
-          type: string
-          nullable: true
         organization:
-          $ref: '#/components/schemas/OrganizationCreatePayload'
-          nullable: true
+          anyOf:
+          - $ref: '#/components/schemas/OrganizationCreatePayload'
+          - type: 'null'
       type: object
       required:
       - firstName
@@ -3547,17 +4579,20 @@ components:
     UserUpdatePayload:
       properties:
         firstName:
+          anyOf:
+          - type: string
+          - type: 'null'
           title: Firstname
-          type: string
-          nullable: true
         lastName:
+          anyOf:
+          - type: string
+          - type: 'null'
           title: Lastname
-          type: string
-          nullable: true
         phone:
+          anyOf:
+          - type: string
+          - type: 'null'
           title: Phone
-          type: string
-          nullable: true
       type: object
       title: UserUpdatePayload
   securitySchemes:
