@@ -86,6 +86,15 @@ Procedura seguita per landscape 2.2.0 e web 0.2.20260925 (25/09/2026), passo per
    serve il bundle nuovo; nessun errore nei log.
 7. **Per tornare indietro**: rimettere la copia datata del compose e rifare `up -d --no-deps`; le
    immagini precedenti restano sul server.
+8. **Un comando una tantum** dentro un servizio (es. costruire l'archivio delle fasi dei bollettini:
+   `docker compose run --rm --no-deps -e PEX_MODULE=bollettini.modules.fenologia.archivio
+   bollettini_api`) va lanciato con **`-l traefik.enable=false`**: `compose run` copia le etichette
+   Traefik del servizio, Traefik tratta il contenitore come una seconda copia dell'API e gli manda
+   una richiesta su due, che finisce in 502 (successo il 28/09/2026). Lanciarlo con `nohup ... &`
+   sul server: dura qualche minuto e non deve dipendere dalla connessione ssh.
+9. **Costruire le immagini una alla volta** (`pants package src/docker/<servizio>:docker`): quella di
+   bollettini contiene docling e torch (7,5 GB) e costruita insieme alle altre ha esaurito la memoria
+   di WSL (15 GB) il 25/09/2026.
 
 Se le immagini non sono state pubblicate su Docker Hub ma copiate sul server
 (`docker save | ssh ... docker load`), un `docker compose pull` fallisce per quei tag finche' chi ha
