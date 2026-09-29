@@ -138,6 +138,9 @@ type LandscapeResponse = {
 };
 
 type LandscapeParcelsResponse = {
+  /** Poligoni delle carte regionali aggiunti alla mappa (bosco, arbusteti, edifici). */
+  seminatural_count?: number;
+  seminatural_truncated?: boolean;
   /** Presente quando la richiesta aveva `pest=`. */
   pest?: LandscapePestSummary;
   location?: { lat: number; lng: number };
@@ -522,6 +525,20 @@ export async function fetchLandscapeParcels(
     ...(crop ? { crop } : {}),
     ...(pest ? { pest } : {}),
   });
+}
+
+/** Siepi e alberi che nessun'altra fonte vede (Copernicus), come immagine per la mappa. */
+export type LandscapeWoodyImage = {
+  available: boolean;
+  /** Angoli [lng, lat]: alto-sinistra, alto-destra, basso-destra, basso-sinistra. */
+  coordinates?: number[][];
+  /** PNG trasparente come data URL. */
+  image?: string;
+  source?: string;
+};
+
+export async function fetchLandscapeWoodyImage(lat: number, lng: number, radiusM: number) {
+  return fetchJson<LandscapeWoodyImage>("/v1/landscape/woody-image", { lat, lng, radius_m: radiusM });
 }
 
 /** Gli organismi pertinenti a una coltura: decide quali sezioni disegnare. */

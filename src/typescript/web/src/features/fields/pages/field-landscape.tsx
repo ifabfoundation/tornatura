@@ -11,8 +11,10 @@ import {
   LandscapePestSeason,
   LandscapePestSummary,
   LandscapeResponse,
+  LandscapeWoodyImage,
   fetchLandscapeComposition,
   fetchLandscapeParcels,
+  fetchLandscapeWoodyImage,
   fetchLandscapePestHabitat,
   fetchLandscapePestSeason,
   fetchLandscapePests,
@@ -137,6 +139,7 @@ export function FieldLandscape() {
 
   const [data, setData] = React.useState<LandscapeResponse | null>(null);
   const [geo, setGeo] = React.useState<LandscapeParcelsResponse | null>(null);
+  const [woody, setWoody] = React.useState<LandscapeWoodyImage | null>(null);
   const [loading, setLoading] = React.useState<boolean>(true);
   const [error, setError] = React.useState<string | null>(null);
   const [radiusM, setRadiusM] = React.useState<number>(DEFAULT_RADIUS_M);
@@ -228,6 +231,14 @@ export function FieldLandscape() {
               setLoading(false);
             }
           });
+        // Le siepi Copernicus sono uno strato in piu' della mappa: se non arrivano (raggio oltre
+        // i 5 km, raster assente) la mappa resta quella di sempre.
+        setWoody(null);
+        if (radiusM <= 5000) {
+          fetchLandscapeWoodyImage(lat, lng, radiusM)
+            .then((w) => attuale && setWoody(w.available ? w : null))
+            .catch(() => undefined);
+        }
         // Gli habitat arrivano per conto loro: un errore su uno non tocca gli altri
         // ne' la pagina (la sezione semplicemente non compare).
         setHabitats({});
@@ -420,6 +431,7 @@ export function FieldLandscape() {
                   showCrop={showCrop}
                   hostMode={hostMode !== null}
                   hostModeLabel={organismoAttivo?.label ?? undefined}
+                  woodyImage={woody}
                 />
 
                 {/* --- controlli sotto la mappa: legenda cliccabile a sinistra, raggio a destra --- */}
@@ -491,7 +503,12 @@ export function FieldLandscape() {
                               Ospiti: {p.label ?? p.code}
                             </button>
                           ))}
-                      <span className="font-s opacity-05 mb-2">{datasetLabel}</span>
+                      <span className="font-s opacity-05 mb-2">
+                        {datasetLabel}
+                        {(geo?.seminatural_count ?? 0) > 0 &&
+                          " · bosco, arbusteti ed edifici fuori dalle domande PAC: Carta forestale 2025 e Uso del suolo 2023"}
+                        {woody && " · siepi e alberi non dichiarati: Copernicus 2021"}
+                      </span>
                     </div>
                   </Col>
                   <Col lg={4}>
