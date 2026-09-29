@@ -342,8 +342,12 @@ dice.
 **Trappole.**
 1. L'updater va fatto **a riquadri**: con tutta la regione in memoria (1,7 milioni di
    appezzamenti ed elementi con indice spaziale, piu' l'Uso del suolo) e' salito a 11 GB il
-   28/09/2026. Letto per finestra dai GeoParquet il picco e' 5,0 GB (misurato con `time -v`),
-   42 minuti in tutto, di cui ~25 per i 32 riquadri Copernicus.
+   28/09/2026. Ora nessuna carta sta tutta in memoria: AGREA e Carta forestale si leggono per
+   finestra, l'Uso del suolo a blocchi di 100.000 poligoni, la mappa cella per cella, e l'unione
+   finale degli strati si fa con pyarrow (geometrie come byte, non oggetti). Picco misurato con
+   `time -v` 4,3 GB, 47 minuti con i download veri; il log scrive la memoria a ogni passo. Sul
+   server va lanciato con un **tetto di memoria** (sezione "Rilascio" del CLAUDE.md del monorepo):
+   senza swap, un picco inatteso farebbe chiudere al sistema anche i servizi di produzione.
 2. Gli elementi AGREA vanno sottratti **con la loro forma** (`agrea<anno>_elementi_forme_er.parquet`,
    solo per l'updater): con il solo centroide 3.700 ha di siepi e boschetti dichiarati si
    contavano anche come bosco della Carta forestale.
@@ -353,7 +357,12 @@ dice.
    suolo non esistono e tutto sembrerebbe "non visto". Esclusi anche i pixel su vigneti, frutteti,
    oliveti dell'Uso del suolo: i filari si confondono con le siepi.
 5. Sulla mappa i poligoni regionali (`source_label`) si disegnano **senza contorno**: sono tagliati
-   a celle di 5 km e il bordo della cella si vedrebbe.
+   a celle di 5 km e il bordo della cella si vedrebbe. Per lo stesso motivo il popup di un bosco
+   dice gli ettari del pezzo nella cella, non del bosco intero: i conti della pagina usano
+   `strati_er.parquet`, intero, e non cambiano. Gli edifici (categoria `abitato`) vanno nella
+   famiglia grigia "altro", insieme ai fabbricati dichiarati: nessun quinto colore. Il residuo
+   Copernicus si disegna come immagine (`/woody-image`, PNG in EPSG:3857 con i quattro angoli),
+   acceso e spento con la voce del semi-naturale.
 6. Carta forestale e Uso del suolo non hanno ETag: la versione e' data e dimensione (CF) o
    l'edizione (US). Cambiare le tabelle delle classi in `config.py` rifa' il ritaglio da solo
    (impronta delle regole nel manifest).

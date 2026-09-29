@@ -238,8 +238,14 @@ def map_features(lat: float, lng: float, radius_m: float) -> Dict[str, Any]:
     if s.empty:
         return {"features": [], "truncated": False}
     s = s[s["ha_c"] >= config.AGREA_MAP_MIN_HA].sort_values("ha_c", ascending=False)
-    vertici = shapely.get_num_coordinates(s.geometry.values)
-    entro = np.cumsum(vertici) <= config.SEMINATURAL_MAP_VERTEX_BUDGET
+    abitato = (s["categoria"] == "abitato").values
+    entro = np.zeros(len(s), dtype=bool)
+    for gruppo, tetto in (
+        (~abitato, config.SEMINATURAL_MAP_VERTEX_BUDGET),
+        (abitato, config.SEMINATURAL_MAP_ABITATO_VERTEX_BUDGET),
+    ):
+        vertici = shapely.get_num_coordinates(s.geometry.values[gruppo])
+        entro[np.flatnonzero(gruppo)] = np.cumsum(vertici) <= tetto
     truncated = bool((~entro).any())
     s = s[entro]
     if s.empty:
@@ -255,7 +261,13 @@ def map_features(lat: float, lng: float, radius_m: float) -> Dict[str, Any]:
             .values,
             "declared": "",
             "harvest_code": None,
-            "family": config.FAMILY_SEMINATURAL,
+            "family": s["categoria"]
+            .map(
+                lambda k: config.SEMINATURAL_MAP_FAMILY.get(
+                    k, config.FAMILY_SEMINATURAL
+                )
+            )
+            .values,
             "ha": s["ha_c"].round(2).values,
             "is_crop": False,
             "source_label": s["fonte"].map(etichetta_fonte).values,
@@ -271,3 +283,61 @@ def map_features(lat: float, lng: float, radius_m: float) -> Dict[str, Any]:
             f["geometry"]["coordinates"], config.SEMINATURAL_MAP_DECIMALS
         )
     return {"features": features, "truncated": truncated}
+
+
+def swf_image(lat: float, lng: float, radius_m: float) -> Dict[str, Any]:
+    """Il residuo Copernicus nel cerchio come immagine per la mappa.
+
+    PNG trasparente riproiettato in EPSG:3857 (vicino piu' prossimo), con i quattro angoli in
+    gradi per la sorgente `image` di Mapbox: in EPSG:3857 l'immagine e' allineata ai meridiani e
+    i pixel cadono dove devono (nel 3035 del raster l'asse nord ruota di circa un grado, cioe'
+    ~90 m di errore al bordo di un cerchio di 5 km).
+    """
+    if not swf_available():
+        return {"available": False}
+    import base64
+
+    import rasterio
+    from rasterio import features
+    from rasterio.io import MemoryFile
+    from rasterio.transform import from_origin
+    from rasterio.warp import Resampling, reproject
+
+    metrico, _, _ = agrea._buffer(lat, lng, radius_m)
+    cerchio = gpd.GeoSeries([metrico], crs=config.METRIC_EPSG).to_crs(3857).iloc[0]
+    x0, y0, x1, y1 = cerchio.bounds
+    # 5 m a terra: in EPSG:3857 un metro vale 1/cos(lat) unita'
+    px = 5.0 / np.cos(np.radians(lat))
+    w = int(np.ceil((x1 - x0) / px))
+    h = int(np.ceil((y1 - y0) / px))
+    dst_t = from_origin(x0, y1, px, px)
+    dst = np.zeros((h, w), dtype="uint8")
+    with rasterio.open(paths.SEMINATURALE_SWF_TIF) as src:
+        reproject(
+            source=rasterio.band(src, 1),
+            destination=dst,
+            dst_transform=dst_t,
+            dst_crs="EPSG:3857",
+            resampling=Resampling.nearest,
+        )
+    dentro = features.geometry_mask(
+        [cerchio], out_shape=(h, w), transform=dst_t, invert=True
+    )
+    pieno = (dst == 1) & dentro
+    rgba = np.zeros((4, h, w), dtype="uint8")
+    for banda, valore in enumerate(config.SEMINATURAL_SWF_IMAGE_RGBA):
+        rgba[banda][pieno] = valore
+    with MemoryFile() as mem:
+        with mem.open(driver="PNG", width=w, height=h, count=4, dtype="uint8") as png:
+            png.write(rgba)
+        dati = mem.read()
+    angoli = gpd.GeoSeries(
+        gpd.points_from_xy([x0, x1, x1, x0], [y1, y1, y0, y0]), crs=3857
+    ).to_crs(4326)
+    return {
+        "available": True,
+        # ordine di Mapbox: alto-sinistra, alto-destra, basso-destra, basso-sinistra
+        "coordinates": [[round(p.x, 7), round(p.y, 7)] for p in angoli],
+        "image": "data:image/png;base64," + base64.b64encode(dati).decode("ascii"),
+        "source": config.SEMINATURAL_SOURCES["swf2021"],
+    }

@@ -172,10 +172,14 @@ def _griglia(g: gpd.GeoDataFrame) -> pd.Series:
 
 
 def _sottrai_a_riquadri(
-    cand: gpd.GeoDataFrame, extra: Optional[gpd.GeoSeries], log=print
+    cand: gpd.GeoDataFrame,
+    extra: Optional[gpd.GeoSeries],
+    log=print,
+    cf_pq: Optional[str] = None,
 ) -> gpd.GeoDataFrame:
     """`sottrai` riquadro per riquadro: per ogni gruppo di candidati si legge solo l'AGREA che
-    tocca la loro estensione (piu' `extra`, gia' in memoria, se c'e')."""
+    tocca la loro estensione (piu' `extra` se c'e', piu' la Carta forestale letta per finestra da
+    `cf_pq` se c'e')."""
     parti = []
     gruppi = cand.groupby(_griglia(cand))
     for k, (_, gruppo) in enumerate(gruppi):
@@ -187,14 +191,61 @@ def _sottrai_a_riquadri(
                 )
             ]
             occ = _unione(occ, vicini)
+        if cf_pq is not None:
+            vicini = gpd.read_parquet(
+                cf_pq, bbox=tuple(gruppo.total_bounds), columns=["geometry"]
+            ).geometry
+            occ = _unione(occ, vicini)
         parti.append(sottrai(gruppo, occ, log=lambda *_: None) if len(occ) else gruppo)
         if k and k % 100 == 0:
             log(f"    {k:,} riquadri su {gruppi.ngroups:,}")
     return gpd.GeoDataFrame(pd.concat(parti, ignore_index=True), crs=config.METRIC_EPSG)
 
 
-def _strati(cf_zips: List[str], us_zip: str, tmp: str, log=print):
-    """Strati ritagliati; scrive anche in `tmp` l'Uso del suolo in GeoParquet, per il raster."""
+def _rss_gb() -> float:
+    """Memoria residente del processo, in GB (da /proc: nessuna dipendenza in piu')."""
+    try:
+        with open("/proc/self/status") as f:
+            for riga in f:
+                if riga.startswith("VmRSS:"):
+                    return int(riga.split()[1]) / 1e6
+    except OSError:
+        pass
+    return 0.0
+
+
+def _scrivi(g: gpd.GeoDataFrame, dest: str) -> None:
+    """GeoParquet ordinato per Hilbert con bbox di copertura: si legge per finestra."""
+    if len(g):
+        g = g.iloc[g.geometry.hilbert_distance(level=16).argsort()]
+    g.reset_index(drop=True).to_parquet(
+        dest, compression="zstd", write_covering_bbox=True, row_group_size=10_000
+    )
+
+
+def _leggi_parti(files: List[str], bbox=None, columns=None) -> gpd.GeoDataFrame:
+    """Unione dei GeoParquet temporanei, letti per finestra se c'e' `bbox`."""
+    parti = [gpd.read_parquet(f, bbox=bbox, columns=columns) for f in files]
+    parti = [p for p in parti if len(p)]
+    if not parti:
+        return gpd.GeoDataFrame(
+            {c: [] for c in (columns or []) if c != "geometry"},
+            geometry=[],
+            crs=config.METRIC_EPSG,
+        )
+    return gpd.GeoDataFrame(pd.concat(parti, ignore_index=True), crs=config.METRIC_EPSG)
+
+
+US_BLOCCO = 100_000
+
+
+def _strati(cf_zips: List[str], us_zip: str, tmp: str, log=print) -> List[str]:
+    """Strati ritagliati, scritti in `tmp` a pezzi; restituisce i file.
+
+    Scrive anche l'Uso del suolo intero (`us_*.parquet`, per il raster) e la Carta forestale
+    intera (`cf.parquet`, per ritagliarle fuori l'Uso del suolo). Nessuna delle due carte resta
+    in memoria tutta insieme: l'Uso del suolo si legge a blocchi di 100.000 poligoni.
+    """
     cf = gpd.GeoDataFrame(
         pd.concat(
             [
@@ -210,41 +261,61 @@ def _strati(cf_zips: List[str], us_zip: str, tmp: str, log=print):
     )
     cf["STC_RER"] = cf["STC_RER"].astype(str)
     cf["geometry"] = cf.geometry.make_valid()
+    cf_pq = os.path.join(tmp, "cf.parquet")
+    _scrivi(cf[["geometry"]], cf_pq)
     c = cf[cf["STC_RER"].isin(config.SEMINATURAL_CF_STC)].copy()
+    del cf
     c["categoria"] = c["STC_RER"].map(config.SEMINATURAL_CF_STC)
     c["fonte"] = "cf2025"
     c["classe"] = c["STC_RER"]
     log(
-        f"  Carta forestale: {len(cf):,} poligoni, {len(c):,} nelle categorie; ritaglio fuori da AGREA"
+        f"  Carta forestale: {len(c):,} poligoni nelle categorie; ritaglio fuori da AGREA"
+        f" (memoria {_rss_gb():.1f} GB)"
     )
     c = _sottrai_a_riquadri(
         c[["categoria", "fonte", "classe", "geometry"]], None, log=log
     )
+    uscite = [os.path.join(tmp, "strati_cf.parquet")]
+    c["ha"] = c.geometry.area / 10_000
+    _scrivi(c, uscite[0])
+    del c
 
-    us = gpd.read_file(_shp_nello_zip(us_zip), columns=["COD_TOT"], engine="pyogrio")
-    us = us.to_crs(config.METRIC_EPSG)
-    us["COD_TOT"] = us["COD_TOT"].astype(str)
-    us["geometry"] = us.geometry.make_valid()
-    # Tutto l'Uso del suolo serve al raster (dove finisce la regione, quali pixel sono vigneti o
-    # frutteti): lo si lascia in un GeoParquet temporaneo da leggere per finestra.
-    us.to_parquet(os.path.join(tmp, "uso_suolo.parquet"), write_covering_bbox=True)
-    u = us[us["COD_TOT"].isin(config.SEMINATURAL_US_COD)].copy()
-    del us
-    u["categoria"] = u["COD_TOT"].map(config.SEMINATURAL_US_COD)
-    u["fonte"] = "us2023"
-    u["classe"] = u["COD_TOT"]
-    log(
-        f"  Uso del suolo: {len(u):,} poligoni nelle categorie; ritaglio fuori da AGREA e CF"
-    )
-    u = _sottrai_a_riquadri(
-        u[["categoria", "fonte", "classe", "geometry"]], cf.geometry, log=log
-    )
-
-    z = gpd.GeoDataFrame(pd.concat([c, u], ignore_index=True), crs=config.METRIC_EPSG)
-    z["ha"] = z.geometry.area / 10_000
-    # Ordine di Hilbert: rende efficace l'indice bbox della lettura per finestra.
-    z = z.iloc[z.geometry.hilbert_distance(level=16).argsort()].reset_index(drop=True)
-    return z
+    shp = _shp_nello_zip(us_zip)
+    n = 0
+    while True:
+        us = gpd.read_file(
+            shp,
+            columns=["COD_TOT"],
+            engine="pyogrio",
+            skip_features=n * US_BLOCCO,
+            max_features=US_BLOCCO,
+        )
+        if us.empty:
+            break
+        us = us.to_crs(config.METRIC_EPSG)
+        us["COD_TOT"] = us["COD_TOT"].astype(str)
+        us["geometry"] = us.geometry.make_valid()
+        # Tutto l'Uso del suolo serve al raster (dove finisce la regione, quali pixel sono vigneti
+        # o frutteti): resta in GeoParquet temporanei da leggere per finestra.
+        _scrivi(us, os.path.join(tmp, f"us_{n}.parquet"))
+        u = us[us["COD_TOT"].isin(config.SEMINATURAL_US_COD)].copy()
+        del us
+        u["categoria"] = u["COD_TOT"].map(config.SEMINATURAL_US_COD)
+        u["fonte"] = "us2023"
+        u["classe"] = u["COD_TOT"]
+        log(
+            f"  Uso del suolo, blocco {n + 1}: {len(u):,} poligoni nelle categorie; ritaglio fuori"
+            f" da AGREA e CF (memoria {_rss_gb():.1f} GB)"
+        )
+        u = _sottrai_a_riquadri(
+            u[["categoria", "fonte", "classe", "geometry"]], None, log=log, cf_pq=cf_pq
+        )
+        uscite.append(os.path.join(tmp, f"strati_us_{n}.parquet"))
+        u["ha"] = u.geometry.area / 10_000
+        _scrivi(u, uscite[-1])
+        del u
+        n += 1
+    return uscite
 
 
 def _raster_swf(tmp: str, dest: str, log=print) -> Dict:
@@ -253,14 +324,21 @@ def _raster_swf(tmp: str, dest: str, log=print) -> Dict:
     A riquadri (i limiti del servizio Copernicus), e per ogni riquadro si leggono per finestra
     solo le geometrie che lo toccano: memoria costante, qualunque sia la regione.
     """
+    import glob
+
     import rasterio
     from rasterio import features
     from rasterio.transform import from_origin
     from rasterio.windows import Window
 
-    us_pq = os.path.join(tmp, "uso_suolo.parquet")
+    us_pq = sorted(glob.glob(os.path.join(tmp, "us_*.parquet")))
     # Estensione: la regione, cioe' dove c'e' l'Uso del suolo (copre tutto e solo l'ER).
-    tb = gpd.read_parquet(us_pq, columns=["geometry"]).total_bounds
+    tb = np.array([np.inf, np.inf, -np.inf, -np.inf])
+    for f in us_pq:
+        b = gpd.read_parquet(f, columns=["geometry"]).total_bounds
+        tb = np.array(
+            [min(tb[0], b[0]), min(tb[1], b[1]), max(tb[2], b[2]), max(tb[3], b[3])]
+        )
     b = (
         gpd.GeoSeries(shapely.box(*tb), crs=config.METRIC_EPSG)
         .to_crs(SWF_EPSG)
@@ -301,7 +379,7 @@ def _raster_swf(tmp: str, dest: str, log=print) -> Dict:
                     .to_crs(config.METRIC_EPSG)
                     .iloc[0]
                 )
-                us = gpd.read_parquet(us_pq, bbox=box_m.bounds)
+                us = _leggi_parti(us_pq, bbox=box_m.bounds)
                 if us.empty:
                     continue
 
@@ -383,7 +461,7 @@ def _raster_swf(tmp: str, dest: str, log=print) -> Dict:
                 n_riq += 1
                 log(
                     f"    riquadro {n_riq}: siepi {int((swf & dentro).sum()) * 25 / 1e4:,.0f} ha, "
-                    f"residuo {int(residuo.sum()) * 25 / 1e4:,.0f} ha"
+                    f"residuo {int(residuo.sum()) * 25 / 1e4:,.0f} ha (memoria {_rss_gb():.1f} GB)"
                 )
                 del us, st, swf, dentro, coperto, residuo
                 time.sleep(0.5)  # gentilezza verso il servizio pubblico
@@ -397,21 +475,73 @@ def _raster_swf(tmp: str, dest: str, log=print) -> Dict:
     }
 
 
-def _mappa(log=print) -> Dict:
-    """Lo strato per la mappa: poligoni uniti per categoria e fonte dentro celle di 5 km."""
-    s = gpd.read_parquet(
-        paths.SEMINATURALE_STRATI_PARQUET, columns=["categoria", "fonte", "geometry"]
+def _unisci_strati(parti: List[str], dest: str) -> Dict:
+    """Un solo GeoParquet ordinato per Hilbert, senza caricare le geometrie come oggetti.
+
+    Le tabelle Arrow tengono le geometrie come WKB (byte): unirle e riordinarle costa una frazione
+    della memoria di un GeoDataFrame (misurato: 3,8 GB con geopandas per ~400.000 poligoni).
+    L'ordine viene dal centro del bbox di copertura, che ogni pezzo ha gia'.
+    """
+    import pyarrow as pa
+    import pyarrow.parquet as pq
+
+    metadati = pq.read_schema(parti[0]).metadata
+    t = pa.concat_tables([pq.read_table(f) for f in parti], promote_options="default")
+    bb = t.column("bbox").combine_chunks()
+    cx = (np.asarray(bb.field("xmin")) + np.asarray(bb.field("xmax"))) / 2
+    cy = (np.asarray(bb.field("ymin")) + np.asarray(bb.field("ymax"))) / 2
+    punti = gpd.GeoSeries(gpd.points_from_xy(cx, cy), crs=config.METRIC_EPSG)
+    t = t.take(pa.array(np.argsort(punti.hilbert_distance(level=16).values)))
+    # i metadati "geo" (CRS, colonna geometria, bbox di copertura) sono quelli dei pezzi, con
+    # l'estensione ricalcolata su tutto
+    geo = json.loads(metadati[b"geo"])
+    geo["columns"]["geometry"]["bbox"] = [
+        float(np.min(bb.field("xmin"))),
+        float(np.min(bb.field("ymin"))),
+        float(np.max(bb.field("xmax"))),
+        float(np.max(bb.field("ymax"))),
+    ]
+    t = t.replace_schema_metadata({**metadati, b"geo": json.dumps(geo).encode()})
+    parziale = dest + ".parziale"
+    pq.write_table(t, parziale, compression="zstd", row_group_size=10_000)
+    os.replace(parziale, dest)
+    per_cat = (
+        t.select(["categoria", "fonte", "ha"])
+        .to_pandas()
+        .groupby(["categoria", "fonte"])["ha"]
+        .sum()
+        .round(0)
     )
-    s = s[s["categoria"].isin(config.SEMINATURAL_MAP_CATEGORIES)].reset_index(drop=True)
+    return {"poligoni": t.num_rows, "per_cat": per_cat}
+
+
+def _mappa(log=print) -> Dict:
+    """Lo strato per la mappa: poligoni uniti per categoria e fonte dentro celle di 5 km.
+
+    Cella per cella, leggendo dal file degli strati solo cio' che tocca la cella: tutta la
+    regione insieme portava l'updater a 5 GB.
+    """
+    src = paths.SEMINATURALE_STRATI_PARQUET
     lato = config.SEMINATURAL_MAP_CELL_M
-    x0, y0, x1, y1 = s.total_bounds
+    # l'estensione dalla sola colonna bbox, senza caricare le geometrie
+    import pyarrow.parquet as pq
+
+    bb = pq.read_table(src, columns=["bbox"]).column("bbox").combine_chunks()
+    x0 = float(np.min(bb.field("xmin")))
+    y0 = float(np.min(bb.field("ymin")))
+    x1 = float(np.max(bb.field("xmax")))
+    y1 = float(np.max(bb.field("ymax")))
     parti = []
     for cx in np.arange(np.floor(x0 / lato) * lato, x1, lato):
         for cy in np.arange(np.floor(y0 / lato) * lato, y1, lato):
             cella = shapely.box(cx, cy, cx + lato, cy + lato)
-            dentro = s.iloc[s.sindex.query(cella, predicate="intersects")]
+            dentro = gpd.read_parquet(
+                src, bbox=cella.bounds, columns=["categoria", "fonte", "geometry"]
+            )
+            dentro = dentro[dentro["categoria"].isin(config.SEMINATURAL_MAP_CATEGORIES)]
             if dentro.empty:
                 continue
+            dentro = dentro.iloc[dentro.sindex.query(cella, predicate="intersects")]
             dentro = dentro.assign(geometry=dentro.geometry.intersection(cella))
             u = dentro.dissolve(by=["categoria", "fonte"], as_index=False)
             u = u.explode(index_parts=False)
@@ -422,11 +552,8 @@ def _mappa(log=print) -> Dict:
             parti.append(u[~u.geometry.is_empty & (u.geometry.area > 1.0)])
     m = gpd.GeoDataFrame(pd.concat(parti, ignore_index=True), crs=config.METRIC_EPSG)
     m["ha"] = m.geometry.area / 10_000
-    m = m.iloc[m.geometry.hilbert_distance(level=16).argsort()].reset_index(drop=True)
     parziale = str(paths.SEMINATURALE_MAPPA_PARQUET) + ".parziale"
-    m.to_parquet(
-        parziale, compression="zstd", write_covering_bbox=True, row_group_size=10_000
-    )
+    _scrivi(m, parziale)
     os.replace(parziale, paths.SEMINATURALE_MAPPA_PARQUET)
     info = {
         "poligoni": int(len(m)),
@@ -435,6 +562,7 @@ def _mappa(log=print) -> Dict:
     }
     log(
         f"  mappa: {info['poligoni']:,} poligoni, {info['vertici']:,} vertici, {info['mb']} MB"
+        f" (memoria {_rss_gb():.1f} GB)"
     )
     return info
 
@@ -535,25 +663,18 @@ def aggiorna(force: bool = False, da_cartella: Optional[str] = None, log=print) 
         else:
             us_zip = _scarica(US_URL, os.path.join(tmp, "uso_suolo_2023.zip"), log=log)
 
-        strati = _strati(cf_zips, us_zip, tmp, log=log)
-        parziale = str(paths.SEMINATURALE_STRATI_PARQUET) + ".parziale"
-        strati.to_parquet(
-            parziale,
-            compression="zstd",
-            write_covering_bbox=True,
-            row_group_size=10_000,
-        )
-        os.replace(parziale, paths.SEMINATURALE_STRATI_PARQUET)
-        per_cat = strati.groupby(["categoria", "fonte"])["ha"].sum().round(0)
+        parti = _strati(cf_zips, us_zip, tmp, log=log)
+        info_strati = _unisci_strati(parti, str(paths.SEMINATURALE_STRATI_PARQUET))
+        per_cat = info_strati.pop("per_cat")
+        n_strati = info_strati["poligoni"]
         log(
             "  strati: "
             + ", ".join(f"{c}/{f} {v:,.0f} ha" for (c, f), v in per_cat.items())
+            + f" (memoria {_rss_gb():.1f} GB)"
         )
 
         info_mappa = _mappa(log=log)
         log("semi-naturale: residuo Small Woody Features, a riquadri")
-        n_strati = len(strati)
-        del strati  # il raster rilegge lo strato dal file, per finestra
         info_swf = _raster_swf(tmp, str(paths.SEMINATURALE_SWF_TIF), log=log)
 
     manifest = {

@@ -22,7 +22,8 @@ L'updater, dopo AGREA, scrive `seminaturale/strati_er.parquet` (531 MB), `mappa_
 `swf_residuo_er.tif` (9 MB), e AGREA ha un file in piu' (`agrea2026_elementi_forme_er.parquet`, 350 MB,
 le forme degli elementi). Su un volume esistente il primo `updater --run-now` rigenera AGREA
 (manca il file delle forme) e poi le zone semi-naturali: scarica ~2 GB (AGREA) + ~450 MB (Regione)
-+ ~60 MB (Copernicus, a riquadri). Picco di memoria 5,0 GB, circa 50 minuti in tutto. Senza
++ ~60 MB (Copernicus, a riquadri). Picco di memoria 4,3 GB, 47 minuti per il solo semi-naturale
+con i download veri, da lanciare con un tetto di memoria (vedi "Rilascio"). Senza
 `seminaturale/` il servizio risponde come prima (solo AGREA).
 
 ### Verifica (3 km)
@@ -40,9 +41,16 @@ frutteti e oliveti. In regione: 150.472 ha di Small Woody Features, 25.765 ha di
 Tempi di `/composition` a 10 km: 0,6 s Ferrara, 1,3 s Colli Bolognesi, 2,1 s Brisighella.
 `/parcels` a 5 km in collina: +160-190 kB compressi, nessun poligono tagliato dal tetto.
 
+### Mappa
+Oltre a bosco e arbusteti delle carte regionali, `/parcels` disegna gli edifici e il verde urbano
+dell'Uso del suolo (famiglia `altro`, grigio, tetto di vertici a parte) e il nuovo
+`GET /v1/landscape/woody-image` da' le siepi e gli alberi visti solo da Copernicus come PNG
+trasparente in EPSG:3857 (28-55 kB a 3-5 km, 0,2 s).
+
 ### Misure che hanno deciso
 - Ritaglio al volo del bosco: 18 s a 10 km -> fatto nell'updater, 0,05 s di mediana a richiesta.
-- Updater con tutta la regione in memoria: 11 GB -> a riquadri, 5,0 GB.
+- Updater con tutta la regione in memoria: 11 GB -> a riquadri e a blocchi, unione con pyarrow:
+  4,3 GB.
 - Elementi AGREA sottratti col centroide: 3.700 ha contati due volte -> con la forma: 0-3 ha.
 - Mappa con gli strati cosi' come sono: +513 kB compressi a 3 km in collina -> uniti a celle di
   5 km e semplificati a 5 m: 61 kB a 3 km, 159-187 kB a 5 km, disegnati senza contorno.

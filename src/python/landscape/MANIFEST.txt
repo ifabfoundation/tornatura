@@ -35,7 +35,7 @@ Dati NON nel package (vivono sul volume runtime)
 /data/landscape/agrea/agrea2026_elementi_forme_er.parquet  350 MB  gli stessi con la forma
                                                         (solo per l'updater)
 /data/landscape/seminaturale/strati_er.parquet        530 MB   CF 2025 e US 2023 fuori da AGREA
-/data/landscape/seminaturale/mappa_er.parquet                  gli stessi per la mappa
+/data/landscape/seminaturale/mappa_er.parquet         214 MB   gli stessi per la mappa
 /data/landscape/seminaturale/swf_residuo_er.tif                residuo Copernicus SWF 2021, 5 m
 Se manca seminaturale/ il semi-naturale e' il solo AGREA, senza errori.
 Se assenti il servizio funziona sul solo iColt: nessun errore, nessuna pagina rotta.

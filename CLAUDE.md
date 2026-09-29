@@ -96,6 +96,13 @@ Procedura seguita per landscape 2.2.0 e web 0.2.20260925 (25/09/2026), passo per
    bollettini contiene docling e torch (7,5 GB) e costruita insieme alle altre ha esaurito la memoria
    di WSL (15 GB) il 25/09/2026.
 
+10. **L'updater di landscape** (AGREA piu' zone semi-naturali, ~1 ora, picco misurato 4,3 GB) si
+   lancia sul server con un **tetto di memoria**, perche' il server non ha swap e un picco inatteso
+   farebbe chiudere al kernel anche i servizi di produzione. `compose run` non ha l'opzione, quindi
+   `docker run` diretto sul volume dell'ambiente: `sudo nohup docker run --rm --memory 6g
+   --memory-swap 6g -v <volume>:/data/landscape <immagine> python /bin/landscape-updater.pex
+   --run-now > updater.log 2>&1 &`. Se sfora, si ferma solo lui e i file vecchi restano validi.
+
 Se le immagini non sono state pubblicate su Docker Hub ma copiate sul server
 (`docker save | ssh ... docker load`), un `docker compose pull` fallisce per quei tag finche' chi ha
 l'accesso a Docker Hub non le pubblica dallo stesso commit.

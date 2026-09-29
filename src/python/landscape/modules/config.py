@@ -542,8 +542,23 @@ SEMINATURAL_SOURCES = {
 # Per la mappa l'updater unisce i poligoni adiacenti (per categoria e fonte) dentro celle di
 # 5 km: i vertici calano di 4 volte (Brisighella 5 km: 96.000 -> 23.000) e la cucitura fra le
 # celle non si vede perche' questi poligoni si disegnano senza contorno.
-SEMINATURAL_MAP_CATEGORIES = ("bosco", "arbusteti", "siepi", "sponde", "impianti")
+SEMINATURAL_MAP_CATEGORIES = (
+    "bosco",
+    "arbusteti",
+    "siepi",
+    "sponde",
+    "impianti",
+    "abitato",
+)
 SEMINATURAL_MAP_CELL_M = 5000
 SEMINATURAL_MAP_SIMPLIFY_M = 5.0
 SEMINATURAL_MAP_VERTEX_BUDGET = 40_000
+# Edifici e verde urbano sulla mappa: grigi come il non agricolo dichiarato (fabbricati, strade),
+# che e' la stessa cosa vista da AGREA; nessun quinto colore. Tetto di vertici a parte, cosi' un
+# centro abitato non toglie spazio al bosco.
+SEMINATURAL_MAP_FAMILY = {"abitato": "altro"}
+SEMINATURAL_MAP_ABITATO_VERTEX_BUDGET = 15_000
+# Il residuo Copernicus sulla mappa: un'immagine trasparente in EPSG:3857 (la proiezione di
+# Mapbox, cosi' i pixel cadono esattamente dove devono), fino al raggio del layer geometrico.
+SEMINATURAL_SWF_IMAGE_RGBA = (0, 131, 0, 255)
 SEMINATURAL_MAP_DECIMALS = 6

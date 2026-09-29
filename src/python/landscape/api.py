@@ -76,6 +76,26 @@ def composition_by_location(
         raise HTTPException(status_code=500, detail="Landscape dataset not available")
 
 
+@app.get("/v1/landscape/woody-image")
+def woody_image(
+    lat: float = Query(..., ge=-90, le=90),
+    lng: float = Query(..., ge=-180, le=180),
+    radius_m: int = Query(
+        config.DEFAULT_RADIUS_M,
+        ge=config.MIN_RADIUS_M,
+        le=config.AGREA_MAX_GEOMETRY_RADIUS_M,
+    ),
+) -> Dict[str, Any]:
+    """Siepi e alberi che nessuna altra fonte vede (Copernicus), come immagine per la mappa.
+
+    PNG trasparente con i quattro angoli per la sorgente `image` di Mapbox. Senza il raster sul
+    volume `available: false`, mai un errore: la mappa semplicemente non lo disegna.
+    """
+    if not landscape_service.is_covered(lat, lng):
+        raise HTTPException(status_code=404, detail="Location outside data coverage")
+    return seminaturale.swf_image(lat, lng, radius_m)
+
+
 @app.get("/v1/landscape/parcels")
 def parcels_by_location(
     lat: float = Query(..., ge=-90, le=90),

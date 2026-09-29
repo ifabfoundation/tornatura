@@ -34,7 +34,8 @@ sugli stessi 33 punti a 500 m, 1, 3 e 10 km e su tutta la regione.
    `/pest-habitat`) tengono i campi di prima e aggiungono `categories` con ettari per categoria e per
    fonte. L'organismo sceglie nel suo `meta.json` quali categorie sono suoi serbatoi e quali rifugi
    invernali. La distanza dal "serbatoio piu' vicino" usa anche gli strati nuovi. La mappa disegna il
-   bosco e gli arbusteti delle fonti regionali, con la fonte nel popup.
+   bosco, gli arbusteti e gli edifici delle fonti regionali, con la fonte nel popup, e le siepi
+   Copernicus come immagine.
 5. **Se gli strati mancano** (volume vecchio, fonte non raggiungibile) il servizio risponde come
    prima con il solo AGREA, e la risposta lo dice (`layers`).
 
@@ -74,6 +75,6 @@ punto sotto il valore di prima. Con la cartella `seminaturale/` vuota la rispost
   Monitoring Service, Small Woody Features 2021".
 - Volume: circa 1,1 GB in piu' (`seminaturale/` 0,7 GB, forme degli elementi AGREA 0,35 GB);
   l'updater scarica circa 500 MB dalle fonti nuove.
-- Memoria dell'updater: 5,0 GB di picco (misurato), circa 50 minuti, una volta l'anno o quando
-  AGREA cambia; mai insieme a un'altra preparazione.
+- Memoria dell'updater: 4,3 GB di picco (misurato), circa 50 minuti, una volta l'anno o quando
+  AGREA cambia; sul server si lancia con un tetto di memoria, cosi' un imprevisto ferma solo lui.
 - Una sola immagine del servizio `landscape` e una del `web`.

@@ -40,6 +40,7 @@ GET /v1/landscape/health
 GET /v1/landscape/coverage
 GET /v1/landscape/composition?lat=&lng=&radius_m=&crop=
 GET /v1/landscape/parcels?lat=&lng=&radius_m=&crop=
+GET /v1/landscape/woody-image?lat=&lng=&radius_m=
 GET /v1/landscape/pieces?lat=&lng=&radius_m=
 GET /v1/landscape/parcel-at?lat=&lng=
 GET /v1/landscape/pests?crop=
@@ -67,7 +68,9 @@ dichiarato che contiene il punto.
 per categoria (bosco; arbusteti e vegetazione spontanea; siepi, filari e boschetti; sponde, fossi
 e margini; impianti arborei; edifici e verde urbano), con gli ettari per fonte (`by_source`) e gli
 strati disponibili (`layers`). `parcels` aggiunge alla mappa i poligoni di bosco e arbusteti delle
-carte regionali, con la fonte in `source_label`.
+carte regionali (e gli edifici, in grigio con il non agricolo), con la fonte in `source_label`;
+`woody-image` da' le siepi e gli alberi visti solo da Copernicus come PNG trasparente con i
+quattro angoli, per la sorgente `image` di Mapbox (fino a 5 km).
 
 `pest-season` dice quali di quegli ospiti sono **oggi** nella fase che l'organismo attacca (o ci
 arrivano nelle prossime settimane) e da che parte stanno: fase dal servizio bollettini, o dal
