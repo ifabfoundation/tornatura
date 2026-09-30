@@ -348,6 +348,11 @@ dice.
    `time -v` 4,3 GB, 47 minuti con i download veri; il log scrive la memoria a ogni passo. Sul
    server va lanciato con un **tetto di memoria** (sezione "Rilascio" del CLAUDE.md del monorepo):
    senza swap, un picco inatteso farebbe chiudere al sistema anche i servizi di produzione.
+   Anche AGREA ha il suo picco: l'unione dei 1,96 milioni di pezzi con geopandas superava i 6 GB
+   (un container con tetto a 6 GB veniva fermato); ora `agrea_prepare.unisci_geoparquet` la fa con
+   pyarrow, a blocchi, 5,9 GB, con file **identici riga per riga** a prima (stesso ordine di
+   Hilbert, stessi `app_id`/`pid`). Sotto questo resta la tabella dei pezzi decompressa (~4 GB):
+   scendere ancora vorrebbe un'unione a piu' passate.
 2. Gli elementi AGREA vanno sottratti **con la loro forma** (`agrea<anno>_elementi_forme_er.parquet`,
    solo per l'updater): con il solo centroide 3.700 ha di siepi e boschetti dichiarati si
    contavano anche come bosco della Carta forestale.

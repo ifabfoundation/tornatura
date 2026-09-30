@@ -41,6 +41,14 @@ frutteti e oliveti. In regione: 150.472 ha di Small Woody Features, 25.765 ha di
 Tempi di `/composition` a 10 km: 0,6 s Ferrara, 1,3 s Colli Bolognesi, 2,1 s Brisighella.
 `/parcels` a 5 km in collina: +160-190 kB compressi, nessun poligono tagliato dal tetto.
 
+### Memoria dell'updater, e un tetto sul server
+Con un container limitato a 6 GB l'aggiornamento AGREA (codice di prima) veniva fermato nell'unione
+dei 1,96 milioni di pezzi. Ora l'unione dei file per provincia si fa con pyarrow e a blocchi
+(`unisci_geoparquet`, usata anche per strati e mappa): picco 5,9 GB per AGREA, 4,3 GB per le zone
+semi-naturali, e i quattro file AGREA sono identici riga per riga a quelli di prima (verificato
+sugli stessi archivi). Sul server l'updater si lancia con `--memory 8g` (CLAUDE.md del monorepo,
+"Rilascio").
+
 ### Mappa
 Oltre a bosco e arbusteti delle carte regionali, `/parcels` disegna gli edifici e il verde urbano
 dell'Uso del suolo (famiglia `altro`, grigio, tetto di vertici a parte) e il nuovo

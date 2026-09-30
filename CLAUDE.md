@@ -96,12 +96,15 @@ Procedura seguita per landscape 2.2.0 e web 0.2.20260925 (25/09/2026), passo per
    bollettini contiene docling e torch (7,5 GB) e costruita insieme alle altre ha esaurito la memoria
    di WSL (15 GB) il 25/09/2026.
 
-10. **L'updater di landscape** (AGREA piu' zone semi-naturali, ~1 ora, picco misurato 4,3 GB) si
-   lancia sul server con un **tetto di memoria**, perche' il server non ha swap e un picco inatteso
-   farebbe chiudere al kernel anche i servizi di produzione. `compose run` non ha l'opzione, quindi
-   `docker run` diretto sul volume dell'ambiente: `sudo nohup docker run --rm --memory 6g
-   --memory-swap 6g -v <volume>:/data/landscape <immagine> python /bin/landscape-updater.pex
-   --run-now > updater.log 2>&1 &`. Se sfora, si ferma solo lui e i file vecchi restano validi.
+10. **L'updater di landscape** (AGREA piu' zone semi-naturali, circa un'ora; picco misurato 5,9 GB
+   nell'unione dei 1,96 milioni di pezzi AGREA, 4,3 GB nelle zone semi-naturali) si lancia sul
+   server con un **tetto di memoria di 8 GB**: il server non ha swap, e un picco inatteso farebbe
+   chiudere al kernel anche i servizi di produzione (che usano circa 4 GB dei 15,8). `compose run`
+   non ha l'opzione, quindi `docker run` diretto sul volume dell'ambiente: `sudo nohup docker run
+   --rm --memory 8g --memory-swap 8g -v <volume>:/data/landscape <immagine> python
+   /bin/landscape-updater.pex --run-now > updater.log 2>&1 &`. Se sfora, si ferma solo lui
+   (OOMKilled) e i file vecchi restano validi. Con 6 GB il 29/09/2026 veniva fermato nell'unione
+   dei pezzi AGREA.
 
 Se le immagini non sono state pubblicate su Docker Hub ma copiate sul server
 (`docker save | ssh ... docker load`), un `docker compose pull` fallisce per quei tag finche' chi ha

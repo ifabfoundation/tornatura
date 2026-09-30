@@ -62,6 +62,7 @@ import urllib.request
 from typing import Dict, List, Optional
 
 import geopandas as gpd
+import numpy as np
 import pandas as pd
 import shapely
 from landscape import paths
@@ -240,7 +241,7 @@ def _lavora_provincia(zip_path: str, prov: str, anno: int, tmp: str, log=print):
     m = m[["cls", "family", "is_crop_class", "ha", "bio", "geometry"]].reset_index(
         drop=True
     )
-    m.to_parquet(os.path.join(tmp, f"colture_{prov}.parquet"))
+    m.to_parquet(os.path.join(tmp, f"colture_{prov}.parquet"), write_covering_bbox=True)
 
     # 2) layer fine: i PEZZI, cosi' come stanno nel dato
     # Ne' dissolti ne' semplificati, per due ragioni diverse.
@@ -278,7 +279,9 @@ def _lavora_provincia(zip_path: str, prov: str, anno: int, tmp: str, log=print):
     p = p[["cls", "family", "is_crop_class", "ha", "app_id", "geometry"]].reset_index(
         drop=True
     )
-    p.to_parquet(os.path.join(tmp, f"parcelle_{prov}.parquet"))
+    p.to_parquet(
+        os.path.join(tmp, f"parcelle_{prov}.parquet"), write_covering_bbox=True
+    )
 
     # 3) elementi del paesaggio, come centroide
     e = g[g.COD_MACRO == "780"].copy()
@@ -286,21 +289,105 @@ def _lavora_provincia(zip_path: str, prov: str, anno: int, tmp: str, log=print):
     e = e.to_crs(4326)
     e = e[e.geometry.notna() & ~e.geometry.is_empty]
     e = e[["cls", "ha", "geometry"]].reset_index(drop=True)
-    e.to_parquet(os.path.join(tmp, f"elementi_{prov}.parquet"))
+    e.to_parquet(
+        os.path.join(tmp, f"elementi_{prov}.parquet"), write_covering_bbox=True
+    )
 
     # 4) gli stessi elementi con la loro FORMA, in metri: servono solo all'updater del
     # semi-naturale per ritagliare le altre fonti fuori dalle siepi e dai fossi gia' dichiarati
     # (senza, 3.700 ha di siepi e boschetti dichiarati si contavano anche come bosco della Carta
     # forestale). Non semplificati: sono strisce larghe pochi metri.
     f = g[g.COD_MACRO == "780"][["cls", "ha", "geometry"]].reset_index(drop=True)
-    f.to_parquet(os.path.join(tmp, f"elemforme_{prov}.parquet"))
+    f.to_parquet(
+        os.path.join(tmp, f"elemforme_{prov}.parquet"), write_covering_bbox=True
+    )
 
     log(
         f"    {prov}: {n0:,} record -> colture {len(m):,} ({m.ha.sum():,.0f} ha) · "
         f"pezzi {len(p):,} ({p.ha.sum():,.0f} ha, {scartati} scartati) · "
         f"elementi {len(e):,} ({e.ha.sum():,.0f} ha)  in {time.time()-t0:.0f}s"
+        f" (memoria {rss_gb():.1f} GB)"
     )
     del g, m, p, e, f
+
+
+def rss_gb() -> float:
+    """Memoria residente del processo, in GB (da /proc: nessuna dipendenza in piu')."""
+    try:
+        with open("/proc/self/status") as f:
+            for riga in f:
+                if riga.startswith("VmRSS:"):
+                    return int(riga.split()[1]) / 1e6
+    except OSError:
+        pass
+    return 0.0
+
+
+def unisci_geoparquet(files: List[str], dest: str, colonne_nuove=None) -> Dict:
+    """Unisce GeoParquet con la stessa struttura in uno solo, ordinato per Hilbert.
+
+    Con pyarrow, tenendo le geometrie come WKB (byte) e non come oggetti shapely, e scrivendo il
+    risultato a blocchi di righe gia' riordinate: per i 1,96 milioni di pezzi AGREA l'unione con
+    geopandas superava da sola i 6 GB, e anche il riordino di tutta la tabella in una volta arrivava
+    a 6,9 GB (misurato il 29/09/2026). L'ordine e' identico a quello di
+    `GeoSeries.hilbert_distance`, che usa il centro del bbox di ogni geometria: qui il bbox viene
+    dalla colonna di copertura, scritta da ogni pezzo (`write_covering_bbox`).
+
+    `colonne_nuove(tabella, ordine) -> {nome: array nell'ordine nuovo}` sostituisce o aggiunge
+    colonne calcolate sull'ordine finale (la rinumerazione dei campi). Restituisce `{"righe": n}`:
+    le altre informazioni si rileggono dal file, solo le colonne che servono.
+    """
+    import pyarrow as pa
+    import pyarrow.parquet as pq
+
+    metadati = pq.read_schema(files[0]).metadata
+    geo = json.loads(metadati[b"geo"])
+    tipi = set()
+    for f in files:
+        g = json.loads(pq.read_schema(f).metadata[b"geo"])
+        tipi.update(g["columns"]["geometry"].get("geometry_types", []))
+    t = pa.concat_tables([pq.read_table(f) for f in files])
+    bb = t.column("bbox").combine_chunks()
+    x0, y0 = np.asarray(bb.field("xmin")), np.asarray(bb.field("ymin"))
+    x1, y1 = np.asarray(bb.field("xmax")), np.asarray(bb.field("ymax"))
+    centri = gpd.GeoSeries(gpd.points_from_xy((x0 + x1) / 2, (y0 + y1) / 2))
+    ordine = pd.Series(centri.hilbert_distance(level=16)).argsort().values
+    del centri, bb
+    nuove = colonne_nuove(t, ordine) if colonne_nuove is not None else {}
+    nomi = [c for c in t.column_names if c != "bbox"]
+    nomi += [c for c in nuove if c not in nomi]
+    nomi.append("bbox")  # la colonna di copertura in fondo, come la scrive geopandas
+    geo["columns"]["geometry"]["bbox"] = [
+        float(x0.min()),
+        float(y0.min()),
+        float(x1.max()),
+        float(y1.max()),
+    ]
+    geo["columns"]["geometry"]["geometry_types"] = sorted(tipi)
+    parziale = dest + ".parziale"
+    scrittore = None
+    for inizio in range(0, t.num_rows, 100_000):
+        pezzo = ordine[inizio : inizio + 100_000]
+        b = t.take(pa.array(pezzo))
+        for nome, valori in nuove.items():
+            col = pa.array(valori[inizio : inizio + 100_000])
+            if nome in b.column_names:
+                b = b.set_column(b.column_names.index(nome), nome, col)
+            else:
+                b = b.append_column(nome, col)
+        b = b.select(nomi)
+        if scrittore is None:
+            # solo i metadati "geo": quelli "pandas" dei pezzi descriverebbero un indice sbagliato
+            schema = b.schema.with_metadata({b"geo": json.dumps(geo).encode()})
+            scrittore = pq.ParquetWriter(parziale, schema, compression="zstd")
+        scrittore.write_table(b.cast(schema), row_group_size=ROW_GROUP)
+        del b
+    n = t.num_rows
+    del t
+    scrittore.close()
+    # Scrittura atomica: un'interruzione non deve lasciare un parquet mezzo scritto.
+    os.replace(parziale, dest)
+    return {"righe": n}
 
 
 def _unisci(
@@ -314,44 +401,50 @@ def _unisci(
     import glob
 
     files = sorted(glob.glob(os.path.join(tmp, f"{nome}_*.parquet")))
-    d = gpd.GeoDataFrame(
-        pd.concat([gpd.read_parquet(f) for f in files], ignore_index=True), crs=crs
-    )
-    # L'ordinamento Hilbert e' cio' che rende efficace l'indice bbox.
-    d = d.iloc[d.geometry.hilbert_distance(level=16).argsort()].reset_index(drop=True)
-    if pezzi:
+
+    def rinumera(t, ordine):
         # Rinumerazione DOPO l'ordinamento spaziale: `app_id` diventa un
         # progressivo in ordine di prima comparsa lungo la curva di Hilbert,
         # quindi due id vicini sono campi geograficamente vicini. Se si
         # rinumerasse prima, l'ordine dell'archivio AGREA e' per azienda e id
         # consecutivi rivelerebbero terreni della stessa azienda.
-        d["app_id"] = pd.factorize(d["app_id"])[0].astype("int32")
-        # `pid` identifica il singolo pezzo fra una richiesta e l'altra: il
-        # frontend ne ha bisogno per ricordare cosa ha selezionato quando la
-        # mappa si muove e la sorgente viene ricaricata.
-        d["pid"] = pd.RangeIndex(len(d)).astype("int32")
-        # Quanti pezzi ha in tutto il campo a cui questo pezzo appartiene. Serve
-        # a poter dire "questo campo e' fatto di 4 pezzi, 3 sono nella vista":
-        # dalla sola finestra letta non si saprebbe.
-        d["app_n"] = d.groupby("app_id")["pid"].transform("size").astype("int16")
-    # Scrittura atomica: un'interruzione non deve lasciare un parquet mezzo scritto.
-    parziale = dest_finale + ".parziale"
-    d.to_parquet(
-        parziale, compression="zstd", write_covering_bbox=True, row_group_size=ROW_GROUP
-    )
-    os.replace(parziale, dest_finale)
+        vecchi = t.column("app_id").to_pandas().values[ordine]
+        app_id = pd.factorize(vecchi)[0].astype("int32")
+        return {
+            "app_id": app_id,
+            # `pid` identifica il singolo pezzo fra una richiesta e l'altra: il
+            # frontend ne ha bisogno per ricordare cosa ha selezionato quando la
+            # mappa si muove e la sorgente viene ricaricata.
+            "pid": np.arange(len(app_id), dtype="int32"),
+            # Quanti pezzi ha in tutto il campo a cui questo pezzo appartiene. Serve
+            # a poter dire "questo campo e' fatto di 4 pezzi, 3 sono nella vista":
+            # dalla sola finestra letta non si saprebbe.
+            "app_n": pd.Series(app_id)
+            .groupby(app_id)
+            .transform("size")
+            .astype("int16")
+            .values,
+        }
+
+    # `crs` resta nella firma per chiarezza: il CRS viaggia nei metadati di ogni pezzo.
+    unisci_geoparquet(files, dest_finale, colonne_nuove=rinumera if pezzi else None)
+    import pyarrow.parquet as pq
+
+    piccole = ["ha", "app_id"] if pezzi else ["ha"]
+    t = pq.read_table(dest_finale, columns=piccole).to_pandas()
     info = {
-        "poligoni": int(len(d)),
-        "ha": round(float(d["ha"].sum()), 1),
+        "poligoni": int(len(t)),
+        "ha": round(float(t["ha"].sum()), 1),
         "mb": round(os.path.getsize(dest_finale) / 1e6, 1),
     }
     if pezzi:
-        per_campo = d.groupby("app_id").size()
+        per_campo = t["app_id"].value_counts()
         info["campi"] = int(len(per_campo))
         info["campi_scomponibili"] = int((per_campo > 1).sum())
+    del t
     log(
         f"  {nome}: {info['poligoni']:,} poligoni · {info['ha']:,.0f} ha · "
-        f"{info['mb']} MB -> {dest_finale}"
+        f"{info['mb']} MB -> {dest_finale} (memoria {rss_gb():.1f} GB)"
     )
     return info
 

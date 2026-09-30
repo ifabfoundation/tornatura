@@ -41,7 +41,7 @@ import numpy as np
 import pandas as pd
 import shapely
 from landscape import paths
-from landscape.modules import config
+from landscape.modules import agrea_prepare, config
 
 CF_URL = (
     "https://ambiente.regione.emilia-romagna.it/it/parchi-natura2000/foreste/"
@@ -203,15 +203,7 @@ def _sottrai_a_riquadri(
 
 
 def _rss_gb() -> float:
-    """Memoria residente del processo, in GB (da /proc: nessuna dipendenza in piu')."""
-    try:
-        with open("/proc/self/status") as f:
-            for riga in f:
-                if riga.startswith("VmRSS:"):
-                    return int(riga.split()[1]) / 1e6
-    except OSError:
-        pass
-    return 0.0
+    return agrea_prepare.rss_gb()
 
 
 def _scrivi(g: gpd.GeoDataFrame, dest: str) -> None:
@@ -476,46 +468,21 @@ def _raster_swf(tmp: str, dest: str, log=print) -> Dict:
 
 
 def _unisci_strati(parti: List[str], dest: str) -> Dict:
-    """Un solo GeoParquet ordinato per Hilbert, senza caricare le geometrie come oggetti.
-
-    Le tabelle Arrow tengono le geometrie come WKB (byte): unirle e riordinarle costa una frazione
-    della memoria di un GeoDataFrame (misurato: 3,8 GB con geopandas per ~400.000 poligoni).
-    L'ordine viene dal centro del bbox di copertura, che ogni pezzo ha gia'.
-    """
-    import pyarrow as pa
+    """Un solo GeoParquet ordinato per Hilbert, con pyarrow (vedi `unisci_geoparquet`)."""
     import pyarrow.parquet as pq
 
-    metadati = pq.read_schema(parti[0]).metadata
-    t = pa.concat_tables([pq.read_table(f) for f in parti], promote_options="default")
-    bb = t.column("bbox").combine_chunks()
-    cx = (np.asarray(bb.field("xmin")) + np.asarray(bb.field("xmax"))) / 2
-    cy = (np.asarray(bb.field("ymin")) + np.asarray(bb.field("ymax"))) / 2
-    punti = gpd.GeoSeries(gpd.points_from_xy(cx, cy), crs=config.METRIC_EPSG)
-    t = t.take(pa.array(np.argsort(punti.hilbert_distance(level=16).values)))
-    # i metadati "geo" (CRS, colonna geometria, bbox di copertura) sono quelli dei pezzi, con
-    # l'estensione ricalcolata su tutto
-    geo = json.loads(metadati[b"geo"])
-    geo["columns"]["geometry"]["bbox"] = [
-        float(np.min(bb.field("xmin"))),
-        float(np.min(bb.field("ymin"))),
-        float(np.max(bb.field("xmax"))),
-        float(np.max(bb.field("ymax"))),
-    ]
-    t = t.replace_schema_metadata({**metadati, b"geo": json.dumps(geo).encode()})
-    parziale = dest + ".parziale"
-    pq.write_table(t, parziale, compression="zstd", row_group_size=10_000)
-    os.replace(parziale, dest)
+    info = agrea_prepare.unisci_geoparquet(parti, dest)
     per_cat = (
-        t.select(["categoria", "fonte", "ha"])
+        pq.read_table(dest, columns=["categoria", "fonte", "ha"])
         .to_pandas()
         .groupby(["categoria", "fonte"])["ha"]
         .sum()
         .round(0)
     )
-    return {"poligoni": t.num_rows, "per_cat": per_cat}
+    return {"poligoni": info["righe"], "per_cat": per_cat}
 
 
-def _mappa(log=print) -> Dict:
+def _mappa(tmp: str, log=print) -> Dict:
     """Lo strato per la mappa: poligoni uniti per categoria e fonte dentro celle di 5 km.
 
     Cella per cella, leggendo dal file degli strati solo cio' che tocca la cella: tutta la
@@ -531,7 +498,22 @@ def _mappa(log=print) -> Dict:
     y0 = float(np.min(bb.field("ymin")))
     x1 = float(np.max(bb.field("xmax")))
     y1 = float(np.max(bb.field("ymax")))
-    parti = []
+    parti: List[str] = []
+    blocco: List[gpd.GeoDataFrame] = []
+    vertici = 0
+
+    def scarica_blocco():
+        # a gruppi di celle su file: tutta la mappa (1,5 milioni di poligoni) in memoria
+        # come GeoDataFrame pesava piu' di tutto il resto
+        if blocco:
+            g = gpd.GeoDataFrame(
+                pd.concat(blocco, ignore_index=True), crs=config.METRIC_EPSG
+            )
+            g["ha"] = g.geometry.area / 10_000
+            parti.append(os.path.join(tmp, f"mappa_{len(parti)}.parquet"))
+            _scrivi(g, parti[-1])
+            blocco.clear()
+
     for cx in np.arange(np.floor(x0 / lato) * lato, x1, lato):
         for cy in np.arange(np.floor(y0 / lato) * lato, y1, lato):
             cella = shapely.box(cx, cy, cx + lato, cy + lato)
@@ -549,15 +531,18 @@ def _mappa(log=print) -> Dict:
             u["geometry"] = u.geometry.simplify(
                 config.SEMINATURAL_MAP_SIMPLIFY_M, preserve_topology=True
             )
-            parti.append(u[~u.geometry.is_empty & (u.geometry.area > 1.0)])
-    m = gpd.GeoDataFrame(pd.concat(parti, ignore_index=True), crs=config.METRIC_EPSG)
-    m["ha"] = m.geometry.area / 10_000
-    parziale = str(paths.SEMINATURALE_MAPPA_PARQUET) + ".parziale"
-    _scrivi(m, parziale)
-    os.replace(parziale, paths.SEMINATURALE_MAPPA_PARQUET)
+            u = u[~u.geometry.is_empty & (u.geometry.area > 1.0)]
+            vertici += int(shapely.get_num_coordinates(u.geometry.values).sum())
+            blocco.append(u)
+            if sum(len(b) for b in blocco) > 100_000:
+                scarica_blocco()
+    scarica_blocco()
+    unito = agrea_prepare.unisci_geoparquet(
+        parti, str(paths.SEMINATURALE_MAPPA_PARQUET)
+    )
     info = {
-        "poligoni": int(len(m)),
-        "vertici": int(shapely.get_num_coordinates(m.geometry.values).sum()),
+        "poligoni": int(unito["righe"]),
+        "vertici": vertici,
         "mb": round(paths.SEMINATURALE_MAPPA_PARQUET.stat().st_size / 1e6, 1),
     }
     log(
@@ -626,7 +611,8 @@ def aggiorna(force: bool = False, da_cartella: Optional[str] = None, log=print) 
         # Manca solo lo strato della mappa (volume preparato da una versione precedente):
         # si ricava dagli strati gia' presenti, in un paio di minuti, senza riscaricare nulla.
         manifest = dict(vecchio["manifest"])
-        manifest["mappa"] = _mappa(log=log)
+        with tempfile.TemporaryDirectory(dir=str(paths.SEMINATURALE_DIR)) as tmp:
+            manifest["mappa"] = _mappa(tmp, log=log)
         paths.SEMINATURALE_MANIFEST.write_text(
             json.dumps(manifest, indent=2, ensure_ascii=False)
         )
@@ -673,7 +659,7 @@ def aggiorna(force: bool = False, da_cartella: Optional[str] = None, log=print) 
             + f" (memoria {_rss_gb():.1f} GB)"
         )
 
-        info_mappa = _mappa(log=log)
+        info_mappa = _mappa(tmp, log=log)
         log("semi-naturale: residuo Small Woody Features, a riquadri")
         info_swf = _raster_swf(tmp, str(paths.SEMINATURALE_SWF_TIF), log=log)
 

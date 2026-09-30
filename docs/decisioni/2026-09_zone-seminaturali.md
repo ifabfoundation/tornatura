@@ -75,6 +75,7 @@ punto sotto il valore di prima. Con la cartella `seminaturale/` vuota la rispost
   Monitoring Service, Small Woody Features 2021".
 - Volume: circa 1,1 GB in piu' (`seminaturale/` 0,7 GB, forme degli elementi AGREA 0,35 GB);
   l'updater scarica circa 500 MB dalle fonti nuove.
-- Memoria dell'updater: 4,3 GB di picco (misurato), circa 50 minuti, una volta l'anno o quando
-  AGREA cambia; sul server si lancia con un tetto di memoria, cosi' un imprevisto ferma solo lui.
+- Memoria dell'updater: 5,9 GB di picco per AGREA e 4,3 GB per le zone semi-naturali (misurati),
+  circa un'ora, una volta l'anno o quando AGREA cambia; sul server si lancia con un tetto di 8 GB,
+  cosi' un imprevisto ferma solo lui.
 - Una sola immagine del servizio `landscape` e una del `web`.
