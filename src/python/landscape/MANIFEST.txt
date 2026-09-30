@@ -2,8 +2,8 @@ LANDSCAPE (paesaggio agricolo) - Package di produzione
 ======================================================
 
 Nome:      landscape
-Versione:  2.3.0
-Data:      2026-09-25
+Versione:  2.4.0
+Data:      2026-09-28
 Servizio:  API del paesaggio agricolo e dei confini dichiarati
 
 Contenuto
@@ -16,6 +16,9 @@ Contenuto
 [OK] modules/landscape.py       sorgente iColt + combinazione delle due sorgenti
 [OK] modules/agrea.py           sorgente AGREA, ai due livelli di granularita'
 [OK] modules/pests.py           habitat di un organismo nel paesaggio (calcolo unico per tutti)
+[OK] modules/seminaturale.py    zone semi-naturali da tutte le fonti, ogni ettaro una volta
+[OK] modules/seminaturale_prepare.py  Carta forestale, Uso del suolo, Copernicus ritagliati
+                                fuori da AGREA, una volta, sul volume
 [OK] data/pests/halyha/         cimice asiatica: hosts.csv (312 specie AGREA -> livello, dalle
                                 evidenze) + meta.json (nome, serbatoi, testi, fonti, versione)
 [OK] data/icolt2026_er.parquet  layer ARPAE iColt 2026 (~34 MB, EPSG:4326, nel pex)
@@ -29,6 +32,12 @@ Dati NON nel package (vivono sul volume runtime)
 /data/landscape/agrea/agrea2026_colture_er.parquet    291 MB   824.326 appezzamenti
 /data/landscape/agrea/agrea2026_parcelle_er.parquet  1130 MB 1.956.071 pezzi >= 0,01 ha
 /data/landscape/agrea/agrea2026_elementi_er.parquet    53 MB    902.542 elementi
+/data/landscape/agrea/agrea2026_elementi_forme_er.parquet  350 MB  gli stessi con la forma
+                                                        (solo per l'updater)
+/data/landscape/seminaturale/strati_er.parquet        530 MB   CF 2025 e US 2023 fuori da AGREA
+/data/landscape/seminaturale/mappa_er.parquet         214 MB   gli stessi per la mappa
+/data/landscape/seminaturale/swf_residuo_er.tif                residuo Copernicus SWF 2021, 5 m
+Se manca seminaturale/ il semi-naturale e' il solo AGREA, senza errori.
 Se assenti il servizio funziona sul solo iColt: nessun errore, nessuna pagina rotta.
 Se manca il solo file dei pezzi, il disegno del campo torna a essere solo manuale.
 Si preparano con:  updater.pex --run-now   (scarica dalla fonte pubblica AGREA,

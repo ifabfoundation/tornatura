@@ -27,10 +27,19 @@
   },
   "reservoirs": {
     "label": "Serbatoi semi-naturali",
-    "description": "Bosco, siepi, boschetti, fasce e margini: e' dove la cimice sverna, si rifugia e depone le uova, e da dove entra nelle colture (Maistrello 2017; Forresi 2024; Note tecniche ER 2023).",
-    "classes": [
-      "BOSCO"
+    "description": "Bosco, arbusteti e vegetazione spontanea, siepi e boschetti, sponde e fossi, impianti arborei: e' dove la cimice si rifugia, si nutre e depone le uova, e da dove entra nelle colture (Maistrello 2017; Forresi 2024; Note tecniche ER 2023). Contati da tutte le fonti disponibili, ogni ettaro una volta: dichiarazioni PAC, Carta forestale regionale 2025, Uso del suolo 2023, Copernicus.",
+    "categories": [
+      "bosco",
+      "arbusteti",
+      "siepi",
+      "sponde",
+      "impianti"
     ],
+    "wintering": [
+      "abitato"
+    ],
+    "wintering_label": "Rifugi invernali (edifici e verde urbano)",
+    "wintering_description": "In autunno gli adulti cercano riparo in edifici, capannoni e magazzini e ne escono in primavera: nella rete regionale le catture vicino agli edifici sono piu' alte proprio in primavera (Forresi 2024).",
     "elements": true,
     "nearest_label": "siepe, boschetto o bosco"
   },
@@ -55,8 +64,8 @@
   },
   "limits": [
     "Dichiarazioni AGREA della campagna in corso: esistono solo per le aziende che presentano il piano colturale e si consolidano nei mesi successivi.",
-    "Il bosco non ha specie nel dato: resta 'non classificabile' anche se e' un rifugio importante.",
-    "La lista delle piante ospiti discende da fonti pubblicate con una regola dichiarata; una nuova fonte puo' cambiare il livello di una specie."
+    "La lista delle piante ospiti discende da fonti pubblicate con una regola dichiarata; una nuova fonte puo' cambiare il livello di una specie.",
+    "Bosco e ambienti semi-naturali vengono dalle dichiarazioni PAC e, dove queste non arrivano, dalla Carta forestale regionale 2025, dall'Uso del suolo 2023 e da Copernicus 2021: non hanno la specie, e le carte descrivono il territorio di qualche anno fa."
   ],
   "sources": [
     {

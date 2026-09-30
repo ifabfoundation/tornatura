@@ -4,6 +4,67 @@ Registro delle modifiche per il team backend.
 
 ---
 
+## [2026-09-28] - v2.4.0: le zone semi-naturali da tutte le fonti, ogni ettaro una volta
+
+### In breve, per chi legge solo questo
+Il semi-naturale di `/composition` (`seminatural`) e i serbatoi di `/pest-habitat` (`reservoirs`)
+non sono piu' solo AGREA: si sommano Carta forestale regionale 2025, Uso del suolo 2023 e il
+residuo di Copernicus Small Woody Features 2021, in ordine di priorita' (un ettaro appartiene alla
+prima fonte che lo vede). Sei categorie con ettari per fonte (`categories[].by_source`), strati
+disponibili in `layers`. `/parcels` aggiunge i poligoni regionali di bosco e arbusteti
+(`source_label`). Nuovi `modules/seminaturale.py` (a richiesta) e `modules/seminaturale_prepare.py`
+(nell'updater); `agrea.seminatural` e' sostituita. Dipendenza nuova: `rasterio` (lock rigenerato,
+`pyproj` fissato a 3.7.2). Nota: `docs/decisioni/2026-09_zone-seminaturali.md`; esperimento:
+`esperimenti/bosco_paesaggio/`.
+
+### Volume
+L'updater, dopo AGREA, scrive `seminaturale/strati_er.parquet` (531 MB), `mappa_er.parquet` (182 MB) e
+`swf_residuo_er.tif` (9 MB), e AGREA ha un file in piu' (`agrea2026_elementi_forme_er.parquet`, 350 MB,
+le forme degli elementi). Su un volume esistente il primo `updater --run-now` rigenera AGREA
+(manca il file delle forme) e poi le zone semi-naturali: scarica ~2 GB (AGREA) + ~450 MB (Regione)
++ ~60 MB (Copernicus, a riquadri). Picco di memoria 4,3 GB, 47 minuti per il solo semi-naturale
+con i download veri, da lanciare con un tetto di memoria (vedi "Rilascio"). Senza
+`seminaturale/` il servizio risponde come prima (solo AGREA).
+
+### Verifica (3 km)
+```
+Ferrara 44.80951, 11.75644       semi-naturale 2,7% -> 3,9%  (siepi 14 -> 39 ha, 25 Copernicus)
+Brisighella 44.2226, 11.7733     15,5% -> 36,3%  (bosco 363 -> 758,8 ha)
+Colli Bolognesi 44.434, 11.178   13,5% -> 54,7%  (bosco 359 -> 1.187 ha)
+pest-habitat Ferrara             serbatoi 4,2% (con gli impianti arborei), rifugi invernali 220 ha
+senza seminaturale/              Ferrara 2,9%, Brisighella 15,9%, layers.regional false
+```
+Senza il residuo Copernicus i numeri sono identici all'esperimento (`zone_punti.csv`, 33 punti x
+4 raggi: Ferrara 3,1%, Brisighella 34,5%, Colli 53,2%) entro lo 0,2% (risoluzione del cerchio);
+il residuo e' un po' piu' basso dell'esperimento perche' qui si escludono i pixel su vigneti,
+frutteti e oliveti. In regione: 150.472 ha di Small Woody Features, 25.765 ha di residuo.
+Tempi di `/composition` a 10 km: 0,6 s Ferrara, 1,3 s Colli Bolognesi, 2,1 s Brisighella.
+`/parcels` a 5 km in collina: +160-190 kB compressi, nessun poligono tagliato dal tetto.
+
+### Memoria dell'updater, e un tetto sul server
+Con un container limitato a 6 GB l'aggiornamento AGREA (codice di prima) veniva fermato nell'unione
+dei 1,96 milioni di pezzi. Ora l'unione dei file per provincia si fa con pyarrow e a blocchi
+(`unisci_geoparquet`, usata anche per strati e mappa): picco 5,9 GB per AGREA, 4,3 GB per le zone
+semi-naturali, e i quattro file AGREA sono identici riga per riga a quelli di prima (verificato
+sugli stessi archivi). Sul server l'updater si lancia con `--memory 8g` (CLAUDE.md del monorepo,
+"Rilascio").
+
+### Mappa
+Oltre a bosco e arbusteti delle carte regionali, `/parcels` disegna gli edifici e il verde urbano
+dell'Uso del suolo (famiglia `altro`, grigio, tetto di vertici a parte) e il nuovo
+`GET /v1/landscape/woody-image` da' le siepi e gli alberi visti solo da Copernicus come PNG
+trasparente in EPSG:3857 (28-55 kB a 3-5 km, 0,2 s).
+
+### Misure che hanno deciso
+- Ritaglio al volo del bosco: 18 s a 10 km -> fatto nell'updater, 0,05 s di mediana a richiesta.
+- Updater con tutta la regione in memoria: 11 GB -> a riquadri e a blocchi, unione con pyarrow:
+  4,3 GB.
+- Elementi AGREA sottratti col centroide: 3.700 ha contati due volte -> con la forma: 0-3 ha.
+- Mappa con gli strati cosi' come sono: +513 kB compressi a 3 km in collina -> uniti a celle di
+  5 km e semplificati a 5 m: 61 kB a 3 km, 159-187 kB a 5 km, disegnati senza contorno.
+
+---
+
 ## [2026-09-25] - v2.3.0: la finestra stagionale (quali ospiti sono oggi nella fase che l'organismo attacca)
 
 ### In breve, per chi legge solo questo

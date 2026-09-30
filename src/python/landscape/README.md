@@ -26,6 +26,13 @@ disaccordo fra le due come stima dell'incertezza. Viaggia dentro il pex (34 MB).
 Se i file AGREA non sono sul volume, il servizio funziona sul solo iColt senza
 errori.
 
+**Zone semi-naturali, da tutte le fonti.** AGREA vede un terzo del bosco (solo i terreni di chi
+dichiara). Dove non arriva, il servizio aggiunge la Carta forestale regionale 2025, l'Uso del
+suolo 2023 e le siepi Copernicus 2021, **ogni ettaro contato una volta** (prima fonte che lo
+vede). Il ritaglio fra le fonti lo fa l'updater, una volta, nella cartella `seminaturale/` del
+volume (~0,6 GB); se manca, il semi-naturale e' il solo AGREA. Vedi
+`docs/decisioni/2026-09_zone-seminaturali.md`.
+
 ## API
 
 ```
@@ -33,6 +40,7 @@ GET /v1/landscape/health
 GET /v1/landscape/coverage
 GET /v1/landscape/composition?lat=&lng=&radius_m=&crop=
 GET /v1/landscape/parcels?lat=&lng=&radius_m=&crop=
+GET /v1/landscape/woody-image?lat=&lng=&radius_m=
 GET /v1/landscape/pieces?lat=&lng=&radius_m=
 GET /v1/landscape/parcel-at?lat=&lng=
 GET /v1/landscape/pests?crop=
@@ -55,6 +63,14 @@ distanza in classi dal frutteto ospite e dalla siepe o bosco piu' vicini. Ogni o
 una cartella in `data/pests/<codice>/`; la cimice asiatica e' la prima. `ring` e' il contorno
 del campo (`lng,lat;...`) per le distanze bordo a bordo; senza, si usa l'appezzamento
 dichiarato che contiene il punto.
+
+`composition` porta `seminatural`, e `pest-habitat` `reservoirs`: ettari e percentuale del cerchio
+per categoria (bosco; arbusteti e vegetazione spontanea; siepi, filari e boschetti; sponde, fossi
+e margini; impianti arborei; edifici e verde urbano), con gli ettari per fonte (`by_source`) e gli
+strati disponibili (`layers`). `parcels` aggiunge alla mappa i poligoni di bosco e arbusteti delle
+carte regionali (e gli edifici, in grigio con il non agricolo), con la fonte in `source_label`;
+`woody-image` da' le siepi e gli alberi visti solo da Copernicus come PNG trasparente con i
+quattro angoli, per la sorgente `image` di Mapbox (fino a 5 km).
 
 `pest-season` dice quali di quegli ospiti sono **oggi** nella fase che l'organismo attacca (o ci
 arrivano nelle prossime settimane) e da che parte stanno: fase dal servizio bollettini, o dal

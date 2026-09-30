@@ -18,7 +18,7 @@ from typing import Any, Dict, List, Optional, Tuple
 import geopandas as gpd
 import shapely
 from landscape import paths
-from landscape.modules import agrea, config
+from landscape.modules import agrea, config, seminaturale
 from shapely.geometry import Point
 
 # Cache del dataset: caricato una volta sola, riusato da tutte le richieste.
@@ -434,7 +434,7 @@ def composition_with_sources(
 
     try:
         base_agrea = agrea.composition(lat, lng, radius_m, harvest)
-        semi = agrea.seminatural(lat, lng, radius_m)
+        semi = seminaturale.seminatural(lat, lng, radius_m)
     except agrea.AgreaUnavailable as exc:
         logger_msg = str(exc)
         base_icolt["source"] = "icolt"

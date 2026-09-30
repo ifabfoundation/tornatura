@@ -410,3 +410,155 @@ PHENOLOGY_TIMEOUT_S = 4.0
 PHENOLOGY_CACHE_S = 1800
 # Una fase vale 14 giorni: i bollettini sono settimanali (la stessa regola del servizio bollettini).
 PHENOLOGY_VALIDITY_DAYS = 14
+
+# ==============================================================================
+# Zone semi-naturali: tutte le fonti, ogni ettaro una volta (modules/seminaturale.py)
+# ==============================================================================
+#
+# AGREA vede un terzo del bosco (172.959 ha dichiarati contro 598.593 della Carta forestale
+# regionale 2025) e nessun ambiente di chi non presenta la domanda PAC. Le categorie e le classi
+# sotto vengono dall'esperimento esperimenti/bosco_paesaggio/ (33 punti, tutta la regione) e dalla
+# letteratura sulla cimice (Forresi 2024, Tamburini 2023, Wallner 2014, Park 2024). Nota di
+# decisione: docs/decisioni/2026-09_zone-seminaturali.md.
+#
+# Priorita': un ettaro appartiene alla PRIMA fonte che lo vede. AGREA (appezzamenti ed elementi
+# con la loro forma) > Carta forestale 2025 > Uso del suolo 2023 > Copernicus Small Woody
+# Features 2021. Il ritaglio fra le fonti si fa una volta nell'updater
+# (modules/seminaturale_prepare.py): a richiesta si sommano superfici che non si toccano.
+
+# Ordine = ordine di presentazione. `core`: entra nella quota "semi-naturale" della pagina.
+SEMINATURAL_CATEGORIES = {
+    "bosco": {"label": "Bosco", "core": True},
+    "arbusteti": {"label": "Arbusteti e vegetazione spontanea", "core": True},
+    "siepi": {"label": "Siepi, filari e boschetti", "core": True},
+    "sponde": {"label": "Sponde, fossi e margini", "core": True},
+    "impianti": {
+        "label": "Impianti arborei (pioppeti, arboricoltura, castagneti)",
+        "core": False,
+    },
+    "abitato": {"label": "Edifici e verde urbano", "core": False},
+}
+
+# AGREA, appezzamenti con family "seminaturale" (fuori dalle percentuali colturali). Una classe
+# seminaturale non elencata e' una specie forestale isolata (tiglio, pino...): va nel bosco.
+SEMINATURAL_AGREA_CLS = {
+    "BOSCO": "bosco",
+    "ARBORICOLTURA": "impianti",
+    "TARTUFO": "impianti",
+    "SIEPI E FASCE ALBERATE": "siepi",
+    "GRUPPI DI ALBERI E BOSCHETTI": "siepi",
+    "ALBERI IN FILARE": "siepi",
+    "ALBERI ISOLATI": "siepi",
+    "MARGINI (BORDI) DEI CAMPI": "sponde",
+    "MARGINI DEI CAMPI SEMINABILI": "sponde",
+    "FOSSATI E CANALI": "sponde",
+    "MACERI, STAGNI E LAGHETTI": "sponde",
+    "FASCE TAMPONE RIPARIALI": "sponde",
+    "FASCE TAMPONE NON RIPARIALI": "sponde",
+    "TERRAZZAMENTI": "sponde",
+    "MURETTI TRADIZIONALI": "sponde",
+}
+SEMINATURAL_AGREA_DEFAULT = "bosco"
+# Gli ELEMENTI del paesaggio AGREA (centroidi) usano la stessa tabella; quelli non elencati
+# sono sponde e margini.
+SEMINATURAL_ELEMENT_DEFAULT = "sponde"
+# Pascoli arborati: la tara dichiarata e' la quota non pascolabile perche' coperta da alberi e
+# cespugli. Restano prati nelle percentuali colturali; la quota di tara conta come arbusteti.
+SEMINATURAL_AGREA_TARA = {
+    "PASCOLO ARBORATO - TARA 50%": 0.5,
+    "PASCOLO ARBORATO - CESPUGLIATO TARA 20%": 0.2,
+}
+
+# Carta forestale regionale 2025 (Det. 6273/2026), campo STC_RER. Esclusi 31m/31t (usi agricoli
+# ripristinati).
+SEMINATURAL_CF_STC = {
+    "11": "bosco",
+    "12b": "bosco",
+    "12c": "bosco",
+    "12d": "bosco",
+    "12f": "bosco",
+    "210": "arbusteti",
+    "27": "arbusteti",
+    "28": "arbusteti",
+    "99": "siepi",
+    "21": "impianti",
+    "22a": "impianti",
+    "22p": "impianti",
+    "23": "impianti",
+    "24": "impianti",
+    "25": "impianti",
+    "26": "impianti",
+    "44": "abitato",
+}
+# Uso del suolo di dettaglio 2023, campo COD_TOT. Solo dove AGREA e Carta forestale non vedono
+# nulla: il bosco che la Carta forestale non disegna (3116 = boscaglie a robinia e ailanto),
+# arbusteti, alvei con vegetazione e argini, centri abitati e insediamenti agricoli.
+SEMINATURAL_US_COD = {
+    "3111": "bosco",
+    "3112": "bosco",
+    "3113": "bosco",
+    "3114": "bosco",
+    "3116": "bosco",
+    "3120": "bosco",
+    "3130": "bosco",
+    "3220": "arbusteti",
+    "3231": "arbusteti",
+    "3232": "arbusteti",
+    "5112": "sponde",
+    "5113": "sponde",
+    "3115": "impianti",
+    "2241": "impianti",
+    "2242": "impianti",
+    "1111": "abitato",
+    "1112": "abitato",
+    "1121": "abitato",
+    "1122": "abitato",
+    "1211": "abitato",
+    "1212": "abitato",
+    "1411": "abitato",
+    "1412": "abitato",
+    "1413": "abitato",
+}
+# Copernicus Small Woody Features 2021: conta SOLO il residuo, i pixel di siepi e alberi che
+# nessuna fonte precedente vede (fuori da appezzamenti, elementi AGREA con 5 m di margine per
+# lo scarto di posizione, strati CF e US). Esclusi i pixel su vigneti, frutteti, oliveti e
+# colture associate dell'Uso del suolo: i filari si confondono con le siepi.
+SEMINATURAL_SWF_CATEGORY = "siepi"
+SEMINATURAL_SWF_ELEMENT_MARGIN_M = 5.0
+SEMINATURAL_SWF_EXCLUDED_US = ("2210", "2220", "2230", "2410")
+
+SEMINATURAL_SOURCES = {
+    "agrea": "AGREA, piani colturali grafici 2026",
+    "cf2025": "Regione Emilia-Romagna, Carta forestale regionale 2025 (CC BY 4.0)",
+    "us2023": "Regione Emilia-Romagna, Uso del suolo di dettaglio 2023 (CC BY 4.0)",
+    "swf2021": "Copernicus Land Monitoring Service, Small Woody Features 2021",
+}
+
+# Sulla mappa si disegnano gli strati regionali (non gli edifici, non il residuo Copernicus),
+# sopra la stessa soglia degli appezzamenti e con un tetto sui vertici: a 5 km in collina il
+# bosco della Carta forestale ha poligoni lunghi chilometri. Misurato a Brisighella 3 km: senza
+# semplificazione e con le coordinate intere erano 513 kB compressi in piu' (gli appezzamenti
+# AGREA ne pesano 411); 5 m di semplificazione non si vedono alle scale della pagina.
+# Per la mappa l'updater unisce i poligoni adiacenti (per categoria e fonte) dentro celle di
+# 5 km: i vertici calano di 4 volte (Brisighella 5 km: 96.000 -> 23.000) e la cucitura fra le
+# celle non si vede perche' questi poligoni si disegnano senza contorno.
+SEMINATURAL_MAP_CATEGORIES = (
+    "bosco",
+    "arbusteti",
+    "siepi",
+    "sponde",
+    "impianti",
+    "abitato",
+)
+SEMINATURAL_MAP_CELL_M = 5000
+SEMINATURAL_MAP_SIMPLIFY_M = 5.0
+SEMINATURAL_MAP_VERTEX_BUDGET = 40_000
+# Edifici e verde urbano sulla mappa: grigi come il non agricolo dichiarato (fabbricati, strade),
+# che e' la stessa cosa vista da AGREA; nessun quinto colore. Tetto di vertici a parte, cosi' un
+# centro abitato non toglie spazio al bosco.
+SEMINATURAL_MAP_FAMILY = {"abitato": "altro"}
+SEMINATURAL_MAP_ABITATO_VERTEX_BUDGET = 15_000
+# Il residuo Copernicus sulla mappa: un'immagine trasparente in EPSG:3857 (la proiezione di
+# Mapbox, cosi' i pixel cadono esattamente dove devono), fino al raggio del layer geometrico.
+SEMINATURAL_SWF_IMAGE_RGBA = (0, 131, 0, 255)
+SEMINATURAL_MAP_DECIMALS = 6

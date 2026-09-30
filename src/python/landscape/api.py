@@ -9,7 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from landscape.modules import agrea, config
 from landscape.modules import landscape as landscape_service
-from landscape.modules import pests, season
+from landscape.modules import pests, season, seminaturale
 from landscape.modules.landscape import DatasetUnavailable
 
 logger = logging.getLogger("landscape_api")
@@ -76,6 +76,26 @@ def composition_by_location(
         raise HTTPException(status_code=500, detail="Landscape dataset not available")
 
 
+@app.get("/v1/landscape/woody-image")
+def woody_image(
+    lat: float = Query(..., ge=-90, le=90),
+    lng: float = Query(..., ge=-180, le=180),
+    radius_m: int = Query(
+        config.DEFAULT_RADIUS_M,
+        ge=config.MIN_RADIUS_M,
+        le=config.AGREA_MAX_GEOMETRY_RADIUS_M,
+    ),
+) -> Dict[str, Any]:
+    """Siepi e alberi che nessuna altra fonte vede (Copernicus), come immagine per la mappa.
+
+    PNG trasparente con i quattro angoli per la sorgente `image` di Mapbox. Senza il raster sul
+    volume `available: false`, mai un errore: la mappa semplicemente non lo disegna.
+    """
+    if not landscape_service.is_covered(lat, lng):
+        raise HTTPException(status_code=404, detail="Location outside data coverage")
+    return seminaturale.swf_image(lat, lng, radius_m)
+
+
 @app.get("/v1/landscape/parcels")
 def parcels_by_location(
     lat: float = Query(..., ge=-90, le=90),
@@ -122,6 +142,14 @@ def parcels_by_location(
                     # "contiene anche altre colture".
                     base["aggregated_classes"] = {}
                     base["crop"] = agrea.resolve_crop(crop)
+                    # Bosco e ambienti semi-naturali delle fonti regionali, fuori da AGREA:
+                    # stessa famiglia e stesse proprieta', con la fonte per il popup. In coda,
+                    # cosi' il tetto di MAX_PARCELS sugli appezzamenti non cambia.
+                    semi = seminaturale.map_features(lat, lng, radius_m)
+                    base["parcels"]["features"].extend(semi["features"])
+                    base["seminatural_count"] = len(semi["features"])
+                    base["seminatural_truncated"] = semi["truncated"]
+                    base["count"] = len(base["parcels"]["features"])
                     if pest:
                         try:
                             pests.annotate_features(base["parcels"]["features"], pest)

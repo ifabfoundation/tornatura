@@ -119,51 +119,6 @@ def parcels(
     return g
 
 
-def seminatural(lat: float, lng: float, radius_m: float) -> Dict[str, Any]:
-    """Quota di elementi semi-naturali nel buffer: bosco piu' siepi e margini.
-
-    E' la variabile che la letteratura indica come driver per Halyomorpha halys
-    (Tamburini et al. 2023, scala migliore 3 km) e per Drosophila suzukii
-    (Santoiemma et al. 2018), e che iColt non contiene affatto.
-
-    Gli elementi caratteristici sono 902.542 poligoni regionali per il 2,5% degli
-    ettari: si conservano come CENTROIDE piu' superficie e si contano per
-    appartenenza del centroide al buffer. Misurato lo scarto contro il ritaglio
-    esatto: 0,0-2,0%, su elementi con mediana 166 m2. Non si servono mai come
-    geometria al client.
-    """
-    metrico, geografico, bbox = _buffer(lat, lng, radius_m)
-    buffer_ha = metrico.area / 10_000
-
-    bosco_ha = 0.0
-    if available():
-        g = _leggi(paths.AGREA_COLTURE_PARQUET, bbox)
-        b = g[g["cls"].str.upper() == "BOSCO"]
-        if not b.empty:
-            metriche = b.geometry.to_crs(config.METRIC_EPSG).make_valid()
-            bosco_ha = float(metriche.intersection(metrico).area.sum() / 10_000)
-
-    elementi_ha = 0.0
-    elementi_n = 0
-    if elements_available():
-        e = _leggi(paths.AGREA_ELEMENTI_PARQUET, bbox)
-        if not e.empty:
-            dentro = e[e.geometry.to_crs(config.METRIC_EPSG).within(metrico)]
-            elementi_ha = float(dentro["ha"].sum())
-            elementi_n = int(len(dentro))
-
-    totale = bosco_ha + elementi_ha
-    return {
-        "bosco_ha": round(bosco_ha, 1),
-        "elementi_ha": round(elementi_ha, 1),
-        "elementi_n": elementi_n,
-        "ha": round(totale, 1),
-        "pct_of_buffer": round(100 * totale / buffer_ha, 1) if buffer_ha else 0.0,
-        # L'approssimazione va dichiarata dove viene usata, non nascosta.
-        "elementi_method": "centroide nel buffer (scarto misurato 0-2%)",
-    }
-
-
 def composition(
     lat: float, lng: float, radius_m: float, harvest: Optional[str] = None
 ) -> Dict[str, Any]:

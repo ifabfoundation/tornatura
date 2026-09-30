@@ -96,10 +96,16 @@ export const LEGENDA_FAMIGLIE: Array<{ family: string; label: string; color: str
     label: "Bosco, siepi e margini",
     color: COLORE_SEMINATURALE,
   },
-  { family: "altro", label: "Altro", color: COLORE_ALTRO },
+  { family: "altro", label: "Edifici, strade e altro", color: COLORE_ALTRO },
 ];
 
+// I poligoni delle carte regionali (bosco e arbusteti fuori dalle dichiarazioni) arrivano gia'
+// uniti a celle di 5 km: si disegnano senza contorno, cosi' la cucitura fra le celle non si vede.
+const SENZA_CONTORNO: FilterSpecification = ["!", ["has", "source_label"]];
+
 const SRC_PARCELLE = "landscape-parcels";
+const SRC_SIEPI = "landscape-woody";
+const LYR_SIEPI = "landscape-woody-raster";
 const SRC_CAMPO = "landscape-field";
 const SRC_BUFFER = "landscape-buffer";
 const LYR_AGRI = "landscape-agri-fill";
@@ -111,7 +117,14 @@ type ParcelsFC = {
   type: "FeatureCollection";
   features: Array<{
     type: "Feature";
-    properties: { icolt_class?: string; ha?: number; is_crop?: boolean; host_level?: string };
+    properties: {
+      icolt_class?: string;
+      ha?: number;
+      is_crop?: boolean;
+      host_level?: string;
+      /** Le zone semi-naturali delle carte regionali dicono la loro fonte (non AGREA). */
+      source_label?: string;
+    };
     geometry: any;
   }>;
 };
@@ -133,6 +146,8 @@ export type MapLandscapeCropsProps = {
   hostMode?: boolean;
   /** Nome dell'organismo, per il popup ("ospite della cimice asiatica"). */
   hostModeLabel?: string;
+  /** Siepi e alberi visti da Copernicus e da nessun'altra fonte: immagine trasparente. */
+  woodyImage?: { image?: string; coordinates?: number[][] } | null;
 };
 
 const vuoto: ParcelsFC = { type: "FeatureCollection", features: [] };
@@ -156,6 +171,7 @@ export default function MapLandscapeCrops({
   showCrop,
   hostMode = false,
   hostModeLabel,
+  woodyImage = null,
 }: MapLandscapeCropsProps) {
   const mapContainerRef = React.useRef<HTMLDivElement>(null);
   const mapRef = React.useRef<any>(null);
@@ -169,6 +185,11 @@ export default function MapLandscapeCrops({
   datasetRef.current = datasetLabel;
   const hostModeRef = React.useRef({ on: hostMode, label: hostModeLabel });
   hostModeRef.current = { on: hostMode, label: hostModeLabel };
+  // Le siepi Copernicus seguono la voce "bosco, siepi e margini" della legenda; nella modalita'
+  // ospiti si spengono, perche' li' il verde non ha una voce.
+  const siepiVisibili = !hostMode && enabledFamilies.includes("seminaturale");
+  const siepiVisibiliRef = React.useRef(siepiVisibili);
+  siepiVisibiliRef.current = siepiVisibili;
 
   // --- inizializzazione: una volta sola, non dipende dai dati -----------------
   React.useEffect(() => {
@@ -202,6 +223,7 @@ export default function MapLandscapeCrops({
         id: LYR_AGRI_LINE,
         type: "line",
         source: SRC_PARCELLE,
+        filter: SENZA_CONTORNO,
         paint: {
           "line-color": COLORE_PER_FAMIGLIA,
           "line-width": 0.6,
@@ -286,7 +308,9 @@ export default function MapLandscapeCrops({
                })} ha nel raggio</div>
                ${nota}
                ${rigaOspite}
-               <div class="font-s opacity-05 mt-1">${esc(datasetRef.current)}</div>
+               <div class="font-s opacity-05 mt-1">${esc(
+                 f.properties?.source_label ? String(f.properties.source_label) : datasetRef.current,
+               )}</div>
              </div>`,
           )
           .addTo(map);
@@ -353,6 +377,45 @@ export default function MapLandscapeCrops({
     }
   }, [mapLoaded, parcels, buffer, fieldRing]);
 
+  // --- siepi e alberi Copernicus: un'immagine, ricreata a ogni raggio ---------
+  React.useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !mapLoaded) {
+      return;
+    }
+    if (map.getLayer(LYR_SIEPI)) {
+      map.removeLayer(LYR_SIEPI);
+    }
+    if (map.getSource(SRC_SIEPI)) {
+      map.removeSource(SRC_SIEPI);
+    }
+    if (!woodyImage?.image || woodyImage.coordinates?.length !== 4) {
+      return;
+    }
+    map.addSource(SRC_SIEPI, {
+      type: "image",
+      url: woodyImage.image,
+      // quattro angoli [lng, lat], nell'ordine che Mapbox si aspetta
+      coordinates: woodyImage.coordinates as [
+        [number, number],
+        [number, number],
+        [number, number],
+        [number, number],
+      ],
+    });
+    // Sotto la coltura dell'utente, sopra gli appezzamenti: sono strisce di pochi metri.
+    map.addLayer(
+      {
+        id: LYR_SIEPI,
+        type: "raster",
+        source: SRC_SIEPI,
+        paint: { "raster-opacity": 0.85, "raster-resampling": "nearest" },
+        layout: { visibility: siepiVisibiliRef.current ? "visible" : "none" },
+      },
+      LYR_COLTURA,
+    );
+  }, [mapLoaded, woodyImage]);
+
   // --- accensione e spegnimento dei layer ------------------------------------
   React.useEffect(() => {
     const map = mapRef.current;
@@ -361,13 +424,16 @@ export default function MapLandscapeCrops({
     }
     const set = (id: string, on: boolean) =>
       map.setLayoutProperty(id, "visibility", on ? "visible" : "none");
+    if (map.getLayer(LYR_SIEPI)) {
+      set(LYR_SIEPI, siepiVisibili);
+    }
     // Le famiglie spente escono dal filtro: un solo layer serve tutte le voci
     // della legenda, senza duplicare la sorgente per ogni famiglia.
     if (hostMode) {
       // Modalita' ospiti: tutti gli appezzamenti, colorati per livello; la coltura
       // dell'utente si spegne perche' il suo colore ora dice "danno documentato".
       map.setFilter(LYR_AGRI, null);
-      map.setFilter(LYR_AGRI_LINE, null);
+      map.setFilter(LYR_AGRI_LINE, SENZA_CONTORNO);
       map.setPaintProperty(LYR_AGRI, "fill-color", COLORE_PER_LIVELLO_OSPITE);
       map.setPaintProperty(LYR_AGRI_LINE, "line-color", COLORE_PER_LIVELLO_OSPITE);
       set(LYR_AGRI, true);
@@ -384,12 +450,12 @@ export default function MapLandscapeCrops({
       ["literal", enabledFamilies],
     ];
     map.setFilter(LYR_AGRI, filtroFamiglie);
-    map.setFilter(LYR_AGRI_LINE, filtroFamiglie);
+    map.setFilter(LYR_AGRI_LINE, ["all", SENZA_CONTORNO, filtroFamiglie]);
     set(LYR_AGRI, enabledFamilies.length > 0);
     set(LYR_AGRI_LINE, enabledFamilies.length > 0);
     set(LYR_COLTURA, showCrop);
     set(LYR_COLTURA_LINE, showCrop);
-  }, [mapLoaded, enabledFamilies, showCrop, hostMode]);
+  }, [mapLoaded, enabledFamilies, showCrop, hostMode, siepiVisibili]);
 
   return (
     <div className="map-observations-wrapper">
