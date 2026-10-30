@@ -28,6 +28,36 @@ function getFieldCentroid(field?: AgriField): { lat: number; lng: number } | nul
   };
 }
 
+// I bollettini escono ogni settimana; in stagione la pausa piu' lunga osservata nel 2026 tra due
+// bollettini della stessa zona e' stata di 4 settimane (Bologna e Ferrara, agosto). Oltre 3
+// settimane senza un report nuovo l'utente pensa a un guasto: diciamo che e' l'ultimo pubblicato.
+const GIORNI_REPORT_FERMO = 21;
+
+// In Emilia-Romagna i bollettini si fermano a fine stagione (2026: ultimi tra il 16 settembre e il
+// 2 ottobre) e riprendono a febbraio (2026: dal 3 febbraio). La frase sulla stagione si mostra solo
+// in questi mesi, perche' un report fermo d'estate puo' voler dire solo che la coltura non c'era
+// negli ultimi bollettini.
+const MESI_PAUSA_ER = [9, 10, 11, 0]; // ottobre, novembre, dicembre, gennaio (getMonth)
+
+function giorniDalReport(reportDate?: string): number | null {
+  if (!reportDate) {
+    return null;
+  }
+  const data = new Date(reportDate);
+  if (Number.isNaN(data.getTime())) {
+    return null;
+  }
+  return Math.floor((Date.now() - data.getTime()) / 86_400_000);
+}
+
+function formatDataEstesa(reportDate: string) {
+  return new Date(reportDate).toLocaleDateString("it-IT", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+}
+
 function formatHarvestName(harvest?: string) {
   if (!harvest) {
     return "Coltura";
@@ -154,6 +184,18 @@ export function FieldModelBollettini() {
           {loading && <div>Caricamento report...</div>}
           {!loading && !error && (
             <Fragment>
+              {report?.report_date &&
+                (giorniDalReport(report.report_date) ?? 0) > GIORNI_REPORT_FERMO && (
+                  <div className="alert alert-warning font-s">
+                    <strong>Nessun aggiornamento dal {formatDataEstesa(report.report_date)}.</strong>{" "}
+                    È l'ultimo bollettino pubblicato dalla Regione per questa coltura in questa
+                    zona.{" "}
+                    {report.region === "emilia_romagna" &&
+                      MESI_PAUSA_ER.includes(new Date().getMonth()) &&
+                      "In Emilia-Romagna i bollettini si fermano in autunno, a fine stagione, e riprendono a febbraio. "}
+                    Quando ne uscirà uno nuovo comparirà qui da solo.
+                  </div>
+                )}
               <section className="soft bg-white">
                 <Row>
                   <Col md={6} xl={4} xxl={3}>
